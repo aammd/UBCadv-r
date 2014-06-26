@@ -1,4 +1,4 @@
 UBC_adv-r
 =========
 
-Note sharing for a discussion group around the [Advanced R Programming book](http://adv-r.had.co.nz/) 
+We are a group of useRs at the University of British Columbia, who meet weekly to discuss Hadley Wickham's [Advanced R Programming](http://adv-r.had.co.nz/).  
