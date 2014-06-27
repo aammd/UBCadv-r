@@ -16,3 +16,16 @@ We meet Thursdays at **1pm PST in Biodiversity 224.**
 * push your changes to your github
 * submit a [pull request](https://help.github.com/articles/using-pull-requests)
 * you're done!
+
+## Schedule
+
+wk 1 - Data Structures
+wk 2 - Subsetting
+wk 3 - functions
+wk 4 - environments
+wk 5 - debugging
+wk 6 - functional programming
+wk 7 - functionals
+wk 8 - Function operators
+wk 9 - Non-Standard Evaluation
+wk10 - Expressions
