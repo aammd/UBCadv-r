@@ -19,6 +19,8 @@ We meet Thursdays at **1pm PST in Biodiversity 224.**
 
 ## Schedule
 
+| Week    |  Reading                |
+| ------- | ----------------------- |
 | week 1  | Data Structures         |
 | week 2  | Subsetting              |
 | week 3  | functions               |
