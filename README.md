@@ -15,3 +15,4 @@ We meet Thursdays at **1pm PST in Biodiversity 224.**
 * When you are working through examples or creating demonstrations, write in .Rmd
 * push your changes to your github
 * submit a [pull request](https://help.github.com/articles/using-pull-requests)
+* you're done!
