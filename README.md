@@ -19,13 +19,15 @@ We meet Thursdays at **1pm PST in Biodiversity 224.**
 
 ## Schedule
 
-wk 1 - Data Structures
-wk 2 - Subsetting
-wk 3 - functions
-wk 4 - environments
-wk 5 - debugging
-wk 6 - functional programming
-wk 7 - functionals
-wk 8 - Function operators
-wk 9 - Non-Standard Evaluation
-wk10 - Expressions
+| week 1  | Data Structures         |
+| week 2  | Subsetting              |
+| week 3  | functions               |
+| week 4  | environments            |
+| week 5  | debugging               |
+| week 6  | fnl programming         |
+| week 7  | functionals             |
+| week 8  | Function operators      |
+| week 9  | Non-Standard Evaluation |
+| week 10 | Expressions             |
+
+
