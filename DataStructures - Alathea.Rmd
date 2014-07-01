@@ -7,7 +7,12 @@ Data Structures
 
 ### Contents
 
+<c1><a href="#quiz">Quiz</c1>
+<c1><a href="#vectors">Vectors</c1>
 
+***
+
+<a name="quiz"></a>
 
 ### Quiz
 
@@ -34,6 +39,8 @@ A list can contain different (heterogeneous) data types but a vector cannot.  Sa
 I think maybe.
 
 ***
+
+<a name="vectors"></a>
 
 ### Vectors
 
