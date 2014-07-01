@@ -9,6 +9,7 @@ Data Structures
 
 <c1><a href="#quiz">Quiz</c1>
 <c1><a href="#vectors">Vectors</c1>
+<c2><a href="#vect_exercises">Exercises</c2>
 
 ***
 
@@ -68,4 +69,8 @@ Logical to numeric:
 ```{r logical_to_numeric}
 as.numeric(log_vect)
 ```
+
+<a name="#vect_exercises"></a>
+
+#### Exercises
 
