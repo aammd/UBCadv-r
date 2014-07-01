@@ -1,9 +1,15 @@
+<link href="markdown.css" rel="stylesheet"></link>
+
 Data Structures
 ==============
 
 ## Alathea's Notes (2014 July 1)
 
-**Quiz**
+### Contents
+
+
+
+### Quiz
 
 *Take this short quiz to determine if you need to read this chapter. If the answers quickly come to mind, you can comfortably skip this chapter. You can check your answers in answers.*
 
@@ -29,6 +35,10 @@ I think maybe.
 
 ***
 
+### Vectors
+
+Did not know that R could distinguish doubles and integers:
+
 ```{r vector_types}
 dbl_vect <- c(1, 2.5, 4.5)
 
@@ -46,4 +56,9 @@ class(dbl_vect)
 attributes(dbl_vect)
 ```
 
-Did not know that R could distinguish doubles and integers.
+Logical to numeric:
+
+```{r logical_to_numeric}
+as.numeric(log_vect)
+```
+
