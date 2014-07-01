@@ -8,18 +8,18 @@ We meet Thursdays at **1pm PST in Biodiversity 224.**
 
 ## Schedule
 
-| Week    |  Reading                |
-| ------- | ----------------------- |
-| week 1  | Data Structures         |
-| week 2  | Subsetting              |
-| week 3  | functions               |
-| week 4  | environments            |
-| week 5  | debugging               |
-| week 6  | fnl programming         |
-| week 7  | functionals             |
-| week 8  | Function operators      |
-| week 9  | Non-Standard Evaluation |
-| week 10 | Expressions             |
+| Week    |  Reading                                                                         |
+| ------- | -----------------------                                                          |
+| week 1  | [Data Structures](http://adv-r.had.co.nz/Data-structures.html)                   |
+| week 2  | [Subsetting](http://adv-r.had.co.nz/Subsetting.html)                             |
+| week 3  | [Functions](http://adv-r.had.co.nz/Functions.html)                               |
+| week 4  | [Environments](http://adv-r.had.co.nz/Environments.html)                         |
+| week 5  | [Debugging](http://adv-r.had.co.nz/Exceptions-Debugging.html)                    |
+| week 6  | [Fnl Programming](http://adv-r.had.co.nz/Functional-programming.html)            |
+| week 7  | [Functionals](http://adv-r.had.co.nz/Functionals.html)                           |
+| week 8  | [Function Operators](http://adv-r.had.co.nz/Function-operators.html)             |
+| week 9  | [Non-Standard Evaluation](http://adv-r.had.co.nz/Computing-on-the-language.html) |
+| week 10 | [Expressions](http://adv-r.had.co.nz/Expressions.html)                           |
 
 ## how to contribute to this repository
 
