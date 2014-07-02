@@ -8,25 +8,11 @@ July 2014
 
 *Take this short quiz to determine if you need to read this chapter. If the answers quickly come to mind, you can comfortably skip this chapter. You can check your answers in answers.*
 
-*What are the three properties of a vector, other than its contents?*
-
-I have no clue.
-
-*What are the four common types of atomic vectors? What are the two rare types?*
-
-Whattt?
-
-*What are attributes? How do you get them and set them?*
-
-Um...
-
-*How is a list different from an atomic vector? How is a matrix different from a data frame?*
-
-A list can contain different (heterogeneous) data types but a vector cannot.  Same thing for a matrix and a data frame.
-
-*Can you have a list that is a matrix? Can a data frame have a column that is a matrix?*
-
-I think maybe.
+1.  *What are the three properties of a vector, other than its contents?* **I have no clue.**
+1.  *What are the four common types of atomic vectors? What are the two rare types?* **Whattt?**
+1.  *What are attributes? How do you get them and set them?* **Um...**
+1.  *How is a list different from an atomic vector? How is a matrix different from a data frame?* **A list can contain different (heterogeneous) data types but a vector cannot.  Same thing for a matrix and a data frame.**
+1.  *Can you have a list that is a matrix? Can a data frame have a column that is a matrix?* **I think maybe.**
 
 ***
 
@@ -88,3 +74,43 @@ as.numeric(log_vect)
 
 #### Exercises
 
+- *What are the six types of atomic vector? How does a list differ from an atomic vector?*
+
+Types of atomic vector = logical, double, integer, character and two rare types.  A list can be heterogeneous, unlike an atomic vector.
+
+- *What makes `is.vector()` and `is.numeric()` fundamentally different to `is.list()` and `is.character()`?*
+
+`is.vector` and `is.numeric` are not specific tests for vectors but `is.character` and `is.list` can be used to test for character vector, or a list
+
+- *Why do you need to use `unlist()` to convert a list to an atomic vector? Why doesn’t `as.vector()` work?*
+
+Lists are also vectors so `as.vector` will not coerce to an atomic vector, just leave as a list
+
+
+```r
+x <- list("a", "b", "c")
+as.vector(x)
+```
+
+```
+## [[1]]
+## [1] "a"
+## 
+## [[2]]
+## [1] "b"
+## 
+## [[3]]
+## [1] "c"
+```
+
+-  *Why is `1 == "1"` true? Why is `-1 < FALSE` true? Why is `"one" < 2` false?*
+
+Probably to do with coercion.  `1` is coerced to `"1"`.  `FALSE` is coerced to `1`.  `2` is coerced to `"2"` and you cannot compare character vectors with `>` `<`
+
+- *Why is the default missing value, NA, a logical vector? What’s special about logical vectors? (Hint: think about `c(FALSE, NA_character_)`.)*
+
+Maybe because it is the least flexible data type... `c(FALSE, NA_character_)` would cause `FALSE` to change data type.
+
+***
+
+### Attributes

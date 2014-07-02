@@ -58,27 +58,18 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <h4 class="date"><em>July 2014</em></h4>
 </div>
 
-<div id="TOC">
-<ul>
-<li><a href="#quiz">Quiz</a></li>
-<li><a href="#vectors">Vectors</a></li>
-</ul>
-</div>
 
 <hr />
 <div id="quiz" class="section level3">
 <h3>Quiz</h3>
 <p><em>Take this short quiz to determine if you need to read this chapter. If the answers quickly come to mind, you can comfortably skip this chapter. You can check your answers in answers.</em></p>
-<p><em>What are the three properties of a vector, other than its contents?</em></p>
-<p>I have no clue.</p>
-<p><em>What are the four common types of atomic vectors? What are the two rare types?</em></p>
-<p>Whattt?</p>
-<p><em>What are attributes? How do you get them and set them?</em></p>
-<p>Um…</p>
-<p><em>How is a list different from an atomic vector? How is a matrix different from a data frame?</em></p>
-<p>A list can contain different (heterogeneous) data types but a vector cannot. Same thing for a matrix and a data frame.</p>
-<p><em>Can you have a list that is a matrix? Can a data frame have a column that is a matrix?</em></p>
-<p>I think maybe.</p>
+<ol style="list-style-type: decimal">
+<li><em>What are the three properties of a vector, other than its contents?</em> <strong>I have no clue.</strong></li>
+<li><em>What are the four common types of atomic vectors? What are the two rare types?</em> <strong>Whattt?</strong></li>
+<li><em>What are attributes? How do you get them and set them?</em> <strong>Um…</strong></li>
+<li><em>How is a list different from an atomic vector? How is a matrix different from a data frame?</em> <strong>A list can contain different (heterogeneous) data types but a vector cannot. Same thing for a matrix and a data frame.</strong></li>
+<li><em>Can you have a list that is a matrix? Can a data frame have a column that is a matrix?</em> <strong>I think maybe.</strong></li>
+</ol>
 <hr />
 </div>
 <div id="vectors" class="section level3">
@@ -105,7 +96,41 @@ typeof(dbl_vect)</code></pre>
 <pre><code>## [1] 1 0 1 0</code></pre>
 <div id="exercises" class="section level4">
 <h4>Exercises</h4>
+<ul>
+<li><em>What are the six types of atomic vector? How does a list differ from an atomic vector?</em></li>
+</ul>
+<p>Types of atomic vector = logical, double, integer, character and two rare types. A list can be heterogeneous, unlike an atomic vector.</p>
+<ul>
+<li><em>What makes <code>is.vector()</code> and <code>is.numeric()</code> fundamentally different to <code>is.list()</code> and <code>is.character()</code>?</em></li>
+</ul>
+<p><code>is.vector</code> and <code>is.numeric</code> are not specific tests for vectors but <code>is.character</code> and <code>is.list</code> can be used to test for character vector, or a list</p>
+<ul>
+<li><em>Why do you need to use <code>unlist()</code> to convert a list to an atomic vector? Why doesn’t <code>as.vector()</code> work?</em></li>
+</ul>
+<p>Lists are also vectors so <code>as.vector</code> will not coerce to an atomic vector, just leave as a list</p>
+<pre class="r"><code>x &lt;- list(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;)
+as.vector(x)</code></pre>
+<pre><code>## [[1]]
+## [1] &quot;a&quot;
+## 
+## [[2]]
+## [1] &quot;b&quot;
+## 
+## [[3]]
+## [1] &quot;c&quot;</code></pre>
+<ul>
+<li><em>Why is <code>1 == &quot;1&quot;</code> true? Why is <code>-1 &lt; FALSE</code> true? Why is <code>&quot;one&quot; &lt; 2</code> false?</em></li>
+</ul>
+<p>Probably to do with coercion. <code>1</code> is coerced to <code>&quot;1&quot;</code>. <code>FALSE</code> is coerced to <code>1</code>. <code>2</code> is coerced to <code>&quot;2&quot;</code> and you cannot compare character vectors with <code>&gt;</code> <code>&lt;</code></p>
+<ul>
+<li><em>Why is the default missing value, NA, a logical vector? What’s special about logical vectors? (Hint: think about <code>c(FALSE, NA_character_)</code>.)</em></li>
+</ul>
+<p>Maybe because it is the least flexible data type… <code>c(FALSE, NA_character_)</code> would cause <code>FALSE</code> to change data type.</p>
+<hr />
 </div>
+</div>
+<div id="attributes" class="section level3">
+<h3>Attributes</h3>
 </div>
 
 
