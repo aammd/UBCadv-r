@@ -9,6 +9,10 @@ output:
 
 ***
 
+### Discussion Notes
+
+***
+
 ### Quiz
 
 *Take this short quiz to determine if you need to read this chapter. If the answers quickly come to mind, you can comfortably skip this chapter. You can check your answers in answers.*
@@ -87,3 +91,8 @@ attr(test_data, "Description") <- "Species Abundance Data, Brazil 2014"
 head(test_data)
 attributes(test_data)
 ```
+
+#### Factors
+
+**"While factors look (and often behave) like character vectors, they are actually integers"**!
+
