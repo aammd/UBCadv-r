@@ -5,7 +5,6 @@ date: "July 2014"
 output:
   html_document:
     keep_md: yes
-    toc: yes
 ---
 
 ***
