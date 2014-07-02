@@ -1,19 +1,13 @@
-<link href="markdown.css" rel="stylesheet"></link>
-
-Data Structures
-==============
-
-## Alathea's Notes (2014 July 1)
-
-### Contents
-
-<c1><a href="#quiz">Quiz</c1>
-<c1><a href="#vectors">Vectors</c1>
-<c2><a href="#vect_exercises">Exercises</c2>
+---
+title: "Data Structures"
+author: "Alathea"
+date: 'July 2014'
+output: 
+  html_document: 
+    toc: yes
+---
 
 ***
-
-<a name="quiz"></a>
 
 ### Quiz
 
@@ -41,8 +35,6 @@ I think maybe.
 
 ***
 
-<a name="vectors"></a>
-
 ### Vectors
 
 Did not know that R could distinguish doubles and integers:
@@ -69,8 +61,6 @@ Logical to numeric:
 ```{r logical_to_numeric}
 as.numeric(log_vect)
 ```
-
-<a name="#vect_exercises"></a>
 
 #### Exercises
 
