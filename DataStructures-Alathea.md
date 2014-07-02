@@ -1,12 +1,6 @@
----
-title: "Data Structures"
-author: "Alathea"
-date: "July 2014"
-output:
-  html_document:
-    keep_md: yes
-    toc: yes
----
+# Data Structures
+Alathea  
+July 2014  
 
 ***
 
@@ -40,7 +34,8 @@ I think maybe.
 
 Did not know that R could distinguish doubles and integers:
 
-```{r vector_types}
+
+```r
 dbl_vect <- c(1, 2.5, 4.5)
 
 # With the L suffix, you get an integer rather than a double
@@ -50,17 +45,45 @@ int_vect <- c(1L, 6L, 10L)
 log_vect <- c(TRUE, FALSE, T, F)
 
 typeof(dbl_vect)
+```
+
+```
+## [1] "double"
+```
+
+```r
 typeof(int_vect)
+```
 
+```
+## [1] "integer"
+```
+
+```r
 class(dbl_vect)
+```
 
+```
+## [1] "numeric"
+```
+
+```r
 attributes(dbl_vect)
+```
+
+```
+## NULL
 ```
 
 Logical to numeric:
 
-```{r logical_to_numeric}
+
+```r
 as.numeric(log_vect)
+```
+
+```
+## [1] 1 0 1 0
 ```
 
 #### Exercises
