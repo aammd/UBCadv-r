@@ -172,3 +172,13 @@ is.matrix(b)
 is.array(b)
 ```
 
+### Data frames
+
+```{r}
+?I
+```
+
+"Description: Change the class of an object to indicate that it should be treated ‘as is’.
+
+Usage: `I(x)`"
+
