@@ -188,3 +188,198 @@ help(attributes)
 `comment`: "These functions set and query a comment attribute for any R objects. This is typically useful for data.frames or model fits.
 
 Contrary to other attributes, the comment is not printed (by `print` or `print.default`)."
+
+- *What happens to a factor when you modify its levels?*
+
+
+```r
+f1 <- factor(letters)
+print(f1)
+```
+
+```
+##  [1] a b c d e f g h i j k l m n o p q r s t u v w x y z
+## Levels: a b c d e f g h i j k l m n o p q r s t u v w x y z
+```
+
+```r
+levels(f1) <- rev(levels(f1))
+print(f1)
+```
+
+```
+##  [1] z y x w v u t s r q p o n m l k j i h g f e d c b a
+## Levels: z y x w v u t s r q p o n m l k j i h g f e d c b a
+```
+
+- *What does this code do? How do f2 and f3 differ from f1?*
+
+
+```r
+f2 <- rev(factor(letters))
+print(f2)
+```
+
+```
+##  [1] z y x w v u t s r q p o n m l k j i h g f e d c b a
+## Levels: a b c d e f g h i j k l m n o p q r s t u v w x y z
+```
+
+```r
+f3 <- factor(letters, levels = rev(letters))
+print(f3)
+```
+
+```
+##  [1] a b c d e f g h i j k l m n o p q r s t u v w x y z
+## Levels: z y x w v u t s r q p o n m l k j i h g f e d c b a
+```
+
+In `f2` the letters are reversed but the factor levels are in the original order.  In `f3` the opposite is true.
+
+### Matrices and Arrays
+
+
+```r
+test_array <- array(1:16, c(2,2,2,2))
+dim(test_array)
+```
+
+```
+## [1] 2 2 2 2
+```
+
+```r
+attributes(test_array)
+```
+
+```
+## $dim
+## [1] 2 2 2 2
+```
+
+```r
+str(test_array)
+```
+
+```
+##  int [1:2, 1:2, 1:2, 1:2] 1 2 3 4 5 6 7 8 9 10 ...
+```
+
+A list array, whoa.
+
+
+```r
+l1 <- list("a", 1, "b", 2, T, F, T, F)
+dim(l1) <- c(2,2,2)
+print(l1)
+```
+
+```
+## , , 1
+## 
+##      [,1] [,2]
+## [1,] "a"  "b" 
+## [2,] 1    2   
+## 
+## , , 2
+## 
+##      [,1]  [,2] 
+## [1,] TRUE  TRUE 
+## [2,] FALSE FALSE
+```
+
+#### Exercises
+
+- *What does `dim()` return when applied to a vector?*
+
+
+```r
+a <- c(LETTERS[1:4])
+print(a)
+```
+
+```
+## [1] "A" "B" "C" "D"
+```
+
+```r
+dim(a)
+```
+
+```
+## NULL
+```
+
+- *f `is.matrix(x)` is `TRUE`, what will `is.array(x)` return?*
+
+I would guess `TRUE` because a matrix is a special array.
+
+
+```r
+b <- matrix(1:4, c(2,2))
+is.matrix(b)
+```
+
+```
+## [1] TRUE
+```
+
+```r
+is.array(b)
+```
+
+```
+## [1] TRUE
+```
+
+### Data frames
+
+
+```r
+?I
+```
+
+"Description: Change the class of an object to indicate that it should be treated ‘as is’.
+
+Usage: `I(x)`"
+
+#### Exercises
+
+- *What attributes does a data frame possess?*
+
+`names` (same as `col.names`), `row.names`, `class`
+
+- *What does `as.matrix()` do when applied to a data frame with columns of different types?*
+
+Should follow the coercion rules from earlier.
+
+
+```r
+y <- data.frame(a = letters[5:10], b = 1:6)
+as.matrix(y)
+```
+
+```
+##      a   b  
+## [1,] "e" "1"
+## [2,] "f" "2"
+## [3,] "g" "3"
+## [4,] "h" "4"
+## [5,] "i" "5"
+## [6,] "j" "6"
+```
+
+- *Can you have a data frame with 0 rows? What about 0 columns?*
+
+You can have a completely empty data frame.
+
+
+```r
+y <- data.frame()
+y
+```
+
+```
+## data frame with 0 columns and 0 rows
+```

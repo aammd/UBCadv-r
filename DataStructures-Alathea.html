@@ -176,6 +176,108 @@ head(test_data)</code></pre>
 <pre class="r"><code>help(attributes)</code></pre>
 <p><code>comment</code>: “These functions set and query a comment attribute for any R objects. This is typically useful for data.frames or model fits.</p>
 <p>Contrary to other attributes, the comment is not printed (by <code>print</code> or <code>print.default</code>).&quot;</p>
+<ul>
+<li><em>What happens to a factor when you modify its levels?</em></li>
+</ul>
+<pre class="r"><code>f1 &lt;- factor(letters)
+print(f1)</code></pre>
+<pre><code>##  [1] a b c d e f g h i j k l m n o p q r s t u v w x y z
+## Levels: a b c d e f g h i j k l m n o p q r s t u v w x y z</code></pre>
+<pre class="r"><code>levels(f1) &lt;- rev(levels(f1))
+print(f1)</code></pre>
+<pre><code>##  [1] z y x w v u t s r q p o n m l k j i h g f e d c b a
+## Levels: z y x w v u t s r q p o n m l k j i h g f e d c b a</code></pre>
+<ul>
+<li><em>What does this code do? How do f2 and f3 differ from f1?</em></li>
+</ul>
+<pre class="r"><code>f2 &lt;- rev(factor(letters))
+print(f2)</code></pre>
+<pre><code>##  [1] z y x w v u t s r q p o n m l k j i h g f e d c b a
+## Levels: a b c d e f g h i j k l m n o p q r s t u v w x y z</code></pre>
+<pre class="r"><code>f3 &lt;- factor(letters, levels = rev(letters))
+print(f3)</code></pre>
+<pre><code>##  [1] a b c d e f g h i j k l m n o p q r s t u v w x y z
+## Levels: z y x w v u t s r q p o n m l k j i h g f e d c b a</code></pre>
+<p>In <code>f2</code> the letters are reversed but the factor levels are in the original order. In <code>f3</code> the opposite is true.</p>
+</div>
+</div>
+<div id="matrices-and-arrays" class="section level3">
+<h3>Matrices and Arrays</h3>
+<pre class="r"><code>test_array &lt;- array(1:16, c(2,2,2,2))
+dim(test_array)</code></pre>
+<pre><code>## [1] 2 2 2 2</code></pre>
+<pre class="r"><code>attributes(test_array)</code></pre>
+<pre><code>## $dim
+## [1] 2 2 2 2</code></pre>
+<pre class="r"><code>str(test_array)</code></pre>
+<pre><code>##  int [1:2, 1:2, 1:2, 1:2] 1 2 3 4 5 6 7 8 9 10 ...</code></pre>
+<p>A list array, whoa.</p>
+<pre class="r"><code>l1 &lt;- list(&quot;a&quot;, 1, &quot;b&quot;, 2, T, F, T, F)
+dim(l1) &lt;- c(2,2,2)
+print(l1)</code></pre>
+<pre><code>## , , 1
+## 
+##      [,1] [,2]
+## [1,] &quot;a&quot;  &quot;b&quot; 
+## [2,] 1    2   
+## 
+## , , 2
+## 
+##      [,1]  [,2] 
+## [1,] TRUE  TRUE 
+## [2,] FALSE FALSE</code></pre>
+<div id="exercises-2" class="section level4">
+<h4>Exercises</h4>
+<ul>
+<li><em>What does <code>dim()</code> return when applied to a vector?</em></li>
+</ul>
+<pre class="r"><code>a &lt;- c(LETTERS[1:4])
+print(a)</code></pre>
+<pre><code>## [1] &quot;A&quot; &quot;B&quot; &quot;C&quot; &quot;D&quot;</code></pre>
+<pre class="r"><code>dim(a)</code></pre>
+<pre><code>## NULL</code></pre>
+<ul>
+<li><em>f <code>is.matrix(x)</code> is <code>TRUE</code>, what will <code>is.array(x)</code> return?</em></li>
+</ul>
+<p>I would guess <code>TRUE</code> because a matrix is a special array.</p>
+<pre class="r"><code>b &lt;- matrix(1:4, c(2,2))
+is.matrix(b)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>is.array(b)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+</div>
+</div>
+<div id="data-frames" class="section level3">
+<h3>Data frames</h3>
+<pre class="r"><code>?I</code></pre>
+<p>“Description: Change the class of an object to indicate that it should be treated ‘as is’.</p>
+<p>Usage: <code>I(x)</code>&quot;</p>
+<div id="exercises-3" class="section level4">
+<h4>Exercises</h4>
+<ul>
+<li><em>What attributes does a data frame possess?</em></li>
+</ul>
+<p><code>names</code> (same as <code>col.names</code>), <code>row.names</code>, <code>class</code></p>
+<ul>
+<li><em>What does <code>as.matrix()</code> do when applied to a data frame with columns of different types?</em></li>
+</ul>
+<p>Should follow the coercion rules from earlier.</p>
+<pre class="r"><code>y &lt;- data.frame(a = letters[5:10], b = 1:6)
+as.matrix(y)</code></pre>
+<pre><code>##      a   b  
+## [1,] &quot;e&quot; &quot;1&quot;
+## [2,] &quot;f&quot; &quot;2&quot;
+## [3,] &quot;g&quot; &quot;3&quot;
+## [4,] &quot;h&quot; &quot;4&quot;
+## [5,] &quot;i&quot; &quot;5&quot;
+## [6,] &quot;j&quot; &quot;6&quot;</code></pre>
+<ul>
+<li><em>Can you have a data frame with 0 rows? What about 0 columns?</em></li>
+</ul>
+<p>You can have a completely empty data frame.</p>
+<pre class="r"><code>y &lt;- data.frame()
+y</code></pre>
+<pre><code>## data frame with 0 columns and 0 rows</code></pre>
 </div>
 </div>
 
