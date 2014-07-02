@@ -13,25 +13,11 @@ output:
 
 *Take this short quiz to determine if you need to read this chapter. If the answers quickly come to mind, you can comfortably skip this chapter. You can check your answers in answers.*
 
-*What are the three properties of a vector, other than its contents?*
-
-I have no clue.
-
-*What are the four common types of atomic vectors? What are the two rare types?*
-
-Whattt?
-
-*What are attributes? How do you get them and set them?*
-
-Um...
-
-*How is a list different from an atomic vector? How is a matrix different from a data frame?*
-
-A list can contain different (heterogeneous) data types but a vector cannot.  Same thing for a matrix and a data frame.
-
-*Can you have a list that is a matrix? Can a data frame have a column that is a matrix?*
-
-I think maybe.
+1.  *What are the three properties of a vector, other than its contents?* **I have no clue.**
+1.  *What are the four common types of atomic vectors? What are the two rare types?* **Whattt?**
+1.  *What are attributes? How do you get them and set them?* **Um...**
+1.  *How is a list different from an atomic vector? How is a matrix different from a data frame?* **A list can contain different (heterogeneous) data types but a vector cannot.  Same thing for a matrix and a data frame.**
+1.  *Can you have a list that is a matrix? Can a data frame have a column that is a matrix?* **I think maybe.**
 
 ***
 
