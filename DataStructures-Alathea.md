@@ -237,6 +237,8 @@ print(f3)
 
 In `f2` the letters are reversed but the factor levels are in the original order.  In `f3` the opposite is true.
 
+***
+
 ### Matrices and Arrays
 
 
@@ -332,6 +334,8 @@ is.array(b)
 ```
 ## [1] TRUE
 ```
+
+***
 
 ### Data frames
 
