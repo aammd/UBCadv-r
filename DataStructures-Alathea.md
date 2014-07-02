@@ -4,6 +4,10 @@ July 2014
 
 ***
 
+### Discussion Notes
+
+***
+
 ### Quiz
 
 *Take this short quiz to determine if you need to read this chapter. If the answers quickly come to mind, you can comfortably skip this chapter. You can check your answers in answers.*
@@ -114,3 +118,73 @@ Maybe because it is the least flexible data type... `c(FALSE, NA_character_)` wo
 ***
 
 ### Attributes
+
+
+```r
+test_data <- data.frame("Species" = LETTERS[1:26], 
+                        "Abundance" = sample(0:50, 26, replace=TRUE))
+attr(test_data, "Description") <- "Species Abundance Data, Brazil 2014"
+
+head(test_data)
+```
+
+```
+##   Species Abundance
+## 1       A        30
+## 2       B         6
+## 3       C        37
+## 4       D        44
+## 5       E        27
+## 6       F         5
+```
+
+```r
+attributes(test_data)
+```
+
+```
+## $names
+## [1] "Species"   "Abundance"
+## 
+## $row.names
+##  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+## [24] 24 25 26
+## 
+## $class
+## [1] "data.frame"
+## 
+## $Description
+## [1] "Species Abundance Data, Brazil 2014"
+```
+
+#### Factors
+
+**"While factors look (and often behave) like character vectors, they are actually integers"**!
+
+#### Exercises
+
+- *An early draft used this code to illustrate structure():*
+
+
+```r
+structure(1:5, comment = "my attribute")
+```
+
+*But when you print that object you don’t see the comment attribute. Why? Is the attribute missing, or is there something else special about it? (Hint: try using help)*
+
+
+```r
+attributes(structure)
+```
+
+```
+## NULL
+```
+
+```r
+help(attributes)
+```
+
+`comment`: "These functions set and query a comment attribute for any R objects. This is typically useful for data.frames or model fits.
+
+Contrary to other attributes, the comment is not printed (by `print` or `print.default`)."

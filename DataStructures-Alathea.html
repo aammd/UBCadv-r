@@ -60,6 +60,10 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 
 
 <hr />
+<div id="discussion-notes" class="section level3">
+<h3>Discussion Notes</h3>
+<hr />
+</div>
 <div id="quiz" class="section level3">
 <h3>Quiz</h3>
 <p><em>Take this short quiz to determine if you need to read this chapter. If the answers quickly come to mind, you can comfortably skip this chapter. You can check your answers in answers.</em></p>
@@ -131,6 +135,48 @@ as.vector(x)</code></pre>
 </div>
 <div id="attributes" class="section level3">
 <h3>Attributes</h3>
+<pre class="r"><code>test_data &lt;- data.frame(&quot;Species&quot; = LETTERS[1:26], 
+                        &quot;Abundance&quot; = sample(0:50, 26, replace=TRUE))
+attr(test_data, &quot;Description&quot;) &lt;- &quot;Species Abundance Data, Brazil 2014&quot;
+
+head(test_data)</code></pre>
+<pre><code>##   Species Abundance
+## 1       A        30
+## 2       B         6
+## 3       C        37
+## 4       D        44
+## 5       E        27
+## 6       F         5</code></pre>
+<pre class="r"><code>attributes(test_data)</code></pre>
+<pre><code>## $names
+## [1] &quot;Species&quot;   &quot;Abundance&quot;
+## 
+## $row.names
+##  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+## [24] 24 25 26
+## 
+## $class
+## [1] &quot;data.frame&quot;
+## 
+## $Description
+## [1] &quot;Species Abundance Data, Brazil 2014&quot;</code></pre>
+<div id="factors" class="section level4">
+<h4>Factors</h4>
+<p><strong>“While factors look (and often behave) like character vectors, they are actually integers”</strong>!</p>
+</div>
+<div id="exercises-1" class="section level4">
+<h4>Exercises</h4>
+<ul>
+<li><em>An early draft used this code to illustrate structure():</em></li>
+</ul>
+<pre class="r"><code>structure(1:5, comment = &quot;my attribute&quot;)</code></pre>
+<p><em>But when you print that object you don’t see the comment attribute. Why? Is the attribute missing, or is there something else special about it? (Hint: try using help)</em></p>
+<pre class="r"><code>attributes(structure)</code></pre>
+<pre><code>## NULL</code></pre>
+<pre class="r"><code>help(attributes)</code></pre>
+<p><code>comment</code>: “These functions set and query a comment attribute for any R objects. This is typically useful for data.frames or model fits.</p>
+<p>Contrary to other attributes, the comment is not printed (by <code>print</code> or <code>print.default</code>).&quot;</p>
+</div>
 </div>
 
 
