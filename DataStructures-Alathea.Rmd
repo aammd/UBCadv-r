@@ -136,3 +136,19 @@ print(f3)
 In `f2` the letters are reversed but the factor levels are in the original order.  In `f3` the opposite is true.
 
 ### Matrices and Arrays
+
+```{r}
+test_array <- array(1:16, c(2,2,2,2))
+dim(test_array)
+attributes(test_array)
+str(test_array)
+```
+
+A list array, whoa.
+
+```{r}
+l1 <- list("a", 1, "b", 2, T, F, T, F)
+dim(l1) <- c(2,2,2)
+print(l1)
+```
+
