@@ -182,3 +182,26 @@ is.array(b)
 
 Usage: `I(x)`"
 
+#### Exercises
+
+- *What attributes does a data frame possess?*
+
+`names` (same as `col.names`), `row.names`, `class`
+
+- *What does `as.matrix()` do when applied to a data frame with columns of different types?*
+
+Should follow the coercion rules from earlier.
+
+```{r}
+y <- data.frame(a = letters[5:10], b = 1:6)
+as.matrix(y)
+```
+
+- *Can you have a data frame with 0 rows? What about 0 columns?*
+
+You can have a completely empty data frame.
+
+```{r}
+y <- data.frame()
+y
+```
