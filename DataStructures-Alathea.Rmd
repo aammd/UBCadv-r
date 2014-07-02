@@ -96,3 +96,43 @@ attributes(test_data)
 
 **"While factors look (and often behave) like character vectors, they are actually integers"**!
 
+#### Exercises
+
+- *An early draft used this code to illustrate structure():*
+
+```{r eval=FALSE}
+structure(1:5, comment = "my attribute")
+```
+
+*But when you print that object you don’t see the comment attribute. Why? Is the attribute missing, or is there something else special about it? (Hint: try using help)*
+
+```{r}
+attributes(structure)
+help(attributes)
+```
+
+`comment`: "These functions set and query a comment attribute for any R objects. This is typically useful for data.frames or model fits.
+
+Contrary to other attributes, the comment is not printed (by `print` or `print.default`)."
+
+- *What happens to a factor when you modify its levels?*
+
+```{r}
+f1 <- factor(letters)
+print(f1)
+levels(f1) <- rev(levels(f1))
+print(f1)
+```
+
+- *What does this code do? How do f2 and f3 differ from f1?*
+
+```{r}
+f2 <- rev(factor(letters))
+print(f2)
+f3 <- factor(letters, levels = rev(letters))
+print(f3)
+```
+
+In `f2` the letters are reversed but the factor levels are in the original order.  In `f3` the opposite is true.
+
+### Matrices and Arrays
