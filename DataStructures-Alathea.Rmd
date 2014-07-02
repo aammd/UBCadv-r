@@ -78,3 +78,12 @@ Maybe because it is the least flexible data type... `c(FALSE, NA_character_)` wo
 ***
 
 ### Attributes
+
+```{r}
+test_data <- data.frame("Species" = LETTERS[1:26], 
+                        "Abundance" = sample(0:50, 26, replace=TRUE))
+attr(test_data, "Description") <- "Species Abundance Data, Brazil 2014"
+
+head(test_data)
+attributes(test_data)
+```
