@@ -2,7 +2,8 @@
 title: "DataStructures"
 author: "Melissa"
 date: "3 July, 2014"
-output: html_document
+output: md_document
+
 ---
 
 
