@@ -186,3 +186,12 @@ names, row.names, and class
   
 
 1. Can you have a data frame with 0 rows? What about 0 columns?
+
+What is "mode"?
+
+```{r}
+x <- 1:3
+typeof(x)
+mode(x)
+```
+

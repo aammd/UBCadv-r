@@ -2,7 +2,9 @@
 title: "Subsetting"
 author: "Andrew MacDonald"
 date: '2014-06-26'
-output: md_document
+output: 
+  html_document:default
+  md_document:default
 ---
 
 ## a test
