@@ -1,0 +1,284 @@
+Notes on data structures
+========================
+
+##### Quiz
+
+Take this short quiz to determine if you need to read this chapter.
+
+1.  What are the three properties of a vector, other than its contents?
+
+-   length
+-   type (?)
+-   attributes (?)
+
+1.  What are the four common types of atomic vectors? What are the two
+    rare types?
+
+-   common: logical, character, numeric (double?) and integer
+-   rare: complex and ???
+
+1.  What are attributes? How do you get them and set them?
+
+-   attributes are "extra information" about an object, other than its
+    contents
+-   set via `attributes`
+
+1.  How is a list different from an atomic vector? How is a matrix
+    different from a data frame?
+
+-   a list can have elements of different types, a vector must have all
+    of the same type
+-   matrices must be all of the same type
+
+1.  Can you have a list that is a matrix? Can a data frame have a column
+    that is a matrix?
+
+-   no, though a list element could be a matrix (?)
+-   yes, I think.
+
+Vectors
+-------
+
+vectors are basic to R data types. There are two kinds:
+
+    x <- list("A")
+    typeof(x)
+
+    ## [1] "list"
+
+    m <- lm(disp ~ cyl, data = mtcars)
+    typeof(m) 
+
+    ## [1] "list"
+
+    length(m)
+
+    ## [1] 12
+
+    attributes(x)
+
+    ## NULL
+
+    attributes(m)
+
+    ## $names
+    ##  [1] "coefficients"  "residuals"     "effects"       "rank"         
+    ##  [5] "fitted.values" "assign"        "qr"            "df.residual"  
+    ##  [9] "xlevels"       "call"          "terms"         "model"        
+    ## 
+    ## $class
+    ## [1] "lm"
+
+    ## this should be FALSE because of the class attribute:
+    is.vector(m)
+
+    ## [1] FALSE
+
+    ## and this is TRUE:
+    is.vector(x)
+
+    ## [1] TRUE
+
+    is.vector(list(a = "A"))
+
+    ## [1] TRUE
+
+    ## lists are vectors, but they're not atomic:
+    is.atomic(x)
+
+    ## [1] FALSE
+
+coercion
+--------
+
+the heirarchy of "flexibility":
+
+logical \< integer \< double \< character
+
+Makes sense: increases as the number of possible values
+
+2 \< any integer \< any number \< anything you can type
+
+\#\# lists
+
+I thought this example was interesting:
+
+    x <- list(list(1, 2), c(3, 4))
+    y <- c(list(1, 2), c(3, 4))
+    str(x)
+
+    ## List of 2
+    ##  $ :List of 2
+    ##   ..$ : num 1
+    ##   ..$ : num 2
+    ##  $ : num [1:2] 3 4
+
+    str(y)
+
+    ## List of 4
+    ##  $ : num 1
+    ##  $ : num 2
+    ##  $ : num 3
+    ##  $ : num 4
+
+`x` has the structure that I would expect -- ie it looks like what went
+in: one list, and one numeric vector.
+
+`y` is a little counterintuitive: it just stuck everything in a single
+vector, which might actually come in handy:
+
+    unlist(y)
+
+    ## [1] 1 2 3 4
+
+    data.frame(y)
+
+    ##   X1 X2 X3 X4
+    ## 1  1  2  3  4
+
+    data.frame(c(a = 1, b = 3))
+
+    ##   c.a...1..b...3.
+    ## a               1
+    ## b               3
+
+    data.frame(list(a = 1, b = 3))
+
+    ##   a b
+    ## 1 1 3
+
+If you coerce a name list of equal-length arguments, you get a pretty
+dataframe. If you do so to a named vector, you get a single column with
+a coerced name.
+
+### Exercises
+
+1.  What are the six types of atomic vector? How does a list differ from
+    an atomic vector?
+
+-   logical, integer, double, character, (complex, raw)
+-   lists can have elements of various types, various lengths, and are
+    "recursive"
+
+1.  What makes `is.vector()` and `is.numeric()` fundamentally different
+    to `is.list()` and `is.character()`?
+
+-   `is.vector` returs `TRUE` for **any vector of any type** that
+    doesn't have attributes besides names. either atomic or list.
+-   `is.numeric`, similarly, is `TRUE` for either integer or double
+    vectors, but not for lists.
+
+<!-- -->
+
+    is.numeric(list(1,2,3))
+
+    ## [1] FALSE
+
+    is.numeric(c(1,2,3))
+
+    ## [1] TRUE
+
+    is.numeric(c(1L,2L,3L))
+
+    ## [1] TRUE
+
+-   `is.list` is TRUE for only one of the two types of vectors, while
+    `is.vector` is true for both
+-   `is.character` is true for only one **type** of vector, while
+    `is.numeric` is true for **2**
+
+1.  Test your knowledge of vector coercion rules by predicting the
+    output of the following uses of `c()`:
+
+        c(1, FALSE)  # should be 1 0
+        c("a", 1) # "a" "1"
+        c(list(1), "a") # "1" "a"
+        ## WRONG, it is a list, not a vector! eqiv to list(1,"a")
+        c(TRUE, 1L) #1 1
+
+2.  Why do you need to use `unlist()` to convert a list to an atomic
+    vector? Why doesn't `as.vector()` work?
+
+-   because it is already a vector
+
+<!-- -->
+
+    list("A")
+
+    ## [[1]]
+    ## [1] "A"
+
+    as.vector(list("A"))
+
+    ## [[1]]
+    ## [1] "A"
+
+    unlist(list("A"))
+
+    ## [1] "A"
+
+1.  Why is `1 == "1"` true? Why is `-1 < FALSE` true? Why is `"one" < 2`
+    false?
+
+-   from the help:
+
+> If the two arguments are atomic vectors of different types, one is
+> coerced to the type of the other, the (decreasing) order of precedence
+> being character, complex, numeric, integer, logical and raw.
+
+1.  Why is the default missing value, `NA`, a logical vector? What's
+    special about logical vectors? (Hint: think about
+    `c(FALSE, NA_character_)`.)
+
+-   as this example illustrates, using `c` with a character NA coerces
+    everyting to character. Logical is a the "bottom" of the heirarchy,
+    so it can't drag anything else up to its level.
+
+exercises
+---------
+
+1.  What does `dim()` return when applied to a vector?
+
+<!-- -->
+
+    dim(c(1,2)) # NULL?
+
+    ## NULL
+
+1.  If `is.matrix(x)` is `TRUE`, what will `is.array(x)` return?
+
+<!-- -->
+
+    is.matrix(matrix(0))
+
+    ## [1] TRUE
+
+    is.array(matrix(0)) ## also true
+
+    ## [1] TRUE
+
+1.  How would you describe the following three objects? What makes them
+    different to `1:5`?
+
+        x1 <- array(1:5, c(1, 1, 5))
+        x2 <- array(1:5, c(1, 5, 1))
+        x3 <- array(1:5, c(5, 1, 1))
+
+    These are all 3D arrays with `length(dim()) = 3` .
+
+### Exercises
+
+1.  What attributes does a data frame possess?
+
+`r    foo <- data.frame(a = "A")    foo`
+
+`##   a    ## 1 A`
+
+`r    attributes(foo)`
+
+`## $names    ## [1] "a"    ##     ## $row.names    ## [1] 1    ##     ## $class    ## [1] "data.frame"`
+
+1.  What does `as.matrix()` do when applied to a data frame with columns
+    of different types?
+
+2.  Can you have a data frame with 0 rows? What about 0 columns?
