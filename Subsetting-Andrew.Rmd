@@ -1,0 +1,30 @@
+---
+title: "Subsetting"
+author: "Andrew MacDonald"
+date: '2014-07-09'
+output: html_document
+---
+
+## Exercises 1
+
+1.  Fix each of the following common data frame subsetting errors:
+
+    ```{r, eval = FALSE}
+    #mtcars[mtcars$cyl = 4, ]
+    mtcars[mtcars$cyl == 4, ]
+    #mtcars[-1:4, ]
+    mtcars[-(1:4), ]
+   # mtcars[mtcars$cyl <= 5]
+    mtcars[mtcars$cyl <= 5,]
+#     mtcars[mtcars$cyl == 4 | 6, ]
+    mtcars[mtcars$cyl == 4 |mtcars$cyl ==  6, ]
+    ```
+
+1.  Why does `x <- 1:5; x[NA]` yield five missing values? Hint: why is 
+    it different from `x[NA_real_]`?
+    
+** Because `NA` is a logical vector, and therefore is recycled to the length of `x` (i.e. 5)
+```{r}
+x <- 1:5; x[NA] ; x[NA_real_]
+```
+
