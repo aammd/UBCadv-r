@@ -86,3 +86,33 @@ y
 ##  1  2  3  4  5  6  7  8  9 10
 ```
 
+#### Matrices and Arrays
+
+Arrays are stored in column order.  If you subset with a number, e.g. `array[2]` it will count down through each item of each column.
+
+#### Data Frames
+
+List-type vs. Matrix type subestting:
+
+
+```r
+df <- data.frame(x = 1:3, y = 3:1, z = letters[1:3])
+
+# There's an important difference if you select a single column:
+# matrix subsetting simplifies by default, list subsetting does not.
+str(df["x"])
+```
+
+```
+## 'data.frame':	3 obs. of  1 variable:
+##  $ x: int  1 2 3
+```
+
+```r
+str(df[, "x"])
+```
+
+```
+##  int [1:3] 1 2 3
+```
+

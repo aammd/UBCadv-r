@@ -110,6 +110,23 @@ y</code></pre>
 <pre><code>##  a  b  c  d  e  f  g  h  i  j 
 ##  1  2  3  4  5  6  7  8  9 10</code></pre>
 </div>
+<div id="matrices-and-arrays" class="section level4">
+<h4>Matrices and Arrays</h4>
+<p>Arrays are stored in column order. If you subset with a number, e.g. <code>array[2]</code> it will count down through each item of each column.</p>
+</div>
+<div id="data-frames" class="section level4">
+<h4>Data Frames</h4>
+<p>List-type vs. Matrix type subestting:</p>
+<pre class="r"><code>df &lt;- data.frame(x = 1:3, y = 3:1, z = letters[1:3])
+
+# There's an important difference if you select a single column:
+# matrix subsetting simplifies by default, list subsetting does not.
+str(df[&quot;x&quot;])</code></pre>
+<pre><code>## 'data.frame':    3 obs. of  1 variable:
+##  $ x: int  1 2 3</code></pre>
+<pre class="r"><code>str(df[, &quot;x&quot;])</code></pre>
+<pre><code>##  int [1:3] 1 2 3</code></pre>
+</div>
 </div>
 
 
