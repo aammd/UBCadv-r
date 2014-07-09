@@ -467,9 +467,9 @@ x[sample(nrow(x),3),]
 
 ```
 ##   a b
+## 8 8 h
 ## 6 6 f
-## 3 3 c
-## 7 7 g
+## 2 2 b
 ```
 
 Ordering:
@@ -482,14 +482,14 @@ Ordering:
 ```
 ##   a b
 ## 9 9 i
-## 8 8 h
-## 6 6 f
-## 4 4 d
-## 2 2 b
-## 7 7 g
 ## 3 3 c
 ## 1 1 a
+## 7 7 g
+## 8 8 h
+## 4 4 d
+## 2 2 b
 ## 5 5 e
+## 6 6 f
 ```
 
 ```r
@@ -509,3 +509,161 @@ Ordering:
 ## 9 9 i
 ```
 
+### Exercises
+
+1. *How would you randomly permute the columns of a data frame? (This is an important technique in random forests). Can you simultaneously permute the rows and columns in one step?*
+
+
+```r
+(df <- data.frame(a = c(1:4), b = c(5:8), c = c(9:12), d = c(13:16)))
+```
+
+```
+##   a b  c  d
+## 1 1 5  9 13
+## 2 2 6 10 14
+## 3 3 7 11 15
+## 4 4 8 12 16
+```
+
+```r
+#(df1a <- )
+```
+
+2. *How would you select a random sample of `m` rows from a data frame? What if the sample had to be contiguous (i.e. with an initial row, a final row, and every row in between)?*
+
+
+```r
+sample_rows <- function(input_df, sample_size)
+{
+  input_df[sample(nrow(input_df), sample_size, replace = TRUE), ]
+}
+
+sample_rows(df, 3)
+```
+
+```
+##   a b  c  d
+## 1 1 5  9 13
+## 3 3 7 11 15
+## 2 2 6 10 14
+```
+
+```r
+sample_rows(df, 6)
+```
+
+```
+##     a b  c  d
+## 2   2 6 10 14
+## 1   1 5  9 13
+## 4   4 8 12 16
+## 3   3 7 11 15
+## 2.1 2 6 10 14
+## 3.1 3 7 11 15
+```
+
+
+```r
+sample_contig_rows <- function(input_df)
+{
+  (row_nums <- sample(nrow(input_df), 2))
+  input_df[min(row_nums):max(row_nums), ]
+}
+
+sample_contig_rows(df)
+```
+
+```
+##   a b  c  d
+## 3 3 7 11 15
+## 4 4 8 12 16
+```
+
+```r
+# if you want a set number of rows:
+sample_contig_rows_2 <- function(input_df, sample_size)
+{
+  # check that the sample size is smaller than the number of rows
+  if(sample_size > nrow(input_df)){
+    warning("Sample size too large.  Selecting all rows starting from a random index.")
+    return(sample_contig_rows(input_df))
+  }
+  else if(sample_size == nrow(input_df)){
+    warning("You just selected the entire data frame!")
+    return(input_df)
+  }
+  else{
+    row_max <- nrow(input_df) - sample_size + 1
+    first_row <- sample(1:row_max, 1)
+    return(input_df[first_row:(first_row + sample_size - 1), ])
+  }
+}
+
+sample_contig_rows_2(df, 5)
+```
+
+```
+## Warning: Sample size too large.  Selecting all rows starting from a random
+## index.
+```
+
+```
+##   a b  c  d
+## 1 1 5  9 13
+## 2 2 6 10 14
+```
+
+```r
+sample_contig_rows_2(df, 4)
+```
+
+```
+## Warning: You just selected the entire data frame!
+```
+
+```
+##   a b  c  d
+## 1 1 5  9 13
+## 2 2 6 10 14
+## 3 3 7 11 15
+## 4 4 8 12 16
+```
+
+```r
+sample_contig_rows_2(df, 2)
+```
+
+```
+##   a b  c  d
+## 2 2 6 10 14
+## 3 3 7 11 15
+```
+
+
+3. *How could you put the columns in a data frame in alphaetical order?*
+
+
+```r
+(df3a <- df[ ,sample(ncol(df),ncol(df))])
+```
+
+```
+##    d b a  c
+## 1 13 5 1  9
+## 2 14 6 2 10
+## 3 15 7 3 11
+## 4 16 8 4 12
+```
+
+```r
+(df3b <- df3a[ ,order(names(df3a))])
+```
+
+```
+##   a b  c  d
+## 1 1 5  9 13
+## 2 2 6 10 14
+## 3 3 7 11 15
+## 4 4 8 12 16
+```
