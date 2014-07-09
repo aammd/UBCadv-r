@@ -148,3 +148,40 @@ get_diag(x)
 ***
 
 ### Subsetting Operators
+
+Some subset operations are *simplifying* and drop a bunch of information and others are *preserving* and retain the same structure as the original data.
+
+To access a column with a name contained in another variable, use `[[`. e.g.
+
+```{r get_column_by_variable}
+data <- data.frame(a = c(3:5), b = c(10:12), c = c(89:91))
+var <- "a"
+
+data$var
+data[[var]]
+```
+
+The `$` can do partial name matching.  Whoa....dangerous.
+
+```{r partial_name_matching}
+data2 <- data.frame(abc = c(3:5), bcd = c(10:12), cde = c(89:91))
+data$a
+```
+
+#### Exercises
+
+1. *Given a linear model, e.g. `mod <- lm(mpg ~ wt, data = mtcars)`, extract the residual degrees of freedom. Extract the R squared from the model summary (`summary(mod)`)*
+
+```{r model_extraction}
+mod <- lm(mpg ~ wt, data = mtcars)
+str(mod)
+
+(df_mod <- mod[["df.residual"]])
+
+mod_sum <- summary(mod)
+str(mod_sum)
+
+(rsq_mod <- mod_sum[["r.squared"]])
+```
+
+### Subsetting and Assignment

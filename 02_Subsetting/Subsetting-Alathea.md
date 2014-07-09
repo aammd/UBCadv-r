@@ -200,3 +200,170 @@ get_diag(x)
 ***
 
 ### Subsetting Operators
+
+Some subset operations are *simplifying* and drop a bunch of information and others are *preserving* and retain the same structure as the original data.
+
+To access a column with a name contained in another variable, use `[[`. e.g.
+
+
+```r
+data <- data.frame(a = c(3:5), b = c(10:12), c = c(89:91))
+var <- "a"
+
+data$var
+```
+
+```
+## NULL
+```
+
+```r
+data[[var]]
+```
+
+```
+## [1] 3 4 5
+```
+
+The `$` can do partial name matching.  Whoa....dangerous.
+
+
+```r
+data2 <- data.frame(abc = c(3:5), bcd = c(10:12), cde = c(89:91))
+data$a
+```
+
+```
+## [1] 3 4 5
+```
+
+#### Exercises
+
+1. *Given a linear model, e.g. `mod <- lm(mpg ~ wt, data = mtcars)`, extract the residual degrees of freedom. Extract the R squared from the model summary (`summary(mod)`)*
+
+
+```r
+mod <- lm(mpg ~ wt, data = mtcars)
+str(mod)
+```
+
+```
+## List of 12
+##  $ coefficients : Named num [1:2] 37.29 -5.34
+##   ..- attr(*, "names")= chr [1:2] "(Intercept)" "wt"
+##  $ residuals    : Named num [1:32] -2.28 -0.92 -2.09 1.3 -0.2 ...
+##   ..- attr(*, "names")= chr [1:32] "Mazda RX4" "Mazda RX4 Wag" "Datsun 710" "Hornet 4 Drive" ...
+##  $ effects      : Named num [1:32] -113.65 -29.116 -1.661 1.631 0.111 ...
+##   ..- attr(*, "names")= chr [1:32] "(Intercept)" "wt" "" "" ...
+##  $ rank         : int 2
+##  $ fitted.values: Named num [1:32] 23.3 21.9 24.9 20.1 18.9 ...
+##   ..- attr(*, "names")= chr [1:32] "Mazda RX4" "Mazda RX4 Wag" "Datsun 710" "Hornet 4 Drive" ...
+##  $ assign       : int [1:2] 0 1
+##  $ qr           :List of 5
+##   ..$ qr   : num [1:32, 1:2] -5.657 0.177 0.177 0.177 0.177 ...
+##   .. ..- attr(*, "dimnames")=List of 2
+##   .. .. ..$ : chr [1:32] "Mazda RX4" "Mazda RX4 Wag" "Datsun 710" "Hornet 4 Drive" ...
+##   .. .. ..$ : chr [1:2] "(Intercept)" "wt"
+##   .. ..- attr(*, "assign")= int [1:2] 0 1
+##   ..$ qraux: num [1:2] 1.18 1.05
+##   ..$ pivot: int [1:2] 1 2
+##   ..$ tol  : num 1e-07
+##   ..$ rank : int 2
+##   ..- attr(*, "class")= chr "qr"
+##  $ df.residual  : int 30
+##  $ xlevels      : Named list()
+##  $ call         : language lm(formula = mpg ~ wt, data = mtcars)
+##  $ terms        :Classes 'terms', 'formula' length 3 mpg ~ wt
+##   .. ..- attr(*, "variables")= language list(mpg, wt)
+##   .. ..- attr(*, "factors")= int [1:2, 1] 0 1
+##   .. .. ..- attr(*, "dimnames")=List of 2
+##   .. .. .. ..$ : chr [1:2] "mpg" "wt"
+##   .. .. .. ..$ : chr "wt"
+##   .. ..- attr(*, "term.labels")= chr "wt"
+##   .. ..- attr(*, "order")= int 1
+##   .. ..- attr(*, "intercept")= int 1
+##   .. ..- attr(*, "response")= int 1
+##   .. ..- attr(*, ".Environment")=<environment: R_GlobalEnv> 
+##   .. ..- attr(*, "predvars")= language list(mpg, wt)
+##   .. ..- attr(*, "dataClasses")= Named chr [1:2] "numeric" "numeric"
+##   .. .. ..- attr(*, "names")= chr [1:2] "mpg" "wt"
+##  $ model        :'data.frame':	32 obs. of  2 variables:
+##   ..$ mpg: num [1:32] 21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...
+##   ..$ wt : num [1:32] 2.62 2.88 2.32 3.21 3.44 ...
+##   ..- attr(*, "terms")=Classes 'terms', 'formula' length 3 mpg ~ wt
+##   .. .. ..- attr(*, "variables")= language list(mpg, wt)
+##   .. .. ..- attr(*, "factors")= int [1:2, 1] 0 1
+##   .. .. .. ..- attr(*, "dimnames")=List of 2
+##   .. .. .. .. ..$ : chr [1:2] "mpg" "wt"
+##   .. .. .. .. ..$ : chr "wt"
+##   .. .. ..- attr(*, "term.labels")= chr "wt"
+##   .. .. ..- attr(*, "order")= int 1
+##   .. .. ..- attr(*, "intercept")= int 1
+##   .. .. ..- attr(*, "response")= int 1
+##   .. .. ..- attr(*, ".Environment")=<environment: R_GlobalEnv> 
+##   .. .. ..- attr(*, "predvars")= language list(mpg, wt)
+##   .. .. ..- attr(*, "dataClasses")= Named chr [1:2] "numeric" "numeric"
+##   .. .. .. ..- attr(*, "names")= chr [1:2] "mpg" "wt"
+##  - attr(*, "class")= chr "lm"
+```
+
+```r
+(df_mod <- mod[["df.residual"]])
+```
+
+```
+## [1] 30
+```
+
+```r
+mod_sum <- summary(mod)
+str(mod_sum)
+```
+
+```
+## List of 11
+##  $ call         : language lm(formula = mpg ~ wt, data = mtcars)
+##  $ terms        :Classes 'terms', 'formula' length 3 mpg ~ wt
+##   .. ..- attr(*, "variables")= language list(mpg, wt)
+##   .. ..- attr(*, "factors")= int [1:2, 1] 0 1
+##   .. .. ..- attr(*, "dimnames")=List of 2
+##   .. .. .. ..$ : chr [1:2] "mpg" "wt"
+##   .. .. .. ..$ : chr "wt"
+##   .. ..- attr(*, "term.labels")= chr "wt"
+##   .. ..- attr(*, "order")= int 1
+##   .. ..- attr(*, "intercept")= int 1
+##   .. ..- attr(*, "response")= int 1
+##   .. ..- attr(*, ".Environment")=<environment: R_GlobalEnv> 
+##   .. ..- attr(*, "predvars")= language list(mpg, wt)
+##   .. ..- attr(*, "dataClasses")= Named chr [1:2] "numeric" "numeric"
+##   .. .. ..- attr(*, "names")= chr [1:2] "mpg" "wt"
+##  $ residuals    : Named num [1:32] -2.28 -0.92 -2.09 1.3 -0.2 ...
+##   ..- attr(*, "names")= chr [1:32] "Mazda RX4" "Mazda RX4 Wag" "Datsun 710" "Hornet 4 Drive" ...
+##  $ coefficients : num [1:2, 1:4] 37.285 -5.344 1.878 0.559 19.858 ...
+##   ..- attr(*, "dimnames")=List of 2
+##   .. ..$ : chr [1:2] "(Intercept)" "wt"
+##   .. ..$ : chr [1:4] "Estimate" "Std. Error" "t value" "Pr(>|t|)"
+##  $ aliased      : Named logi [1:2] FALSE FALSE
+##   ..- attr(*, "names")= chr [1:2] "(Intercept)" "wt"
+##  $ sigma        : num 3.05
+##  $ df           : int [1:3] 2 30 2
+##  $ r.squared    : num 0.753
+##  $ adj.r.squared: num 0.745
+##  $ fstatistic   : Named num [1:3] 91.4 1 30
+##   ..- attr(*, "names")= chr [1:3] "value" "numdf" "dendf"
+##  $ cov.unscaled : num [1:2, 1:2] 0.38 -0.1084 -0.1084 0.0337
+##   ..- attr(*, "dimnames")=List of 2
+##   .. ..$ : chr [1:2] "(Intercept)" "wt"
+##   .. ..$ : chr [1:2] "(Intercept)" "wt"
+##  - attr(*, "class")= chr "summary.lm"
+```
+
+```r
+(rsq_mod <- mod_sum[["r.squared"]])
+```
+
+```
+## [1] 0.7528
+```
+
+### Subsetting and Assignment
