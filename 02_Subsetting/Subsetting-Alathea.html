@@ -388,21 +388,21 @@ lookup[students$sex]</code></pre>
 ## 9 9 i</code></pre>
 <pre class="r"><code>x[sample(nrow(x),3),]</code></pre>
 <pre><code>##   a b
-## 8 8 h
-## 6 6 f
-## 2 2 b</code></pre>
+## 3 3 c
+## 9 9 i
+## 4 4 d</code></pre>
 <p>Ordering:</p>
 <pre class="r"><code>(y &lt;- x[sample(nrow(x),nrow(x)),])</code></pre>
 <pre><code>##   a b
-## 9 9 i
-## 3 3 c
-## 1 1 a
-## 7 7 g
-## 8 8 h
 ## 4 4 d
-## 2 2 b
+## 7 7 g
 ## 5 5 e
-## 6 6 f</code></pre>
+## 8 8 h
+## 9 9 i
+## 1 1 a
+## 6 6 f
+## 2 2 b
+## 3 3 c</code></pre>
 <pre class="r"><code>(y &lt;- y[order(y$a), ])</code></pre>
 <pre><code>##   a b
 ## 1 1 a
@@ -426,7 +426,21 @@ lookup[students$sex]</code></pre>
 ## 2 2 6 10 14
 ## 3 3 7 11 15
 ## 4 4 8 12 16</code></pre>
-<pre class="r"><code>#(df1a &lt;- )</code></pre>
+<pre class="r"><code># randomly permute the columns
+df[ , sample(ncol(df), ncol(df))]</code></pre>
+<pre><code>##   a  d b  c
+## 1 1 13 5  9
+## 2 2 14 6 10
+## 3 3 15 7 11
+## 4 4 16 8 12</code></pre>
+<pre class="r"><code># randomize columns and rows simultaneously
+# although I doubt this is really happening simultaneously
+df[sample(nrow(df), nrow(df)), sample(ncol(df), ncol(df))]</code></pre>
+<pre><code>##    c  d b a
+## 2 10 14 6 2
+## 4 12 16 8 4
+## 3 11 15 7 3
+## 1  9 13 5 1</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li><em>How would you select a random sample of <code>m</code> rows from a data frame? What if the sample had to be contiguous (i.e. with an initial row, a final row, and every row in between)?</em></li>
 </ol>
@@ -436,18 +450,18 @@ lookup[students$sex]</code></pre>
 }
 
 sample_rows(df, 3)</code></pre>
-<pre><code>##   a b  c  d
-## 1 1 5  9 13
-## 3 3 7 11 15
-## 2 2 6 10 14</code></pre>
+<pre><code>##     a b  c  d
+## 1   1 5  9 13
+## 1.1 1 5  9 13
+## 4   4 8 12 16</code></pre>
 <pre class="r"><code>sample_rows(df, 6)</code></pre>
 <pre><code>##     a b  c  d
-## 2   2 6 10 14
 ## 1   1 5  9 13
-## 4   4 8 12 16
+## 2   2 6 10 14
 ## 3   3 7 11 15
-## 2.1 2 6 10 14
-## 3.1 3 7 11 15</code></pre>
+## 4   4 8 12 16
+## 1.1 1 5  9 13
+## 4.1 4 8 12 16</code></pre>
 <pre class="r"><code>sample_contig_rows &lt;- function(input_df)
 {
   (row_nums &lt;- sample(nrow(input_df), 2))
@@ -456,6 +470,8 @@ sample_rows(df, 3)</code></pre>
 
 sample_contig_rows(df)</code></pre>
 <pre><code>##   a b  c  d
+## 1 1 5  9 13
+## 2 2 6 10 14
 ## 3 3 7 11 15
 ## 4 4 8 12 16</code></pre>
 <pre class="r"><code># if you want a set number of rows:
@@ -492,17 +508,17 @@ sample_contig_rows_2(df, 5)</code></pre>
 ## 4 4 8 12 16</code></pre>
 <pre class="r"><code>sample_contig_rows_2(df, 2)</code></pre>
 <pre><code>##   a b  c  d
-## 2 2 6 10 14
-## 3 3 7 11 15</code></pre>
+## 3 3 7 11 15
+## 4 4 8 12 16</code></pre>
 <ol start="3" style="list-style-type: decimal">
 <li><em>How could you put the columns in a data frame in alphaetical order?</em></li>
 </ol>
 <pre class="r"><code>(df3a &lt;- df[ ,sample(ncol(df),ncol(df))])</code></pre>
-<pre><code>##    d b a  c
-## 1 13 5 1  9
-## 2 14 6 2 10
-## 3 15 7 3 11
-## 4 16 8 4 12</code></pre>
+<pre><code>##    c b  d a
+## 1  9 5 13 1
+## 2 10 6 14 2
+## 3 11 7 15 3
+## 4 12 8 16 4</code></pre>
 <pre class="r"><code>(df3b &lt;- df3a[ ,order(names(df3a))])</code></pre>
 <pre><code>##   a b  c  d
 ## 1 1 5  9 13

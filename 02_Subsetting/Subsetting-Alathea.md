@@ -467,9 +467,9 @@ x[sample(nrow(x),3),]
 
 ```
 ##   a b
-## 8 8 h
-## 6 6 f
-## 2 2 b
+## 3 3 c
+## 9 9 i
+## 4 4 d
 ```
 
 Ordering:
@@ -481,15 +481,15 @@ Ordering:
 
 ```
 ##   a b
-## 9 9 i
-## 3 3 c
-## 1 1 a
-## 7 7 g
-## 8 8 h
 ## 4 4 d
-## 2 2 b
+## 7 7 g
 ## 5 5 e
+## 8 8 h
+## 9 9 i
+## 1 1 a
 ## 6 6 f
+## 2 2 b
+## 3 3 c
 ```
 
 ```r
@@ -527,7 +527,30 @@ Ordering:
 ```
 
 ```r
-#(df1a <- )
+# randomly permute the columns
+df[ , sample(ncol(df), ncol(df))]
+```
+
+```
+##   a  d b  c
+## 1 1 13 5  9
+## 2 2 14 6 10
+## 3 3 15 7 11
+## 4 4 16 8 12
+```
+
+```r
+# randomize columns and rows simultaneously
+# although I doubt this is really happening simultaneously
+df[sample(nrow(df), nrow(df)), sample(ncol(df), ncol(df))]
+```
+
+```
+##    c  d b a
+## 2 10 14 6 2
+## 4 12 16 8 4
+## 3 11 15 7 3
+## 1  9 13 5 1
 ```
 
 2. *How would you select a random sample of `m` rows from a data frame? What if the sample had to be contiguous (i.e. with an initial row, a final row, and every row in between)?*
@@ -543,10 +566,10 @@ sample_rows(df, 3)
 ```
 
 ```
-##   a b  c  d
-## 1 1 5  9 13
-## 3 3 7 11 15
-## 2 2 6 10 14
+##     a b  c  d
+## 1   1 5  9 13
+## 1.1 1 5  9 13
+## 4   4 8 12 16
 ```
 
 ```r
@@ -555,12 +578,12 @@ sample_rows(df, 6)
 
 ```
 ##     a b  c  d
-## 2   2 6 10 14
 ## 1   1 5  9 13
-## 4   4 8 12 16
+## 2   2 6 10 14
 ## 3   3 7 11 15
-## 2.1 2 6 10 14
-## 3.1 3 7 11 15
+## 4   4 8 12 16
+## 1.1 1 5  9 13
+## 4.1 4 8 12 16
 ```
 
 
@@ -576,6 +599,8 @@ sample_contig_rows(df)
 
 ```
 ##   a b  c  d
+## 1 1 5  9 13
+## 2 2 6 10 14
 ## 3 3 7 11 15
 ## 4 4 8 12 16
 ```
@@ -636,8 +661,8 @@ sample_contig_rows_2(df, 2)
 
 ```
 ##   a b  c  d
-## 2 2 6 10 14
 ## 3 3 7 11 15
+## 4 4 8 12 16
 ```
 
 
@@ -649,11 +674,11 @@ sample_contig_rows_2(df, 2)
 ```
 
 ```
-##    d b a  c
-## 1 13 5 1  9
-## 2 14 6 2 10
-## 3 15 7 3 11
-## 4 16 8 4 12
+##    c b  d a
+## 1  9 5 13 1
+## 2 10 6 14 2
+## 3 11 7 15 3
+## 4 12 8 16 4
 ```
 
 ```r

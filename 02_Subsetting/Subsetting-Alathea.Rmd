@@ -239,7 +239,13 @@ Ordering:
 
 ```{r ex_randomize}
 (df <- data.frame(a = c(1:4), b = c(5:8), c = c(9:12), d = c(13:16)))
-#(df1a <- )
+
+# randomly permute the columns
+df[ , sample(ncol(df), ncol(df))]
+
+# randomize columns and rows simultaneously
+# although I doubt this is really happening simultaneously
+df[sample(nrow(df), nrow(df)), sample(ncol(df), ncol(df))]
 ```
 
 2. *How would you select a random sample of `m` rows from a data frame? What if the sample had to be contiguous (i.e. with an initial row, a final row, and every row in between)?*
