@@ -89,6 +89,28 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <p><strong>Maybe <code>names(data_frame) &lt;- names(vector)</code> or something like that.</strong></p>
 <hr />
 </div>
+<div id="data-types" class="section level3">
+<h3>Data Types</h3>
+<div id="atomic-vectors" class="section level4">
+<h4>Atomic Vectors</h4>
+<pre class="r"><code>x &lt;- c(1:10)
+x[2]</code></pre>
+<pre><code>## [1] 2</code></pre>
+<pre class="r"><code>x[c(5,9)]</code></pre>
+<pre><code>## [1] 5 9</code></pre>
+<pre class="r"><code>x[-c(5:10)]</code></pre>
+<pre><code>## [1] 1 2 3 4</code></pre>
+<pre class="r"><code>x[c(TRUE,FALSE,TRUE,TRUE,FALSE)]</code></pre>
+<pre><code>## [1] 1 3 4 6 8 9</code></pre>
+<p>An interesting thing about subsetting with a logical vector is that if the logical vector is shorter than the vector being subsetted, it will act like a pattern and repeat over the entire vector (see above). I guess this is called recycling.</p>
+<p>You can use character vectors to select from a named vector. I did not know that was possible!</p>
+<pre class="r"><code>y &lt;- c(1:10)
+names(y) &lt;- letters[1:10]
+y</code></pre>
+<pre><code>##  a  b  c  d  e  f  g  h  i  j 
+##  1  2  3  4  5  6  7  8  9 10</code></pre>
+</div>
+</div>
 
 
 </div>

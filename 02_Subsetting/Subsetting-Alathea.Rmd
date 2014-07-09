@@ -37,3 +37,25 @@ output:
 
 ***
 
+### Data Types
+
+#### Atomic Vectors
+
+```{r subsetting_a_vector}
+x <- c(1:10)
+x[2]
+x[c(5,9)]
+x[-c(5:10)]
+x[c(TRUE,FALSE,TRUE,TRUE,FALSE)]
+```
+
+An interesting thing about subsetting with a logical vector is that if the logical vector is shorter than the vector being subsetted, it will act like a pattern and repeat over the entire vector (see above).  I guess this is called recycling.
+
+You can use character vectors to select from a named vector.  I did not know that was possible!
+
+```{r named_vector}
+y <- c(1:10)
+names(y) <- letters[1:10]
+y
+```
+
