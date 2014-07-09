@@ -116,3 +116,87 @@ str(df[, "x"])
 ##  int [1:3] 1 2 3
 ```
 
+#### S3 vs. S4 Objects
+
+Noooooooooooooooooo!!!
+
+#### Exercises
+
+1. *Fix each of the following common data frame subsetting errors:*
+
+
+```r
+mtcars[mtcars$cyl = 4, ]
+# to select values equal to 4, use "=="
+mtcars[mtcars$cyl == 4, ]
+
+mtcars[-1:4, ]
+# to remove multiple entries, use a vector
+mtcars[-c(1:4), ]
+
+mtcars[mtcars$cyl <= 5]
+# also need to select the columns
+mtcars[mtcars$cyl <= 5, ]
+
+mtcars[mtcars$cyl == 4 | 6, ]
+# you have to do this:
+mtcars[mtcars$cyl == 4 | mtcars$cyl == 6, ]
+```
+
+1. *Why does `x <- 1:5; x[NA]` yield five missing values? Hint: why is it different from `x[NA_real_]`?*
+
+**Not sure but something to do with `NA` being logical?**
+
+1. *What does `upper.tri()` return? How does subsetting a matrix with it work? Do we need any additional subsetting rules to describe its behaviour?*
+
+
+```r
+x <- outer(1:5, 1:5, FUN = "*")
+x[upper.tri(x)]
+```
+
+**It returns `TRUE` in the upper triangle of the matrix so subsetting with it returns the values in the upper triangle, column by column.**
+
+1. *Why does `mtcars[1:20]` return an error? How does it differ from the similar `mtcars[1:20, ]`?*
+
+**Cuz you didn't tell it which columns to select.**
+
+1. *Implement your own function that extracts the diagonal entries from a matrix (it should behave like `diag(x)` where `x` is a matrix).*
+
+**Whyyyy????**
+
+
+```r
+x <- outer(1:4, 1:5, FUN = "*")
+diag(x)
+```
+
+```
+## [1]  1  4  9 16
+```
+
+```r
+get_diag <- function(input_matrix)
+{
+  n <- min(dim(input_matrix))
+  select <- vector()
+  for(i in 1:n){
+    select[i] <- input_matrix[i,i]
+  }
+  return(select)
+}
+
+get_diag(x)
+```
+
+```
+## [1]  1  4  9 16
+```
+
+1. *What does `df[is.na(df)] <- 0` do? How does it work?*
+
+**It sets `NA` values to 0 by selecting those values (`is.na` generates a data frame with `TRUE` or `FALSE` depending on whether the condition is satisfied)**
+
+***
+
+### Subsetting Operators
