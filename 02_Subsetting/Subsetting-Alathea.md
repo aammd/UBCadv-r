@@ -420,3 +420,92 @@ str(mtcars)
 ##  $ carb: int [1:32] 4 4 1 1 2 1 4 2 2 4 ...
 ```
 
+### Applications
+
+Lookup tables:
+
+
+```r
+students <- data.frame(name = c(LETTERS[1:10]),
+                       sex = c("m","f","m","f","f","f","f","m","m","f"),
+                       student.number = sample(c(3333:8888), 10))
+lookup <- c(m = "Male", f = "Female")
+
+lookup[students$sex]
+```
+
+```
+##        f        m        f        m        m        m        m        f 
+## "Female"   "Male" "Female"   "Male"   "Male"   "Male"   "Male" "Female" 
+##        f        m 
+## "Female"   "Male"
+```
+
+Random samples / bootstrap:
+
+
+```r
+(x <- data.frame(a = c(1:9), b = letters[1:9]))
+```
+
+```
+##   a b
+## 1 1 a
+## 2 2 b
+## 3 3 c
+## 4 4 d
+## 5 5 e
+## 6 6 f
+## 7 7 g
+## 8 8 h
+## 9 9 i
+```
+
+```r
+x[sample(nrow(x),3),]
+```
+
+```
+##   a b
+## 6 6 f
+## 3 3 c
+## 7 7 g
+```
+
+Ordering:
+
+
+```r
+(y <- x[sample(nrow(x),nrow(x)),])
+```
+
+```
+##   a b
+## 9 9 i
+## 8 8 h
+## 6 6 f
+## 4 4 d
+## 2 2 b
+## 7 7 g
+## 3 3 c
+## 1 1 a
+## 5 5 e
+```
+
+```r
+(y <- y[order(y$a), ])
+```
+
+```
+##   a b
+## 1 1 a
+## 2 2 b
+## 3 3 c
+## 4 4 d
+## 5 5 e
+## 6 6 f
+## 7 7 g
+## 8 8 h
+## 9 9 i
+```
+

@@ -204,3 +204,30 @@ mtcars <- lapply(mtcars, as.integer)
 str(mtcars)
 ```
 
+### Applications
+
+Lookup tables:
+
+```{r lookup_table}
+students <- data.frame(name = c(LETTERS[1:10]),
+                       sex = c("m","f","m","f","f","f","f","m","m","f"),
+                       student.number = sample(c(3333:8888), 10))
+lookup <- c(m = "Male", f = "Female")
+
+lookup[students$sex]
+```
+
+Random samples / bootstrap:
+
+```{r bootstrap}
+(x <- data.frame(a = c(1:9), b = letters[1:9]))
+x[sample(nrow(x),3),]
+```
+
+Ordering:
+
+```{r order}
+(y <- x[sample(nrow(x),nrow(x)),])
+(y <- y[order(y$a), ])
+```
+

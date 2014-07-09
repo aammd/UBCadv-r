@@ -350,6 +350,60 @@ str(mtcars)</code></pre>
 ##  $ gear: int [1:32] 4 4 4 3 3 3 3 4 4 4 ...
 ##  $ carb: int [1:32] 4 4 1 1 2 1 4 2 2 4 ...</code></pre>
 </div>
+<div id="applications" class="section level3">
+<h3>Applications</h3>
+<p>Lookup tables:</p>
+<pre class="r"><code>students &lt;- data.frame(name = c(LETTERS[1:10]),
+                       sex = c(&quot;m&quot;,&quot;f&quot;,&quot;m&quot;,&quot;f&quot;,&quot;f&quot;,&quot;f&quot;,&quot;f&quot;,&quot;m&quot;,&quot;m&quot;,&quot;f&quot;),
+                       student.number = sample(c(3333:8888), 10))
+lookup &lt;- c(m = &quot;Male&quot;, f = &quot;Female&quot;)
+
+lookup[students$sex]</code></pre>
+<pre><code>##        f        m        f        m        m        m        m        f 
+## &quot;Female&quot;   &quot;Male&quot; &quot;Female&quot;   &quot;Male&quot;   &quot;Male&quot;   &quot;Male&quot;   &quot;Male&quot; &quot;Female&quot; 
+##        f        m 
+## &quot;Female&quot;   &quot;Male&quot;</code></pre>
+<p>Random samples / bootstrap:</p>
+<pre class="r"><code>(x &lt;- data.frame(a = c(1:9), b = letters[1:9]))</code></pre>
+<pre><code>##   a b
+## 1 1 a
+## 2 2 b
+## 3 3 c
+## 4 4 d
+## 5 5 e
+## 6 6 f
+## 7 7 g
+## 8 8 h
+## 9 9 i</code></pre>
+<pre class="r"><code>x[sample(nrow(x),3),]</code></pre>
+<pre><code>##   a b
+## 6 6 f
+## 3 3 c
+## 7 7 g</code></pre>
+<p>Ordering:</p>
+<pre class="r"><code>(y &lt;- x[sample(nrow(x),nrow(x)),])</code></pre>
+<pre><code>##   a b
+## 9 9 i
+## 8 8 h
+## 6 6 f
+## 4 4 d
+## 2 2 b
+## 7 7 g
+## 3 3 c
+## 1 1 a
+## 5 5 e</code></pre>
+<pre class="r"><code>(y &lt;- y[order(y$a), ])</code></pre>
+<pre><code>##   a b
+## 1 1 a
+## 2 2 b
+## 3 3 c
+## 4 4 d
+## 5 5 e
+## 6 6 f
+## 7 7 g
+## 8 8 h
+## 9 9 i</code></pre>
+</div>
 
 
 </div>
