@@ -185,3 +185,22 @@ str(mod_sum)
 ```
 
 ### Subsetting and Assignment
+
+Can you combine integer indices with integer NA?
+
+```{r subsetting_w_integers_and_nas}
+x <- c(1:5)
+
+# this is working OK.
+x[c(1, NA)] <- 0
+```
+
+```{r subsetting_w_nothing_preserve_structure}
+data(mtcars)
+mtcars[] <- lapply(mtcars, as.integer)
+str(mtcars[])
+
+mtcars <- lapply(mtcars, as.integer)
+str(mtcars)
+```
+
