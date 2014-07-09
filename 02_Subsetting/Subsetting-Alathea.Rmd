@@ -12,3 +12,28 @@ output:
 ### Discussion Notes
 
 ***
+
+### Quiz
+
+1. *What does subsetting a vector with: positive integers, negative integers, logical vector, character vector?*
+
+**I guess this means what happens when you subset a vector with one of the above.  A positive integer will select the item at that index and a negative integer will remove the item at that index.  I don't know about the vectors.**
+
+1. *What’s the difference between `[`, `[[` and `$` when applied to a list?*
+
+**Subsetting with `[` will select a list at that location but `[[` selects the item within that list.  `$` works for a named list.**
+
+1. *When should you use `drop = FALSE`?*
+
+**No one knows!**
+
+1. *If x is a matrix, what does `x[] <- 0` do? How is it different to `x <- 0`?*
+
+**Don't know.**
+
+1. *How can you use a named vector to relabel categorical variables?*
+
+**Maybe `names(data_frame) <- names(vector)` or something like that.**
+
+***
+
