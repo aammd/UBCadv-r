@@ -10,8 +10,8 @@ We meet Thursdays at **1pm PST in Biodiversity 224.**
 
 | Week    |  Reading                                                                         |
 | ------- | -----------------------                                                          |
-| week 1  | [Data Structures](http://adv-r.had.co.nz/Data-structures.html)                   |
-| week 2  | [Subsetting](http://adv-r.had.co.nz/Subsetting.html)                             |
+| week 1  - (03 July 2014)  | [Data Structures](http://adv-r.had.co.nz/Data-structures.html)                   |
+| week 2  - (10 July 2014)  | [Subsetting](http://adv-r.had.co.nz/Subsetting.html)                             |
 | week 3  | [Functions](http://adv-r.had.co.nz/Functions.html)                               |
 | week 4  | [Environments](http://adv-r.had.co.nz/Environments.html)                         |
 | week 5  | [Debugging](http://adv-r.had.co.nz/Exceptions-Debugging.html)                    |
