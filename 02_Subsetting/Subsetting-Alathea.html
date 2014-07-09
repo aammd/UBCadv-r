@@ -71,19 +71,19 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><em>What does subsetting a vector with: positive integers, negative integers, logical vector, character vector?</em></li>
 </ol>
 <p><strong>I guess this means what happens when you subset a vector with one of the above. A positive integer will select the item at that index and a negative integer will remove the item at that index. I don’t know about the vectors.</strong></p>
-<ol style="list-style-type: decimal">
+<ol start="2" style="list-style-type: decimal">
 <li><em>What’s the difference between <code>[</code>, <code>[[</code> and <code>$</code> when applied to a list?</em></li>
 </ol>
 <p><strong>Subsetting with <code>[</code> will select a list at that location but <code>[[</code> selects the item within that list. <code>$</code> works for a named list.</strong></p>
-<ol style="list-style-type: decimal">
+<ol start="3" style="list-style-type: decimal">
 <li><em>When should you use <code>drop = FALSE</code>?</em></li>
 </ol>
 <p><strong>No one knows!</strong></p>
-<ol style="list-style-type: decimal">
+<ol start="4" style="list-style-type: decimal">
 <li><em>If x is a matrix, what does <code>x[] &lt;- 0</code> do? How is it different to <code>x &lt;- 0</code>?</em></li>
 </ol>
 <p><strong>Don’t know.</strong></p>
-<ol style="list-style-type: decimal">
+<ol start="5" style="list-style-type: decimal">
 <li><em>How can you use a named vector to relabel categorical variables?</em></li>
 </ol>
 <p><strong>Maybe <code>names(data_frame) &lt;- names(vector)</code> or something like that.</strong></p>
@@ -151,21 +151,21 @@ mtcars[mtcars$cyl &lt;= 5, ]
 mtcars[mtcars$cyl == 4 | 6, ]
 # you have to do this:
 mtcars[mtcars$cyl == 4 | mtcars$cyl == 6, ]</code></pre>
-<ol style="list-style-type: decimal">
+<ol start="2" style="list-style-type: decimal">
 <li><em>Why does <code>x &lt;- 1:5; x[NA]</code> yield five missing values? Hint: why is it different from <code>x[NA_real_]</code>?</em></li>
 </ol>
 <p><strong>Not sure but something to do with <code>NA</code> being logical?</strong></p>
-<ol style="list-style-type: decimal">
+<ol start="3" style="list-style-type: decimal">
 <li><em>What does <code>upper.tri()</code> return? How does subsetting a matrix with it work? Do we need any additional subsetting rules to describe its behaviour?</em></li>
 </ol>
 <pre class="r"><code>x &lt;- outer(1:5, 1:5, FUN = &quot;*&quot;)
 x[upper.tri(x)]</code></pre>
 <p><strong>It returns <code>TRUE</code> in the upper triangle of the matrix so subsetting with it returns the values in the upper triangle, column by column.</strong></p>
-<ol style="list-style-type: decimal">
+<ol start="4" style="list-style-type: decimal">
 <li><em>Why does <code>mtcars[1:20]</code> return an error? How does it differ from the similar <code>mtcars[1:20, ]</code>?</em></li>
 </ol>
 <p><strong>Cuz you didn’t tell it which columns to select.</strong></p>
-<ol style="list-style-type: decimal">
+<ol start="5" style="list-style-type: decimal">
 <li><em>Implement your own function that extracts the diagonal entries from a matrix (it should behave like <code>diag(x)</code> where <code>x</code> is a matrix).</em></li>
 </ol>
 <p><strong>Whyyyy????</strong></p>
@@ -184,7 +184,7 @@ diag(x)</code></pre>
 
 get_diag(x)</code></pre>
 <pre><code>## [1]  1  4  9 16</code></pre>
-<ol style="list-style-type: decimal">
+<ol start="6" style="list-style-type: decimal">
 <li><em>What does <code>df[is.na(df)] &lt;- 0</code> do? How does it work?</em></li>
 </ol>
 <p><strong>It sets <code>NA</code> values to 0 by selecting those values (<code>is.na</code> generates a data frame with <code>TRUE</code> or <code>FALSE</code> depending on whether the condition is satisfied)</strong></p>

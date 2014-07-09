@@ -14,19 +14,19 @@ Alathea
 
 **I guess this means what happens when you subset a vector with one of the above.  A positive integer will select the item at that index and a negative integer will remove the item at that index.  I don't know about the vectors.**
 
-1. *What’s the difference between `[`, `[[` and `$` when applied to a list?*
+2. *What’s the difference between `[`, `[[` and `$` when applied to a list?*
 
 **Subsetting with `[` will select a list at that location but `[[` selects the item within that list.  `$` works for a named list.**
 
-1. *When should you use `drop = FALSE`?*
+3. *When should you use `drop = FALSE`?*
 
 **No one knows!**
 
-1. *If x is a matrix, what does `x[] <- 0` do? How is it different to `x <- 0`?*
+4. *If x is a matrix, what does `x[] <- 0` do? How is it different to `x <- 0`?*
 
 **Don't know.**
 
-1. *How can you use a named vector to relabel categorical variables?*
+5. *How can you use a named vector to relabel categorical variables?*
 
 **Maybe `names(data_frame) <- names(vector)` or something like that.**
 
@@ -143,11 +143,11 @@ mtcars[mtcars$cyl == 4 | 6, ]
 mtcars[mtcars$cyl == 4 | mtcars$cyl == 6, ]
 ```
 
-1. *Why does `x <- 1:5; x[NA]` yield five missing values? Hint: why is it different from `x[NA_real_]`?*
+2. *Why does `x <- 1:5; x[NA]` yield five missing values? Hint: why is it different from `x[NA_real_]`?*
 
 **Not sure but something to do with `NA` being logical?**
 
-1. *What does `upper.tri()` return? How does subsetting a matrix with it work? Do we need any additional subsetting rules to describe its behaviour?*
+3. *What does `upper.tri()` return? How does subsetting a matrix with it work? Do we need any additional subsetting rules to describe its behaviour?*
 
 
 ```r
@@ -157,11 +157,11 @@ x[upper.tri(x)]
 
 **It returns `TRUE` in the upper triangle of the matrix so subsetting with it returns the values in the upper triangle, column by column.**
 
-1. *Why does `mtcars[1:20]` return an error? How does it differ from the similar `mtcars[1:20, ]`?*
+4. *Why does `mtcars[1:20]` return an error? How does it differ from the similar `mtcars[1:20, ]`?*
 
 **Cuz you didn't tell it which columns to select.**
 
-1. *Implement your own function that extracts the diagonal entries from a matrix (it should behave like `diag(x)` where `x` is a matrix).*
+5. *Implement your own function that extracts the diagonal entries from a matrix (it should behave like `diag(x)` where `x` is a matrix).*
 
 **Whyyyy????**
 
@@ -193,7 +193,7 @@ get_diag(x)
 ## [1]  1  4  9 16
 ```
 
-1. *What does `df[is.na(df)] <- 0` do? How does it work?*
+6. *What does `df[is.na(df)] <- 0` do? How does it work?*
 
 **It sets `NA` values to 0 by selecting those values (`is.na` generates a data frame with `TRUE` or `FALSE` depending on whether the condition is satisfied)**
 
