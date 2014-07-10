@@ -194,5 +194,244 @@ str(is.na(df))
 ```
 
   * `df[is.na(df)] <- 0` replaces `NA`s in the data frame `df` with 0's, element-wise. `is.na(df)` returns a logical matrix, of same dimensions as `df`, with `TRUE`s for non-missing data and `FALSE`s for missing data. Then indexing `df` itself by this isolates the missing bits and replaces them with 0.
-  
-__Stopping here for now. Start up again at "Subsetting operators".__
+
+## Subsetting operators
+
+Great tweet:
+
+>  "If list `x` is a train carrying objects, then `x[[5]]` is
+> the object in car 5; `x[4:6]` is a train of cars 4-6." ---
+> @[RLangTip](http://twitter.com/#!/RLangTip/status/118339256388304896)
+
+Remember that `$` does partial matching, whereas `[[` does not. I am not a fan of partial matching. Be explicit. Use autocompletion to help with all that strenuous typing.
+
+### Working the exercises
+
+#### Given a linear model, e.g. `mod <- lm(mpg ~ wt, data = mtcars)`, extract the residual degrees of freedom. Extract the R squared from the model summary (`summary(mod)`).
+
+
+```r
+mod <- lm(mpg ~ wt, data = mtcars)
+str(mod, max.level = 1, give.attr = FALSE)
+```
+
+```
+## List of 12
+##  $ coefficients : Named num [1:2] 37.29 -5.34
+##  $ residuals    : Named num [1:32] -2.28 -0.92 -2.09 1.3 -0.2 ...
+##  $ effects      : Named num [1:32] -113.65 -29.116 -1.661 1.631 0.111 ...
+##  $ rank         : int 2
+##  $ fitted.values: Named num [1:32] 23.3 21.9 24.9 20.1 18.9 ...
+##  $ assign       : int [1:2] 0 1
+##  $ qr           :List of 5
+##  $ df.residual  : int 30
+##  $ xlevels      : Named list()
+##  $ call         : language lm(formula = mpg ~ wt, data = mtcars)
+##  $ terms        :Classes 'terms', 'formula' length 3 mpg ~ wt
+##  $ model        :'data.frame':	32 obs. of  2 variables:
+```
+
+```r
+mod$df.residual
+```
+
+```
+## [1] 30
+```
+
+```r
+mod_sum <- summary(mod)
+str(mod_sum, max.level = 1, give.attr = FALSE)
+```
+
+```
+## List of 11
+##  $ call         : language lm(formula = mpg ~ wt, data = mtcars)
+##  $ terms        :Classes 'terms', 'formula' length 3 mpg ~ wt
+##  $ residuals    : Named num [1:32] -2.28 -0.92 -2.09 1.3 -0.2 ...
+##  $ coefficients : num [1:2, 1:4] 37.285 -5.344 1.878 0.559 19.858 ...
+##  $ aliased      : Named logi [1:2] FALSE FALSE
+##  $ sigma        : num 3.05
+##  $ df           : int [1:3] 2 30 2
+##  $ r.squared    : num 0.753
+##  $ adj.r.squared: num 0.745
+##  $ fstatistic   : Named num [1:3] 91.4 1 30
+##  $ cov.unscaled : num [1:2, 1:2] 0.38 -0.1084 -0.1084 0.0337
+```
+
+```r
+mod_sum$r.sq
+```
+
+```
+## [1] 0.7528
+```
+
+## Subsetting and assignment
+
+Good to remember that assigning when subsetting with `[]` preserves original object class and structure.
+
+I didn't know (had never thought about) how to add a literal `NULL` to a list:
+
+
+```r
+y <- list(a = 1)
+y["b"] <- list(NULL)
+str(y)
+```
+
+```
+## List of 2
+##  $ a: num 1
+##  $ b: NULL
+```
+
+## Applications
+
+### Lookup tables (character subsetting)
+
+Clever. I think I've done this but never really registered that this was achieving lookup table functionality via character subsetting.
+
+Idea: you've got an original character vector. You want to replace, e.g., all `m`s in it with `male`. Create a lookup vector with an element with name `m` and value `male`. Index the original with the lookup vector. However, relative to `car::recode()` and `plyr::revalue()` and `plyr::mapvalues()`, this base R trick requires you to be exhaustive in your lookup vector, i.e. you've got to address each unique value that appears in the original. I think I'll still use the convenience wrappers.
+
+
+```r
+x <- c("m", "f", "u", "f", "f", "m", "m")
+lookup <- c(m = "Male", f = "Female", u = NA)
+lookup[x]
+```
+
+```
+##        m        f        u        f        f        m        m 
+##   "Male" "Female"       NA "Female" "Female"   "Male"   "Male"
+```
+
+```r
+lookup <- c(m = "Male")
+lookup[x]
+```
+
+```
+##      m   <NA>   <NA>   <NA>   <NA>      m      m 
+## "Male"     NA     NA     NA     NA "Male" "Male"
+```
+
+### Removing columns from data frame
+
+Good way to drop the variable `z` from a data.frame:
+
+```
+df[setdiff(names(df), "z")]
+```
+
+### Selecting rows based on a condition
+
+Nice to know about [De Morgan's laws](http://en.wikipedia.org/wiki/De_Morgan's_laws), which can be useful to simplify negations:
+
+  * `!(X & Y)` is the same as `!X | !Y`
+  * `!(X | Y)` is the same as `!X & !Y`
+
+For example, `!(X & !(Y | Z))` simplifies to `!X | !!(Y|Z)`, and then to `!X | Y | Z`.
+
+### Working the exercises
+
+#### How would you randomly permute the columns of a data frame? (This is an important technique in random forests). Can you simultaneously permute the rows and columns in one step?
+
+
+```r
+jMat <-
+  as.data.frame(outer(as.character(1:4), as.character(1:4),
+                      function(x, y) paste('x', x, y, sep = "")))
+dimnames(jMat) <- list(paste0("row", seq_len(nrow(jMat))),
+                       paste0("col", seq_len(length(jMat))))
+jMat
+```
+
+```
+##      col1 col2 col3 col4
+## row1  x11  x12  x13  x14
+## row2  x21  x22  x23  x24
+## row3  x31  x32  x33  x34
+## row4  x41  x42  x43  x44
+```
+
+```r
+## permute the columns of jMat
+jMat[sample(length(jMat))]
+```
+
+```
+##      col2 col4 col1 col3
+## row1  x12  x14  x11  x13
+## row2  x22  x24  x21  x23
+## row3  x32  x34  x31  x33
+## row4  x42  x44  x41  x43
+```
+
+```r
+## permute rows and columns in one step
+jMat[sample(length(jMat))][sample(nrow(jMat)), ]
+```
+
+```
+##      col3 col4 col2 col1
+## row2  x23  x24  x22  x21
+## row4  x43  x44  x42  x41
+## row1  x13  x14  x12  x11
+## row3  x33  x34  x32  x31
+```
+
+#### How would you select a random sample of `m` rows from a data frame? What if the sample had to be contiguous (i.e. with an initial row, a final row, and every row in between)?
+
+
+```r
+## unconstrained sample of `m` rows
+m <- 2
+jMat[sample(nrow(jMat), size = m), ]
+```
+
+```
+##      col1 col2 col3 col4
+## row4  x41  x42  x43  x44
+## row3  x31  x32  x33  x34
+```
+
+```r
+## sample a clump of `m` rows
+jMat[sample(nrow(jMat) - m + 1, size = 1) + (0:(m - 1)), ]
+```
+
+```
+##      col1 col2 col3 col4
+## row3  x31  x32  x33  x34
+## row4  x41  x42  x43  x44
+```
+    
+#### How could you put the columns in a data frame in alphaetical order?
+
+
+```r
+names(jMat) <- month.abb[seq_len(length(jMat))]
+jMat
+```
+
+```
+##      Jan Feb Mar Apr
+## row1 x11 x12 x13 x14
+## row2 x21 x22 x23 x24
+## row3 x31 x32 x33 x34
+## row4 x41 x42 x43 x44
+```
+
+```r
+jMat[order(names(jMat))]
+```
+
+```
+##      Apr Feb Jan Mar
+## row1 x14 x12 x11 x13
+## row2 x24 x22 x21 x23
+## row3 x34 x32 x31 x33
+## row4 x44 x42 x41 x43
+```
+

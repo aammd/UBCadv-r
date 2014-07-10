@@ -110,5 +110,107 @@ str(is.na(df))
 ```
 
   * `df[is.na(df)] <- 0` replaces `NA`s in the data frame `df` with 0's, element-wise. `is.na(df)` returns a logical matrix, of same dimensions as `df`, with `TRUE`s for non-missing data and `FALSE`s for missing data. Then indexing `df` itself by this isolates the missing bits and replaces them with 0.
-  
-__Stopping here for now. Start up again at "Subsetting operators".__
+
+## Subsetting operators
+
+Great tweet:
+
+>  "If list `x` is a train carrying objects, then `x[[5]]` is
+> the object in car 5; `x[4:6]` is a train of cars 4-6." ---
+> @[RLangTip](http://twitter.com/#!/RLangTip/status/118339256388304896)
+
+Remember that `$` does partial matching, whereas `[[` does not. I am not a fan of partial matching. Be explicit. Use autocompletion to help with all that strenuous typing.
+
+### Working the exercises
+
+#### Given a linear model, e.g. `mod <- lm(mpg ~ wt, data = mtcars)`, extract the residual degrees of freedom. Extract the R squared from the model summary (`summary(mod)`).
+
+```{r}
+mod <- lm(mpg ~ wt, data = mtcars)
+str(mod, max.level = 1, give.attr = FALSE)
+mod$df.residual
+mod_sum <- summary(mod)
+str(mod_sum, max.level = 1, give.attr = FALSE)
+mod_sum$r.sq
+```
+
+## Subsetting and assignment
+
+Good to remember that assigning when subsetting with `[]` preserves original object class and structure.
+
+I didn't know (had never thought about) how to add a literal `NULL` to a list:
+
+```{r}
+y <- list(a = 1)
+y["b"] <- list(NULL)
+str(y)
+```
+
+## Applications
+
+### Lookup tables (character subsetting)
+
+Clever. I think I've done this but never really registered that this was achieving lookup table functionality via character subsetting.
+
+Idea: you've got an original character vector. You want to replace, e.g., all `m`s in it with `male`. Create a lookup vector with an element with name `m` and value `male`. Index the original with the lookup vector. However, relative to `car::recode()` and `plyr::revalue()` and `plyr::mapvalues()`, this base R trick requires you to be exhaustive in your lookup vector, i.e. you've got to address each unique value that appears in the original. I think I'll still use the convenience wrappers.
+
+```{r}
+x <- c("m", "f", "u", "f", "f", "m", "m")
+lookup <- c(m = "Male", f = "Female", u = NA)
+lookup[x]
+lookup <- c(m = "Male")
+lookup[x]
+```
+
+### Removing columns from data frame
+
+Good way to drop the variable `z` from a data.frame:
+
+```
+df[setdiff(names(df), "z")]
+```
+
+### Selecting rows based on a condition
+
+Nice to know about [De Morgan's laws](http://en.wikipedia.org/wiki/De_Morgan's_laws), which can be useful to simplify negations:
+
+  * `!(X & Y)` is the same as `!X | !Y`
+  * `!(X | Y)` is the same as `!X & !Y`
+
+For example, `!(X & !(Y | Z))` simplifies to `!X | !!(Y|Z)`, and then to `!X | Y | Z`.
+
+### Working the exercises
+
+#### How would you randomly permute the columns of a data frame? (This is an important technique in random forests). Can you simultaneously permute the rows and columns in one step?
+
+```{r}
+jMat <-
+  as.data.frame(outer(as.character(1:4), as.character(1:4),
+                      function(x, y) paste('x', x, y, sep = "")))
+dimnames(jMat) <- list(paste0("row", seq_len(nrow(jMat))),
+                       paste0("col", seq_len(length(jMat))))
+jMat
+## permute the columns of jMat
+jMat[sample(length(jMat))]
+## permute rows and columns in one step
+jMat[sample(length(jMat))][sample(nrow(jMat)), ]
+```
+
+#### How would you select a random sample of `m` rows from a data frame? What if the sample had to be contiguous (i.e. with an initial row, a final row, and every row in between)?
+
+```{r}
+## unconstrained sample of `m` rows
+m <- 2
+jMat[sample(nrow(jMat), size = m), ]
+## sample a clump of `m` rows
+jMat[sample(nrow(jMat) - m + 1, size = 1) + (0:(m - 1)), ]
+```
+    
+#### How could you put the columns in a data frame in alphaetical order?
+
+```{r}
+names(jMat) <- month.abb[seq_len(length(jMat))]
+jMat
+jMat[order(names(jMat))]
+```
+
