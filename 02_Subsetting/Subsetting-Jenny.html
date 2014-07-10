@@ -62,6 +62,16 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <ul>
 <li><a href="#taking-the-quiz">Taking the quiz</a></li>
 <li><a href="#working-the-exercises-re-data-types">Working the exercises re: Data types</a></li>
+<li><a href="#subsetting-operators">Subsetting operators</a><ul>
+<li><a href="#working-the-exercises">Working the exercises</a></li>
+</ul></li>
+<li><a href="#subsetting-and-assignment">Subsetting and assignment</a></li>
+<li><a href="#applications">Applications</a><ul>
+<li><a href="#lookup-tables-character-subsetting">Lookup tables (character subsetting)</a></li>
+<li><a href="#removing-columns-from-data-frame">Removing columns from data frame</a></li>
+<li><a href="#selecting-rows-based-on-a-condition">Selecting rows based on a condition</a></li>
+<li><a href="#working-the-exercises-1">Working the exercises</a></li>
+</ul></li>
 </ul>
 </div>
 
@@ -201,7 +211,156 @@ df</code></pre>
 <ul>
 <li><code>df[is.na(df)] &lt;- 0</code> replaces <code>NA</code>s in the data frame <code>df</code> with 0’s, element-wise. <code>is.na(df)</code> returns a logical matrix, of same dimensions as <code>df</code>, with <code>TRUE</code>s for non-missing data and <code>FALSE</code>s for missing data. Then indexing <code>df</code> itself by this isolates the missing bits and replaces them with 0.</li>
 </ul>
-<p><strong>Stopping here for now. Start up again at “Subsetting operators”.</strong></p>
+</div>
+</div>
+<div id="subsetting-operators" class="section level2">
+<h2>Subsetting operators</h2>
+<p>Great tweet:</p>
+<blockquote>
+<p>“If list <code>x</code> is a train carrying objects, then <code>x[[5]]</code> is the object in car 5; <code>x[4:6]</code> is a train of cars 4-6.” — @<a href="http://twitter.com/#!/RLangTip/status/118339256388304896">RLangTip</a></p>
+</blockquote>
+<p>Remember that <code>$</code> does partial matching, whereas <code>[[</code> does not. I am not a fan of partial matching. Be explicit. Use autocompletion to help with all that strenuous typing.</p>
+<div id="working-the-exercises" class="section level3">
+<h3>Working the exercises</h3>
+<div id="given-a-linear-model-e.g.-mod---lmmpg-wt-data-mtcars-extract-the-residual-degrees-of-freedom.-extract-the-r-squared-from-the-model-summary-summarymod." class="section level4">
+<h4>Given a linear model, e.g. <code>mod &lt;- lm(mpg ~ wt, data = mtcars)</code>, extract the residual degrees of freedom. Extract the R squared from the model summary (<code>summary(mod)</code>).</h4>
+<pre class="r"><code>mod &lt;- lm(mpg ~ wt, data = mtcars)
+str(mod, max.level = 1, give.attr = FALSE)</code></pre>
+<pre><code>## List of 12
+##  $ coefficients : Named num [1:2] 37.29 -5.34
+##  $ residuals    : Named num [1:32] -2.28 -0.92 -2.09 1.3 -0.2 ...
+##  $ effects      : Named num [1:32] -113.65 -29.116 -1.661 1.631 0.111 ...
+##  $ rank         : int 2
+##  $ fitted.values: Named num [1:32] 23.3 21.9 24.9 20.1 18.9 ...
+##  $ assign       : int [1:2] 0 1
+##  $ qr           :List of 5
+##  $ df.residual  : int 30
+##  $ xlevels      : Named list()
+##  $ call         : language lm(formula = mpg ~ wt, data = mtcars)
+##  $ terms        :Classes 'terms', 'formula' length 3 mpg ~ wt
+##  $ model        :'data.frame':   32 obs. of  2 variables:</code></pre>
+<pre class="r"><code>mod$df.residual</code></pre>
+<pre><code>## [1] 30</code></pre>
+<pre class="r"><code>mod_sum &lt;- summary(mod)
+str(mod_sum, max.level = 1, give.attr = FALSE)</code></pre>
+<pre><code>## List of 11
+##  $ call         : language lm(formula = mpg ~ wt, data = mtcars)
+##  $ terms        :Classes 'terms', 'formula' length 3 mpg ~ wt
+##  $ residuals    : Named num [1:32] -2.28 -0.92 -2.09 1.3 -0.2 ...
+##  $ coefficients : num [1:2, 1:4] 37.285 -5.344 1.878 0.559 19.858 ...
+##  $ aliased      : Named logi [1:2] FALSE FALSE
+##  $ sigma        : num 3.05
+##  $ df           : int [1:3] 2 30 2
+##  $ r.squared    : num 0.753
+##  $ adj.r.squared: num 0.745
+##  $ fstatistic   : Named num [1:3] 91.4 1 30
+##  $ cov.unscaled : num [1:2, 1:2] 0.38 -0.1084 -0.1084 0.0337</code></pre>
+<pre class="r"><code>mod_sum$r.sq</code></pre>
+<pre><code>## [1] 0.7528</code></pre>
+</div>
+</div>
+</div>
+<div id="subsetting-and-assignment" class="section level2">
+<h2>Subsetting and assignment</h2>
+<p>Good to remember that assigning when subsetting with <code>[]</code> preserves original object class and structure.</p>
+<p>I didn’t know (had never thought about) how to add a literal <code>NULL</code> to a list:</p>
+<pre class="r"><code>y &lt;- list(a = 1)
+y[&quot;b&quot;] &lt;- list(NULL)
+str(y)</code></pre>
+<pre><code>## List of 2
+##  $ a: num 1
+##  $ b: NULL</code></pre>
+</div>
+<div id="applications" class="section level2">
+<h2>Applications</h2>
+<div id="lookup-tables-character-subsetting" class="section level3">
+<h3>Lookup tables (character subsetting)</h3>
+<p>Clever. I think I’ve done this but never really registered that this was achieving lookup table functionality via character subsetting.</p>
+<p>Idea: you’ve got an original character vector. You want to replace, e.g., all <code>m</code>s in it with <code>male</code>. Create a lookup vector with an element with name <code>m</code> and value <code>male</code>. Index the original with the lookup vector. However, relative to <code>car::recode()</code> and <code>plyr::revalue()</code> and <code>plyr::mapvalues()</code>, this base R trick requires you to be exhaustive in your lookup vector, i.e. you’ve got to address each unique value that appears in the original. I think I’ll still use the convenience wrappers.</p>
+<pre class="r"><code>x &lt;- c(&quot;m&quot;, &quot;f&quot;, &quot;u&quot;, &quot;f&quot;, &quot;f&quot;, &quot;m&quot;, &quot;m&quot;)
+lookup &lt;- c(m = &quot;Male&quot;, f = &quot;Female&quot;, u = NA)
+lookup[x]</code></pre>
+<pre><code>##        m        f        u        f        f        m        m 
+##   &quot;Male&quot; &quot;Female&quot;       NA &quot;Female&quot; &quot;Female&quot;   &quot;Male&quot;   &quot;Male&quot;</code></pre>
+<pre class="r"><code>lookup &lt;- c(m = &quot;Male&quot;)
+lookup[x]</code></pre>
+<pre><code>##      m   &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;   &lt;NA&gt;      m      m 
+## &quot;Male&quot;     NA     NA     NA     NA &quot;Male&quot; &quot;Male&quot;</code></pre>
+</div>
+<div id="removing-columns-from-data-frame" class="section level3">
+<h3>Removing columns from data frame</h3>
+<p>Good way to drop the variable <code>z</code> from a data.frame:</p>
+<pre><code>df[setdiff(names(df), &quot;z&quot;)]</code></pre>
+</div>
+<div id="selecting-rows-based-on-a-condition" class="section level3">
+<h3>Selecting rows based on a condition</h3>
+<p>Nice to know about [De Morgan’s laws](<a href="http://en.wikipedia.org/wiki/De_Morgan's_laws">http://en.wikipedia.org/wiki/De_Morgan's_laws</a>), which can be useful to simplify negations:</p>
+<ul>
+<li><code>!(X &amp; Y)</code> is the same as <code>!X | !Y</code></li>
+<li><code>!(X | Y)</code> is the same as <code>!X &amp; !Y</code></li>
+</ul>
+<p>For example, <code>!(X &amp; !(Y | Z))</code> simplifies to <code>!X | !!(Y|Z)</code>, and then to <code>!X | Y | Z</code>.</p>
+</div>
+<div id="working-the-exercises-1" class="section level3">
+<h3>Working the exercises</h3>
+<div id="how-would-you-randomly-permute-the-columns-of-a-data-frame-this-is-an-important-technique-in-random-forests.-can-you-simultaneously-permute-the-rows-and-columns-in-one-step" class="section level4">
+<h4>How would you randomly permute the columns of a data frame? (This is an important technique in random forests). Can you simultaneously permute the rows and columns in one step?</h4>
+<pre class="r"><code>jMat &lt;-
+  as.data.frame(outer(as.character(1:4), as.character(1:4),
+                      function(x, y) paste('x', x, y, sep = &quot;&quot;)))
+dimnames(jMat) &lt;- list(paste0(&quot;row&quot;, seq_len(nrow(jMat))),
+                       paste0(&quot;col&quot;, seq_len(length(jMat))))
+jMat</code></pre>
+<pre><code>##      col1 col2 col3 col4
+## row1  x11  x12  x13  x14
+## row2  x21  x22  x23  x24
+## row3  x31  x32  x33  x34
+## row4  x41  x42  x43  x44</code></pre>
+<pre class="r"><code>## permute the columns of jMat
+jMat[sample(length(jMat))]</code></pre>
+<pre><code>##      col2 col4 col1 col3
+## row1  x12  x14  x11  x13
+## row2  x22  x24  x21  x23
+## row3  x32  x34  x31  x33
+## row4  x42  x44  x41  x43</code></pre>
+<pre class="r"><code>## permute rows and columns in one step
+jMat[sample(length(jMat))][sample(nrow(jMat)), ]</code></pre>
+<pre><code>##      col3 col4 col2 col1
+## row2  x23  x24  x22  x21
+## row4  x43  x44  x42  x41
+## row1  x13  x14  x12  x11
+## row3  x33  x34  x32  x31</code></pre>
+</div>
+<div id="how-would-you-select-a-random-sample-of-m-rows-from-a-data-frame-what-if-the-sample-had-to-be-contiguous-i.e.with-an-initial-row-a-final-row-and-every-row-in-between" class="section level4">
+<h4>How would you select a random sample of <code>m</code> rows from a data frame? What if the sample had to be contiguous (i.e. with an initial row, a final row, and every row in between)?</h4>
+<pre class="r"><code>## unconstrained sample of `m` rows
+m &lt;- 2
+jMat[sample(nrow(jMat), size = m), ]</code></pre>
+<pre><code>##      col1 col2 col3 col4
+## row4  x41  x42  x43  x44
+## row3  x31  x32  x33  x34</code></pre>
+<pre class="r"><code>## sample a clump of `m` rows
+jMat[sample(nrow(jMat) - m + 1, size = 1) + (0:(m - 1)), ]</code></pre>
+<pre><code>##      col1 col2 col3 col4
+## row3  x31  x32  x33  x34
+## row4  x41  x42  x43  x44</code></pre>
+</div>
+<div id="how-could-you-put-the-columns-in-a-data-frame-in-alphaetical-order" class="section level4">
+<h4>How could you put the columns in a data frame in alphaetical order?</h4>
+<pre class="r"><code>names(jMat) &lt;- month.abb[seq_len(length(jMat))]
+jMat</code></pre>
+<pre><code>##      Jan Feb Mar Apr
+## row1 x11 x12 x13 x14
+## row2 x21 x22 x23 x24
+## row3 x31 x32 x33 x34
+## row4 x41 x42 x43 x44</code></pre>
+<pre class="r"><code>jMat[order(names(jMat))]</code></pre>
+<pre><code>##      Apr Feb Jan Mar
+## row1 x14 x12 x11 x13
+## row2 x24 x22 x21 x23
+## row3 x34 x32 x31 x33
+## row4 x44 x42 x41 x43</code></pre>
+</div>
 </div>
 </div>
 
