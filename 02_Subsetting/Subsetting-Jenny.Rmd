@@ -1,10 +1,11 @@
 ---
 title: "Jenny's reading of 02_Subsetting"
 author: "Jenny Bryan"
-date: "8 July, 2014"
+date: "10 July, 2014"
 output:
   html_document:
     toc: yes
+    keep_md: TRUE
 ---
 
 ```{r setup, include = FALSE, cache = FALSE}
@@ -78,7 +79,7 @@ x[upper.tri(x)]
 
 #### Why does `mtcars[1:20]` return a error? How does it differ from the similar `mtcars[1:20, ]`?
 
-  * Don't forget data frames are lists, not matrices. Since there's no guarantee that the contituent variables have the same type, data frames can't go into "vector mode" and therefore you can't index them vector style. You must index in a 2D, e.g. `mtcars[1:20, ]`, or list style.
+  * Don't forget data frames are lists, not matrices. When you index a data frame vector style, with `[`, you'll index it as a list. Since `mtcars` does not have 20 variables, asking for variables 1 through 20 will trigger an error about selecting "undefined columns". If you indexed a matrix this way, the indexing would go into "vector mode" and you'd get the first 20 elements, even if that grabbed values from multiple columns. This doesn't happen -- and doesn't make sense -- with a data frame, since there's no guarantee that the contituent variables even have the same type.
 
 #### Implement your own function that extracts the diagonal entries from a matrix (it should behave like `diag(x)` where `x` is a matrix).
 

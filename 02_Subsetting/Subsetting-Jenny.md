@@ -1,11 +1,6 @@
----
-title: "Jenny's reading of 02_Subsetting"
-author: "Jenny Bryan"
-date: "8 July, 2014"
-output:
-  html_document:
-    toc: yes
----
+# Jenny's reading of 02_Subsetting
+Jenny Bryan  
+10 July, 2014  
 
 
 
@@ -81,7 +76,7 @@ x[upper.tri(x)]
 
 #### Why does `mtcars[1:20]` return a error? How does it differ from the similar `mtcars[1:20, ]`?
 
-  * Don't forget data frames are lists, not matrices. Since there's no guarantee that the contituent variables have the same type, data frames can't go into "vector mode" and therefore you can't index them vector style. You must index in a 2D, e.g. `mtcars[1:20, ]`, or list style.
+  * Don't forget data frames are lists, not matrices. When you index a data frame vector style, with `[`, you'll index it as a list. Since `mtcars` does not have 20 variables, asking for variables 1 through 20 will trigger an error about selecting "undefined columns". If you indexed a matrix this way, the indexing would go into "vector mode" and you'd get the first 20 elements, even if that grabbed values from multiple columns. This doesn't happen -- and doesn't make sense -- with a data frame, since there's no guarantee that the contituent variables even have the same type.
 
 #### Implement your own function that extracts the diagonal entries from a matrix (it should behave like `diag(x)` where `x` is a matrix).
 
@@ -422,11 +417,11 @@ jMat[sample(length(jMat))]
 ```
 
 ```
-##      col3 col2 col4 col1
-## row1  x13  x12  x14  x11
-## row2  x23  x22  x24  x21
-## row3  x33  x32  x34  x31
-## row4  x43  x42  x44  x41
+##      col4 col2 col1 col3
+## row1  x14  x12  x11  x13
+## row2  x24  x22  x21  x23
+## row3  x34  x32  x31  x33
+## row4  x44  x42  x41  x43
 ```
 
 ```r
@@ -435,11 +430,11 @@ jMat[sample(length(jMat))][sample(nrow(jMat)), ]
 ```
 
 ```
-##      col3 col1 col2 col4
-## row1  x13  x11  x12  x14
-## row3  x33  x31  x32  x34
-## row4  x43  x41  x42  x44
-## row2  x23  x21  x22  x24
+##      col2 col1 col3 col4
+## row3  x32  x31  x33  x34
+## row4  x42  x41  x43  x44
+## row2  x22  x21  x23  x24
+## row1  x12  x11  x13  x14
 ```
 
 ```r
@@ -448,11 +443,11 @@ jMat[sample(nrow(jMat)), sample(length(jMat))]
 ```
 
 ```
-##      col4 col1 col3 col2
-## row3  x34  x31  x33  x32
-## row1  x14  x11  x13  x12
-## row2  x24  x21  x23  x22
-## row4  x44  x41  x43  x42
+##      col2 col4 col1 col3
+## row2  x22  x24  x21  x23
+## row4  x42  x44  x41  x43
+## row1  x12  x14  x11  x13
+## row3  x32  x34  x31  x33
 ```
 
 I had worried (but not constructively enough to test!) that shuffling rows and columns at the same time would violate the integrity of rows and columns. But it does not.
@@ -468,8 +463,8 @@ jMat[sample(nrow(jMat), size = m), ]
 
 ```
 ##      col1 col2 col3 col4
-## row2  x21  x22  x23  x24
 ## row4  x41  x42  x43  x44
+## row3  x31  x32  x33  x34
 ```
 
 ```r
@@ -479,8 +474,8 @@ jMat[sample(nrow(jMat) - m + 1, size = 1) + (0:(m - 1)), ]
 
 ```
 ##      col1 col2 col3 col4
+## row1  x11  x12  x13  x14
 ## row2  x21  x22  x23  x24
-## row3  x31  x32  x33  x34
 ```
     
 #### How could you put the columns in a data frame in alphaetical order?
