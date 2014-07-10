@@ -134,8 +134,8 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><code>mtcars[mtcars$cyl = 4, ]</code> <em>Replace the single <code>=</code> with double <code>==</code>.</em></li>
 <li><code>mtcars[-1:4, ]</code> <em>Indexing vector mixes negative and positive integers which is a no-no; if goal is to drop elements 1 through 4 surround with parentheses, i.e. <code>mtcars[-(1:4), ]</code>.</em></li>
 <li><code>mtcars[mtcars$cyl &lt;= 5]</code> <em>This is vector-style indexing of data frame; I assume user meant to type <code>mtcars[mtcars$cyl &lt;= 5, ]</code>.</em></li>
-<li><code>mtcars[mtcars$cyl == 4 | 6, ]</code> <em>Sadly, you can’t use <code>|</code> like that, but beware because this will NOT produce an error. It just won’t return rows with cylinder equal to 4 or 6. How to fix? Pick one of these options: <code>mtcars[mtcars$cyl %in% c(4, 6), ]</code> or <code>mtcars[mtcars$cyl == 4 | mtcars$cyl == 6, ]</code></em></li>
-<li>Why does <code>x &lt;- 1:5; x[NA]</code> yield five missing values? Hint: why is it different from <code>x[NA_real_]?</code> <em><code>NA</code> is a logical vector of length one. It’s perfectly OK to index by a logical vector. Recycling will expand this to 5 logical <code>NA</code>s. And then indexing by <code>NA</code> always gives back an <code>NA</code>, so you get five of them.</em></li>
+<li><code>mtcars[mtcars$cyl == 4 | 6, ]</code> <em>Sadly, you can’t use <code>|</code> like that, but beware because this will NOT produce an error. It just won’t return rows with cylinder equal to 4 or 6; in fact, it returns all the rows. Why? Because the combination of coercion and recycling implies that <code>6</code> will become a logical vector ot <code>TRUE</code>s of length equal to the rows in <code>mtcars</code>. How to fix? Pick one of these options: <code>mtcars[mtcars$cyl %in% c(4, 6), ]</code> or <code>mtcars[mtcars$cyl == 4 | mtcars$cyl == 6, ]</code></em></li>
+<li>Why does <code>x &lt;- 1:5; x[NA]</code> yield five missing values? Hint: why is it different from <code>x[NA_real_]?</code> <em><code>NA</code> is a logical vector of length one. It’s perfectly OK to index by a logical vector. Recycling will expand this to 5 logical <code>NA</code>s. And then indexing by <code>NA</code> always gives back an <code>NA</code>, so you get five of them. Indexing by <code>NA_real_</code> is indexing by a double. It will get truncated and be as if you’re indexing by the integer <code>1</code>.</em></li>
 </ul>
 </div>
 <div id="what-does-upper.tri-return-how-does-subsetting-a-matrix-with-it-work-do-we-need-any-additional-subsetting-rules-to-describe-its-behaviour" class="section level4">
@@ -220,6 +220,40 @@ df</code></pre>
 <p>“If list <code>x</code> is a train carrying objects, then <code>x[[5]]</code> is the object in car 5; <code>x[4:6]</code> is a train of cars 4-6.” — @<a href="http://twitter.com/#!/RLangTip/status/118339256388304896">RLangTip</a></p>
 </blockquote>
 <p>Remember that <code>$</code> does partial matching, whereas <code>[[</code> does not. I am not a fan of partial matching. Be explicit. Use autocompletion to help with all that strenuous typing.</p>
+<p>Andrew was really excited by this re: indexing via <code>[[</code> with a vector:</p>
+<pre class="r"><code># If you do supply a vector it indexes recursively
+b &lt;- list(a = list(b = list(c = list(d = 1))))
+b[[c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;)]]</code></pre>
+<pre><code>## [1] 1</code></pre>
+<pre class="r"><code># Same as
+b[[&quot;a&quot;]][[&quot;b&quot;]][[&quot;c&quot;]][[&quot;d&quot;]]</code></pre>
+<pre><code>## [1] 1</code></pre>
+<p>I had kinda glossed over that, but his usage made me appreciate this. It can be nice way to get something that is an element of a list that is itself an element of a list. Easier to see in an example:</p>
+<pre class="r"><code>mod &lt;- lm(mpg ~ wt, data = mtcars)
+str(mod, max.level = 2, give.attr = FALSE)</code></pre>
+<pre><code>## List of 12
+##  $ coefficients : Named num [1:2] 37.29 -5.34
+##  $ residuals    : Named num [1:32] -2.28 -0.92 -2.09 1.3 -0.2 ...
+##  $ effects      : Named num [1:32] -113.65 -29.116 -1.661 1.631 0.111 ...
+##  $ rank         : int 2
+##  $ fitted.values: Named num [1:32] 23.3 21.9 24.9 20.1 18.9 ...
+##  $ assign       : int [1:2] 0 1
+##  $ qr           :List of 5
+##   ..$ qr   : num [1:32, 1:2] -5.657 0.177 0.177 0.177 0.177 ...
+##   ..$ qraux: num [1:2] 1.18 1.05
+##   ..$ pivot: int [1:2] 1 2
+##   ..$ tol  : num 1e-07
+##   ..$ rank : int 2
+##  $ df.residual  : int 30
+##  $ xlevels      : Named list()
+##  $ call         : language lm(formula = mpg ~ wt, data = mtcars)
+##  $ terms        :Classes 'terms', 'formula' length 3 mpg ~ wt
+##  $ model        :'data.frame':   32 obs. of  2 variables:
+##   ..$ mpg: num [1:32] 21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...
+##   ..$ wt : num [1:32] 2.62 2.88 2.32 3.21 3.44 ...</code></pre>
+<pre class="r"><code>mod[[c(&quot;qr&quot;, &quot;rank&quot;)]]</code></pre>
+<pre><code>## [1] 2</code></pre>
+<p>This goes into the fitted model, gets the <code>qr</code> list element, and then goes into that to retrieve the <code>rank</code> element. Cleaner than <code>mod[[&quot;qr&quot;]][[&quot;rank&quot;]]</code>.</p>
 <div id="working-the-exercises" class="section level3">
 <h3>Working the exercises</h3>
 <div id="given-a-linear-model-e.g.-mod---lmmpg-wt-data-mtcars-extract-the-residual-degrees-of-freedom.-extract-the-r-squared-from-the-model-summary-summarymod." class="section level4">
@@ -318,18 +352,26 @@ jMat</code></pre>
 ## row4  x41  x42  x43  x44</code></pre>
 <pre class="r"><code>## permute the columns of jMat
 jMat[sample(length(jMat))]</code></pre>
-<pre><code>##      col2 col4 col1 col3
-## row1  x12  x14  x11  x13
-## row2  x22  x24  x21  x23
-## row3  x32  x34  x31  x33
-## row4  x42  x44  x41  x43</code></pre>
-<pre class="r"><code>## permute rows and columns in one step
+<pre><code>##      col3 col2 col4 col1
+## row1  x13  x12  x14  x11
+## row2  x23  x22  x24  x21
+## row3  x33  x32  x34  x31
+## row4  x43  x42  x44  x41</code></pre>
+<pre class="r"><code>## permute rows and columns in one step -- my original solution
 jMat[sample(length(jMat))][sample(nrow(jMat)), ]</code></pre>
-<pre><code>##      col3 col4 col2 col1
-## row2  x23  x24  x22  x21
-## row4  x43  x44  x42  x41
-## row1  x13  x14  x12  x11
-## row3  x33  x34  x32  x31</code></pre>
+<pre><code>##      col3 col1 col2 col4
+## row1  x13  x11  x12  x14
+## row3  x33  x31  x32  x34
+## row4  x43  x41  x42  x44
+## row2  x23  x21  x22  x24</code></pre>
+<pre class="r"><code>## solution after seeing Andrew's and Alathea's
+jMat[sample(nrow(jMat)), sample(length(jMat))]</code></pre>
+<pre><code>##      col4 col1 col3 col2
+## row3  x34  x31  x33  x32
+## row1  x14  x11  x13  x12
+## row2  x24  x21  x23  x22
+## row4  x44  x41  x43  x42</code></pre>
+<p>I had worried (but not constructively enough to test!) that shuffling rows and columns at the same time would violate the integrity of rows and columns. But it does not.</p>
 </div>
 <div id="how-would-you-select-a-random-sample-of-m-rows-from-a-data-frame-what-if-the-sample-had-to-be-contiguous-i.e.with-an-initial-row-a-final-row-and-every-row-in-between" class="section level4">
 <h4>How would you select a random sample of <code>m</code> rows from a data frame? What if the sample had to be contiguous (i.e. with an initial row, a final row, and every row in between)?</h4>
@@ -337,13 +379,13 @@ jMat[sample(length(jMat))][sample(nrow(jMat)), ]</code></pre>
 m &lt;- 2
 jMat[sample(nrow(jMat), size = m), ]</code></pre>
 <pre><code>##      col1 col2 col3 col4
-## row4  x41  x42  x43  x44
-## row3  x31  x32  x33  x34</code></pre>
+## row2  x21  x22  x23  x24
+## row4  x41  x42  x43  x44</code></pre>
 <pre class="r"><code>## sample a clump of `m` rows
 jMat[sample(nrow(jMat) - m + 1, size = 1) + (0:(m - 1)), ]</code></pre>
 <pre><code>##      col1 col2 col3 col4
-## row3  x31  x32  x33  x34
-## row4  x41  x42  x43  x44</code></pre>
+## row2  x21  x22  x23  x24
+## row3  x31  x32  x33  x34</code></pre>
 </div>
 <div id="how-could-you-put-the-columns-in-a-data-frame-in-alphaetical-order" class="section level4">
 <h4>How could you put the columns in a data frame in alphaetical order?</h4>

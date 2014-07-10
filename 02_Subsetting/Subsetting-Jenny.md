@@ -62,8 +62,8 @@ Week 02 2014-07-10 we read [Subsetting](http://adv-r.had.co.nz/Subsetting.html).
   * `mtcars[mtcars$cyl = 4, ]` *Replace the single `=` with double `==`.*
   * `mtcars[-1:4, ]` *Indexing vector mixes negative and positive integers which is a no-no; if goal is to drop elements 1 through 4 surround with parentheses, i.e. `mtcars[-(1:4), ]`.*
   * `mtcars[mtcars$cyl <= 5]` *This is vector-style indexing of data frame; I assume user meant to type `mtcars[mtcars$cyl <= 5, ]`.*
-  * `mtcars[mtcars$cyl == 4 | 6, ]` *Sadly, you can't use `|` like that, but beware because this will NOT produce an error. It just won't return rows with cylinder equal to 4 or 6. How to fix? Pick one of these options: `mtcars[mtcars$cyl %in% c(4, 6), ]` or `mtcars[mtcars$cyl == 4 | mtcars$cyl == 6, ]`*
-  * Why does `x <- 1:5; x[NA]` yield five missing values? Hint: why is it different from `x[NA_real_]?` *`NA` is a logical vector of length one. It's perfectly OK to index by a logical vector. Recycling will expand this to 5 logical `NA`s. And then indexing by `NA` always gives back an `NA`, so you get five of them.*
+  * `mtcars[mtcars$cyl == 4 | 6, ]` *Sadly, you can't use `|` like that, but beware because this will NOT produce an error. It just won't return rows with cylinder equal to 4 or 6; in fact, it returns all the rows. Why? Because the combination of coercion and recycling implies that `6` will become a logical vector ot `TRUE`s of length equal to the rows in `mtcars`. How to fix? Pick one of these options: `mtcars[mtcars$cyl %in% c(4, 6), ]` or `mtcars[mtcars$cyl == 4 | mtcars$cyl == 6, ]`*
+  * Why does `x <- 1:5; x[NA]` yield five missing values? Hint: why is it different from `x[NA_real_]?` *`NA` is a logical vector of length one. It's perfectly OK to index by a logical vector. Recycling will expand this to 5 logical `NA`s. And then indexing by `NA` always gives back an `NA`, so you get five of them. Indexing by `NA_real_` is indexing by a double. It will get truncated and be as if you're indexing by the integer `1`.*
 
 #### What does `upper.tri()` return? How does subsetting a matrix with it work? Do we need any additional subsetting rules to describe its behaviour?
 
@@ -204,6 +204,67 @@ Great tweet:
 > @[RLangTip](http://twitter.com/#!/RLangTip/status/118339256388304896)
 
 Remember that `$` does partial matching, whereas `[[` does not. I am not a fan of partial matching. Be explicit. Use autocompletion to help with all that strenuous typing.
+
+Andrew was really excited by this re: indexing via `[[` with a vector:
+
+
+```r
+# If you do supply a vector it indexes recursively
+b <- list(a = list(b = list(c = list(d = 1))))
+b[[c("a", "b", "c", "d")]]
+```
+
+```
+## [1] 1
+```
+
+```r
+# Same as
+b[["a"]][["b"]][["c"]][["d"]]
+```
+
+```
+## [1] 1
+```
+I had kinda glossed over that, but his usage made me appreciate this. It can be nice way to get something that is an element of a list that is itself an element of a list. Easier to see in an example:
+
+
+```r
+mod <- lm(mpg ~ wt, data = mtcars)
+str(mod, max.level = 2, give.attr = FALSE)
+```
+
+```
+## List of 12
+##  $ coefficients : Named num [1:2] 37.29 -5.34
+##  $ residuals    : Named num [1:32] -2.28 -0.92 -2.09 1.3 -0.2 ...
+##  $ effects      : Named num [1:32] -113.65 -29.116 -1.661 1.631 0.111 ...
+##  $ rank         : int 2
+##  $ fitted.values: Named num [1:32] 23.3 21.9 24.9 20.1 18.9 ...
+##  $ assign       : int [1:2] 0 1
+##  $ qr           :List of 5
+##   ..$ qr   : num [1:32, 1:2] -5.657 0.177 0.177 0.177 0.177 ...
+##   ..$ qraux: num [1:2] 1.18 1.05
+##   ..$ pivot: int [1:2] 1 2
+##   ..$ tol  : num 1e-07
+##   ..$ rank : int 2
+##  $ df.residual  : int 30
+##  $ xlevels      : Named list()
+##  $ call         : language lm(formula = mpg ~ wt, data = mtcars)
+##  $ terms        :Classes 'terms', 'formula' length 3 mpg ~ wt
+##  $ model        :'data.frame':	32 obs. of  2 variables:
+##   ..$ mpg: num [1:32] 21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...
+##   ..$ wt : num [1:32] 2.62 2.88 2.32 3.21 3.44 ...
+```
+
+```r
+mod[[c("qr", "rank")]]
+```
+
+```
+## [1] 2
+```
+This goes into the fitted model, gets the `qr` list element, and then goes into that to retrieve the `rank` element. Cleaner than `mod[["qr"]][["rank"]]`.
 
 ### Working the exercises
 
@@ -361,25 +422,40 @@ jMat[sample(length(jMat))]
 ```
 
 ```
-##      col2 col4 col1 col3
-## row1  x12  x14  x11  x13
-## row2  x22  x24  x21  x23
-## row3  x32  x34  x31  x33
-## row4  x42  x44  x41  x43
+##      col3 col2 col4 col1
+## row1  x13  x12  x14  x11
+## row2  x23  x22  x24  x21
+## row3  x33  x32  x34  x31
+## row4  x43  x42  x44  x41
 ```
 
 ```r
-## permute rows and columns in one step
+## permute rows and columns in one step -- my original solution
 jMat[sample(length(jMat))][sample(nrow(jMat)), ]
 ```
 
 ```
-##      col3 col4 col2 col1
-## row2  x23  x24  x22  x21
-## row4  x43  x44  x42  x41
-## row1  x13  x14  x12  x11
-## row3  x33  x34  x32  x31
+##      col3 col1 col2 col4
+## row1  x13  x11  x12  x14
+## row3  x33  x31  x32  x34
+## row4  x43  x41  x42  x44
+## row2  x23  x21  x22  x24
 ```
+
+```r
+## solution after seeing Andrew's and Alathea's
+jMat[sample(nrow(jMat)), sample(length(jMat))]
+```
+
+```
+##      col4 col1 col3 col2
+## row3  x34  x31  x33  x32
+## row1  x14  x11  x13  x12
+## row2  x24  x21  x23  x22
+## row4  x44  x41  x43  x42
+```
+
+I had worried (but not constructively enough to test!) that shuffling rows and columns at the same time would violate the integrity of rows and columns. But it does not.
 
 #### How would you select a random sample of `m` rows from a data frame? What if the sample had to be contiguous (i.e. with an initial row, a final row, and every row in between)?
 
@@ -392,8 +468,8 @@ jMat[sample(nrow(jMat), size = m), ]
 
 ```
 ##      col1 col2 col3 col4
+## row2  x21  x22  x23  x24
 ## row4  x41  x42  x43  x44
-## row3  x31  x32  x33  x34
 ```
 
 ```r
@@ -403,8 +479,8 @@ jMat[sample(nrow(jMat) - m + 1, size = 1) + (0:(m - 1)), ]
 
 ```
 ##      col1 col2 col3 col4
+## row2  x21  x22  x23  x24
 ## row3  x31  x32  x33  x34
-## row4  x41  x42  x43  x44
 ```
     
 #### How could you put the columns in a data frame in alphaetical order?

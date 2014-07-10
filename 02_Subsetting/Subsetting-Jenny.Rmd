@@ -64,8 +64,8 @@ Week 02 2014-07-10 we read [Subsetting](http://adv-r.had.co.nz/Subsetting.html).
   * `mtcars[mtcars$cyl = 4, ]` *Replace the single `=` with double `==`.*
   * `mtcars[-1:4, ]` *Indexing vector mixes negative and positive integers which is a no-no; if goal is to drop elements 1 through 4 surround with parentheses, i.e. `mtcars[-(1:4), ]`.*
   * `mtcars[mtcars$cyl <= 5]` *This is vector-style indexing of data frame; I assume user meant to type `mtcars[mtcars$cyl <= 5, ]`.*
-  * `mtcars[mtcars$cyl == 4 | 6, ]` *Sadly, you can't use `|` like that, but beware because this will NOT produce an error. It just won't return rows with cylinder equal to 4 or 6. How to fix? Pick one of these options: `mtcars[mtcars$cyl %in% c(4, 6), ]` or `mtcars[mtcars$cyl == 4 | mtcars$cyl == 6, ]`*
-  * Why does `x <- 1:5; x[NA]` yield five missing values? Hint: why is it different from `x[NA_real_]?` *`NA` is a logical vector of length one. It's perfectly OK to index by a logical vector. Recycling will expand this to 5 logical `NA`s. And then indexing by `NA` always gives back an `NA`, so you get five of them.*
+  * `mtcars[mtcars$cyl == 4 | 6, ]` *Sadly, you can't use `|` like that, but beware because this will NOT produce an error. It just won't return rows with cylinder equal to 4 or 6; in fact, it returns all the rows. Why? Because the combination of coercion and recycling implies that `6` will become a logical vector ot `TRUE`s of length equal to the rows in `mtcars`. How to fix? Pick one of these options: `mtcars[mtcars$cyl %in% c(4, 6), ]` or `mtcars[mtcars$cyl == 4 | mtcars$cyl == 6, ]`*
+  * Why does `x <- 1:5; x[NA]` yield five missing values? Hint: why is it different from `x[NA_real_]?` *`NA` is a logical vector of length one. It's perfectly OK to index by a logical vector. Recycling will expand this to 5 logical `NA`s. And then indexing by `NA` always gives back an `NA`, so you get five of them. Indexing by `NA_real_` is indexing by a double. It will get truncated and be as if you're indexing by the integer `1`.*
 
 #### What does `upper.tri()` return? How does subsetting a matrix with it work? Do we need any additional subsetting rules to describe its behaviour?
 
@@ -120,6 +120,25 @@ Great tweet:
 > @[RLangTip](http://twitter.com/#!/RLangTip/status/118339256388304896)
 
 Remember that `$` does partial matching, whereas `[[` does not. I am not a fan of partial matching. Be explicit. Use autocompletion to help with all that strenuous typing.
+
+Andrew was really excited by this re: indexing via `[[` with a vector:
+
+```{r}
+# If you do supply a vector it indexes recursively
+b <- list(a = list(b = list(c = list(d = 1))))
+b[[c("a", "b", "c", "d")]]
+# Same as
+b[["a"]][["b"]][["c"]][["d"]]
+```
+I had kinda glossed over that, but his usage made me appreciate this. It can be nice way to get something that is an element of a list that is itself an element of a list. Easier to see in an example:
+
+```{r}
+mod <- lm(mpg ~ wt, data = mtcars)
+str(mod, max.level = 2, give.attr = FALSE)
+mod[[c("qr", "rank")]]
+
+```
+This goes into the fitted model, gets the `qr` list element, and then goes into that to retrieve the `rank` element. Cleaner than `mod[["qr"]][["rank"]]`.
 
 ### Working the exercises
 
@@ -192,9 +211,13 @@ dimnames(jMat) <- list(paste0("row", seq_len(nrow(jMat))),
 jMat
 ## permute the columns of jMat
 jMat[sample(length(jMat))]
-## permute rows and columns in one step
+## permute rows and columns in one step -- my original solution
 jMat[sample(length(jMat))][sample(nrow(jMat)), ]
+## solution after seeing Andrew's and Alathea's
+jMat[sample(nrow(jMat)), sample(length(jMat))]
 ```
+
+I had worried (but not constructively enough to test!) that shuffling rows and columns at the same time would violate the integrity of rows and columns. But it does not.
 
 #### How would you select a random sample of `m` rows from a data frame? What if the sample had to be contiguous (i.e. with an initial row, a final row, and every row in between)?
 
