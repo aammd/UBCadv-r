@@ -51,6 +51,54 @@ df[c("x", "z")]
  ```
  `df[is.na(df)] <- 0` sets all `NA`s in a data frame to `0`. `is.na(df)` creates a data frame of logicals. `[` selects the `TRUE` values and `<- 0` assigns them to 0.
  
- 
- 
+## Subsetting operators
+
+1. 
+```{r}
+mod <- lm(mpg ~ wt, data = mtcars)
+str(mod, max.level = 1, give.attr = FALSE)
+mod$df.residual
+str(summary(mod))
+summary(mod)$r.squared
+```
+
+## Applications
+
+1.
+```{r}
+df <- data.frame(a = c(1:4), b = c(2:5), c=c(3:6))
+df[sample(ncol(df))]
+```
+
+2. 
+```{r}
+msel <- function(df, n) { 
+    #function to sample n rows from a dataframe df
+    stopifnot(n <= dim(df)[2])
+    stopifnot(n > 0)
+    df[sample(nrow(df), n),]
+}
+
+msel(df,3)
+msel(df,5)
+
+mcon <- function(df, n) {
+    #select n continous rows from a dataframe df
+    stopifnot(is.data.frame(df))
+    stopifnot(n <= dim(df)[2])
+    rowmax <- nrow(df) - n + 1 #stealing from Alaethea!
+    st <- sample(1:rowmax, 1)
+    end <- st + n - 1
+    df[st:end,]
+}
+
+mcon(df, 4)
+mcon(df, 3)
+```
+
+3. 
+```{r} 
+df <- data.frame(matrix(1:25, nrow=5,ncol=5))
+colnames(df) <- sample(letters[1:5])
+df[order(names(df))]
  
