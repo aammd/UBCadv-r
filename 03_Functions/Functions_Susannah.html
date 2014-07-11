@@ -199,13 +199,31 @@ hljs.initHighlightingOnLoad();
 </ol>
 
 <pre><code class="r">objs &lt;- mget(ls(&quot;package:base&quot;), inherits = TRUE)
+nullenv &lt;- function(func) {
+    is.null(environment(func))
+}
 funs &lt;- Filter(is.function, objs)
-arg &lt;- lapply(funs, formals)
-maxcount &lt;- which.max(sapply(arg, length))
+nulls &lt;- Filter(nullenv, funs)
+
+arg &lt;- lapply(funs, formals)  # get formals
+counts &lt;- sapply(arg, length)  # count formals
+maxcount &lt;- which.max(counts)  #find most args
+zeros &lt;- which(counts == 0)  #no args
 </code></pre>
 
 <ul>
-<li>896 has the most arguments.</li>
+<li><code>scan</code> has the most arguments - 896.</li>
+<li>infixes, math functions, casts, control flow, system calls, and debugging functions have no arguments. These are typically primitive functions (see output of <code>sapply(names(zeros),environment</code>). Since primitive functions handle arguments a bit differently than other functions, I guess it&#39;s best to avoid the problem altogether by not having arguments at all!</li>
+<li><pre><code class="r">objs &lt;- mget(ls(&quot;package:base&quot;), inherits = TRUE)
+
+nullenv &lt;- function(func) {
+  # returns true if function environment is null
+  is.null(environment(func))
+}
+
+funs &lt;- Filter(is.function, objs)
+nulls &lt;- Filter(nullenv, funs)
+</code></pre></li>
 </ul>
 
 <h1>Lexical scoping</h1>

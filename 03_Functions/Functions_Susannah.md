@@ -18,12 +18,35 @@ author: "Susannah"
 
 ```r
 objs <- mget(ls("package:base"), inherits = TRUE)
+nullenv <- function(func) {
+    is.null(environment(func))
+}
 funs <- Filter(is.function, objs)
-arg <- lapply(funs, formals)
-maxcount <- which.max(sapply(arg, length))
+nulls <- Filter(nullenv, funs)
+
+arg <- lapply(funs, formals)  # get formals
+counts <- sapply(arg, length)  # count formals
+maxcount <- which.max(counts)  #find most args
+zeros <- which(counts == 0)  #no args
 ```
 
-  * 896 has the most arguments.
+  * `scan` has the most arguments - 896.
+  * infixes, math functions, casts, control flow, system calls, and debugging functions have no arguments. These are typically primitive functions (see output of `sapply(names(zeros),environment`). Since primitive functions handle arguments a bit differently than other functions, I guess it's best to avoid the problem altogether by not having arguments at all!
+  * 
+  
+  ```r
+  objs <- mget(ls("package:base"), inherits = TRUE)
+  
+  nullenv <- function(func) {
+      # returns true if function environment is null
+      is.null(environment(func))
+  }
+  
+  funs <- Filter(is.function, objs)
+  nulls <- Filter(nullenv, funs)
+  ```
+
+  
 
 # Lexical scoping
 

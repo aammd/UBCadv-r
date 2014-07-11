@@ -17,19 +17,45 @@ author: "Susannah"
 2. 
 ```{r}
 objs <- mget(ls("package:base"), inherits = TRUE)
+nullenv <- function(func) {
+    is.null(environment(func))
+}
 funs <- Filter(is.function, objs)
+nulls <- Filter(nullenv, funs)
 
 arg <- lapply(funs, formals) # get formals
 counts <- sapply(arg, length) # count formals
-maxcount <- which.max(counts)) #find most args
+maxcount <- which.max(counts) #find most args
 zeros <- which(counts == 0) #no args
 ```
   * `scan` has the most arguments - `r maxcount`.
-  * infixes, math functions, casts, control flow, system calls, and debugging functions have no arguments. These are typically primitive functions (see output of `sapply(names(zeros),environment`). Since primitive functions handle arguments a bit differently than other functions, it's best to avoid the problem altogether by not having arguments at all!
+  * infixes, math functions, casts, control flow, system calls, and debugging functions have no arguments. These are typically primitive functions (see output of `sapply(names(zeros),environment`). Since primitive functions handle arguments a bit differently than other functions, I guess it's best to avoid the problem altogether by not having arguments at all!
+  * 
+  ```{r}
+  objs <- mget(ls("package:base"), inherits = TRUE)
   
-
+  nullenv <- function(func) {
+    # returns true if function environment is null
+    is.null(environment(func))
+  }
+  
+  funs <- Filter(is.function, objs)
+  nulls <- Filter(nullenv, funs)
+  ```
+  
 # Lexical scoping
 
+1. 
+```{r} c <- 10
+  c(c = c)
+  ```
+  This code returns a vector of length one containing the number 10. The vector has a names attribute of "c." The first `c` is the concatenate function. The second c is an attribute assignment and the third c is a variable, which was assigned to 10 in the previous line.
+2. The four principles are 
+  * name masking: names from the inner environment are used before those in the outer environment
+  * functions vs. variables: R can distinguish between functions and variables, but it's confusing to _you_ if you have variables and functions with the same names
+  * a fresh start: a new environment is created every time a function is run
+  * dynamic lookup: R looks for values when the function is run, of course. This isn't a language where you have to compile things, so I don't think there's another way to do it...
+  
 # EOiaFC
 
 # Function Arguments
