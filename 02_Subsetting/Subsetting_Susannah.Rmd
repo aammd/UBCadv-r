@@ -30,7 +30,7 @@ df[c("x", "z")]
  ```
  `upper.tri` returns a matrix of logicals the same size of a given matrix with entries `TRUE` in the lower or upper triangle. Subsetting a matrix with it returns the entries of the triangle in column order flattened into a vector. We do not need additional subsetting rules to describe its behavior.
  
- 4. `mtcars[1:20]` returns an error because R doesn't know what dimension to subset. `mtcars[1:20,]` specifies both rows and columns (indirectly).
+ 4. `mtcars[1:20]` returns an error because R doesn't know what dimension to subset. `mtcars[1:20,]` specifies both rows and columns (indirectly). THIS IS ALL WRONG. AHHHH. SEE EXAMPLE WITH LISTS IN THE TEXT AND FIGURE OUT EVERYTHING YOU THOUGHT YOU ALREADY KNEW.
  
  5. 
  ```{r}
