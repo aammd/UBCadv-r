@@ -3,7 +3,7 @@ title: "Functions"
 author: "Susannah"
 ---
 
-# Quiz
+## Quiz 
 1. The three elements of a function are the name of the function, the arguments of the function, and the guts of the function. *X* _Functions don't have to have names in `R`, but the environment matters. Remember that time Hadley's plyr masked a function in another package and you got really confused?_
 2. 11
 3. `1 + 2 * 3`
@@ -12,7 +12,7 @@ author: "Susannah"
 6. An infix function is a function like `+,-,/` that generally goes inbetween arguments. I don't know what a replacement function is. *X*
 7. `on.exit()`
 
-# Functional components
+## Functional components 
 1. `class` allows you to tell if an `R` object is a function. I tried to use `attributes()` to find out whether functions were primitive or not, but returned `NULL` for many functions - including functions I knew to be not primitive. Just typing the name of the function without parentheses will tell you whether the function is primitive or not. `environment(function)` returns `NULL` for all primitive functions.
 2. 
 ```{r}
@@ -31,7 +31,7 @@ zeros <- which(counts == 0) #no args
   * `scan` has the most arguments - `r maxcount`.
   * infixes, math functions, casts, control flow, system calls, and debugging functions have no arguments. These are typically primitive functions (see output of `sapply(names(zeros),environment`). Since primitive functions handle arguments a bit differently than other functions, I guess it's best to avoid the problem altogether by not having arguments at all!
   * 
-  ```{r}
+```{r}
   objs <- mget(ls("package:base"), inherits = TRUE)
   
   nullenv <- function(func) {
@@ -41,9 +41,9 @@ zeros <- which(counts == 0) #no args
   
   funs <- Filter(is.function, objs)
   nulls <- Filter(nullenv, funs)
-  ```
+```
   
-# Lexical scoping
+## Lexical scoping 
 
 1. 
 ```{r} c <- 10
@@ -55,12 +55,126 @@ zeros <- which(counts == 0) #no args
   * functions vs. variables: R can distinguish between functions and variables, but it's confusing to _you_ if you have variables and functions with the same names
   * a fresh start: a new environment is created every time a function is run
   * dynamic lookup: R looks for values when the function is run, of course. This isn't a language where you have to compile things, so I don't think there's another way to do it...
+3. 202. Evaluate inner to outer.
   
-# EOiaFC
+## EOiaFC 
+> Everything that exists is an object.
+> Everything that happens is a function call.
+-- John Chambers
 
-# Function Arguments
+## Function Arguments 
+
+Lazy evaluation means that things aren't evaluated unless you use them.
+I don't understand what closures are, _e.g._ "This is important when creating closures with lapply or a loop"
+```{r}
+add <- function(x) {
+  function(y) x + y
+}
+adders <- lapply(1:10, add) 
+adders[[1]](10)
+```
+
+lapply step creates a list of functions and _environments_ where x is assigned according to the inputs to `lapply`. 
+
+```{r}
+ls(environment(adders[[1]]))
+```
+You'd think this would lead to x being 1 in the first environment, 2 in the second environment and so on. However, because of lazy evaluation, `x` is `10` in all environments. 
+
+```{r}
+for (i in 1:10) {
+  print(get("x", pos=environment(adders[[i]])))
+}
+```
+
+I think this has to do with promises and the way `lapply` works. `lapply` is basically a loop in C that in this case is like
+
+`for (i in 1:10) {
+  adders[[i]] <- add(i)
+}`
+
+This loop executes in its own environment where a promise gets made for x at every iteration. At no point have we been asked to evaluate `x`, so no value has been assigned to it - just the [expression `x` and a pointer to the environment the function was called from](http://cran.r-project.org/doc/manuals/r-release/R-lang.html#Promise-objects). At the end of the `lapply` loop when the promises are due, `x` is `10`, so `x` becomes `10` in all of the `adders` environments. 
+
+If we `force(x)`, we cause the promises to come due _before_ the loop ends, so that x gets assigned to the `i` in the `for` loop above instead of just the last number in the sequence. 
+
+```{r}
+add <- function(x) {
+  force(x)
+  function(y) x + y
+}
+adders <- lapply(1:10, add) 
+adders[[1]](10)
+for (i in 1:10) {
+  print(get("x", pos=environment(adders[[i]])))
+}
+```
+
+1. 
+```{r eval=FALSE}
+x <- sample(c(1:10, NA), 20, replace = TRUE)
+y <- runif(20, min = 0, max = 1)
+cor(x, y, method = "kendall", use = "pairwise.complete.obs")
+```
+2. The function returns 3. It illustrates default arguments and lexical scoping (name masking).
+3. This function returns 100. It illustrates promises. _What is the difference between a promise and lazy evaluation? Is lazy evaluation a *type* of promise?_
 
 # Special Calls
+1.
+```{r}
+objs <- mget(ls("package:base"), inherits = TRUE)
+funs <- Filter(is.function, objs)
+repfun <- funs[grep(".*<-", funs)] # List of all replacement functions
+nulls <- Filter(nullenv, repfun)
+```
+Primitive replacement functions are `r names(nulls)`
+2. Valid names for infix functions begin and end with `%`.
+3. 
+```{r}
+`%|||%` <- function(x, y) {
+  ( x | y) & !(x & y) # defn on wikipedia
+}
+x <- c(1, 2, 3)
+y <- c(1, 2, 3)
+(x > y) %|||%  (y < x)
+(x == y) %|||% (x > y)
+```
+4.
+```{r}
+`%uU%` <- function(x, y) {
+    # find intersection of two vectors
+    matches <- match(x, y, nomatch = 0)
+    unique(y[matches])
+}
+x <- seq(2, 50, 3)
+y <- seq(1, 50, 2)
 
+all(x %uU% y == intersect(x, y))
+
+`%U%` <- function(x, y) {
+    # find the union of two vectors
+    unique(c(x,y))
+}
+
+all(x %U% y == union(x,y))
+
+
+`%!!%` <- function(x, y) {
+    # find differences between two vectors
+    matches <- match(x, y, nomatch = 0)
+    unique(x[matches==0])
+}
+
+all(x %!!% y == setdiff(x, y))
+```
+5.
+```{r}
+`modify_rand<-` <- function(x, value) {
+  position <- floor(runif(1, max = length(x)))
+  x[position] <- value
+  x
+}
+modify_rand(x) <- 10
+x
+```
 # Return Values
-
+1. 
