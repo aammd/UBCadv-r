@@ -70,11 +70,13 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#what-does-the-following-code-return-why-what-does-each-of-the-three-cs-mean">What does the following code return? Why? What does each of the three c’s mean?</a></li>
 <li><a href="#what-are-the-four-principles-that-govern-how-r-looks-for-values">What are the four principles that govern how R looks for values?</a></li>
 <li><a href="#what-does-the-following-function-return-make-a-prediction-before-running-the-code-yourself.">What does the following function return? Make a prediction before running the code yourself.</a></li>
+<li><a href="#clarify-the-following-list-of-odd-function-calls">Clarify the following list of odd function calls:</a></li>
 </ul></li>
 <li><a href="#reading-notes">Reading Notes</a><ul>
 <li><a href="#quiz">Quiz</a></li>
 <li><a href="#function-components">Function components</a></li>
 <li><a href="#lexical-scoping">Lexical scoping</a></li>
+<li><a href="#function-arguments">Function arguments</a></li>
 </ul></li>
 <li><a href="#discussion-notes">Discussion Notes</a></li>
 </ul>
@@ -212,7 +214,22 @@ c(c = c)</code></pre>
 }
 f(10)</code></pre>
 <p>The function will go down to the lowest level and find <code>x ^ 2</code> so <code>f(x) &lt;- 100</code>. Next, R will arrive at the command <code>f(x) + 1</code> and get <code>100 + 1 = 101</code> and finally multiply by two to get <code>202</code></p>
+</div>
+<div id="clarify-the-following-list-of-odd-function-calls" class="section level3">
+<h3>Clarify the following list of odd function calls:</h3>
+<div id="x---samplereplace-true-20-x-c110-na" class="section level4">
+<h4><code>x &lt;- sample(replace = TRUE, 20, x = c(1:10, NA))</code></h4>
+<p><code>x &lt;- sample(c(1:10, NA), 20, replace = TRUE)</code></p>
+</div>
+<div id="y---runifmin-0-max-1-20" class="section level4">
+<h4><code>y &lt;- runif(min = 0, max = 1, 20)</code></h4>
+<p><code>y &lt;- runif(20, 0, 1)</code></p>
+</div>
+<div id="corm-k-y-y-u-p-x-x" class="section level4">
+<h4><code>cor(m = &quot;k&quot;, y = y, u = &quot;p&quot;, x = x)</code></h4>
+<p><code>cor(x, y, use = &quot;pairwise.complete.obs&quot;, method = &quot;kendall&quot;)</code></p>
 <hr />
+</div>
 </div>
 </div>
 <div id="reading-notes" class="section level2">
@@ -242,6 +259,7 @@ f1(1)()</code></pre>
 <div id="how-could-you-make-this-call-easier-to-read" class="section level4">
 <h4>How could you make this call easier to read?</h4>
 <p><strong><code>mean(, TRUE, x = c(1:10, NA))</code></strong></p>
+<p><code>mean(c(1:10), na.rm = TRUE)</code></p>
 </div>
 <div id="does-the-following-function-throw-an-error-when-called-whywhy-not" class="section level4">
 <h4>Does the following function throw an error when called? Why/why not?</h4>
@@ -277,6 +295,21 @@ f2(10, stop(&quot;This is an error!&quot;))</code></pre>
 <p>a fresh environment is created every time a function is run; R does not remember what happened the last time the function was run</p>
 <p><code>findGlobals()</code> from the package <code>codetools</code> is cool b/c you can look up the external dependencies of your functions</p>
 <hr />
+</div>
+<div id="function-arguments" class="section level3">
+<h3>Function arguments</h3>
+<p>order of argument matching:</p>
+<ol style="list-style-type: decimal">
+<li>exact name</li>
+<li>prefix</li>
+<li>position</li>
+</ol>
+<p><code>do.call()</code>: supply a function with a list of arguments</p>
+<p>e.g. <code>do.call(mean, list(1:10, na.trim = TRUE))</code></p>
+<p><code>missing()</code>: was the argument supplied?</p>
+<p>or set the default to <code>NULL</code> and use <code>is.null()</code></p>
+<p>R only uses the function arguments it needs, unless you use <code>force()</code></p>
+<p><strong>promise</strong>: and unevaluated argument</p>
 </div>
 </div>
 <div id="discussion-notes" class="section level2">

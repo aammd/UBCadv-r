@@ -173,6 +173,22 @@ f(10)
 
 The function will go down to the lowest level and find `x ^ 2` so `f(x) <- 100`. Next, R will arrive at the command `f(x) + 1` and get `100 + 1 = 101` and finally multiply by two to get `202`
 
+### Clarify the following list of odd function calls:
+
+#### `x <- sample(replace = TRUE, 20, x = c(1:10, NA))`
+
+`x <- sample(c(1:10, NA), 20, replace = TRUE)`
+
+#### `y <- runif(min = 0, max = 1, 20)`
+
+`y <- runif(20, 0, 1)`
+
+#### `cor(m = "k", y = y, u = "p", x = x)`
+
+`cor(x, y, use = "pairwise.complete.obs", method = "kendall")`
+
+
+
 ***
 
 ## Reading Notes
@@ -206,7 +222,7 @@ I think `1 + (2 * 3)`
 #### How could you make this call easier to read?
 **`mean(, TRUE, x = c(1:10, NA))`**
 
-
+`mean(c(1:10), na.rm = TRUE)`
 
 #### Does the following function throw an error when called?  Why/why not?
 
@@ -257,6 +273,26 @@ a fresh environment is created every time a function is run; R does not remember
 
 
 ***
+
+### Function arguments
+
+order of argument matching:
+
+1. exact name
+2. prefix
+3. position
+
+`do.call()`: supply a function with a list of arguments
+
+e.g. `do.call(mean, list(1:10, na.trim = TRUE))`
+
+`missing()`: was the argument supplied?
+
+or set the default to `NULL` and use `is.null()`
+
+R only uses the function arguments it needs, unless you use `force()`
+
+**promise**: and unevaluated argument
 
 ## Discussion Notes
 
