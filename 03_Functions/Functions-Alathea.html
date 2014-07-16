@@ -67,10 +67,12 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#use-it-to-answer-the-following-questions">Use it to answer the following questions:</a></li>
 <li><a href="#what-are-the-three-important-components-of-a-function">What are the three important components of a function?</a></li>
 <li><a href="#when-does-printing-a-function-not-show-what-environment-it-was-created-in">When does printing a function not show what environment it was created in?</a></li>
+<li><a href="#w">W</a></li>
 </ul></li>
 <li><a href="#reading-notes">Reading Notes</a><ul>
 <li><a href="#quiz">Quiz</a></li>
 <li><a href="#function-components">Function components</a></li>
+<li><a href="#lexical-scoping">Lexical scoping</a></li>
 </ul></li>
 <li><a href="#discussion-notes">Discussion Notes</a></li>
 </ul>
@@ -184,6 +186,9 @@ names(prims)</code></pre>
 <div id="when-does-printing-a-function-not-show-what-environment-it-was-created-in" class="section level3">
 <h3>When does printing a function not show what environment it was created in?</h3>
 <p>If the function has a custom print method, or if it is a primitive function.</p>
+</div>
+<div id="w" class="section level3">
+<h3>W</h3>
 <hr />
 </div>
 </div>
@@ -234,6 +239,20 @@ f2(10, stop(&quot;This is an error!&quot;))</code></pre>
 <p>body, formals, environment</p>
 <p>functions can have a custom print method (as in modeling functions)</p>
 <p>primitive functions do not have the three components; different methods are used to match arguments: * <code>switch</code> = chooses an argument based on a given expression * <code>call</code></p>
+</div>
+<div id="lexical-scoping" class="section level3">
+<h3>Lexical scoping</h3>
+<p>components of lexical scoping:</p>
+<ul>
+<li>name masking</li>
+<li>functions vs. variables</li>
+<li>a fresh start</li>
+<li>dynamic lookup</li>
+</ul>
+<p>if a function cannot find the value of a variable, it will check the next level up and so on</p>
+<p>the same behavior is present when R is looking for a function</p>
+<p>a fresh environment is created every time a function is run; R does not remember what happened the last time the function was run</p>
+<p><code>findGlobals()</code> from the package <code>codetools</code> is cool b/c you can look up the external dependencies of your functions</p>
 <hr />
 </div>
 </div>

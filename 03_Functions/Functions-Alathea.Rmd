@@ -65,6 +65,8 @@ names(prims)
 
 If the function has a custom print method, or if it is a primitive function.
 
+### W
+
 ***
 
 ## Reading Notes
@@ -125,6 +127,26 @@ functions can have a custom print method (as in modeling functions)
 primitive functions do not have the three components; different methods are used to match arguments:
 * `switch` = chooses an argument based on a given expression
 * `call`
+
+### Lexical scoping
+
+components of lexical scoping:
+
+* name masking
+* functions vs. variables
+* a fresh start
+* dynamic lookup
+
+if a function cannot find the value of a variable, it will check the next level up and so on
+
+the same behavior is present when R is looking for a function
+
+a fresh environment is created every time a function is run; R does not remember what happened the last time the function was run
+
+`findGlobals()` from the package `codetools` is cool b/c you can look up the external dependencies of your functions
+
+
+
 
 ***
 
