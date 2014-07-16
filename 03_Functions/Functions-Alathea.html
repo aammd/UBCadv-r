@@ -67,7 +67,9 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#use-it-to-answer-the-following-questions">Use it to answer the following questions:</a></li>
 <li><a href="#what-are-the-three-important-components-of-a-function">What are the three important components of a function?</a></li>
 <li><a href="#when-does-printing-a-function-not-show-what-environment-it-was-created-in">When does printing a function not show what environment it was created in?</a></li>
-<li><a href="#w">W</a></li>
+<li><a href="#what-does-the-following-code-return-why-what-does-each-of-the-three-cs-mean">What does the following code return? Why? What does each of the three c’s mean?</a></li>
+<li><a href="#what-are-the-four-principles-that-govern-how-r-looks-for-values">What are the four principles that govern how R looks for values?</a></li>
+<li><a href="#what-does-the-following-function-return-make-a-prediction-before-running-the-code-yourself.">What does the following function return? Make a prediction before running the code yourself.</a></li>
 </ul></li>
 <li><a href="#reading-notes">Reading Notes</a><ul>
 <li><a href="#quiz">Quiz</a></li>
@@ -187,8 +189,29 @@ names(prims)</code></pre>
 <h3>When does printing a function not show what environment it was created in?</h3>
 <p>If the function has a custom print method, or if it is a primitive function.</p>
 </div>
-<div id="w" class="section level3">
-<h3>W</h3>
+<div id="what-does-the-following-code-return-why-what-does-each-of-the-three-cs-mean" class="section level3">
+<h3>What does the following code return? Why? What does each of the three c’s mean?</h3>
+<pre class="r"><code>c &lt;- 10
+c(c = c)</code></pre>
+<p>The first <code>c()</code> runs the combine function to create a vector with an item named <code>c</code> with value 10</p>
+</div>
+<div id="what-are-the-four-principles-that-govern-how-r-looks-for-values" class="section level3">
+<h3>What are the four principles that govern how R looks for values?</h3>
+<p>name masking, functions vs. variables, a fresh start, dynamic lookup</p>
+</div>
+<div id="what-does-the-following-function-return-make-a-prediction-before-running-the-code-yourself." class="section level3">
+<h3>What does the following function return? Make a prediction before running the code yourself.</h3>
+<pre class="r"><code>f &lt;- function(x) {
+  f &lt;- function(x) {
+    f &lt;- function(x) {
+      x ^ 2
+    }
+    f(x) + 1
+  }
+  f(x) * 2
+}
+f(10)</code></pre>
+<p>The function will go down to the lowest level and find <code>x ^ 2</code> so <code>f(x) &lt;- 100</code>. Next, R will arrive at the command <code>f(x) + 1</code> and get <code>100 + 1 = 101</code> and finally multiply by two to get <code>202</code></p>
 <hr />
 </div>
 </div>

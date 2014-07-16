@@ -141,7 +141,37 @@ names(prims)
 
 If the function has a custom print method, or if it is a primitive function.
 
-### W
+### What does the following code return? Why? What does each of the three c’s mean?
+
+
+```r
+c <- 10
+c(c = c)
+```
+
+The first `c()` runs the combine function to create a vector with an item named `c` with value 10
+
+### What are the four principles that govern how R looks for values?
+
+name masking, functions vs. variables, a fresh start, dynamic lookup
+
+### What does the following function return? Make a prediction before running the code yourself.
+
+
+```r
+f <- function(x) {
+  f <- function(x) {
+    f <- function(x) {
+      x ^ 2
+    }
+    f(x) + 1
+  }
+  f(x) * 2
+}
+f(10)
+```
+
+The function will go down to the lowest level and find `x ^ 2` so `f(x) <- 100`. Next, R will arrive at the command `f(x) + 1` and get `100 + 1 = 101` and finally multiply by two to get `202`
 
 ***
 
