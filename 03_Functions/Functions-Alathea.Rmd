@@ -12,6 +12,49 @@ output:
 
 ## Exercises
 
+### What function allows you to tell if an object is a function? What function allows you to tell if a function is a primitive function?
+
+`str` or `is.function` will identify functions.  `is.primitive` tells whether or not a function is primitive.
+
+### This code makes a list of all functions in the base package.
+
+```{r ex_function_list}
+objs <- mget(ls("package:base"), inherits = TRUE)
+funs <- Filter(is.function, objs)
+```
+
+### Use it to answer the following questions:
+
+#### Which base function has the most arguments?
+
+The arguments can be obtained using the function `formals`.
+
+```{r most_arguments}
+require(plyr)
+
+# create a vector of lengths
+arg_length <- laply(funs, function(x)(length(formals(x))))
+
+# find the max
+max_args <- which(arg_length == max(arg_length))
+
+# get the name of the function
+names(funs[max_args])
+```
+
+#### How many base functions have no arguments? What’s special about those functions.
+
+```{r no_arguments}
+length(which(arg_length == 0))
+```
+
+#### How could you adapt the code to find all primitive functions?
+
+```{r find_primitives}
+prims <- Filter(is.primitive, objs)
+names(prims)
+```
+
 ***
 
 ## Reading Notes
