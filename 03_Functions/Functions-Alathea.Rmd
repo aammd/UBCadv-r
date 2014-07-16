@@ -55,6 +55,16 @@ prims <- Filter(is.primitive, objs)
 names(prims)
 ```
 
+### What are the three important components of a function?
+
+`formals()`: the arguments
+`body()`: the function content
+`environment()`: the environment where the variables are stored
+
+### When does printing a function not show what environment it was created in?
+
+If the function has a custom print method, or if it is a primitive function.
+
 ***
 
 ## Reading Notes

@@ -61,7 +61,13 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 
 <div id="TOC">
 <ul>
-<li><a href="#exercises">Exercises</a></li>
+<li><a href="#exercises">Exercises</a><ul>
+<li><a href="#what-function-allows-you-to-tell-if-an-object-is-a-function-what-function-allows-you-to-tell-if-a-function-is-a-primitive-function">What function allows you to tell if an object is a function? What function allows you to tell if a function is a primitive function?</a></li>
+<li><a href="#this-code-makes-a-list-of-all-functions-in-the-base-package.">This code makes a list of all functions in the base package.</a></li>
+<li><a href="#use-it-to-answer-the-following-questions">Use it to answer the following questions:</a></li>
+<li><a href="#what-are-the-three-important-components-of-a-function">What are the three important components of a function?</a></li>
+<li><a href="#when-does-printing-a-function-not-show-what-environment-it-was-created-in">When does printing a function not show what environment it was created in?</a></li>
+</ul></li>
 <li><a href="#reading-notes">Reading Notes</a><ul>
 <li><a href="#quiz">Quiz</a></li>
 <li><a href="#function-components">Function components</a></li>
@@ -73,7 +79,113 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <hr />
 <div id="exercises" class="section level2">
 <h2>Exercises</h2>
+<div id="what-function-allows-you-to-tell-if-an-object-is-a-function-what-function-allows-you-to-tell-if-a-function-is-a-primitive-function" class="section level3">
+<h3>What function allows you to tell if an object is a function? What function allows you to tell if a function is a primitive function?</h3>
+<p><code>str</code> or <code>is.function</code> will identify functions. <code>is.primitive</code> tells whether or not a function is primitive.</p>
+</div>
+<div id="this-code-makes-a-list-of-all-functions-in-the-base-package." class="section level3">
+<h3>This code makes a list of all functions in the base package.</h3>
+<pre class="r"><code>objs &lt;- mget(ls(&quot;package:base&quot;), inherits = TRUE)
+funs &lt;- Filter(is.function, objs)</code></pre>
+</div>
+<div id="use-it-to-answer-the-following-questions" class="section level3">
+<h3>Use it to answer the following questions:</h3>
+<div id="which-base-function-has-the-most-arguments" class="section level4">
+<h4>Which base function has the most arguments?</h4>
+<p>The arguments can be obtained using the function <code>formals</code>.</p>
+<pre class="r"><code>require(plyr)</code></pre>
+<pre><code>## Loading required package: plyr</code></pre>
+<pre class="r"><code># create a vector of lengths
+arg_length &lt;- laply(funs, function(x)(length(formals(x))))
+
+# find the max
+max_args &lt;- which(arg_length == max(arg_length))
+
+# get the name of the function
+names(funs[max_args])</code></pre>
+<pre><code>## [1] &quot;scan&quot;</code></pre>
+</div>
+<div id="how-many-base-functions-have-no-arguments-whats-special-about-those-functions." class="section level4">
+<h4>How many base functions have no arguments? What’s special about those functions.</h4>
+<pre class="r"><code>length(which(arg_length == 0))</code></pre>
+<pre><code>## [1] 221</code></pre>
+</div>
+<div id="how-could-you-adapt-the-code-to-find-all-primitive-functions" class="section level4">
+<h4>How could you adapt the code to find all primitive functions?</h4>
+<pre class="r"><code>prims &lt;- Filter(is.primitive, objs)
+names(prims)</code></pre>
+<pre><code>##   [1] &quot;^&quot;               &quot;~&quot;               &quot;&lt;&quot;              
+##   [4] &quot;&lt;&lt;-&quot;             &quot;&lt;=&quot;              &quot;&lt;-&quot;             
+##   [7] &quot;=&quot;               &quot;==&quot;              &quot;&gt;&quot;              
+##  [10] &quot;&gt;=&quot;              &quot;|&quot;               &quot;||&quot;             
+##  [13] &quot;-&quot;               &quot;:&quot;               &quot;!&quot;              
+##  [16] &quot;!=&quot;              &quot;/&quot;               &quot;(&quot;              
+##  [19] &quot;[&quot;               &quot;[&lt;-&quot;             &quot;[[&quot;             
+##  [22] &quot;[[&lt;-&quot;            &quot;{&quot;               &quot;@&quot;              
+##  [25] &quot;@&lt;-&quot;             &quot;$&quot;               &quot;$&lt;-&quot;            
+##  [28] &quot;*&quot;               &quot;&amp;&quot;               &quot;&amp;&amp;&quot;             
+##  [31] &quot;%/%&quot;             &quot;%*%&quot;             &quot;%%&quot;             
+##  [34] &quot;+&quot;               &quot;abs&quot;             &quot;acos&quot;           
+##  [37] &quot;acosh&quot;           &quot;all&quot;             &quot;any&quot;            
+##  [40] &quot;anyNA&quot;           &quot;Arg&quot;             &quot;as.call&quot;        
+##  [43] &quot;as.character&quot;    &quot;as.complex&quot;      &quot;as.double&quot;      
+##  [46] &quot;as.environment&quot;  &quot;asin&quot;            &quot;asinh&quot;          
+##  [49] &quot;as.integer&quot;      &quot;as.logical&quot;      &quot;as.numeric&quot;     
+##  [52] &quot;as.raw&quot;          &quot;atan&quot;            &quot;atanh&quot;          
+##  [55] &quot;attr&quot;            &quot;attr&lt;-&quot;          &quot;attributes&quot;     
+##  [58] &quot;attributes&lt;-&quot;    &quot;baseenv&quot;         &quot;break&quot;          
+##  [61] &quot;browser&quot;         &quot;c&quot;               &quot;call&quot;           
+##  [64] &quot;ceiling&quot;         &quot;class&quot;           &quot;class&lt;-&quot;        
+##  [67] &quot;Conj&quot;            &quot;cos&quot;             &quot;cosh&quot;           
+##  [70] &quot;cospi&quot;           &quot;cummax&quot;          &quot;cummin&quot;         
+##  [73] &quot;cumprod&quot;         &quot;cumsum&quot;          &quot;digamma&quot;        
+##  [76] &quot;dim&quot;             &quot;dim&lt;-&quot;           &quot;dimnames&quot;       
+##  [79] &quot;dimnames&lt;-&quot;      &quot;emptyenv&quot;        &quot;enc2native&quot;     
+##  [82] &quot;enc2utf8&quot;        &quot;environment&lt;-&quot;   &quot;exp&quot;            
+##  [85] &quot;expm1&quot;           &quot;expression&quot;      &quot;floor&quot;          
+##  [88] &quot;for&quot;             &quot;function&quot;        &quot;gamma&quot;          
+##  [91] &quot;gc.time&quot;         &quot;globalenv&quot;       &quot;if&quot;             
+##  [94] &quot;Im&quot;              &quot;interactive&quot;     &quot;invisible&quot;      
+##  [97] &quot;is.array&quot;        &quot;is.atomic&quot;       &quot;is.call&quot;        
+## [100] &quot;is.character&quot;    &quot;is.complex&quot;      &quot;is.double&quot;      
+## [103] &quot;is.environment&quot;  &quot;is.expression&quot;   &quot;is.finite&quot;      
+## [106] &quot;is.function&quot;     &quot;is.infinite&quot;     &quot;is.integer&quot;     
+## [109] &quot;is.language&quot;     &quot;is.list&quot;         &quot;is.logical&quot;     
+## [112] &quot;is.matrix&quot;       &quot;is.na&quot;           &quot;is.name&quot;        
+## [115] &quot;is.nan&quot;          &quot;is.null&quot;         &quot;is.numeric&quot;     
+## [118] &quot;is.object&quot;       &quot;is.pairlist&quot;     &quot;is.raw&quot;         
+## [121] &quot;is.recursive&quot;    &quot;isS4&quot;            &quot;is.single&quot;      
+## [124] &quot;is.symbol&quot;       &quot;lazyLoadDBfetch&quot; &quot;length&quot;         
+## [127] &quot;length&lt;-&quot;        &quot;levels&lt;-&quot;        &quot;lgamma&quot;         
+## [130] &quot;list&quot;            &quot;log&quot;             &quot;log10&quot;          
+## [133] &quot;log1p&quot;           &quot;log2&quot;            &quot;max&quot;            
+## [136] &quot;min&quot;             &quot;missing&quot;         &quot;Mod&quot;            
+## [139] &quot;names&quot;           &quot;names&lt;-&quot;         &quot;nargs&quot;          
+## [142] &quot;next&quot;            &quot;nzchar&quot;          &quot;oldClass&quot;       
+## [145] &quot;oldClass&lt;-&quot;      &quot;on.exit&quot;         &quot;pos.to.env&quot;     
+## [148] &quot;proc.time&quot;       &quot;prod&quot;            &quot;quote&quot;          
+## [151] &quot;range&quot;           &quot;Re&quot;              &quot;rep&quot;            
+## [154] &quot;repeat&quot;          &quot;retracemem&quot;      &quot;return&quot;         
+## [157] &quot;round&quot;           &quot;seq_along&quot;       &quot;seq.int&quot;        
+## [160] &quot;seq_len&quot;         &quot;sign&quot;            &quot;signif&quot;         
+## [163] &quot;sin&quot;             &quot;sinh&quot;            &quot;sinpi&quot;          
+## [166] &quot;sqrt&quot;            &quot;standardGeneric&quot; &quot;storage.mode&lt;-&quot; 
+## [169] &quot;substitute&quot;      &quot;sum&quot;             &quot;switch&quot;         
+## [172] &quot;tan&quot;             &quot;tanh&quot;            &quot;tanpi&quot;          
+## [175] &quot;tracemem&quot;        &quot;trigamma&quot;        &quot;trunc&quot;          
+## [178] &quot;unclass&quot;         &quot;untracemem&quot;      &quot;UseMethod&quot;      
+## [181] &quot;while&quot;           &quot;xtfrm&quot;</code></pre>
+</div>
+</div>
+<div id="what-are-the-three-important-components-of-a-function" class="section level3">
+<h3>What are the three important components of a function?</h3>
+<p><code>formals()</code>: the arguments <code>body()</code>: the function content <code>environment()</code>: the environment where the variables are stored</p>
+</div>
+<div id="when-does-printing-a-function-not-show-what-environment-it-was-created-in" class="section level3">
+<h3>When does printing a function not show what environment it was created in?</h3>
+<p>If the function has a custom print method, or if it is a primitive function.</p>
 <hr />
+</div>
 </div>
 <div id="reading-notes" class="section level2">
 <h2>Reading Notes</h2>
