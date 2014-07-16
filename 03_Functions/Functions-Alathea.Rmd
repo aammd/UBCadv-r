@@ -16,6 +16,52 @@ output:
 
 ## Reading Notes
 
+### Quiz
+
+#### What are the three components of a function?
+
+#### What does the following code return?
+
+```{r quiz1, eval = FALSE}
+y <- 10
+f1 <- function(x) {
+  function() {
+    x + 10
+  }
+}
+f1(1)()
+```
+
+11
+
+#### How would you more typically write this code?
+**`` `+`(1, `*`(2, 3))``**
+
+I think `1 + (2 * 3)`
+
+#### How could you make this call easier to read?
+**`mean(, TRUE, x = c(1:10, NA))`**
+
+
+
+#### Does the following function throw an error when called?  Why/why not?
+```{r quiz2, eval = FALSE}
+f2 <- function(a, b) {
+  a * 10
+}
+f2(10, stop("This is an error!"))
+```
+
+
+
+#### What is an infix function? How do you write it? What’s a replacement function? How do you write it?
+
+
+
+#### What function do you use to ensure that a cleanup action occurs regardless of how a function terminates?
+
+
+
 ***
 
 ## Discussion Notes
