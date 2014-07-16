@@ -14,6 +14,8 @@ Alathea
 
 #### What are the three components of a function?
 
+body, formals, environment
+
 #### What does the following code return?
 
 
@@ -30,7 +32,42 @@ f1(1)()
 11
 
 #### How would you more typically write this code?
-#### `` `+`(1, `*`(2, 3))``
+**`` `+`(1, `*`(2, 3))``**
+
+I think `1 + (2 * 3)`
+
+#### How could you make this call easier to read?
+**`mean(, TRUE, x = c(1:10, NA))`**
+
+
+
+#### Does the following function throw an error when called?  Why/why not?
+
+```r
+f2 <- function(a, b) {
+  a * 10
+}
+f2(10, stop("This is an error!"))
+```
+
+
+
+#### What is an infix function? How do you write it? What’s a replacement function? How do you write it?
+
+
+
+#### What function do you use to ensure that a cleanup action occurs regardless of how a function terminates?
+
+
+### Function components
+
+body, formals, environment
+
+functions can have a custom print method (as in modeling functions)
+
+primitive functions do not have the three components; different methods are used to match arguments:
+* `switch` = chooses an argument based on a given expression
+* `call`
 
 ***
 

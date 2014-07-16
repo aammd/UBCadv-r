@@ -20,6 +20,8 @@ output:
 
 #### What are the three components of a function?
 
+body, formals, environment
+
 #### What does the following code return?
 
 ```{r quiz1, eval = FALSE}
@@ -61,6 +63,15 @@ f2(10, stop("This is an error!"))
 #### What function do you use to ensure that a cleanup action occurs regardless of how a function terminates?
 
 
+### Function components
+
+body, formals, environment
+
+functions can have a custom print method (as in modeling functions)
+
+primitive functions do not have the three components; different methods are used to match arguments:
+* `switch` = chooses an argument based on a given expression
+* `call`
 
 ***
 

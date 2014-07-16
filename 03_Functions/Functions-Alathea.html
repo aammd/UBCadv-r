@@ -64,6 +64,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#exercises">Exercises</a></li>
 <li><a href="#reading-notes">Reading Notes</a><ul>
 <li><a href="#quiz">Quiz</a></li>
+<li><a href="#function-components">Function components</a></li>
 </ul></li>
 <li><a href="#discussion-notes">Discussion Notes</a></li>
 </ul>
@@ -80,6 +81,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <h3>Quiz</h3>
 <div id="what-are-the-three-components-of-a-function" class="section level4">
 <h4>What are the three components of a function?</h4>
+<p>body, formals, environment</p>
 </div>
 <div id="what-does-the-following-code-return" class="section level4">
 <h4>What does the following code return?</h4>
@@ -94,11 +96,33 @@ f1(1)()</code></pre>
 </div>
 <div id="how-would-you-more-typically-write-this-code" class="section level4">
 <h4>How would you more typically write this code?</h4>
+<p><strong><code>`+`(1, `*`(2, 3))</code></strong></p>
+<p>I think <code>1 + (2 * 3)</code></p>
 </div>
-<div id="section" class="section level4">
-<h4><code>`+`(1, `*`(2, 3))</code></h4>
+<div id="how-could-you-make-this-call-easier-to-read" class="section level4">
+<h4>How could you make this call easier to read?</h4>
+<p><strong><code>mean(, TRUE, x = c(1:10, NA))</code></strong></p>
+</div>
+<div id="does-the-following-function-throw-an-error-when-called-whywhy-not" class="section level4">
+<h4>Does the following function throw an error when called? Why/why not?</h4>
+<pre class="r"><code>f2 &lt;- function(a, b) {
+  a * 10
+}
+f2(10, stop(&quot;This is an error!&quot;))</code></pre>
+</div>
+<div id="what-is-an-infix-function-how-do-you-write-it-whats-a-replacement-function-how-do-you-write-it" class="section level4">
+<h4>What is an infix function? How do you write it? What’s a replacement function? How do you write it?</h4>
+</div>
+<div id="what-function-do-you-use-to-ensure-that-a-cleanup-action-occurs-regardless-of-how-a-function-terminates" class="section level4">
+<h4>What function do you use to ensure that a cleanup action occurs regardless of how a function terminates?</h4>
+</div>
+</div>
+<div id="function-components" class="section level3">
+<h3>Function components</h3>
+<p>body, formals, environment</p>
+<p>functions can have a custom print method (as in modeling functions)</p>
+<p>primitive functions do not have the three components; different methods are used to match arguments: * <code>switch</code> = chooses an argument based on a given expression * <code>call</code></p>
 <hr />
-</div>
 </div>
 </div>
 <div id="discussion-notes" class="section level2">
