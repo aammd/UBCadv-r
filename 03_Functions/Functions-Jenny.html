@@ -182,12 +182,11 @@ funs &lt;- Filter(is.function, objs)</code></pre>
 ##  $ :::                               :function (pkg, name)  
 ##   [list output truncated]</code></pre>
 <pre class="r"><code>n_args &lt;- sapply(funs, function(x) length(formals(x)))
-the_one &lt;- which.max(base_fn_n_args)</code></pre>
-<pre><code>## Error: object 'base_fn_n_args' not found</code></pre>
-<pre class="r"><code>names(funs)[the_one]</code></pre>
-<pre><code>## Error: object 'the_one' not found</code></pre>
+the_one &lt;- which.max(n_args)
+names(funs)[the_one]</code></pre>
+<pre><code>## [1] &quot;scan&quot;</code></pre>
 <pre class="r"><code>length(formals(funs[[the_one]]))</code></pre>
-<pre><code>## Error: object 'the_one' not found</code></pre>
+<pre><code>## [1] 22</code></pre>
 <ol style="list-style-type: decimal">
 <li>How many base functions have no arguments? What’s special about those functions.</li>
 </ol></li>
@@ -198,10 +197,26 @@ the_one &lt;- which.max(base_fn_n_args)</code></pre>
 ##  221  192  341  187   85   81   29   12    8    3    2    1    2    1    1 
 ##   22 &lt;NA&gt; 
 ##    1    0</code></pre>
-<pre class="r"><code>       length(no_args &lt;- which(base_fn_n_args == 0))</code></pre>
-<pre><code>## Error: object 'base_fn_n_args' not found</code></pre>
+<pre class="r"><code>       length(no_args &lt;- which(n_args == 0))</code></pre>
+<pre><code>## [1] 221</code></pre>
 <pre class="r"><code>       funs[head(no_args)]</code></pre>
-<pre><code>## Error: object 'no_args' not found</code></pre>
+<pre><code>## $`-`
+## function (e1, e2)  .Primitive(&quot;-&quot;)
+## 
+## $`:`
+## .Primitive(&quot;:&quot;)
+## 
+## $`!`
+## function (x)  .Primitive(&quot;!&quot;)
+## 
+## $`!=`
+## function (e1, e2)  .Primitive(&quot;!=&quot;)
+## 
+## $`(`
+## .Primitive(&quot;(&quot;)
+## 
+## $`[`
+## .Primitive(&quot;[&quot;)</code></pre>
 <pre class="r"><code>       addmargins(table(n_args, sapply(funs, is.primitive)))</code></pre>
 <pre><code>##       
 ## n_args FALSE TRUE  Sum

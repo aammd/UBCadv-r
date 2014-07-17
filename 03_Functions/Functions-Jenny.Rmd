@@ -116,7 +116,7 @@ is.primitive(sum)
     ```{r}
 str(funs, max.level = 1, list.len = 6)
 n_args <- sapply(funs, function(x) length(formals(x)))
-the_one <- which.max(base_fn_n_args)
+the_one <- which.max(n_args)
 names(funs)[the_one]
 length(formals(funs[[the_one]]))
     ```
@@ -126,7 +126,7 @@ length(formals(funs[[the_one]]))
        
 ```{r}
        table(n_args, useNA = "always")
-       length(no_args <- which(base_fn_n_args == 0))
+       length(no_args <- which(n_args == 0))
        funs[head(no_args)]
        addmargins(table(n_args, sapply(funs, is.primitive)))
 ```

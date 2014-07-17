@@ -154,19 +154,12 @@ is.primitive(sum)
     
     ```r
     n_args <- sapply(funs, function(x) length(formals(x)))
-    the_one <- which.max(base_fn_n_args)
-    ```
-    
-    ```
-    ## Error: object 'base_fn_n_args' not found
-    ```
-    
-    ```r
+    the_one <- which.max(n_args)
     names(funs)[the_one]
     ```
     
     ```
-    ## Error: object 'the_one' not found
+    ## [1] "scan"
     ```
     
     ```r
@@ -174,7 +167,7 @@ is.primitive(sum)
     ```
     
     ```
-    ## Error: object 'the_one' not found
+    ## [1] 22
     ```
     
     1. How many base functions have no arguments? What's special about those
@@ -194,11 +187,11 @@ is.primitive(sum)
 ```
 
 ```r
-       length(no_args <- which(base_fn_n_args == 0))
+       length(no_args <- which(n_args == 0))
 ```
 
 ```
-## Error: object 'base_fn_n_args' not found
+## [1] 221
 ```
 
 ```r
@@ -206,7 +199,23 @@ is.primitive(sum)
 ```
 
 ```
-## Error: object 'no_args' not found
+## $`-`
+## function (e1, e2)  .Primitive("-")
+## 
+## $`:`
+## .Primitive(":")
+## 
+## $`!`
+## function (x)  .Primitive("!")
+## 
+## $`!=`
+## function (e1, e2)  .Primitive("!=")
+## 
+## $`(`
+## .Primitive("(")
+## 
+## $`[`
+## .Primitive("[")
 ```
 
 ```r
