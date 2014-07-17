@@ -1,7 +1,7 @@
 ---
-title: "Functions"
-author: "Kim"
-date: '2014-07-16'
+Title: "Functions"
+Author: "Kim"
+Date: '2014-07-16'
 ---
 
 ***
@@ -14,7 +14,7 @@ date: '2014-07-16'
 
 1. What are the three components of a function?
 
-** the body, the formals, and the environment. body=code that makes up the function, formals = arguments to the function that specify how it is called, and environment = the location of the function's variables **
+**the body, the formals, and the environment. body=code that makes up the function, formals = arguments to the function that specify how it is called, and environment = the location of the function's variables**
 
 2. What does the following code return?
 
@@ -38,7 +38,7 @@ f1(1)()
 
 4. How could you make this call easier to read?
 
-mean(, TRUE, x = c(1:10, NA))
+`mean(, TRUE, x = c(1:10, NA))`
 
 5. Does the following function throw an error when called? Why/why not?
 
@@ -69,8 +69,6 @@ funs <- Filter(is.function, objs)
 Use it to answer the following questions:
 
 1a. Which base function has the most arguments?
-
-
 
 2a. How many base functions have no arguments? What’s special about those functions.
 
@@ -135,24 +133,30 @@ f(10)
 
 1. Clarify the following list of odd function calls:
 
+```
 x <- sample(replace = TRUE, 20, x = c(1:10, NA))
 y <- runif(min = 0, max = 1, 20)
 cor(m = "k", y = y, u = "p", x = x)
+```
 
 2. What does this function return? Why? Which principle does it illustrate?
 
+```
 f1 <- function(x = {y <- 1; 2}, y = 0) {
   x + y
 }
 f1()
+```
 
 3. What does this function return? Why? Which principle does it illustrate?
 
+```
 f2 <- function(x = z) {
   z <- 100
   x
 }
 f2()
+```
 
 ### So so many Exercises
 
@@ -177,6 +181,7 @@ f2()
 
 4. We can use on.exit() to implement a simple version of capture.output().
 
+```
 capture.output2 <- function(code) {
   temp <- tempfile()
   on.exit(file.remove(temp), add = TRUE)
@@ -189,6 +194,8 @@ capture.output2 <- function(code) {
 }
 capture.output2(cat("a", "b", "c", sep = "\n"))
 > [1] "a" "b" "c"
+```
+
 You might want to compare this function to the real capture.output() and think about the simplifications I’ve made. Is the code easier to understand or harder? Have I removed important functionality?
 
 5. Compare capture.output() to capture.output2(). How do the functions differ? What features have I removed to make the key ideas easier to see? How have I rewritten the key ideas to be easier to understand?
