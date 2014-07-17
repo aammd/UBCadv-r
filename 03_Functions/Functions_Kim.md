@@ -2,11 +2,6 @@
 title: "Functions"
 author: "Kim"
 date: '2014-07-16'
-output: 
-  html_document:
-    keep_md: yes
-    toc: yes
-    theme: united
 ---
 
 ***
@@ -23,6 +18,7 @@ output:
 
 2. What does the following code return?
 
+```
 y <- 10
 f1 <- function(x) {
   function() {
@@ -30,6 +26,7 @@ f1 <- function(x) {
   }
 }
 f1(1)()
+```
 
 **11 b/c it takes the 10 in, sends it to the inner function, adds 1 then spits it back out BUT I DON'T UNDERSTAND THE USE OF THE SECOND PARENTHESES**
 
@@ -45,10 +42,12 @@ mean(, TRUE, x = c(1:10, NA))
 
 5. Does the following function throw an error when called? Why/why not?
 
+```
 f2 <- function(a, b) {
   a * 10
 }
 f2(10, stop("This is an error!"))
+```
 
 6. What is an infix function? How do you write it? What’s a replacement function? How do you write it?
 
@@ -63,8 +62,10 @@ f2(10, stop("This is an error!"))
 
 2. This code makes a list of all functions in the base package.
 
+```
 objs <- mget(ls("package:base"), inherits = TRUE)
 funs <- Filter(is.function, objs)
+```
 Use it to answer the following questions:
 
 1a. Which base function has the most arguments?
@@ -86,8 +87,10 @@ Use it to answer the following questions:
 
 1. What does the following code return? Why? What does each of the three c’s mean?
 
+```
 c <- 10
 c(c = c)
+```
 
 **returns 10 because the function c is read outside the parentheses and within the parentheses is read as an object c. I'm not sure why we need the equals c again though if c has already been assigned?**
 
@@ -102,6 +105,7 @@ dynamic lookup - looks for the object as it has most recently been assigned**
 
 3. What does the following function return? Make a prediction before running the code yourself.
 
+```
 f <- function(x) {
   f <- function(x) {
     f <- function(x) {
@@ -112,6 +116,7 @@ f <- function(x) {
   f(x) * 2
 }
 f(10)
+```
 
 **does NOT produce 21^2 but instead 202 which comes from 10^2 + 1 * 2 because even though the functions occur outer to inner, the inner ones aren't run until R reads into them and gets their definition, so the squaring happens first**
 
