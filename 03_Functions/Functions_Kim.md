@@ -32,9 +32,11 @@ f1(1)()
 
 3. How would you more typically write this code?
 
+```
 `+`(1, `*`(2, 3))
+```
 
-**1 + 2 times 3**
+**1 + 2 x 3**
 
 4. How could you make this call easier to read?
 
@@ -90,7 +92,7 @@ c <- 10
 c(c = c)
 ```
 
-**returns 10 because the function c is read outside the parentheses and within the parentheses is read as an object c. I'm not sure why we need the equals c again though if c has already been assigned?**
+**returns 10 because the function c is read outside the parentheses and within the parentheses is read as an object c.**
 
 
 2. What are the four principles that govern how R looks for values?
