@@ -322,7 +322,8 @@ a %-% b
   x
 }
 
-#a <- seq(1:10)
+# for some reason, R is not finding this function
+a <- seq(1:10)
 #timestwo(a)
 ```
 
