@@ -61,6 +61,23 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <div id="TOC">
 <ul>
 <li><a href="#taking-the-quiz">Taking the quiz</a></li>
+<li><a href="#function-components-exercises">Function components – Exercises</a></li>
+<li><a href="#lexical-scoping">Lexical scoping</a><ul>
+<li><a href="#dynamic-lookup">Dynamic lookup</a></li>
+<li><a href="#exercises">Exercises</a></li>
+</ul></li>
+<li><a href="#function-arguments">Function arguments</a><ul>
+<li><a href="#calling-a-function-given-a-list-of-arguments">Calling a function given a list of arguments</a></li>
+<li><a href="#default-and-missing-arguments">Default and missing arguments</a></li>
+<li><a href="#lazy-evaluation">Lazy evaluation</a></li>
+<li><a href="#section"><code>...</code></a></li>
+<li><a href="#exercises-1">Exercises</a></li>
+</ul></li>
+<li><a href="#special-calls">Special calls</a><ul>
+<li><a href="#infix-functions">Infix functions</a></li>
+<li><a href="#exercises-2">Exercises</a></li>
+</ul></li>
+<li><a href="#return-values">Return values</a></li>
 </ul>
 </div>
 
@@ -133,6 +150,275 @@ f2(10, stop(&quot;This is an error!&quot;))</code></pre></li>
 </ul></li>
 </ol>
 <p><em>Correct.</em></p>
+</div>
+<div id="function-components-exercises" class="section level2">
+<h2>Function components – Exercises</h2>
+<ol style="list-style-type: decimal">
+<li>What function allows you to tell if an object is a function? What function allows you to tell if a function is a primitive function?</li>
+</ol>
+<pre class="r"><code>str(sum)</code></pre>
+<pre><code>## function (..., na.rm = FALSE)</code></pre>
+<pre class="r"><code>get(&quot;sum&quot;)</code></pre>
+<pre><code>## function (..., na.rm = FALSE)  .Primitive(&quot;sum&quot;)</code></pre>
+<pre class="r"><code>is.function(sum)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>is.primitive(sum)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<ol style="list-style-type: decimal">
+<li><p>This code makes a list of all functions in the base package.</p>
+<pre class="r"><code>objs &lt;- mget(ls(&quot;package:base&quot;), inherits = TRUE)
+funs &lt;- Filter(is.function, objs)</code></pre>
+<p>Use it to answer the following questions:</p>
+<ol style="list-style-type: decimal">
+<li>Which base function has the most arguments?</li>
+</ol>
+<pre class="r"><code>str(funs, max.level = 1, list.len = 6)</code></pre>
+<pre><code>## List of 1167
+##  $ -                                 :function (e1, e2)  
+##  $ -.Date                            :function (e1, e2)  
+##  $ -.POSIXt                          :function (e1, e2)  
+##  $ :                                 :.Primitive(&quot;:&quot;) 
+##  $ ::                                :function (pkg, name)  
+##  $ :::                               :function (pkg, name)  
+##   [list output truncated]</code></pre>
+<pre class="r"><code>n_args &lt;- sapply(funs, function(x) length(formals(x)))
+the_one &lt;- which.max(base_fn_n_args)</code></pre>
+<pre><code>## Error: object 'base_fn_n_args' not found</code></pre>
+<pre class="r"><code>names(funs)[the_one]</code></pre>
+<pre><code>## Error: object 'the_one' not found</code></pre>
+<pre class="r"><code>length(formals(funs[[the_one]]))</code></pre>
+<pre><code>## Error: object 'the_one' not found</code></pre>
+<ol style="list-style-type: decimal">
+<li>How many base functions have no arguments? What’s special about those functions.</li>
+</ol></li>
+</ol>
+<pre class="r"><code>       table(n_args, useNA = &quot;always&quot;)</code></pre>
+<pre><code>## n_args
+##    0    1    2    3    4    5    6    7    8    9   10   11   12   14   16 
+##  221  192  341  187   85   81   29   12    8    3    2    1    2    1    1 
+##   22 &lt;NA&gt; 
+##    1    0</code></pre>
+<pre class="r"><code>       length(no_args &lt;- which(base_fn_n_args == 0))</code></pre>
+<pre><code>## Error: object 'base_fn_n_args' not found</code></pre>
+<pre class="r"><code>       funs[head(no_args)]</code></pre>
+<pre><code>## Error: object 'no_args' not found</code></pre>
+<pre class="r"><code>       addmargins(table(n_args, sapply(funs, is.primitive)))</code></pre>
+<pre><code>##       
+## n_args FALSE TRUE  Sum
+##    0      39  182  221
+##    1     192    0  192
+##    2     341    0  341
+##    3     187    0  187
+##    4      85    0   85
+##    5      81    0   81
+##    6      29    0   29
+##    7      12    0   12
+##    8       8    0    8
+##    9       3    0    3
+##    10      2    0    2
+##    11      1    0    1
+##    12      2    0    2
+##    14      1    0    1
+##    16      1    0    1
+##    22      1    0    1
+##    Sum   985  182 1167</code></pre>
+<pre><code>   They are mostly primitive functions.
+   
+1. How could you adapt the code to find all primitive functions?</code></pre>
+<pre class="r"><code>str(prims &lt;-lapply(funs, function(x) if(is.primitive(x)) x else NULL),
+    list.len = 6)</code></pre>
+<pre><code>## List of 1167
+##  $ -                                 :function (e1, e2)  
+##  $ -.Date                            : NULL
+##  $ -.POSIXt                          : NULL
+##  $ :                                 :.Primitive(&quot;:&quot;) 
+##  $ ::                                : NULL
+##  $ :::                               : NULL
+##   [list output truncated]</code></pre>
+<pre class="r"><code>prims[sapply(prims, is.null)] &lt;- NULL
+str(prims, list.len = 6)</code></pre>
+<pre><code>## List of 182
+##  $ -              :function (e1, e2)  
+##  $ :              :.Primitive(&quot;:&quot;) 
+##  $ !              :function (x)  
+##  $ !=             :function (e1, e2)  
+##  $ (              :.Primitive(&quot;(&quot;) 
+##  $ [              :.Primitive(&quot;[&quot;) 
+##   [list output truncated]</code></pre>
+<ol style="list-style-type: decimal">
+<li>What are the three important components of a function?</li>
+</ol>
+<p>Body, environment, arguments.</p>
+<ol style="list-style-type: decimal">
+<li>When does printing a function not show what environment it was created in?</li>
+</ol>
+<p>When the function was created in the global environment.</p>
+</div>
+<div id="lexical-scoping" class="section level2">
+<h2>Lexical scoping</h2>
+<div id="dynamic-lookup" class="section level3">
+<h3>Dynamic lookup</h3>
+<p>This is good to know about: <code>codetools::findGlobals(f)</code>. Will show your function’s external dependencies.</p>
+</div>
+<div id="exercises" class="section level3">
+<h3>Exercises</h3>
+<ol style="list-style-type: decimal">
+<li><p>What does the following code return? Why? What does each of the three <code>c</code>’s mean?</p>
+<pre class="r"><code>c &lt;- 10
+c(c = c)</code></pre></li>
+</ol>
+<p>You get a numeric vector with a single element, holding the value 10, named <code>c</code>.</p>
+<pre class="r"><code>c(c = c)</code></pre>
+<pre><code>## $c
+## function (..., recursive = FALSE)  .Primitive(&quot;c&quot;)</code></pre>
+<pre class="r"><code>str(c(c = c))</code></pre>
+<pre><code>## List of 1
+##  $ c:function (..., recursive = FALSE)</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>What are the four principles that govern how R looks for values?</li>
+</ol>
+<ul>
+<li>name masking</li>
+<li>functions vs. variables</li>
+<li>a fresh start</li>
+<li>dynamic lookup</li>
+</ul>
+<ol start="3" style="list-style-type: decimal">
+<li><p>What does the following function return? Make a prediction before running the code yourself.</p>
+<pre class="r"><code>f &lt;- function(x) {
+  f &lt;- function(x) {
+    f &lt;- function(x) {
+      x ^ 2
+    }
+    f(x) + 1
+  }
+  f(x) * 2
+}
+f(10)</code></pre></li>
+</ol>
+<p>I predict this returns <code>((10 ^ 2) + 1) * 2 = 202</code>. And it does.</p>
+</div>
+</div>
+<div id="function-arguments" class="section level2">
+<h2>Function arguments</h2>
+<blockquote>
+<p>Arguments are matched first by exact name (perfect matching), then by prefix matching and finally by position.</p>
+</blockquote>
+<div id="calling-a-function-given-a-list-of-arguments" class="section level3">
+<h3>Calling a function given a list of arguments</h3>
+<p>Here’s a use of <code>do.call()</code> that’s good to be reminded of:</p>
+<blockquote>
+<p>Suppose you had a list of function arguments:</p>
+</blockquote>
+<pre class="r"><code>args &lt;- list(1:10, na.rm = TRUE)</code></pre>
+<blockquote>
+<p>How could you then send that list to <code>mean()</code>? You need <code>do.call()</code>:</p>
+</blockquote>
+<pre class="r"><code>do.call(mean, list(1:10, na.rm = TRUE))</code></pre>
+<pre><code>## [1] 5.5</code></pre>
+<pre class="r"><code># Equivalent to
+mean(1:10, na.rm = TRUE)</code></pre>
+<pre><code>## [1] 5.5</code></pre>
+</div>
+<div id="default-and-missing-arguments" class="section level3">
+<h3>Default and missing arguments</h3>
+<p>The claim is that “Since arguments in R are evaluated lazily (more on that below), the default value can be defined in terms of other arguments”. <strong>But then why doesn’t this work?</strong></p>
+<pre class="r"><code>data.frame(x = 1:3, y = x^2)</code></pre>
+<pre><code>## Error: object 'x' not found</code></pre>
+<p>Good to remember that <code>missing()</code> returns a logical re: whether an argument was supplied at call time.</p>
+<p>Good to know his strategy when the default value is more involved to compute than your typical default value in a function definition. Here’s what he does: “I usually set the default value to NULL and use <code>is.null()</code> to check if the argument was supplied”.</p>
+</div>
+<div id="lazy-evaluation" class="section level3">
+<h3>Lazy evaluation</h3>
+<p>Good to know: “If you want to ensure that an argument is evaluated you can use <code>force</code>”.</p>
+<p><em>I didn’t really understand the example used to illustrate forcing. “At this point, the loop is complete and the final value of x is 10. Therefore all of the adder functions will add 10 on to their input”. That confuses me because it seems to conflict with this idea that a fresh copy of a function’s environment is created at call time. See if others want to discuss.</em></p>
+<p><em>The promise section hasn’t totally sunk in yet. At least partially due to lack of examples and use cases. Is this relevant to my life? See if others want to discuss.</em></p>
+</div>
+<div id="section" class="section level3">
+<h3><code>...</code></h3>
+<p>Good reminder that “To capture … in a form that is easier to work with, you can use <code>list(...)</code>.”</p>
+</div>
+<div id="exercises-1" class="section level3">
+<h3>Exercises</h3>
+<ol style="list-style-type: decimal">
+<li><p>Clarify the following list of odd function calls:</p>
+<pre class="r"><code>x &lt;- sample(replace = TRUE, 20, x = c(1:10, NA))
+y &lt;- runif(min = 0, max = 1, 20)
+cor(m = &quot;k&quot;, y = y, u = &quot;p&quot;, x = x)</code></pre></li>
+</ol>
+<p><code>sample()</code> call: We’ll be taking a sample with replacement from <code>x</code>, which is <code>c(1:10, NA)</code>, of size 20. Better code: <code>sample(c(1:10, NA), size = 20, replace = TRUE)</code>.</p>
+<p><code>runif()</code>call: We’ll be drawing 20 random uniform variates. Better code: <code>runif(20)</code>. Pet peeve of mine: people who specify arguments at their default values. Especially for functions where the default are blindingly obvious. It’s like crying “Wolf!”.</p>
+<p><code>cor()</code> call: We’re computing Kendall’s tau statistic for <code>(x, y)</code>, as defined in the calling environment, for pairwise complete observations. Better code: <code>cor(x, y, use = &quot;pairwise.complete.obs&quot;, method = &quot;kendall&quot;)</code>. I believe in spelling out arguments and values that I don’t call everyday. The clarity is worth the strenuous typing.</p>
+<ol style="list-style-type: decimal">
+<li><p>What does this function return? Why? Which principle does it illustrate?</p>
+<pre class="r"><code>f1 &lt;- function(x = {y &lt;- 1; 2}, y = 0) {
+  x + y
+}
+f1()</code></pre></li>
+</ol>
+<p>I predict it will return <code>(x = 2) + (y = 1 (was 0 to begin)) = 3</code>. And it does. This illustrates lazy evaluation.</p>
+<ol style="list-style-type: decimal">
+<li><p>What does this function return? Why? Which principle does it illustrate?</p>
+<pre class="r"><code>f2 &lt;- function(x = z) {
+  z &lt;- 100
+  x
+}
+f2()</code></pre></li>
+</ol>
+<p>I predict it will return 100. And it does. Illustrates dynamic lookup and lazy evaluation.</p>
+</div>
+</div>
+<div id="special-calls" class="section level2">
+<h2>Special calls</h2>
+<div id="infix-functions" class="section level3">
+<h3>Infix functions</h3>
+<p>Good to know: “All user created infix functions names must start and end with <code>%</code> and R comes with the following infix functions predefined: <code>%%</code>, <code>%*%</code>, <code>%/%</code>, <code>%in%</code>, <code>%o%</code>, <code>%x%</code>. (The complete list of built-in infix operators that don’t need <code>%</code> is: <code>::, :::, $, @, ^, *, /, +, -, &gt;, &gt;=, &lt;, &lt;=, ==, !=, !, &amp;, &amp;&amp;, |, ||, ~, &lt;-, &lt;&lt;-</code>)”.</p>
+<p>This would be good to discuss further: “There’s one infix function that I use very often. It’s inspired by Ruby’s <code>||</code> logical or operator, although it works a little differently in R because Ruby has a more flexible definition of what evaluates to <code>TRUE</code> in an if statement. It’s useful as a way of providing a default value in case the output of another function is <code>NULL</code>:”&quot;</p>
+<pre class="r"><code>`%||%` &lt;- function(a, b) if (!is.null(a)) a else b
+function_that_might_return_null() %||% default value</code></pre>
+<p>What’s the use case for this?</p>
+</div>
+<div id="exercises-2" class="section level3">
+<h3>Exercises</h3>
+<ol style="list-style-type: decimal">
+<li>Create a list of all the replacement functions found in the base package. Which ones are primitive functions?</li>
+</ol>
+<pre class="r"><code>objs &lt;- mget(ls(&quot;package:base&quot;), inherits = TRUE)
+funs &lt;- Filter(is.function, objs)
+repl_funs &lt;- funs[grepl(&quot;&lt;-$&quot;, names(funs))]
+str(repl_funs, max.level = 1, list.len = 6)</code></pre>
+<pre><code>## List of 34
+##  $ [[&lt;-            :.Primitive(&quot;[[&lt;-&quot;) 
+##  $ [&lt;-             :.Primitive(&quot;[&lt;-&quot;) 
+##  $ @&lt;-             :.Primitive(&quot;@&lt;-&quot;) 
+##  $ &lt;-              :.Primitive(&quot;&lt;-&quot;) 
+##  $ &lt;&lt;-             :.Primitive(&quot;&lt;&lt;-&quot;) 
+##  $ $&lt;-             :.Primitive(&quot;$&lt;-&quot;) 
+##   [list output truncated]</code></pre>
+<pre class="r"><code>prim_repl_funs &lt;- Filter(is.primitive, repl_funs)
+str(prim_repl_funs, max.level = 1, list.len = 6)</code></pre>
+<pre><code>## List of 17
+##  $ [[&lt;-          :.Primitive(&quot;[[&lt;-&quot;) 
+##  $ [&lt;-           :.Primitive(&quot;[&lt;-&quot;) 
+##  $ @&lt;-           :.Primitive(&quot;@&lt;-&quot;) 
+##  $ &lt;-            :.Primitive(&quot;&lt;-&quot;) 
+##  $ &lt;&lt;-           :.Primitive(&quot;&lt;&lt;-&quot;) 
+##  $ $&lt;-           :.Primitive(&quot;$&lt;-&quot;) 
+##   [list output truncated]</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>What are valid names for user created infix functions?</li>
+</ol>
+<p>“All user created infix functions names must start and end with <code>%</code>”.</p>
+<p><strong>I AM HERE!</strong></p>
+<ol start="3" style="list-style-type: decimal">
+<li><p>Create an infix <code>xor()</code> operator.</p></li>
+<li><p>Create infix versions of the set functions <code>intersect()</code>, <code>union()</code>, and <code>setdiff()</code>.</p></li>
+<li><p>Create a replacement function that modifies a random location in a vector.</p></li>
+</ol>
+</div>
+</div>
+<div id="return-values" class="section level2">
+<h2>Return values</h2>
 </div>
 
 
