@@ -118,9 +118,12 @@ f(10)
 
 
 **Why does this eliminate the need for the "in"?
+```
 `for`(i, 1:2, print(i))
 #> [1] 1
-#> [1] 2**
+#> [1] 2
+```
+**
 
 
 ### More Exercises
@@ -180,7 +183,7 @@ capture.output2 <- function(code) {
   readLines(temp)
 }
 capture.output2(cat("a", "b", "c", sep = "\n"))
-#> [1] "a" "b" "c"
+> [1] "a" "b" "c"
 You might want to compare this function to the real capture.output() and think about the simplifications I’ve made. Is the code easier to understand or harder? Have I removed important functionality?
 
 5. Compare capture.output() to capture.output2(). How do the functions differ? What features have I removed to make the key ideas easier to see? How have I rewritten the key ideas to be easier to understand?
