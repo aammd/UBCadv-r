@@ -67,6 +67,8 @@ zeros <- which(counts == 0) #no args
 Lazy evaluation means that things aren't evaluated unless you use them.
 I don't understand what closures are, _e.g._ "This is important when creating closures with lapply or a loop"
 
+This example is confusing. Let's work through it.
+
 ```r
 add <- function(x) {
   function(y) x + y
@@ -254,7 +256,7 @@ x
 ```
 
 ```
-##  [1]  2  5  8 11 14 17 20 23 26 10 32 35 38 41 44 47 50
+##  [1]  2  5  8 11 14 17 20 23 26 29 32 35 38 41 44 10 50
 ```
 # Return Values
 
