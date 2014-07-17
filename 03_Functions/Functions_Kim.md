@@ -26,6 +26,8 @@ because R checks variables vs functions and that line of code produces 10 10.
 
 `...` argument matches any arguments not otherwise matched
 
+There are also some useful points about invisible returns
+
 ***
 
 ### Quiz
@@ -91,7 +93,7 @@ because R checks variables vs functions and that line of code produces 10 10.
 
 7. What function do you use to ensure that a cleanup action occurs regardless of how a function terminates?
 
-    **`on.exit()`**
+    **`on.exit()` can be used as a way to guarantee that changes to the global state are restored when the function exists**
 
 ### Exercises
 
@@ -229,22 +231,54 @@ because R checks variables vs functions and that line of code produces 10 10.
 
 1. Create a list of all the replacement functions found in the base package. Which ones are primitive functions?
 
+	**a la Jenny:**
+	```
+	objs <- mget(ls("package:base"), inherits = TRUE)
+	funs <- Filter(is.function, objs)
+	repl_funs <- funs[grepl("<-$", names(funs))]
+	prim_repl_funs <- Filter(is.primitive, repl_funs)
+	```
+	
 2. What are valid names for user created infix functions?
+	**anything with a % as its start and end**
 
 3. Create an infix xor() operator.
 
+	**I don't know what this is asking**
+
 4. Create infix versions of the set functions intersect(), union(), and setdiff().
 
+	**haven't tried this yet**
+
 5. Create a replacement function that modifies a random location in a vector.
+
+	**```temp <- seq(1:10)
+	temp[5] <- 500```**
 
 
 ### Last Exercises
 
 1. How does the chdir parameter of source() compare to in_dir()? Why might you prefer one approach to the other?
 
+	**`chdir` tells you if your file being sourced is a pathname, i.e. is not in the current working
+	 directory while `in_dir` saves the invisible output from the previous working directory whenever a 
+	 new working directory is set and can be useful for things such as `on.exit()`**
+
 2. What function undoes the action of library()? How do you save and restore the values of options() and par()?
 
-3. Write a function that opens a graphics device, runs the supplied code, and closes the graphics device (always, regardless of whether or not the plotting code worked).
+	**library modifies the search path when it loads a package, so maybe something like chdir would undo this?**
+	
+	**for `options()` and `par()`, assign them to an object when using new parameters, and it will save the previous settings
+	 since those are invisibly returned**
+
+3. Write a function that opens a graphics device, runs the supplied code, and closes the graphics device 
+(always, regardless of whether or not the plotting code worked).
+
+	```
+	quartz()
+	plot(1)
+	dev.off()
+	```
 
 4. We can use on.exit() to implement a simple version of capture.output().
 
@@ -263,6 +297,12 @@ because R checks variables vs functions and that line of code produces 10 10.
     #> [1] "a" "b" "c"
     ```
 
-You might want to compare this function to the real capture.output() and think about the simplifications I’ve made. Is the code easier to understand or harder? Have I removed important functionality?
+You might want to compare this function to the real capture.output() and think about the simplifications I’ve made. 
+Is the code easier to understand or harder? Have I removed important functionality?
 
-5. Compare capture.output() to capture.output2(). How do the functions differ? What features have I removed to make the key ideas easier to see? How have I rewritten the key ideas to be easier to understand?
+	**didn't do this one yet**
+
+5. Compare capture.output() to capture.output2(). How do the functions differ? What features have I 
+removed to make the key ideas easier to see? How have I rewritten the key ideas to be easier to understand?
+
+	**didn't do this one yet**
