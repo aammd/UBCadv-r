@@ -121,7 +121,7 @@ y <- runif(20, min = 0, max = 1)
 cor(x, y, method = "kendall", use = "pairwise.complete.obs")
 ```
 2. The function returns 3. It illustrates default arguments and lexical scoping (name masking).
-3. This function returns 100. It illustrates promises. _What is the difference between a promise and lazy evaluation? Is lazy evaluation a *type* of promise?_
+3. This function returns 100. It illustrates promises/lazy evaluation. 
 
 # Special Calls
 1.
