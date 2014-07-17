@@ -78,6 +78,12 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#create-an-infix-xor-operator.">Create an infix <code>xor()</code> operator.</a></li>
 <li><a href="#create-infix-versions-of-the-set-functions-intersect-union-and-setdiff.">Create infix versions of the set functions <code>intersect()</code>, <code>union()</code>, and <code>setdiff()</code>.</a></li>
 <li><a href="#create-a-replacement-function-that-modifies-a-random-location-in-a-vector.">Create a replacement function that modifies a random location in a vector.</a></li>
+<li><a href="#how-does-the-chdir-parameter-of-source-compare-to-in_dir-why-might-you-prefer-one-approach-to-the-other">How does the <code>chdir</code> parameter of <code>source()</code> compare to <code>in_dir()</code>? Why might you prefer one approach to the other?</a></li>
+<li><a href="#what-function-undoes-the-action-of-library-how-do-you-save-and-restore-the-values-of-options-and-par">What function undoes the action of <code>library()</code>? How do you save and restore the values of <code>options()</code> and <code>par()</code>?</a></li>
+<li><a href="#write-a-function-that-opens-a-graphics-device-runs-the-supplied-code-and-closes-the-graphics-device-always-regardless-of-whether-or-not-the-plotting-code-worked.">Write a function that opens a graphics device, runs the supplied code, and closes the graphics device (always, regardless of whether or not the plotting code worked).</a></li>
+<li><a href="#we-can-use-on.exit-to-implement-a-simple-version-of-capture.output.">We can use <code>on.exit()</code> to implement a simple version of <code>capture.output()</code>.</a></li>
+<li><a href="#you-might-want-to-compare-this-function-to-the-real-capture.output-and-think-about-the-simplifications-ive-made.-is-the-code-easier-to-understand-or-harder-have-i-removed-important-functionality">You might want to compare this function to the real <code>capture.output()</code> and think about the simplifications I’ve made. Is the code easier to understand or harder? Have I removed important functionality?</a></li>
+<li><a href="#compare-capture.output-to-capture.output2.-how-do-the-functions-differ-what-features-have-i-removed-to-make-the-key-ideas-easier-to-see-how-have-i-rewritten-the-key-ideas-to-be-easier-to-understand">Compare <code>capture.output()</code> to <code>capture.output2()</code>. How do the functions differ? What features have I removed to make the key ideas easier to see? How have I rewritten the key ideas to be easier to understand?</a></li>
 </ul></li>
 <li><a href="#reading-notes">Reading Notes</a><ul>
 <li><a href="#quiz">Quiz</a></li>
@@ -320,6 +326,50 @@ a %=% b</code></pre>
 # for some reason, R is not finding this function
 a &lt;- seq(1:10)
 #timestwo(a)</code></pre>
+</div>
+<div id="how-does-the-chdir-parameter-of-source-compare-to-in_dir-why-might-you-prefer-one-approach-to-the-other" class="section level3">
+<h3>How does the <code>chdir</code> parameter of <code>source()</code> compare to <code>in_dir()</code>? Why might you prefer one approach to the other?</h3>
+<p><code>chdir</code> temporarily changes the working directory from within the <code>source()</code> function.</p>
+<p>I can’t even find <code>in_dir()</code></p>
+</div>
+<div id="what-function-undoes-the-action-of-library-how-do-you-save-and-restore-the-values-of-options-and-par" class="section level3">
+<h3>What function undoes the action of <code>library()</code>? How do you save and restore the values of <code>options()</code> and <code>par()</code>?</h3>
+<p><code>detach</code> will remove the library.</p>
+<p><code>options()</code> and <code>par()</code> work the same weird way as <code>setwd()</code>. You can save them while also changing them. So <code>old &lt;- options(newopts)</code> will actually save the old options while also setting the new ones.</p>
+</div>
+<div id="write-a-function-that-opens-a-graphics-device-runs-the-supplied-code-and-closes-the-graphics-device-always-regardless-of-whether-or-not-the-plotting-code-worked." class="section level3">
+<h3>Write a function that opens a graphics device, runs the supplied code, and closes the graphics device (always, regardless of whether or not the plotting code worked).</h3>
+<pre class="r"><code>plotter &lt;- function()
+{
+  x &lt;- seq(1:10)
+  y &lt;- runif(10)
+  plot(x, y)
+  on.exit(dev.off())
+}
+
+plotter()</code></pre>
+</div>
+<div id="we-can-use-on.exit-to-implement-a-simple-version-of-capture.output." class="section level3">
+<h3>We can use <code>on.exit()</code> to implement a simple version of <code>capture.output()</code>.</h3>
+<pre class="r"><code>capture.output2 &lt;- function(code) {
+  temp &lt;- tempfile()
+  on.exit(file.remove(temp), add = TRUE)
+  
+  sink(temp)
+  on.exit(sink(), add = TRUE)
+  
+  force(code)
+  readLines(temp)
+}
+
+capture.output2(cat(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, sep = &quot;\n&quot;))
+#&gt; [1] &quot;a&quot; &quot;b&quot; &quot;c&quot;</code></pre>
+</div>
+<div id="you-might-want-to-compare-this-function-to-the-real-capture.output-and-think-about-the-simplifications-ive-made.-is-the-code-easier-to-understand-or-harder-have-i-removed-important-functionality" class="section level3">
+<h3>You might want to compare this function to the real <code>capture.output()</code> and think about the simplifications I’ve made. Is the code easier to understand or harder? Have I removed important functionality?</h3>
+</div>
+<div id="compare-capture.output-to-capture.output2.-how-do-the-functions-differ-what-features-have-i-removed-to-make-the-key-ideas-easier-to-see-how-have-i-rewritten-the-key-ideas-to-be-easier-to-understand" class="section level3">
+<h3>Compare <code>capture.output()</code> to <code>capture.output2()</code>. How do the functions differ? What features have I removed to make the key ideas easier to see? How have I rewritten the key ideas to be easier to understand?</h3>
 <hr />
 </div>
 </div>

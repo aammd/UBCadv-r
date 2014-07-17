@@ -327,6 +327,59 @@ a <- seq(1:10)
 #timestwo(a)
 ```
 
+### How does the `chdir` parameter of `source()` compare to `in_dir()`? Why might you prefer one approach to the other?
+
+`chdir` temporarily changes the working directory from within the `source()` function.
+
+I can't even find `in_dir()`
+
+### What function undoes the action of `library()`? How do you save and restore the values of `options()` and `par()`?
+
+`detach` will remove the library.
+
+`options()` and `par()` work the same weird way as `setwd()`.  You can save them while also changing them.  So `old <- options(newopts)` will actually save the old options while also setting the new ones.
+
+### Write a function that opens a graphics device, runs the supplied code, and closes the graphics device (always, regardless of whether or not the plotting code worked).
+
+
+```r
+plotter <- function()
+{
+  x <- seq(1:10)
+  y <- runif(10)
+  plot(x, y)
+  on.exit(dev.off())
+}
+
+plotter()
+```
+
+### We can use `on.exit()` to implement a simple version of `capture.output()`.
+
+
+```r
+capture.output2 <- function(code) {
+  temp <- tempfile()
+  on.exit(file.remove(temp), add = TRUE)
+  
+  sink(temp)
+  on.exit(sink(), add = TRUE)
+  
+  force(code)
+  readLines(temp)
+}
+
+capture.output2(cat("a", "b", "c", sep = "\n"))
+#> [1] "a" "b" "c"
+```
+
+### You might want to compare this function to the real `capture.output()` and think about the simplifications I’ve made. Is the code easier to understand or harder? Have I removed important functionality?
+
+
+
+### Compare `capture.output()` to `capture.output2()`. How do the functions differ? What features have I removed to make the key ideas easier to see? How have I rewritten the key ideas to be easier to understand?
+
+
 ***
 
 ## Reading Notes
