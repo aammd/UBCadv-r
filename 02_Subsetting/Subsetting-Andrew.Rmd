@@ -1,0 +1,147 @@
+---
+title: "Subsetting"
+author: "Andrew MacDonald"
+date: '2014-07-09'
+output: md_document
+---
+```{r}
+library(dplyr)
+library(tidyr)
+library(magrittr)
+```
+
+## Exercises 1
+
+1.  Fix each of the following common data frame subsetting errors:
+
+    ```{r, eval = FALSE}
+    #mtcars[mtcars$cyl = 4, ]
+    mtcars[mtcars$cyl == 4, ]
+    #mtcars[-1:4, ]
+    mtcars[-(1:4), ]
+   # mtcars[mtcars$cyl <= 5]
+    mtcars[mtcars$cyl <= 5,]
+#     mtcars[mtcars$cyl == 4 | 6, ]
+    mtcars[mtcars$cyl == 4 |mtcars$cyl ==  6, ]
+    ```
+
+1.  Why does `x <- 1:5; x[NA]` yield five missing values? Hint: why is 
+    it different from `x[NA_real_]`?
+    
+**Because `NA` is a logical vector, and therefore is recycled to the length of `x` (i.e. 5)**
+
+```{r}
+x <- 1:5; x[NA] ; x[NA_real_]
+```
+
+1.  What does `upper.tri()` return? How does subsetting a matrix with it 
+    work? Do we need any additional subsetting rules to describe its behaviour?
+
+    ```{r, eval = FALSE}
+    x <- outer(1:5, 1:5, FUN = "*")
+    x[upper.tri(x)]
+    ```
+
+**`upper.tri()` makes a logical matrix of class ``r upper.tri(x) %>% typeof``, which is used to subset x (same size and dimensions.  We don't need new subsetting rules because matrices are vectors!**
+
+1.  Why does `mtcars[1:20]` return a error? How does it differ from the 
+    similar `mtcars[1:20, ]`?
+    
+    **Because there are 11, not 20, columns in `mtcars` and this code is asking for the first 20 columns using vector notation. `mtcars[1:20,]` asks for the first 20 rows, which is no problem because there are 30.**
+
+1.  Implement your own function that extracts the diagonal entries from a
+    matrix (it should behave like `diag(x)` where `x` is a matrix).
+    
+```{r}
+x  <-  outer(1:5, 1:5, FUN = "*")
+
+andrew_diag <- function(mat){
+  require(dplyr)
+  require(magrittr)
+  
+  mat %>%
+    ncol %>%
+    seq_len %>%
+    l(x -> cbind(x,x)) %>%
+    mat[.]
+  
+  }
+
+andrew_diag(x)
+
+```
+
+
+1.  What does `df[is.na(df)] <- 0` do? How does it work?
+
+**uses vector notation to subset a dataframe, as if it were a matrix, and replaces all NA values with 0**
+
+## Exercises 2
+
+1.  Given a linear model, e.g. `mod <- lm(mpg ~ wt, data = mtcars)`, extract
+    the residual degrees of freedom. Extract the R squared from the model
+    summary (`summary(mod)`)
+
+```{r}
+mod <- lm(mpg ~ wt, data = mtcars)
+summary(mod)[[c("fstatistic", "dendf")]]
+
+## here is a little randomization test:
+replicate(n = 20,{data.frame(x = runif(n = 20,10,20)) %>%
+                    mutate(y = x * 2 + rnorm(20)) %>%
+                    lm(y ~ x, data = .)
+},simplify = FALSE
+) %>% 
+  lapply(summary) %>%
+  sapply("[[",i = c("fstatistic", "value"))
+
+```
+
+# Exercises 3
+
+### Exercises
+
+1.  How would you randomly permute the columns of a data frame? (This is an
+    important technique in random forests). Can you simultaneously permute 
+    the rows and columns in one step?
+
+```{r}
+df <- data.frame(a = 1:5,
+                 b = 6:10,
+                 c = 11:15)
+
+df[sample(ncol(df))]
+df[,sample(ncol(df))]
+df[sample(nrow(df)),sample(ncol(df))]
+
+```
+
+
+1.  How would you select a random sample of `m` rows from a data frame? 
+    What if the sample had to be contiguous (i.e. with an initial row, a 
+    final row, and every row in between)?
+    
+```{r}
+contin_samp <- function(df,m){
+  df %>% 
+    nrow %>% 
+    subtract(m) %>% 
+    sample(1) %>%
+    add(seq_len(m)) %>% 
+    df[.,]
+  }
+
+data(mtcars)
+
+contin_samp(mtcars,4)
+
+testdata <- data.frame(a = 1:100, b = 2:101)
+
+contin_samp(testdata,5)
+```
+
+    
+1.  How could you put the columns in a data frame in alphaetical order?
+```{r}
+mtcars[order(names(mtcars))]
+```

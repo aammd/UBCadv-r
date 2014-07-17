@@ -10,8 +10,8 @@ We meet Thursdays at **1pm PST in Biodiversity 224.**
 
 | Week    |  Reading                                                                         |
 | ------- | -----------------------                                                          |
-| week 1  | [Data Structures](http://adv-r.had.co.nz/Data-structures.html)                   |
-| week 2  | [Subsetting](http://adv-r.had.co.nz/Subsetting.html)                             |
+| week 1  - (03 July 2014)  | [Data Structures](http://adv-r.had.co.nz/Data-structures.html)                   |
+| week 2  - (10 July 2014)  | [Subsetting](http://adv-r.had.co.nz/Subsetting.html)                             |
 | week 3  | [Functions](http://adv-r.had.co.nz/Functions.html)                               |
 | week 4  | [Environments](http://adv-r.had.co.nz/Environments.html)                         |
 | week 5  | [Debugging](http://adv-r.had.co.nz/Exceptions-Debugging.html)                    |
@@ -52,4 +52,4 @@ output: md_document
 
 ## keeping your fork up to date
 
-Once you have forked this repository, your version will quickly get out of date with the original.  When other people's documents are pulled to the master repository, you will not automatically get copies of these.  This is not a problem, but if you want to keep your version identical to the original, take a look at [this help page on syncing](https://help.github.com/articles/syncing-a-fork) and [this one on configuring a remote fork](https://help.github.com/articles/configuring-a-remote-for-a-fork)
+Once you have forked this repository, your version will quickly get out of date with the original.  When other people's documents are pulled to the master repository, you will not automatically get copies of these.  This is not a problem, but if you want to keep your version identical to the original, take a look at [this help page on syncing](https://help.github.com/articles/syncing-a-fork) and [this one on configuring a remote fork](https://help.github.com/articles/configuring-a-remote-for-a-fork). It is even possible to get changes from the master repository into your fork via the GitHub web interface. Then you can pull them into your local repository. Read more in this blog post [Updating a fork directly from GitHub](http://www.hpique.com/2013/09/updating-a-fork-directly-from-github/).
