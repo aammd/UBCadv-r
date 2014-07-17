@@ -1,6 +1,9 @@
 ---
 title: "Functions"
 author: "Susannah"
+output: 
+  html_document:
+    keep_md: yes
 ---
 
 ## Quiz 
