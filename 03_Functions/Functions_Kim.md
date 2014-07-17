@@ -14,21 +14,21 @@ Date: '2014-07-16'
 
 1. What are the three components of a function?
 
-**the body, the formals, and the environment. body=code that makes up the function, formals = arguments to the function that specify how it is called, and environment = the location of the function's variables**
+    **the body, the formals, and the environment. body=code that makes up the function, formals = arguments to the function that specify how it is called, and environment = the location of the function's variables**
 
 2. What does the following code return?
 
-```
-y <- 10
-f1 <- function(x) {
-  function() {
-    x + 10
-  }
-}
-f1(1)()
-```
+    ```
+    y <- 10
+    f1 <- function(x) {
+      function() {
+        x + 10
+      }
+    }
+    f1(1)()
+    ```
 
-**11 b/c it takes the 10 in, sends it to the inner function, adds 1 then spits it back out BUT I DON'T UNDERSTAND THE USE OF THE SECOND PARENTHESES**
+    **11 b/c it takes the 10 in, sends it to the inner function, adds 1 then spits it back out BUT I DON'T UNDERSTAND THE USE OF THE SECOND PARENTHESES**
 
 3. How would you more typically write this code?
 
@@ -41,6 +41,8 @@ f1(1)()
 4. How could you make this call easier to read?
 
 `mean(, TRUE, x = c(1:10, NA))`
+
+**`mean(c(1:10,NA), na.rm=TRUE)`**
 
 5. Does the following function throw an error when called? Why/why not?
 
