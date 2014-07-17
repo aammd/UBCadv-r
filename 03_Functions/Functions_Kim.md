@@ -8,13 +8,21 @@ Date: '2014-07-16'
 
 ### Discussion Notes
 
+`missing()` is a useful function
+
+`force()` is useful to require that an arguent in a function is evaluated
+
+The backtick, "`", can be used to explicitly call something, like `+`
+
 ***
 
 ### Quiz
 
 1. What are the three components of a function?
 
-    **the body, the formals, and the environment. body=code that makes up the function, formals = arguments to the function that specify how it is called, and environment = the location of the function's variables**
+    **the body, the formals, and the environment. body=code that makes up the function, formals = 
+    arguments to the function that specify how it is called, and environment = the location of the 
+    function's variables**
 
 2. What does the following code return?
 
@@ -28,7 +36,8 @@ Date: '2014-07-16'
     f1(1)()
     ```
 
-    **11 b/c it takes the 10 in, sends it to the inner function, adds 1 then spits it back out BUT I DON'T UNDERSTAND THE USE OF THE SECOND PARENTHESES**
+    **11 b/c it takes the 10 in, sends it to the inner function, adds 1 then spits it 
+    back out; second set of parentheses effectively calls the inner function**
 
 3. How would you more typically write this code?
 
