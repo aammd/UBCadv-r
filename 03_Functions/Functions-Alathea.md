@@ -187,7 +187,144 @@ The function will go down to the lowest level and find `x ^ 2` so `f(x) <- 100`.
 
 `cor(x, y, use = "pairwise.complete.obs", method = "kendall")`
 
+### What does this function return? Why? Which principle does it illustrate?
 
+
+```r
+f1 <- function(x = {y <- 1; 2}, y = 0) {
+  x + y
+}
+f1()
+```
+
+### What does this function return? Why? Which principle does it illustrate?
+
+
+```r
+f2 <- function(x = z) {
+  z <- 100
+  x
+}
+f2()
+```
+
+```
+## [1] 100
+```
+
+### Create a list of all the replacement functions found in the base package. Which ones are primitive functions?
+
+
+```r
+require(plyr)
+
+objs <- mget(ls("package:base"), inherits = TRUE)
+prims <- Filter(is.primitive, objs)
+```
+
+### What are valid names for user created infix functions?
+
+Anything surrounded in `%%` e.g. `%my_function%`
+
+### Create an infix `xor()` operator.
+
+
+```r
+xor(TRUE, FALSE)
+```
+
+```
+## [1] TRUE
+```
+
+```r
+xor(TRUE, TRUE)
+```
+
+```
+## [1] FALSE
+```
+
+```r
+`%xor%` <- function(x, y)
+{
+  xor(x, y)
+}
+
+TRUE %xor% TRUE
+```
+
+```
+## [1] FALSE
+```
+
+```r
+TRUE %xor% FALSE
+```
+
+```
+## [1] TRUE
+```
+
+### Create infix versions of the set functions `intersect()`, `union()`, and `setdiff()`.
+
+
+```r
+a <- seq(5, 6)
+b <- seq(6, 7)
+
+`%=%` <- function(x, y)
+{
+  intersect(x, y)
+}
+
+`%+%` <- function(x, y)
+{
+  union(x, y)
+}
+
+`%-%` <- function(x, y)
+{
+  setdiff(x, y)
+}
+
+a %=% b
+```
+
+```
+## [1] 6
+```
+
+```r
+a %+% b
+```
+
+```
+## [1] 5 6 7
+```
+
+```r
+a %-% b
+```
+
+```
+## [1] 5
+```
+
+### Create a replacement function that modifies a random location in a vector.
+
+
+```r
+`timestwo<-` <- function(x, value = 2 * x[index])
+{
+  index <- sample(1:length(x), 1)
+  x[index] <- value
+  x
+}
+
+#a <- seq(1:10)
+#timestwo(a)
+```
 
 ***
 
@@ -237,9 +374,12 @@ f2(10, stop("This is an error!"))
 
 #### What is an infix function? How do you write it? What’s a replacement function? How do you write it?
 
+Infix: It comes in between its arguments, like `+`.  You can make your own by surrounding it with `%%`
 
+Replacement: They seem to modify their own argument.  The are defined like `xxx<-`.  They create a copy of the argument and then modify it, so don't use if you could lose a lot of performance by doing so.
 
 #### What function do you use to ensure that a cleanup action occurs regardless of how a function terminates?
+
 
 
 ### Function components

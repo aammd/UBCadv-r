@@ -71,6 +71,13 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#what-are-the-four-principles-that-govern-how-r-looks-for-values">What are the four principles that govern how R looks for values?</a></li>
 <li><a href="#what-does-the-following-function-return-make-a-prediction-before-running-the-code-yourself.">What does the following function return? Make a prediction before running the code yourself.</a></li>
 <li><a href="#clarify-the-following-list-of-odd-function-calls">Clarify the following list of odd function calls:</a></li>
+<li><a href="#what-does-this-function-return-why-which-principle-does-it-illustrate">What does this function return? Why? Which principle does it illustrate?</a></li>
+<li><a href="#what-does-this-function-return-why-which-principle-does-it-illustrate-1">What does this function return? Why? Which principle does it illustrate?</a></li>
+<li><a href="#create-a-list-of-all-the-replacement-functions-found-in-the-base-package.-which-ones-are-primitive-functions">Create a list of all the replacement functions found in the base package. Which ones are primitive functions?</a></li>
+<li><a href="#what-are-valid-names-for-user-created-infix-functions">What are valid names for user created infix functions?</a></li>
+<li><a href="#create-an-infix-xor-operator.">Create an infix <code>xor()</code> operator.</a></li>
+<li><a href="#create-infix-versions-of-the-set-functions-intersect-union-and-setdiff.">Create infix versions of the set functions <code>intersect()</code>, <code>union()</code>, and <code>setdiff()</code>.</a></li>
+<li><a href="#create-a-replacement-function-that-modifies-a-random-location-in-a-vector.">Create a replacement function that modifies a random location in a vector.</a></li>
 </ul></li>
 <li><a href="#reading-notes">Reading Notes</a><ul>
 <li><a href="#quiz">Quiz</a></li>
@@ -228,8 +235,90 @@ f(10)</code></pre>
 <div id="corm-k-y-y-u-p-x-x" class="section level4">
 <h4><code>cor(m = &quot;k&quot;, y = y, u = &quot;p&quot;, x = x)</code></h4>
 <p><code>cor(x, y, use = &quot;pairwise.complete.obs&quot;, method = &quot;kendall&quot;)</code></p>
-<hr />
 </div>
+</div>
+<div id="what-does-this-function-return-why-which-principle-does-it-illustrate" class="section level3">
+<h3>What does this function return? Why? Which principle does it illustrate?</h3>
+<pre class="r"><code>f1 &lt;- function(x = {y &lt;- 1; 2}, y = 0) {
+  x + y
+}
+f1()</code></pre>
+</div>
+<div id="what-does-this-function-return-why-which-principle-does-it-illustrate-1" class="section level3">
+<h3>What does this function return? Why? Which principle does it illustrate?</h3>
+<pre class="r"><code>f2 &lt;- function(x = z) {
+  z &lt;- 100
+  x
+}
+f2()</code></pre>
+<pre><code>## [1] 100</code></pre>
+</div>
+<div id="create-a-list-of-all-the-replacement-functions-found-in-the-base-package.-which-ones-are-primitive-functions" class="section level3">
+<h3>Create a list of all the replacement functions found in the base package. Which ones are primitive functions?</h3>
+<pre class="r"><code>require(plyr)
+
+objs &lt;- mget(ls(&quot;package:base&quot;), inherits = TRUE)
+prims &lt;- Filter(is.primitive, objs)</code></pre>
+</div>
+<div id="what-are-valid-names-for-user-created-infix-functions" class="section level3">
+<h3>What are valid names for user created infix functions?</h3>
+<p>Anything surrounded in <code>%%</code> e.g. <code>%my_function%</code></p>
+</div>
+<div id="create-an-infix-xor-operator." class="section level3">
+<h3>Create an infix <code>xor()</code> operator.</h3>
+<pre class="r"><code>xor(TRUE, FALSE)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>xor(TRUE, TRUE)</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<pre class="r"><code>`%xor%` &lt;- function(x, y)
+{
+  xor(x, y)
+}
+
+TRUE %xor% TRUE</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<pre class="r"><code>TRUE %xor% FALSE</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+</div>
+<div id="create-infix-versions-of-the-set-functions-intersect-union-and-setdiff." class="section level3">
+<h3>Create infix versions of the set functions <code>intersect()</code>, <code>union()</code>, and <code>setdiff()</code>.</h3>
+<pre class="r"><code>a &lt;- seq(5, 6)
+b &lt;- seq(6, 7)
+
+`%=%` &lt;- function(x, y)
+{
+  intersect(x, y)
+}
+
+`%+%` &lt;- function(x, y)
+{
+  union(x, y)
+}
+
+`%-%` &lt;- function(x, y)
+{
+  setdiff(x, y)
+}
+
+a %=% b</code></pre>
+<pre><code>## [1] 6</code></pre>
+<pre class="r"><code>a %+% b</code></pre>
+<pre><code>## [1] 5 6 7</code></pre>
+<pre class="r"><code>a %-% b</code></pre>
+<pre><code>## [1] 5</code></pre>
+</div>
+<div id="create-a-replacement-function-that-modifies-a-random-location-in-a-vector." class="section level3">
+<h3>Create a replacement function that modifies a random location in a vector.</h3>
+<pre class="r"><code>`timestwo&lt;-` &lt;- function(x, value = 2 * x[index])
+{
+  index &lt;- sample(1:length(x), 1)
+  x[index] &lt;- value
+  x
+}
+
+#a &lt;- seq(1:10)
+#timestwo(a)</code></pre>
+<hr />
 </div>
 </div>
 <div id="reading-notes" class="section level2">
@@ -270,6 +359,8 @@ f2(10, stop(&quot;This is an error!&quot;))</code></pre>
 </div>
 <div id="what-is-an-infix-function-how-do-you-write-it-whats-a-replacement-function-how-do-you-write-it" class="section level4">
 <h4>What is an infix function? How do you write it? What’s a replacement function? How do you write it?</h4>
+<p>Infix: It comes in between its arguments, like <code>+</code>. You can make your own by surrounding it with <code>%%</code></p>
+<p>Replacement: They seem to modify their own argument. The are defined like <code>xxx&lt;-</code>. They create a copy of the argument and then modify it, so don’t use if you could lose a lot of performance by doing so.</p>
 </div>
 <div id="what-function-do-you-use-to-ensure-that-a-cleanup-action-occurs-regardless-of-how-a-function-terminates" class="section level4">
 <h4>What function do you use to ensure that a cleanup action occurs regardless of how a function terminates?</h4>
