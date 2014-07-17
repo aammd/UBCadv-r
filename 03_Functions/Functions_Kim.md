@@ -12,7 +12,7 @@ Date: '2014-07-16'
 
 `force()` is useful to require that an arguent in a function is evaluated
 
-The backtick, "`", can be used to explicitly call something, like `+`
+The backtick can be used to explicitly call something, like `+`
 
 We are all stuck with the adders example... The newly created add function will add 2 numbers, e.g.
 add(1)(2) gives 3, but with `adders <- lapply(1:10, add)` `adders[[1]](10)` gives 20, i.e. just 
@@ -121,7 +121,7 @@ There are also some useful points about invisible returns
         
     3. How could you adapt the code to find all primitive functions?
     
-    	*8`str(prims <-lapply(funs, function(x) if(is.primitive(x)) x else NULL),
+    	**`str(prims <-lapply(funs, function(x) if(is.primitive(x)) x else NULL),
     	list.len = 6)`**
 
 3. What are the three important components of a function?
@@ -240,6 +240,7 @@ There are also some useful points about invisible returns
 	```
 	
 2. What are valid names for user created infix functions?
+	
 	**anything with a % as its start and end**
 
 3. Create an infix xor() operator.
@@ -300,7 +301,7 @@ There are also some useful points about invisible returns
 You might want to compare this function to the real capture.output() and think about the simplifications I’ve made. 
 Is the code easier to understand or harder? Have I removed important functionality?
 
-	**didn't do this one yet**
+   **didn't do this one yet**
 
 5. Compare capture.output() to capture.output2(). How do the functions differ? What features have I 
 removed to make the key ideas easier to see? How have I rewritten the key ideas to be easier to understand?
