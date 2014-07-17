@@ -190,17 +190,17 @@ options(newop[which(names(newop) == "verbose")]) #restore just the verbose optio
 ```
 3. My solution doesn't work
 ```{r}
-makeplot <- function(file, plot_code, width=500, height=500) {
+make_plot <- function(file, plot_code, width=500, height=500) {
   png(file, width=width, height=height)
   plot_code
   graphics.off()
 }
 
 simpleplot <- plot(x = c(1:10), y = rnorm(10))
-borked <- plot(x = c(1:9), y = rnorm(10))
+#borked <- plot(x = c(1:9), y = rnorm(10))
 
-makeplot("~/Documents/classes/UBCadv-r/03_Functions/Functions_Susannah_plot.png", borked)
-makeplot("~/Documents/classes/UBCadv-r/03_Functions/Functions_Susannah_plot.png", simpleplot)
+#make_plot("~/Documents/classes/UBCadv-r/03_Functions/Functions_Susannah_plot.png", borked)
+make_plot("~/Documents/classes/UBCadv-r/03_Functions/Functions_Susannah_plot.png", simpleplot)
 ```
 4. Code is easier to understand. Output can't be directed to a specific file with `capture.output2`. Lose access to errors.
 5.
