@@ -86,7 +86,7 @@ because R checks variables vs functions and that line of code produces 10 10.
 	"new" %+% " string"
 	```
 	
-	**replacement functiosn modify an object in place, e.g.  <- to assign a value to an object**
+	**replacement functions modify an object in place, e.g.  <- to assign a value to an object**
 		
 
 7. What function do you use to ensure that a cleanup action occurs regardless of how a function terminates?
@@ -190,14 +190,12 @@ because R checks variables vs functions and that line of code produces 10 10.
 
 1. Clarify the following list of odd function calls:
 
-    ```
-    x <- sample(replace = TRUE, 20, x = c(1:10, NA))
-    **x <- sample(c(1:10, NA), size=20, replace = TRUE)**
-    y <- runif(min = 0, max = 1, 20)
-    **y <- runif(n=20, min=0, max=1)**
-    cor(m = "k", y = y, u = "p", x = x)
-    **cor(x, y, use= "p", method= "pearson")**
-    ```
+    `x <- sample(replace = TRUE, 20, x = c(1:10, NA))`
+    **`x <- sample(c(1:10, NA), size=20, replace = TRUE)`**
+    `y <- runif(min = 0, max = 1, 20)`
+    **`y <- runif(n=20, min=0, max=1)`**
+    `cor(m = "k", y = y, u = "p", x = x)`
+    **`cor(x, y, use= "p", method= "pearson")`**
 
 2. What does this function return? Why? Which principle does it illustrate?
 
