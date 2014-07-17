@@ -14,6 +14,18 @@ Date: '2014-07-16'
 
 The backtick, "`", can be used to explicitly call something, like `+`
 
+We are all stuck with the adders example... The newly created add function will add 2 numbers, e.g.
+add(1)(2) gives 3, but with `adders <- lapply(1:10, add)` `adders[[1]](10)` gives 20, i.e. just 
+calling the last element of list 1:10 rather than making functions to add 1-10 to anything you give it? 
+Has to do with lazy evaluation - because x is lazily evaluated, it takes the 10 and adds 10 to it... weird.
+
+Unevaluated argument = a promise
+
+Remember Rich's point about logicals, `T <- FALSE` causes trouble down the line, but `c <- 10` `c(c,c)` doesn't
+because R checks variables vs functions and that line of code produces 10 10.
+
+`...` argument matches any arguments not otherwise matched
+
 ***
 
 ### Quiz
@@ -66,6 +78,17 @@ The backtick, "`", can be used to explicitly call something, like `+`
 
 6. What is an infix function? How do you write it? What’s a replacement function? How do you write it?
 
+	**infix functions are where the function name comes between its argument, so unlike mean() which goes in front of the 
+	arguments, "+" goes between its arguments.  functions with % are infix functions, e.g. %in% and to create such a function, 
+	one needs to use backticks, e.g.**
+	```{r}
+	`%+%` <- function(a, b) paste(a, b, sep = "")
+	"new" %+% " string"
+	```
+	
+	**replacement functiosn modify an object in place, e.g.  <- to assign a value to an object**
+		
+
 7. What function do you use to ensure that a cleanup action occurs regardless of how a function terminates?
 
     **`on.exit()`**
@@ -84,15 +107,28 @@ The backtick, "`", can be used to explicitly call something, like `+`
     ```
     Use it to answer the following questions:
 
-    1a. Which base function has the most arguments?
+    1. Which base function has the most arguments?
+    
+        **`n_args <- sapply(funs, function(x) length(formals(x)))
+        the_one <- which.max(n_args)
+        names(funs)[the_one]`**
 
-    2a. How many base functions have no arguments? What’s special about those functions.
+    2. How many base functions have no arguments? What’s special about those functions.
 
-    3a. How could you adapt the code to find all primitive functions?
+        **`length(no_args <- which(n_args == 0))`**
+        
+    3. How could you adapt the code to find all primitive functions?
+    
+    	*8`str(prims <-lapply(funs, function(x) if(is.primitive(x)) x else NULL),
+    	list.len = 6)`**
 
 3. What are the three important components of a function?
+	
+	**body, environment, arguments**
 
 4. When does printing a function not show what environment it was created in?
+
+	**when created in the global environment**
 
 
 
@@ -106,13 +142,15 @@ The backtick, "`", can be used to explicitly call something, like `+`
     c(c = c)
     ```
 
-    **returns 10 because the function c is read outside the parentheses and within the parentheses is read as an object c.**
+    **returns 10 because the function c is read outside the parentheses and within the parentheses 
+    is read as an object c.**
 
 
 2. What are the four principles that govern how R looks for values?
 
     **name masking - takes the most recently named thing,
-    functions vs variables - looks for things in terms of what makes sense in their context as either a function or an object,
+    functions vs variables - looks for things in terms of what makes sense in their context 
+    as either a function or an object,
     a fresh start - only things that exist currently can be looked for, i.e. within a function call,
     dynamic lookup - looks for the object as it has most recently been assigned**
 
@@ -132,17 +170,20 @@ The backtick, "`", can be used to explicitly call something, like `+`
     f(10)
     ```
 
-    **does NOT produce 21^2 but instead 202 which comes from 10^2 + 1 * 2 because even though the functions occur outer to inner, the inner ones aren't run until R reads into them and gets their definition, so the squaring happens first**
+    **does NOT produce 21^2 but instead 202 which comes from 10^2 + 1 * 2 because even though 
+    the functions occur outer to inner, the inner ones are run first because R reads and comes 
+    in from the outside then starts at the inside coming inside to outermost until finished, 
+    so the squaring happens first**
 
 
 
-    **Why does this eliminate the need for the "in"?
+    **Why does this eliminate the need for the "in"?**
     ```
     `for`(i, 1:2, print(i))
     #> [1] 1
     #> [1] 2
     ```
-    **
+    
 
 
 ### More Exercises
@@ -151,8 +192,11 @@ The backtick, "`", can be used to explicitly call something, like `+`
 
     ```
     x <- sample(replace = TRUE, 20, x = c(1:10, NA))
+    **x <- sample(c(1:10, NA), size=20, replace = TRUE)**
     y <- runif(min = 0, max = 1, 20)
+    **y <- runif(n=20, min=0, max=1)**
     cor(m = "k", y = y, u = "p", x = x)
+    **cor(x, y, use= "p", method= "pearson")**
     ```
 
 2. What does this function return? Why? Which principle does it illustrate?
@@ -163,6 +207,8 @@ The backtick, "`", can be used to explicitly call something, like `+`
     }
     f1()
     ```
+    **returns 3 because it evaluates x to 1 then to 2 then adds 1 even though y was 0 initially
+     BUT I am confused about the y part?**
 
 3. What does this function return? Why? Which principle does it illustrate?
 
@@ -173,6 +219,8 @@ The backtick, "`", can be used to explicitly call something, like `+`
     }
     f2()
     ```
+    **returns 100 because it takes z as an argument, but when not provided uses dynamic lookup and 
+    finds z=100, then returns x which according to the function = z**
 
 ### So so many Exercises
 
