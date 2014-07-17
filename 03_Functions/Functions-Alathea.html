@@ -84,6 +84,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#function-components">Function components</a></li>
 <li><a href="#lexical-scoping">Lexical scoping</a></li>
 <li><a href="#function-arguments">Function arguments</a></li>
+<li><a href="#return-values">Return Values</a></li>
 </ul></li>
 <li><a href="#discussion-notes">Discussion Notes</a></li>
 </ul>
@@ -357,6 +358,7 @@ f1(1)()</code></pre>
   a * 10
 }
 f2(10, stop(&quot;This is an error!&quot;))</code></pre>
+<p>No, because the function is evaluated lazily so R never gets around to using <code>b</code> before completing evaluation. You could force evaluation of <code>b</code> and then cause the error.</p>
 </div>
 <div id="what-is-an-infix-function-how-do-you-write-it-whats-a-replacement-function-how-do-you-write-it" class="section level4">
 <h4>What is an infix function? How do you write it? What’s a replacement function? How do you write it?</h4>
@@ -365,6 +367,7 @@ f2(10, stop(&quot;This is an error!&quot;))</code></pre>
 </div>
 <div id="what-function-do-you-use-to-ensure-that-a-cleanup-action-occurs-regardless-of-how-a-function-terminates" class="section level4">
 <h4>What function do you use to ensure that a cleanup action occurs regardless of how a function terminates?</h4>
+<p><code>on.exit()</code></p>
 </div>
 </div>
 <div id="function-components" class="section level3">
@@ -402,6 +405,11 @@ f2(10, stop(&quot;This is an error!&quot;))</code></pre>
 <p>or set the default to <code>NULL</code> and use <code>is.null()</code></p>
 <p>R only uses the function arguments it needs, unless you use <code>force()</code></p>
 <p><strong>promise</strong>: and unevaluated argument</p>
+</div>
+<div id="return-values" class="section level3">
+<h3>Return Values</h3>
+<p>functions can have invisible return values which are displayed by wrapping <code>( )</code></p>
+<p>Clean up actions can be set with <code>on.exit()</code> but multiple calls of the function will override each other unless <code>add = TRUE</code> is set.</p>
 </div>
 </div>
 <div id="discussion-notes" class="section level2">

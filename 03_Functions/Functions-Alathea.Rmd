@@ -239,7 +239,7 @@ f2 <- function(a, b) {
 f2(10, stop("This is an error!"))
 ```
 
-
+No, because the function is evaluated lazily so R never gets around to using `b` before completing evaluation.  You could force evaluation of `b` and then cause the error.
 
 #### What is an infix function? How do you write it? What’s a replacement function? How do you write it?
 
@@ -249,7 +249,7 @@ Replacement: They seem to modify their own argument.  The are defined like `xxx<
 
 #### What function do you use to ensure that a cleanup action occurs regardless of how a function terminates?
 
-
+`on.exit()`
 
 ### Function components
 
@@ -302,6 +302,12 @@ or set the default to `NULL` and use `is.null()`
 R only uses the function arguments it needs, unless you use `force()`
 
 **promise**: and unevaluated argument
+
+### Return Values
+
+functions can have invisible return values which are displayed by wrapping `( )`
+
+Clean up actions can be set with `on.exit()` but multiple calls of the function will override each other unless `add = TRUE` is set.
 
 ## Discussion Notes
 
