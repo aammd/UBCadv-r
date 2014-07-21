@@ -1,0 +1,24 @@
+---
+title: "Environments"
+author: "Alathea"
+date: '2014-07-21'
+output: 
+  html_document:
+    keep_md: yes
+    toc: yes
+---
+
+***
+
+## Exercises
+
+
+***
+
+## Reading Notes
+
+### Quiz
+
+***
+
+## Discussion Notes
