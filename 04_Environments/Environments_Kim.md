@@ -8,34 +8,72 @@ Date: '2014-07-17'
 
 ### Discussion Notes
 
+Question for the group - if you assign something to an object, and then in a new environment
+you reassign it as something new, then you remove it just from that env., does it go back to your 
+first value or is it now NULL?
+
+What about the case we had last week with c (concatenate) and c as an object. Which one does where find, or how do I direct where to the one I want to find?
+
+**NB The enclosing environment determines how the function finds values; the binding environments determine how we find the function.**
+
+**COOL! delayed binding and active binding with `%<d-%` and `%<a-%` respectively, e.g. `x %<a-% runif(1)`**
+
 ***
 
 ### Quiz
 
 1.  List three ways that an environment is different to a list.
 
+	**I thought he gave 4: every object has a unique name, objects aren't ordere w/in an env., 
+	every env. has a parent (except empty), and env.s have reference semantics**	
+
 1.  What is the parent of the global environment? What is the only 
     environment that doesn't have a parent?
     
+    **the last package that you attached with `require()` or `library()` is the parent of the global
+    env. and empty is the only env. w/out a parent**
+    
 1.  What is the enclosing environment of a function? Why is it 
     important?
+    
+    **it is the env. in which a function was created, and is important because 
+    every function has 1 and only 1 - or is it important because it is used for lexical scoping?
+     Probably the latter.**
 
 1.  How do you determine the environment from which a function was called?
 
+	**parent.frame()  This function returns the environment where the function was called. 
+	We can also use this function to look up the value of names in that environment. 
+	  N.B. Looking up variables in the calling environment rather than in the enclosing 
+	environment is called dynamic scoping.**
+
 1.  How are `<-` and `<<-` different?
+	**assign an object in the current environment versus globally assign an 
+	object so that it is accessible everywhere (or before globally assigning, will
+	 search to see if that object already exists and reassign it as thus. BUT does that 
+	 still make it globally available or not?**
 
 ### Exercices 1
 
 1.  List three ways in which an environment differs from a list.
 
+	**Same as quiz question 1: I thought he gave 4: every object has a unique name, objects aren't ordere w/in an env., 
+	every env. has a parent (except empty), and env.s have reference semantics**
+	
 1.  If you don't supply an explicit environment, where do `ls()` and `rm()`
     look? Where does `<-` make bindings?
+    
+    **In the global environment or the current environment?**
 
 1.  Using `parent.env()` and a loop (or a recursive function), verify that the 
     ancestors of `globalenv()` include `baseenv()` and `emptyenv()`. Use the 
     same basic idea to implement your own version of `search()`.
     
+    **haven't tried this**
+    
 ### Exercices 2
+
+**I don't have time to write all these functions, still useful to learn what he's discussing about environments.**
 
 1.  Modify `where()` to find all environments that contain a binding for
     `name`.
@@ -58,6 +96,17 @@ Date: '2014-07-17'
 1.  List the four environments associated with a function. What does each one
     do? Why is the distinction between enclosing and binding environments
     particularly important?
+    
+    **The *enclosing* environment is the environment where the function was created. Every function has one and only one enclosing environment
+    Binding a function to a name with <- defines a *binding* environment
+    Calling a function creates an ephemeral *execution* environment that stores variables created during execution
+    Every execution environment is associated with a *calling* environment, which tells you where the function was called.
+     The distinction between enc and binding envs is important because of masking, i.e. if the same name
+     is used for different functions, namespace becomes important.**
+     
+     **this example really helped me: sd() used var() in its definition, but if I rewrite
+     var() elsewhere, sd() will be okay because when sd() looks for var() it finds it first 
+     in its namespace environment so never looks in the globalenv()**
     
 1.  Draw a diagram that shows the enclosing environments of this function:
     
