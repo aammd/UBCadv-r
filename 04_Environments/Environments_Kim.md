@@ -152,6 +152,9 @@ What about the case we had last week with c (concatenate) and c as an object. Wh
     a
     ```
 
+	**finds if the object already exists and if so reassigns the value to it. maybe better because does so in that
+	 object's environment and not globally?**
+
 1.  Create a version of `assign()` that will only bind new names, never 
     re-bind old names. Some programming languages only do this, and are known 
     as [single assignment laguages][single assignment].
