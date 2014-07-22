@@ -1,16 +1,8 @@
----
-title: "Environments"
-author: "Alathea"
-date: '2014-07-21'
-output: 
-  html_document:
-    keep_md: yes
-    toc: yes
----
+# Environments
+Alathea  
+2014-07-21  
 
-```{r libraries, echo = FALSE, message = FALSE}
-library(pryr)
-```
+
 
 ***
 
@@ -25,8 +17,6 @@ library(pryr)
 
 #### List three ways that an environment is different to a list.
 
-from Hadley:
-
 > * Every object in an environment has a unique name.
 > * The objects in an environment are not ordered (i.e. it doesn’t make sense to ask what the first object in an environment is).
 > * An environment has a parent.
@@ -34,13 +24,11 @@ from Hadley:
 
 #### What is the parent of the global environment? What is the only environment that doesn’t have a parent?
 
-The parent of the global environment is the package that was attached last.  The **empty** environment (`emptyenv`) has no parent.
+The `empty` environment has no parent.
 
 #### What is the enclosing environment of a function? Why is it important?
 
 #### How do you determine the environment from which a function was called?
-
-`parent.frame()`
 
 #### How are `<-` and `<<-` different?
 
@@ -51,14 +39,6 @@ The parent of the global environment is the package that was attached last.  The
 Variables can point to objects that are equivalent but stored in different places in the environment.  This could be a cause of reduced performance if they are pointing to two different giant objects.
 
 Objects that have lost their name are automatically deleted by the garbage collector.
-
-Use `search()` to get all the parents of the global environment.  Use `ls()` to show all of the bindings in the current environment or a selected environment.
-
-```{r search, message = FALSE}
-search()
-ls()
-ls(baseenv())
-```
 
 
 
