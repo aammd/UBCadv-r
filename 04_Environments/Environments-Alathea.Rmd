@@ -8,10 +8,6 @@ output:
     toc: yes
 ---
 
-```{r libraries, echo = FALSE, message = FALSE}
-library(pryr)
-```
-
 ***
 
 ## Exercises
@@ -39,6 +35,97 @@ ancestors <- function(environ = globalenv())
 }
 
 ancestors()
+```
+
+### Modify `where()` to find all environments that contain a binding for `name`.
+
+I'm not entirely sure I understand the question, but:
+
+```{r where_name, message = FALSE}
+my_where <- function(env = parent.frame()) {
+  if (identical(env, emptyenv())) {
+    # Base case
+    stop("Can't find 'name'", call. = FALSE)
+  } else if (exists("name", envir = env, inherits = FALSE)) {
+    # Success case
+    env 
+  } else {
+    # Recursive case
+    my_where(parent.env(env))
+  }
+}
+
+name <- "Alathea"
+my_where()
+```
+
+### Write your own version of `get()` using a function written in the style of `where()`.
+
+```{r get, message = FALSE}
+my_get <- function(obj_name, env = parent.frame(), recursive = TRUE)
+{
+  if (exists(obj_name, envir = env, inherits = FALSE)) {
+    eval(parse(text = obj_name))
+  } else if (!recursive) {
+    stop("Can't find ", obj_name, " in ", environmentName(env), call. = FALSE)
+  } else if (identical(env, emptyenv())) {
+    stop(obj_name, " does not exist", call. = FALSE)
+  } else my_get(obj_name, parent.env(env))
+}
+
+name <- "Alathea"
+
+get("name")
+my_get("name")
+```
+
+### Write a function called `fget()` that finds only function objects. It should have two arguments, `name` and `env`, and should obey the regular scoping rules for functions: if there’s an object with a matching name that’s not a function, look in the parent. For an added challenge, also add an inherits argument which controls whether the function recurses up the parents or only looks in one environment.
+
+```{r fget, message = FALSE}
+fget <- function(name, env, recursive = FALSE){
+  g <- get(name)
+  if(!is.function(g)) stop("The 'name' argument must specify a function.")
+  return(g)
+}
+
+fget("sum")
+```
+
+### Write your own version of `exists(inherits = FALSE)` (Hint: use `ls()`). Write a recursive version that behaves like `exists(inherits = TRUE)`s.
+
+```{r my_exists, message = FALSE}
+my_exists_local <- function(name)
+{
+  if(!is.character(name)) stop("'name' must be a character string.  Please try again.")
+  
+  name_list <- ls(envir = parent.frame())
+  
+  if(any(name_list == name)) {
+    print(paste("Yes it exists and the value is:", name, sep = " "))
+  } else {
+    print("No it doesn't exist.")
+  }
+}
+
+my_exists_global <- function(name, environ = parent.frame())
+{
+  if(!is.character(name)) stop("'name' must be a character string.  Please try again.")
+  
+  name_list <- ls(envir = environ)
+  if(identical(environ, emptyenv())) {
+    print("No it doesnt exist.")
+  } else if(any(name_list == name)) {
+    print(paste("Yes it exists and the value is:", get(name), sep = " "))
+  } else {
+    environ = parent.env(environ)
+    my_exists_global(name, environ)
+  }
+}
+
+assign("do_i_exist", "yes i do exist.", envir = baseenv())
+
+my_exists_local("do_i_exist")
+my_exists_global("do_i_exist")
 ```
 
 ***
@@ -93,6 +180,16 @@ y <- 11
 exists("y", envir = a)
 a$y
 exists("x", envir = a, inherits = FALSE)
+```
+
+
+### Recursing over Environments
+
+```{r where, message = FALSE}
+require(pryr)
+
+x <- 10
+where("x")
 ```
 
 ***
