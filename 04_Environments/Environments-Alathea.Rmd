@@ -16,6 +16,30 @@ library(pryr)
 
 ## Exercises
 
+### List three ways in which an environment differs from a list.
+
+* The environment has a parent
+* Objects in an environment have no order
+* Every object in an environment has to have a unique name
+
+### If you don’t supply an explicit environment, where do `ls()` and `rm()` look? Where does `<-` make bindings?
+
+They look in the current environment (usually `globalenv()`) and that is also where `<-` makes bindings.  Within a functions, the bindings are made in the function's environment.
+
+### Using `parent.env()` and a loop (or a recursive function), verify that the ancestors of `globalenv()` include `baseenv()` and `emptyenv()`. Use the same basic idea to implement your own version of `search()`.
+
+```{r ancestors, message = FALSE}
+ancestors <- function(environ = globalenv())
+{
+  p <- parent.env(environ)
+  print(environmentName(p))
+  
+  if(identical(p, emptyenv())) return(invisible())
+  else ancestors(p)
+}
+
+ancestors()
+```
 
 ***
 
@@ -52,15 +76,24 @@ Variables can point to objects that are equivalent but stored in different place
 
 Objects that have lost their name are automatically deleted by the garbage collector.
 
-Use `search()` to get all the parents of the global environment.  Use `ls()` to show all of the bindings in the current environment or a selected environment.
+Use `search()` to get all the parents of the global environment.  Use `ls()` to show all of the bindings in the current environment or a selected environment. Use `ls.str()` to get the structure of the environment.
 
 ```{r search, message = FALSE}
 search()
 ls()
 ls(baseenv())
+ls.str()
 ```
 
+Use `rm()` to remove a binding from the environment.
 
+```{r exists, message = FALSE}
+a <- new.env()
+y <- 11
+exists("y", envir = a)
+a$y
+exists("x", envir = a, inherits = FALSE)
+```
 
 ***
 
