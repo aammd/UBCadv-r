@@ -55,7 +55,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <div id="header">
 <h1 class="title">Jenny’s reading of 03_Functions</h1>
 <h4 class="author"><em>Jenny Bryan</em></h4>
-<h4 class="date"><em>17 July, 2014</em></h4>
+<h4 class="date"><em>24 July, 2014</em></h4>
 </div>
 
 <div id="TOC">
@@ -70,14 +70,17 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#calling-a-function-given-a-list-of-arguments">Calling a function given a list of arguments</a></li>
 <li><a href="#default-and-missing-arguments">Default and missing arguments</a></li>
 <li><a href="#lazy-evaluation">Lazy evaluation</a></li>
-<li><a href="#section"><code>...</code></a></li>
+<li><a href="#the-...-argument">The <code>...</code> argument</a></li>
 <li><a href="#exercises-1">Exercises</a></li>
 </ul></li>
 <li><a href="#special-calls">Special calls</a><ul>
 <li><a href="#infix-functions">Infix functions</a></li>
+<li><a href="#replacement-functions">Replacement functions</a></li>
 <li><a href="#exercises-2">Exercises</a></li>
 </ul></li>
-<li><a href="#return-values">Return values</a></li>
+<li><a href="#return-values">Return values</a><ul>
+<li><a href="#exercises-3">Exercises</a></li>
+</ul></li>
 </ul>
 </div>
 
@@ -149,7 +152,7 @@ f2(10, stop(&quot;This is an error!&quot;))</code></pre></li>
 <li><code>on.exit()</code></li>
 </ul></li>
 </ol>
-<p><em>Correct.</em></p>
+<p><em>Correct. My favorite use of this is when I change working directory in a function (which I try to avoid, but sometimes can’t). I immediate call <code>on.exit()</code> with instructions to restore the original working directory, so that I don’t puzzle myself later with silent changes to working directory.</em></p>
 </div>
 <div id="function-components-exercises" class="section level2">
 <h2>Function components – Exercises</h2>
@@ -237,7 +240,7 @@ names(funs)[the_one]</code></pre>
 ##    16      1    0    1
 ##    22      1    0    1
 ##    Sum   985  182 1167</code></pre>
-<pre><code>   They are mostly primitive functions.
+<pre><code>   They are mostly primitive functions. No one else got a better answer. Not sure what the real answer is here.
    
 1. How could you adapt the code to find all primitive functions?</code></pre>
 <pre class="r"><code>str(prims &lt;-lapply(funs, function(x) if(is.primitive(x)) x else NULL),
@@ -338,19 +341,29 @@ mean(1:10, na.rm = TRUE)</code></pre>
 <div id="default-and-missing-arguments" class="section level3">
 <h3>Default and missing arguments</h3>
 <p>The claim is that “Since arguments in R are evaluated lazily (more on that below), the default value can be defined in terms of other arguments”. <strong>But then why doesn’t this work?</strong></p>
-<pre class="r"><code>data.frame(x = 1:3, y = x^2)</code></pre>
+<pre class="r"><code>z &lt;- data.frame(x = 1:3, y = x^2)</code></pre>
 <pre><code>## Error: object 'x' not found</code></pre>
+<p>I’m sure it has to do with function definition (which is what the statement applies to) vs. function invocation (which is what I’m doing), but this still vexes me. Andrew did the below live during discussion. Maybe that’s how I can make variables depend on previous variable at the time of data frame creation!</p>
+<pre class="r"><code>lazy_this &lt;- function(x = 1:3, y = x^2) {
+  data.frame(x, y)
+}
+lazy_this()</code></pre>
+<pre><code>##   x y
+## 1 1 1
+## 2 2 4
+## 3 3 9</code></pre>
+<p><strong>UPDATE</strong>: Resolved <a href="https://gist.github.com/jennybc/37481d9d784d2e8222b3">here</a>. TLDR: lazy evalution applies at time of function definition, not invocation.</p>
 <p>Good to remember that <code>missing()</code> returns a logical re: whether an argument was supplied at call time.</p>
 <p>Good to know his strategy when the default value is more involved to compute than your typical default value in a function definition. Here’s what he does: “I usually set the default value to NULL and use <code>is.null()</code> to check if the argument was supplied”.</p>
 </div>
 <div id="lazy-evaluation" class="section level3">
 <h3>Lazy evaluation</h3>
 <p>Good to know: “If you want to ensure that an argument is evaluated you can use <code>force</code>”.</p>
-<p><em>I didn’t really understand the example used to illustrate forcing. “At this point, the loop is complete and the final value of x is 10. Therefore all of the adder functions will add 10 on to their input”. That confuses me because it seems to conflict with this idea that a fresh copy of a function’s environment is created at call time. See if others want to discuss.</em></p>
+<p><em>I didn’t really understand the example used to illustrate forcing. “At this point, the loop is complete and the final value of x is 10. Therefore all of the adder functions will add 10 on to their input”. That confuses me because it seems to conflict with this idea that a fresh copy of a function’s environment is created at call time. I think we should revisit this after we’ve read about environments.</em></p>
 <p><em>The promise section hasn’t totally sunk in yet. At least partially due to lack of examples and use cases. Is this relevant to my life? See if others want to discuss.</em></p>
 </div>
-<div id="section" class="section level3">
-<h3><code>...</code></h3>
+<div id="the-...-argument" class="section level3">
+<h3>The <code>...</code> argument</h3>
 <p>Good reminder that “To capture … in a form that is easier to work with, you can use <code>list(...)</code>.”</p>
 </div>
 <div id="exercises-1" class="section level3">
@@ -393,6 +406,10 @@ f2()</code></pre></li>
 function_that_might_return_null() %||% default value</code></pre>
 <p>What’s the use case for this?</p>
 </div>
+<div id="replacement-functions" class="section level3">
+<h3>Replacement functions</h3>
+<p>This is the first place he uses <code>pryr</code>, I think. But so far I have not installed and followed along … maybe I should.</p>
+</div>
 <div id="exercises-2" class="section level3">
 <h3>Exercises</h3>
 <ol style="list-style-type: decimal">
@@ -420,20 +437,121 @@ str(prim_repl_funs, max.level = 1, list.len = 6)</code></pre>
 ##  $ &lt;&lt;-           :.Primitive(&quot;&lt;&lt;-&quot;) 
 ##  $ $&lt;-           :.Primitive(&quot;$&lt;-&quot;) 
 ##   [list output truncated]</code></pre>
+<pre class="r"><code>names(prim_repl_funs)</code></pre>
+<pre><code>##  [1] &quot;[[&lt;-&quot;           &quot;[&lt;-&quot;            &quot;@&lt;-&quot;            &quot;&lt;-&quot;            
+##  [5] &quot;&lt;&lt;-&quot;            &quot;$&lt;-&quot;            &quot;attr&lt;-&quot;         &quot;attributes&lt;-&quot;  
+##  [9] &quot;class&lt;-&quot;        &quot;dim&lt;-&quot;          &quot;dimnames&lt;-&quot;     &quot;environment&lt;-&quot; 
+## [13] &quot;length&lt;-&quot;       &quot;levels&lt;-&quot;       &quot;names&lt;-&quot;        &quot;oldClass&lt;-&quot;    
+## [17] &quot;storage.mode&lt;-&quot;</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>What are valid names for user created infix functions?</li>
 </ol>
 <p>“All user created infix functions names must start and end with <code>%</code>”.</p>
-<p><strong>I AM HERE!</strong></p>
 <ol start="3" style="list-style-type: decimal">
-<li><p>Create an infix <code>xor()</code> operator.</p></li>
-<li><p>Create infix versions of the set functions <code>intersect()</code>, <code>union()</code>, and <code>setdiff()</code>.</p></li>
-<li><p>Create a replacement function that modifies a random location in a vector.</p></li>
+<li>Create an infix <code>xor()</code> operator.</li>
 </ol>
+<p>First I had to look up what <code>xor</code> means. <a href="http://en.wikipedia.org/wiki/Exclusive_or">Wikipedia</a> did the job. It means “exclusive or”. So instead of returning <code>TRUE</code> if <code>x</code> is <code>TRUE</code> or if <code>y</code> is <code>TRUE</code> or if <code>x</code> and <code>y</code> are both <code>TRUE</code>, the exclusive or requires that <em>exactly</em> one of the conditions being considered is <code>TRUE</code>.</p>
+<pre class="r"><code>`%xor%` &lt;- function(x, y) rowSums(cbind(x, y)) == 1
+(foo &lt;- data.frame(x = c(TRUE, TRUE, FALSE, FALSE),
+                   y = c(TRUE, FALSE, TRUE, FALSE)))
+with(foo, data.frame(x, y, test = x %xor% y))</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li>Create infix versions of the set functions <code>intersect()</code>, <code>union()</code>, and <code>setdiff()</code>.</li>
+</ol>
+<pre class="r"><code>`%isect%` &lt;- function(x, y) x[x %in% y]
+`%union%` &lt;- function(x, y) sort(unique(c(x, y)))
+`%minus%` &lt;- function(x, y) x[!(x %in% y)]
+x &lt;- month.abb[1:6]
+y &lt;- month.abb[seq(1, 12, 2)]
+x %isect% y</code></pre>
+<pre><code>## [1] &quot;Jan&quot; &quot;Mar&quot; &quot;May&quot;</code></pre>
+<pre class="r"><code>x %union% y # I question the wisdom of how I'm sorting ...</code></pre>
+<pre><code>## [1] &quot;Apr&quot; &quot;Feb&quot; &quot;Jan&quot; &quot;Jul&quot; &quot;Jun&quot; &quot;Mar&quot; &quot;May&quot; &quot;Nov&quot; &quot;Sep&quot;</code></pre>
+<pre class="r"><code>x %minus% y</code></pre>
+<pre><code>## [1] &quot;Feb&quot; &quot;Apr&quot; &quot;Jun&quot;</code></pre>
+<ol start="5" style="list-style-type: decimal">
+<li>Create a replacement function that modifies a random location in a vector.</li>
+</ol>
+<pre class="r"><code>`perturb&lt;-` &lt;- function(x, value) {
+  victim &lt;- sample(length(x), 1)
+  x[victim] &lt;- value
+  return(x)
+}
+(foo &lt;- month.name)</code></pre>
+<pre><code>##  [1] &quot;January&quot;   &quot;February&quot;  &quot;March&quot;     &quot;April&quot;     &quot;May&quot;      
+##  [6] &quot;June&quot;      &quot;July&quot;      &quot;August&quot;    &quot;September&quot; &quot;October&quot;  
+## [11] &quot;November&quot;  &quot;December&quot;</code></pre>
+<pre class="r"><code>perturb(foo) &lt;- &quot;Junuary&quot;
+foo</code></pre>
+<pre><code>##  [1] &quot;January&quot;   &quot;February&quot;  &quot;March&quot;     &quot;April&quot;     &quot;May&quot;      
+##  [6] &quot;Junuary&quot;   &quot;July&quot;      &quot;August&quot;    &quot;September&quot; &quot;October&quot;  
+## [11] &quot;November&quot;  &quot;December&quot;</code></pre>
 </div>
 </div>
 <div id="return-values" class="section level2">
 <h2>Return values</h2>
+<p>Hadley says “Generally, I think it’s good style to reserve the use of an explicit <code>return()</code> for when you are returning early, such as for an error, or a simple case of the function. This style of programming can also reduce the level of indentation, and generally make functions easier to understand because you can reason about them locally.” Two questions:</p>
+<ul>
+<li>Not sure I agree. Or at least I had thought it was <em>bad style</em> to not use an explicit <code>return()</code>. It seems easy for the eye to skip over an object name typed on a line alone, i.e. to NOT recognize it for a <code>return()</code> statement. It also looks like a print statement leftover from development or maybe a typo? What do others think?</li>
+<li>The quote is immediately followed by an example but I actually can’t tell if he thinks the example is good or bad!</li>
+</ul>
+<p>The concept of a <strong>pure</strong> function is useful: “functions that always map the same input to the same output and … don’t affect the state of the world in any way apart from the value they return.”</p>
+<p>Separate your pure functions from impure and minimize the creation and use of the latter.</p>
+<div id="exercises-3" class="section level3">
+<h3>Exercises</h3>
+<ol style="list-style-type: decimal">
+<li>How does the <code>chdir</code> parameter of <code>source()</code> compare to <code>in_dir()</code>? Why might you prefer one approach to the other?</li>
+</ol>
+<p><em>Here’s the documentation on the <code>chdir</code> argument of <code>source()</code>: “logical; if <code>TRUE</code> and <code>file</code> is a pathname, the R working directory is temporarily changed to the directory containing file for evaluating.”</em></p>
+<p><em>The modification of working directory that occurs with <code>in_dir()</code> is completely free, whereas the modification control by <code>chdir</code> of <code>source()</code> is very principled: the working directory is set to the directory containing the source file. Freedom is great and all, but I’m more comfortable with <code>chdir</code> and <code>source()</code>. Constraining the user to do something that seems sensible can help people catch themselves doing bad stuff without meaning to.</em></p>
+<ol style="list-style-type: decimal">
+<li>What function undoes the action of <code>library()</code>? How do you save and restore the values of <code>options()</code> and <code>par()</code>?</li>
+</ol>
+<p><em><code>detach()</code> undoes the action of <code>library()</code>. Why is he asking this here??</em></p>
+<p>*Save and restore values of <code>options()</code> and <code>par()</code> like so:</p>
+<pre class="r"><code>## in a script
+op &lt;- par(new = TRUE)
+...
+par(op)
+
+## in a function
+foo &lt;- function(...) {
+  op &lt;- par(new = TRUE)
+  on.exit(par(op))
+}</code></pre>
+<ol style="list-style-type: decimal">
+<li>Write a function that opens a graphics device, runs the supplied code, and closes the graphics device (always, regardless of whether or not the plotting code worked).</li>
+</ol>
+<p><strong>WHY THIS NOT WORKING?</strong></p>
+<pre class="r"><code>safe_plot &lt;- function(code, file = &quot;~/tmp/test.pdf&quot;, ...) {
+  pdf(file = file, ...)
+  on.exit(dev.off())
+  force(code)
+  }
+safe_plot(&quot;require(ggplot2); p &lt;- ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + geom_point(); print(p)&quot;)</code></pre>
+<pre><code>## [1] &quot;require(ggplot2); p &lt;- ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + geom_point(); print(p)&quot;</code></pre>
+<ol style="list-style-type: decimal">
+<li><p>We can use <code>on.exit()</code> to implement a simple version of <code>capture.output()</code>.</p>
+<pre class="r"><code>capture.output2 &lt;- function(code) {
+  temp &lt;- tempfile()
+  on.exit(file.remove(temp), add = TRUE)
+
+  sink(temp)
+  on.exit(sink(), add = TRUE)
+
+  force(code)
+  readLines(temp)
+}
+capture.output2(cat(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, sep = &quot;\n&quot;))</code></pre>
+<pre><code>## [1] &quot;a&quot; &quot;b&quot; &quot;c&quot;</code></pre>
+<p>You might want to compare this function to the real <code>capture.output()</code> and think about the simplifications I’ve made. Is the code easier to understand or harder? Have I removed important functionality? </p></li>
+</ol>
+<p><strong>NOT DONE YET</strong></p>
+<ol style="list-style-type: decimal">
+<li>Compare <code>capture.output()</code> to <code>capture.output2()</code>. How do the functions differ? What features have I removed to make the key ideas easier to see? How have I rewritten the key ideas to be easier to understand?</li>
+</ol>
+<p><strong>NOT DONE YET</strong></p>
+</div>
 </div>
 
 
