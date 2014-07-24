@@ -141,6 +141,8 @@ mod[[c("qr", "rank")]]
 ```
 This goes into the fitted model, gets the `qr` list element, and then goes into that to retrieve the `rank` element. Cleaner than `mod[["qr"]][["rank"]]`.
 
+=======
+
 ### Working the exercises
 
 #### Given a linear model, e.g. `mod <- lm(mpg ~ wt, data = mtcars)`, extract the residual degrees of freedom. Extract the R squared from the model summary (`summary(mod)`).
@@ -219,6 +221,8 @@ jMat[sample(nrow(jMat)), sample(length(jMat))]
 ```
 
 I had worried (but not constructively enough to test!) that shuffling rows and columns at the same time would violate the integrity of rows and columns. But it does not.
+
+=======
 
 #### How would you select a random sample of `m` rows from a data frame? What if the sample had to be contiguous (i.e. with an initial row, a final row, and every row in between)?
 
