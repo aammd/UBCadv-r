@@ -1,0 +1,133 @@
+---
+title: "functions-Andrew.Rmd"
+author: "Andrew MacDonald"
+date: '2014-07-17'
+output: html_document
+---
+
+
+1.  What function allows you to tell if an object is a function? What function
+    allows you to tell if a function is a primitive function?
+
+
+```{r}
+is.function(ls)
+is.primitive(ls)
+is.primitive(c)
+is.primitive(mean)
+```
+
+
+1.  This code makes a list of all functions in the base package. 
+    
+    ```{r}
+    objs <- mget(ls("package:base"), inherits = TRUE)
+    funs <- Filter(is.function, objs)
+    ```
+
+    Use it to answer the following questions:
+
+    1. Which base function has the most arguments?
+
+```{r}
+which.max(sapply(funs,function(x) length(formals(x))))
+```
+
+    
+    1. How many base functions have no arguments? What's special about those
+       functions.
+       
+```{r}
+funs[which(sapply(funs,function(x) length(formals(x)))==0)] %>% length
+
+
+funs[which(sapply(funs,function(x) length(formals(x)))==0)] %>% sapply(is.primitive) %>% sum
+
+funs[which(sapply(funs,function(x) length(formals(x)))==0)] %>% lapply(formals)
+
+c <- 10
+c(c = c)```       
+       
+    1. How could you adapt the code to find all primitive functions?
+```{r}
+Filter(is.primitive, objs)
+```
+
+
+1. What are the three important components of a function?
+
+formals, body, environment
+
+1. When does printing a function not show what environment it was created in?
+
+When it is made in the base environment
+
+***
+
+1. What does the following code return? Why? What does each of the three `c`'s mean?
+
+    ```{r, eval = FALSE}
+    c <- 10
+    c(c = c)
+    ```
+
+1st is a function, 2nd a formal, 3rd a variable
+
+2. What are the four principles that govern how R looks for values?
+
+look through envrionments up to global environment
+if it looks like a function, check only those.
+
+3. What does the following function return? Make a prediction before 
+   running the code yourself.
+
+    ```{r, eval = FALSE}
+    f <- function(x) {
+      f <- function(x) {
+        f <- function(x) {
+          x ^ 2
+        }
+        f(x) + 1
+      }
+      f(x) * 2
+    }
+    f(10)
+    ```
+
+PREDICTION: 202
+(weird -- distorting order of operations with closures! perverse)
+
+
+1.  Clarify the following list of odd function calls:
+
+    ```{r, eval = FALSE}
+    x <- sample(replace = TRUE, 20, x = c(1:10, NA))
+    y <- runif(min = 0, max = 1, 20)
+    cor(m = "k", y = y, u = "p", x = x)
+    ```
+
+```{r}
+
+```
+
+
+
+
+1.  What does this function return? Why? Which principle does it illustrate?
+  
+    ```{r, eval = FALSE}    
+    f1 <- function(x = {y <- 1; 2}, y = 0) {
+      x + y
+    }
+    f1()
+    ```
+
+1.  What does this function return? Why? Which principle does it illustrate?
+
+    ```{r, eval = FALSE}
+    f2 <- function(x = z) {
+      z <- 100
+      x
+    }
+    f2()
+    ```
