@@ -2,12 +2,16 @@
 title: "Subsetting"
 author: "Andrew MacDonald"
 date: '2014-07-09'
-output: md_document
+output: 
+  html_document:
+    keep_md: yes
+    theme: united
 ---
-```{r}
+```{r message=FALSE}
 library(dplyr)
 library(tidyr)
 library(magrittr)
+library(ggplot2)
 ```
 
 ## Exercises 1
@@ -86,14 +90,20 @@ andrew_diag(x)
 mod <- lm(mpg ~ wt, data = mtcars)
 summary(mod)[[c("fstatistic", "dendf")]]
 
+data.frame(x = runif(n = 20,10,20)) %>%
+  mutate(y = x * 2 + rnorm(20)) %>%
+  qplot(x = x, y = y, data = .,geom = "point")
+
 ## here is a little randomization test:
-replicate(n = 20,{data.frame(x = runif(n = 20,10,20)) %>%
+replicate(n = 200,{data.frame(x = runif(n = 20,10,20)) %>%
                     mutate(y = x * 2 + rnorm(20)) %>%
                     lm(y ~ x, data = .)
 },simplify = FALSE
 ) %>% 
   lapply(summary) %>%
-  sapply("[[",i = c("fstatistic", "value"))
+  sapply("[[",i = c("fstatistic", "value")) %>%
+  qplot(geom = "density",xlab = "fstatistics")
+
 
 ```
 
@@ -127,15 +137,15 @@ contin_samp <- function(df,m){
     nrow %>% 
     subtract(m) %>% 
     sample(1) %>%
-    add(seq_len(m)) %>% 
-    df[.,]
+    add(0:m) %>% 
+    df[.,,drop = FALSE]
   }
 
 data(mtcars)
 
 contin_samp(mtcars,4)
 
-testdata <- data.frame(a = 1:100, b = 2:101)
+testdata <- data.frame(a = 1:100)
 
 contin_samp(testdata,5)
 ```
@@ -143,5 +153,5 @@ contin_samp(testdata,5)
     
 1.  How could you put the columns in a data frame in alphaetical order?
 ```{r}
-mtcars[order(names(mtcars))]
+df3b[order(names(df3b))]
 ```

@@ -1,10 +1,101 @@
-# Subsetting
-Alathea  
-2014-07-09  
+---
+title: "Subsetting"
+author: "Alathea"
+date: '2014-07-09'
+output: 
+  html_document:
+    keep_md: yes
+    toc: yes
+    theme: united
+---
 
 ***
 
 ### Discussion Notes
+
+
+```r
+mtcars$cyl == 4 | 6
+```
+
+```
+##  [1] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+## [15] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+## [29] TRUE TRUE TRUE TRUE
+```
+
+```r
+mtcars$cyl == 4 || 6
+```
+
+```
+## [1] TRUE
+```
+
+```r
+# this works
+mtcars$cyl == 4 | mtcars$cyl == 6
+```
+
+```
+##  [1]  TRUE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
+## [12] FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE FALSE
+## [23] FALSE FALSE FALSE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE
+```
+
+```r
+# or this
+mtcars$cyl %in% c(4, 6)
+```
+
+```
+##  [1]  TRUE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
+## [12] FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE FALSE
+## [23] FALSE FALSE FALSE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE
+```
+
+
+```r
+# this gives 5 NAs because NA is a logical vector, which gets recycled
+x <- 1:5
+x[NA]
+```
+
+Jenny showed us this:
+
+
+```r
+mod <- lm(mpg ~ wt, data = mtcars)
+str(mod, max.level = 1, give.attr = FALSE)
+```
+
+```
+## List of 12
+##  $ coefficients : Named num [1:2] 37.29 -5.34
+##  $ residuals    : Named num [1:32] -2.28 -0.92 -2.09 1.3 -0.2 ...
+##  $ effects      : Named num [1:32] -113.65 -29.116 -1.661 1.631 0.111 ...
+##  $ rank         : int 2
+##  $ fitted.values: Named num [1:32] 23.3 21.9 24.9 20.1 18.9 ...
+##  $ assign       : int [1:2] 0 1
+##  $ qr           :List of 5
+##  $ df.residual  : int 30
+##  $ xlevels      : Named list()
+##  $ call         : language lm(formula = mpg ~ wt, data = mtcars)
+##  $ terms        :Classes 'terms', 'formula' length 3 mpg ~ wt
+##  $ model        :'data.frame':	32 obs. of  2 variables:
+```
+
+
+```r
+# linearize the output and force back into the original structure
+df[] <- sample(as.matrix(df))
+```
+
+```
+## Error: cannot coerce type 'closure' to vector of type 'any'
+```
+
+`|` vs. `||`.  The shorter form makes element by element comparisons and the long form compares only the first element of each vector.  Normally the long form is used in `if` statements.
 
 ***
 
@@ -467,9 +558,9 @@ x[sample(nrow(x),3),]
 
 ```
 ##   a b
-## 3 3 c
+## 1 1 a
+## 8 8 h
 ## 9 9 i
-## 4 4 d
 ```
 
 Ordering:
@@ -481,15 +572,15 @@ Ordering:
 
 ```
 ##   a b
-## 4 4 d
+## 3 3 c
+## 8 8 h
 ## 7 7 g
 ## 5 5 e
-## 8 8 h
-## 9 9 i
-## 1 1 a
 ## 6 6 f
+## 9 9 i
 ## 2 2 b
-## 3 3 c
+## 1 1 a
+## 4 4 d
 ```
 
 ```r
@@ -532,11 +623,11 @@ df[ , sample(ncol(df), ncol(df))]
 ```
 
 ```
-##   a  d b  c
-## 1 1 13 5  9
-## 2 2 14 6 10
-## 3 3 15 7 11
-## 4 4 16 8 12
+##   b a  c  d
+## 1 5 1  9 13
+## 2 6 2 10 14
+## 3 7 3 11 15
+## 4 8 4 12 16
 ```
 
 ```r
@@ -546,11 +637,11 @@ df[sample(nrow(df), nrow(df)), sample(ncol(df), ncol(df))]
 ```
 
 ```
-##    c  d b a
-## 2 10 14 6 2
-## 4 12 16 8 4
-## 3 11 15 7 3
-## 1  9 13 5 1
+##   a b  c  d
+## 2 2 6 10 14
+## 1 1 5  9 13
+## 3 3 7 11 15
+## 4 4 8 12 16
 ```
 
 2. *How would you select a random sample of `m` rows from a data frame? What if the sample had to be contiguous (i.e. with an initial row, a final row, and every row in between)?*
@@ -568,8 +659,8 @@ sample_rows(df, 3)
 ```
 ##     a b  c  d
 ## 1   1 5  9 13
-## 1.1 1 5  9 13
 ## 4   4 8 12 16
+## 1.1 1 5  9 13
 ```
 
 ```r
@@ -578,12 +669,12 @@ sample_rows(df, 6)
 
 ```
 ##     a b  c  d
-## 1   1 5  9 13
-## 2   2 6 10 14
-## 3   3 7 11 15
 ## 4   4 8 12 16
-## 1.1 1 5  9 13
+## 2   2 6 10 14
 ## 4.1 4 8 12 16
+## 4.2 4 8 12 16
+## 3   3 7 11 15
+## 4.3 4 8 12 16
 ```
 
 
@@ -599,7 +690,6 @@ sample_contig_rows(df)
 
 ```
 ##   a b  c  d
-## 1 1 5  9 13
 ## 2 2 6 10 14
 ## 3 3 7 11 15
 ## 4 4 8 12 16
@@ -637,6 +727,8 @@ sample_contig_rows_2(df, 5)
 ##   a b  c  d
 ## 1 1 5  9 13
 ## 2 2 6 10 14
+## 3 3 7 11 15
+## 4 4 8 12 16
 ```
 
 ```r
@@ -674,11 +766,11 @@ sample_contig_rows_2(df, 2)
 ```
 
 ```
-##    c b  d a
-## 1  9 5 13 1
-## 2 10 6 14 2
-## 3 11 7 15 3
-## 4 12 8 16 4
+##    c a b  d
+## 1  9 1 5 13
+## 2 10 2 6 14
+## 3 11 3 7 15
+## 4 12 4 8 16
 ```
 
 ```r
