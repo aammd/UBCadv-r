@@ -1,7 +1,7 @@
 ---
 title: "Jenny's reading of 03_Functions"
 author: "Jenny Bryan"
-date: "17 July, 2014"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document:
     toc: yes
@@ -88,7 +88,7 @@ Week 02 2014-07-10 we read [Functions](http://adv-r.had.co.nz/Functions.html). S
     
     * `on.exit()`
     
-*Correct.*
+*Correct. My favorite use of this is when I change working directory in a function (which I try to avoid, but sometimes can't). I immediate call `on.exit()` with instructions to restore the original working directory, so that I don't puzzle myself later with silent changes to working directory.*
 
 ## Function components -- Exercises
 
@@ -131,7 +131,7 @@ length(formals(funs[[the_one]]))
        addmargins(table(n_args, sapply(funs, is.primitive)))
 ```
        
-       They are mostly primitive functions.
+       They are mostly primitive functions. No one else got a better answer. Not sure what the real answer is here.
        
     1. How could you adapt the code to find all primitive functions?
 
@@ -221,11 +221,22 @@ mean(1:10, na.rm = TRUE)
 
 ### Default and missing arguments
 
-The claim is that "Since arguments in R are evaluated lazily (more on that below), the default value can be defined in terms of other arguments". __But then why doesn't this work?__
+The claim is that "Since arguments in R are evaluated lazily (more on that below), the default value can be defined in terms of other arguments". __But then why doesn't this work?__ 
 
 ```{r}
-data.frame(x = 1:3, y = x^2)
+z <- data.frame(x = 1:3, y = x^2)
 ```
+
+I'm sure it has to do with function definition (which is what the statement applies to) vs. function invocation (which is what I'm doing), but this still vexes me. Andrew did the below live during discussion. Maybe that's how I can make variables depend on previous variable at the time of data frame creation!
+
+```{r}
+lazy_this <- function(x = 1:3, y = x^2) {
+  data.frame(x, y)
+}
+lazy_this()
+```
+
+__UPDATE__: Resolved [here](https://gist.github.com/jennybc/37481d9d784d2e8222b3). TLDR: lazy evalution applies at time of function definition, not invocation.
 
 Good to remember that `missing()` returns a logical re: whether an argument was supplied at call time.
 
@@ -235,11 +246,11 @@ Good to know his strategy when the default value is more involved to compute tha
 
 Good to know: "If you want to ensure that an argument is evaluated you can use `force`".
 
-*I didn't really understand the example used to illustrate forcing. "At this point, the loop is complete and the final value of x is 10. Therefore all of the adder functions will add 10 on to their input". That confuses me because it seems to conflict with this idea that a fresh copy of a function's environment is created at call time. See if others want to discuss.*
+*I didn't really understand the example used to illustrate forcing. "At this point, the loop is complete and the final value of x is 10. Therefore all of the adder functions will add 10 on to their input". That confuses me because it seems to conflict with this idea that a fresh copy of a function's environment is created at call time. I think we should revisit this after we've read about environments.*
 
 *The promise section hasn't totally sunk in yet. At least partially due to lack of examples and use cases. Is this relevant to my life? See if others want to discuss.*
 
-### `...`
+### The `...` argument
 
 Good reminder that "To capture ... in a form that is easier to work with, you can use `list(...)`."
 
@@ -297,6 +308,10 @@ function_that_might_return_null() %||% default value
 
 What's the use case for this?
 
+### Replacement functions
+
+This is the first place he uses `pryr`, I think. But so far I have not installed and followed along ... maybe I should.
+
 ### Exercises
 
 1. Create a list of all the replacement functions found in the base package. 
@@ -309,19 +324,130 @@ repl_funs <- funs[grepl("<-$", names(funs))]
 str(repl_funs, max.level = 1, list.len = 6)
 prim_repl_funs <- Filter(is.primitive, repl_funs)
 str(prim_repl_funs, max.level = 1, list.len = 6)
+names(prim_repl_funs)
 ```
 
 2. What are valid names for user created infix functions?
 
 "All user created infix functions names must start and end with `%`".
 
-__I AM HERE!__
-
 3. Create an infix `xor()` operator.
+
+First I had to look up what `xor` means. [Wikipedia](http://en.wikipedia.org/wiki/Exclusive_or) did the job. It means "exclusive or". So instead of returning `TRUE` if `x` is `TRUE` or if `y` is `TRUE` or if `x` and `y` are both `TRUE`, the exclusive or requires that *exactly* one of the conditions being considered is `TRUE`.
+
+```{r eval = FALSE}
+`%xor%` <- function(x, y) rowSums(cbind(x, y)) == 1
+(foo <- data.frame(x = c(TRUE, TRUE, FALSE, FALSE),
+                   y = c(TRUE, FALSE, TRUE, FALSE)))
+with(foo, data.frame(x, y, test = x %xor% y))
+```
 
 4. Create infix versions of the set functions `intersect()`, `union()`, and 
    `setdiff()`.
 
+```{r}
+`%isect%` <- function(x, y) x[x %in% y]
+`%union%` <- function(x, y) sort(unique(c(x, y)))
+`%minus%` <- function(x, y) x[!(x %in% y)]
+x <- month.abb[1:6]
+y <- month.abb[seq(1, 12, 2)]
+x %isect% y
+x %union% y # I question the wisdom of how I'm sorting ...
+x %minus% y
+```
+
 5. Create a replacement function that modifies a random location in a vector.
 
+```{r}
+`perturb<-` <- function(x, value) {
+  victim <- sample(length(x), 1)
+  x[victim] <- value
+  return(x)
+}
+(foo <- month.name)
+perturb(foo) <- "Junuary"
+foo
+```
+
 ## Return values
+
+Hadley says "Generally, I think it’s good style to reserve the use of an explicit `return()` for when you are returning early, such as for an error, or a simple case of the function. This style of programming can also reduce the level of indentation, and generally make functions easier to understand because you can reason about them locally." Two questions:
+
+  * Not sure I agree. Or at least I had thought it was *bad style* to not use an explicit `return()`. It seems easy for the eye to skip over an object name typed on a line alone, i.e. to NOT recognize it for a `return()` statement. It also looks like a print statement leftover from development or maybe a typo? What do others think?
+  * The quote is immediately followed by an example but I actually can't tell if he thinks the example is good or bad!
+  
+The concept of a __pure__ function is useful: "functions that always map the same input to the same output and ... don’t affect the state of the world in any way apart from the value they return."
+
+Separate your pure functions from impure and minimize the creation and use of the latter.
+
+### Exercises
+
+1.  How does the `chdir` parameter of `source()` compare to `in_dir()`? Why 
+    might you prefer one approach to the other?
+    
+*Here's the documentation on the `chdir` argument of `source()`: "logical; if `TRUE` and `file` is a pathname, the R working directory is temporarily changed to the directory containing file for evaluating."*
+
+*The modification of working directory that occurs with `in_dir()` is completely free, whereas the modification control by `chdir` of `source()` is very principled: the working directory is set to the directory containing the source file. Freedom is great and all, but I'm more comfortable with `chdir` and `source()`. Constraining the user to do something that seems sensible can help people catch themselves doing bad stuff without meaning to.*
+
+1.  What function undoes the action of `library()`? How do you save and restore
+    the values of `options()` and `par()`?
+    
+*`detach()` undoes the action of `library()`. Why is he asking this here??*
+
+*Save and restore values of `options()` and `par()` like so:
+
+```{r eval = FALSE}
+## in a script
+op <- par(new = TRUE)
+...
+par(op)
+
+## in a function
+foo <- function(...) {
+  op <- par(new = TRUE)
+  on.exit(par(op))
+}
+
+```
+
+1.  Write a function that opens a graphics device, runs the supplied code, and 
+    closes the graphics device (always, regardless of whether or not the plotting 
+    code worked).
+    
+__WHY THIS NOT WORKING?__  
+```{r}
+safe_plot <- function(code, file = "~/tmp/test.pdf", ...) {
+  pdf(file = file, ...)
+  on.exit(dev.off())
+  force(code)
+  }
+safe_plot("require(ggplot2); p <- ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + geom_point(); print(p)")
+```
+
+1.  We can use `on.exit()` to implement a simple version of `capture.output()`.
+
+    ```{r}
+    capture.output2 <- function(code) {
+      temp <- tempfile()
+      on.exit(file.remove(temp), add = TRUE)
+
+      sink(temp)
+      on.exit(sink(), add = TRUE)
+
+      force(code)
+      readLines(temp)
+    }
+    capture.output2(cat("a", "b", "c", sep = "\n"))
+    ```
+
+    You might want to compare this function to the real `capture.output()` and 
+    think about the simplifications I've made. Is the code easier to understand 
+    or harder? Have I removed important functionality? \indexc{capture.output()}
+
+__NOT DONE YET__  
+
+1.  Compare `capture.output()` to `capture.output2()`. How do the functions 
+    differ? What features have I removed to make the key ideas easier to see? 
+    How have I rewritten the key ideas to be easier to understand?
+
+__NOT DONE YET__  
