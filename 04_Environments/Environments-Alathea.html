@@ -80,6 +80,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#recursing-over-environments">Recursing over Environments</a></li>
 <li><a href="#function-environments">Function environments</a></li>
 <li><a href="#binding-names-to-values">Binding names to values</a></li>
+<li><a href="#explicit-environments">Explicit environments</a></li>
 </ul></li>
 <li><a href="#discussion-notes">Discussion Notes</a></li>
 </ul>
@@ -228,7 +229,7 @@ my_exists_local(&quot;do_i_exist&quot;)</code></pre>
 str_plus(str_plus)</code></pre>
 <pre><code>## function (fun)  
 ##  - attr(*, &quot;srcref&quot;)=Class 'srcref'  atomic [1:8] 1 13 12 1 13 1 1 12
-##   .. ..- attr(*, &quot;srcfile&quot;)=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x9448ce4&gt;</code></pre>
+##   .. ..- attr(*, &quot;srcfile&quot;)=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0xa4281b8&gt;</code></pre>
 <pre><code>## $structure
 ## NULL
 ## 
@@ -1564,6 +1565,11 @@ where(&quot;x&quot;)</code></pre>
 <p>Some names are reserved <code>?Reserved</code> and some can’t be used at all… unless you override the rules by enclosing your function name in backticks <code>`:) &lt;- &quot;smile&quot;`</code></p>
 <p>Delayed bindings: <code>%&lt;d-%</code> (from <code>pryr</code>) or <code>delayedAssign()</code></p>
 <p>Active bindings are re-evaluated everytime they are accessed: <code>%&lt;a-%</code> (from <code>pryr</code>) or <code>makeActiveBinding()</code></p>
+</div>
+<div id="explicit-environments" class="section level3">
+<h3>Explicit environments</h3>
+<p>Modifying an object makes a copy of the object; modifying an environment does not.</p>
+<p>Environments can be used to store large amounts of data without fear of copying them.</p>
 <hr />
 </div>
 </div>

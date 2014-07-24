@@ -192,7 +192,7 @@ str_plus(str_plus)
 ```
 ## function (fun)  
 ##  - attr(*, "srcref")=Class 'srcref'  atomic [1:8] 1 13 12 1 13 1 1 12
-##   .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x9448ce4>
+##   .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0xa4281b8>
 ```
 
 ```
@@ -1594,7 +1594,11 @@ Delayed bindings: `%<d-%` (from `pryr`) or `delayedAssign()`
 
 Active bindings are re-evaluated everytime they are accessed: `%<a-%` (from `pryr`) or `makeActiveBinding()`
 
+### Explicit environments
 
+Modifying an object makes a copy of the object; modifying an environment does not.
+
+Environments can be used to store large amounts of data without fear of copying them.
 
 ***
 

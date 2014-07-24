@@ -288,7 +288,11 @@ Delayed bindings: `%<d-%` (from `pryr`) or `delayedAssign()`
 
 Active bindings are re-evaluated everytime they are accessed: `%<a-%` (from `pryr`) or `makeActiveBinding()`
 
+### Explicit environments
 
+Modifying an object makes a copy of the object; modifying an environment does not.
+
+Environments can be used to store large amounts of data without fear of copying them.
 
 ***
 
