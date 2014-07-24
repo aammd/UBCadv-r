@@ -128,6 +128,25 @@ my_exists_local("do_i_exist")
 my_exists_global("do_i_exist")
 ```
 
+### Write an enhanced version of `str()` that provides more information about functions. Show where the function was found and what environment it was defined in.
+
+```{r enhanced_str, message = FALSE}
+str_plus <- function(fun)
+{
+  if(!is.function(fun)) stop("Input must be a function.")
+ 
+  require(pryr)
+  
+  output <- list(structure = str(fun), 
+                 binding_env = where(as.character(substitute(fun))), 
+                 enclosing_env = environment(fun)
+                 )
+  output  
+}
+
+str_plus(str_plus)
+```
+
 ***
 
 ## Reading Notes
@@ -191,6 +210,17 @@ require(pryr)
 x <- 10
 where("x")
 ```
+
+### Function environments
+
+The four function environments:
+
+1. enclosing (`environment(f)`)
+2. binding: which environment(s) have a binding to the function (`where(f)`)
+3. execution: a temporary environment created during execution of the function, then thrown away; child functions can access everything in the execution environment and this environment is now their enclosing environment.
+4. calling (`parent.frame()`)
+
+Regular scoping rules only look in the function enclosing environment, not calling environment.
 
 ***
 

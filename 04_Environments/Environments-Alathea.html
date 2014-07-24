@@ -69,11 +69,13 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#write-your-own-version-of-get-using-a-function-written-in-the-style-of-where.">Write your own version of <code>get()</code> using a function written in the style of <code>where()</code>.</a></li>
 <li><a href="#write-a-function-called-fget-that-finds-only-function-objects.-it-should-have-two-arguments-name-and-env-and-should-obey-the-regular-scoping-rules-for-functions-if-theres-an-object-with-a-matching-name-thats-not-a-function-look-in-the-parent.-for-an-added-challenge-also-add-an-inherits-argument-which-controls-whether-the-function-recurses-up-the-parents-or-only-looks-in-one-environment.">Write a function called <code>fget()</code> that finds only function objects. It should have two arguments, <code>name</code> and <code>env</code>, and should obey the regular scoping rules for functions: if there’s an object with a matching name that’s not a function, look in the parent. For an added challenge, also add an inherits argument which controls whether the function recurses up the parents or only looks in one environment.</a></li>
 <li><a href="#write-your-own-version-of-existsinherits-false-hint-use-ls.-write-a-recursive-version-that-behaves-like-existsinherits-trues.">Write your own version of <code>exists(inherits = FALSE)</code> (Hint: use <code>ls()</code>). Write a recursive version that behaves like <code>exists(inherits = TRUE)</code>s.</a></li>
+<li><a href="#write-an-enhanced-version-of-str-that-provides-more-information-about-functions.-show-where-the-function-was-found-and-what-environment-it-was-defined-in.">Write an enhanced version of <code>str()</code> that provides more information about functions. Show where the function was found and what environment it was defined in.</a></li>
 </ul></li>
 <li><a href="#reading-notes">Reading Notes</a><ul>
 <li><a href="#quiz">Quiz</a></li>
 <li><a href="#environment-basics">Environment basics</a></li>
 <li><a href="#recursing-over-environments">Recursing over Environments</a></li>
+<li><a href="#function-environments">Function environments</a></li>
 </ul></li>
 <li><a href="#discussion-notes">Discussion Notes</a></li>
 </ul>
@@ -203,6 +205,34 @@ my_exists_local(&quot;do_i_exist&quot;)</code></pre>
 <pre><code>## [1] &quot;No it doesn't exist.&quot;</code></pre>
 <pre class="r"><code>my_exists_global(&quot;do_i_exist&quot;)</code></pre>
 <pre><code>## [1] &quot;Yes it exists and the value is: yes i do exist.&quot;</code></pre>
+</div>
+<div id="write-an-enhanced-version-of-str-that-provides-more-information-about-functions.-show-where-the-function-was-found-and-what-environment-it-was-defined-in." class="section level3">
+<h3>Write an enhanced version of <code>str()</code> that provides more information about functions. Show where the function was found and what environment it was defined in.</h3>
+<pre class="r"><code>str_plus &lt;- function(fun)
+{
+  if(!is.function(fun)) stop(&quot;Input must be a function.&quot;)
+ 
+  require(pryr)
+  
+  output &lt;- list(structure = str(fun), 
+                 binding_env = where(as.character(substitute(fun))), 
+                 enclosing_env = environment(fun)
+                 )
+  output  
+}
+
+str_plus(str_plus)</code></pre>
+<pre><code>## function (fun)  
+##  - attr(*, &quot;srcref&quot;)=Class 'srcref'  atomic [1:8] 1 13 12 1 13 1 1 12
+##   .. ..- attr(*, &quot;srcfile&quot;)=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0xa1b7be4&gt;</code></pre>
+<pre><code>## $structure
+## NULL
+## 
+## $binding_env
+## &lt;environment: R_GlobalEnv&gt;
+## 
+## $enclosing_env
+## &lt;environment: R_GlobalEnv&gt;</code></pre>
 <hr />
 </div>
 </div>
@@ -244,13 +274,14 @@ my_exists_local(&quot;do_i_exist&quot;)</code></pre>
 <p>Objects that have lost their name are automatically deleted by the garbage collector.</p>
 <p>Use <code>search()</code> to get all the parents of the global environment. Use <code>ls()</code> to show all of the bindings in the current environment or a selected environment. Use <code>ls.str()</code> to get the structure of the environment.</p>
 <pre class="r"><code>search()</code></pre>
-<pre><code>## [1] &quot;.GlobalEnv&quot;        &quot;package:stats&quot;     &quot;package:graphics&quot; 
-## [4] &quot;package:grDevices&quot; &quot;package:utils&quot;     &quot;package:datasets&quot; 
-## [7] &quot;package:methods&quot;   &quot;Autoloads&quot;         &quot;package:base&quot;</code></pre>
+<pre><code>##  [1] &quot;.GlobalEnv&quot;        &quot;package:pryr&quot;      &quot;package:stats&quot;    
+##  [4] &quot;package:graphics&quot;  &quot;package:grDevices&quot; &quot;package:utils&quot;    
+##  [7] &quot;package:datasets&quot;  &quot;package:methods&quot;   &quot;Autoloads&quot;        
+## [10] &quot;package:base&quot;</code></pre>
 <pre class="r"><code>ls()</code></pre>
 <pre><code>## [1] &quot;ancestors&quot;        &quot;fget&quot;             &quot;metadata&quot;        
 ## [4] &quot;my_exists_global&quot; &quot;my_exists_local&quot;  &quot;my_get&quot;          
-## [7] &quot;my_where&quot;         &quot;name&quot;</code></pre>
+## [7] &quot;my_where&quot;         &quot;name&quot;             &quot;str_plus&quot;</code></pre>
 <pre class="r"><code>ls(baseenv())</code></pre>
 <pre><code>##    [1] &quot;^&quot;                                 
 ##    [2] &quot;~&quot;                                 
@@ -1442,7 +1473,8 @@ my_exists_local(&quot;do_i_exist&quot;)</code></pre>
 ## my_exists_local : function (name)  
 ## my_get : function (obj_name, env = parent.frame(), recursive = TRUE)  
 ## my_where : function (env = parent.frame())  
-## name :  chr &quot;Alathea&quot;</code></pre>
+## name :  chr &quot;Alathea&quot;
+## str_plus : function (fun)</code></pre>
 <p>Use <code>rm()</code> to remove a binding from the environment.</p>
 <pre class="r"><code>a &lt;- new.env()
 y &lt;- 11
@@ -1460,6 +1492,17 @@ exists(&quot;y&quot;, envir = a)</code></pre>
 x &lt;- 10
 where(&quot;x&quot;)</code></pre>
 <pre><code>## &lt;environment: R_GlobalEnv&gt;</code></pre>
+</div>
+<div id="function-environments" class="section level3">
+<h3>Function environments</h3>
+<p>The four function environments:</p>
+<ol style="list-style-type: decimal">
+<li>enclosing (<code>environment(f)</code>)</li>
+<li>binding: which environment(s) have a binding to the function (<code>where(f)</code>)</li>
+<li>execution: a temporary environment created during execution of the function, then thrown away; child functions can access everything in the execution environment and this environment is now their enclosing environment.</li>
+<li>calling (<code>parent.frame()</code>)</li>
+</ol>
+<p>Regular scoping rules only look in the function enclosing environment, not calling environment.</p>
 <hr />
 </div>
 </div>

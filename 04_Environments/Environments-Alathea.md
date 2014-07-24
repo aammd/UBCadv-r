@@ -169,6 +169,43 @@ my_exists_global("do_i_exist")
 ## [1] "Yes it exists and the value is: yes i do exist."
 ```
 
+### Write an enhanced version of `str()` that provides more information about functions. Show where the function was found and what environment it was defined in.
+
+
+```r
+str_plus <- function(fun)
+{
+  if(!is.function(fun)) stop("Input must be a function.")
+ 
+  require(pryr)
+  
+  output <- list(structure = str(fun), 
+                 binding_env = where(as.character(substitute(fun))), 
+                 enclosing_env = environment(fun)
+                 )
+  output  
+}
+
+str_plus(str_plus)
+```
+
+```
+## function (fun)  
+##  - attr(*, "srcref")=Class 'srcref'  atomic [1:8] 1 13 12 1 13 1 1 12
+##   .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0xa1b7be4>
+```
+
+```
+## $structure
+## NULL
+## 
+## $binding_env
+## <environment: R_GlobalEnv>
+## 
+## $enclosing_env
+## <environment: R_GlobalEnv>
+```
+
 ***
 
 ## Reading Notes
@@ -212,9 +249,10 @@ search()
 ```
 
 ```
-## [1] ".GlobalEnv"        "package:stats"     "package:graphics" 
-## [4] "package:grDevices" "package:utils"     "package:datasets" 
-## [7] "package:methods"   "Autoloads"         "package:base"
+##  [1] ".GlobalEnv"        "package:pryr"      "package:stats"    
+##  [4] "package:graphics"  "package:grDevices" "package:utils"    
+##  [7] "package:datasets"  "package:methods"   "Autoloads"        
+## [10] "package:base"
 ```
 
 ```r
@@ -224,7 +262,7 @@ ls()
 ```
 ## [1] "ancestors"        "fget"             "metadata"        
 ## [4] "my_exists_global" "my_exists_local"  "my_get"          
-## [7] "my_where"         "name"
+## [7] "my_where"         "name"             "str_plus"
 ```
 
 ```r
@@ -1429,6 +1467,7 @@ ls.str()
 ## my_get : function (obj_name, env = parent.frame(), recursive = TRUE)  
 ## my_where : function (env = parent.frame())  
 ## name :  chr "Alathea"
+## str_plus : function (fun)
 ```
 
 Use `rm()` to remove a binding from the environment.
@@ -1474,6 +1513,17 @@ where("x")
 ```
 ## <environment: R_GlobalEnv>
 ```
+
+### Function environments
+
+The four function environments:
+
+1. enclosing (`environment(f)`)
+2. binding: which environment(s) have a binding to the function (`where(f)`)
+3. execution: a temporary environment created during execution of the function, then thrown away; child functions can access everything in the execution environment and this environment is now their enclosing environment.
+4. calling (`parent.frame()`)
+
+Regular scoping rules only look in the function enclosing environment, not calling environment.
 
 ***
 
