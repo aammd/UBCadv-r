@@ -1,6 +1,9 @@
 ---
 title: "Functions"
 author: "Susannah"
+output: 
+  html_document:
+    keep_md: yes
 ---
 
 ## Quiz 
@@ -66,6 +69,8 @@ zeros <- which(counts == 0) #no args
 
 Lazy evaluation means that things aren't evaluated unless you use them.
 I don't understand what closures are, _e.g._ "This is important when creating closures with lapply or a loop"
+
+This example is confusing. Let's work through it.
 ```{r}
 add <- function(x) {
   function(y) x + y
@@ -116,7 +121,7 @@ y <- runif(20, min = 0, max = 1)
 cor(x, y, method = "kendall", use = "pairwise.complete.obs")
 ```
 2. The function returns 3. It illustrates default arguments and lexical scoping (name masking).
-3. This function returns 100. It illustrates promises. _What is the difference between a promise and lazy evaluation? Is lazy evaluation a *type* of promise?_
+3. This function returns 100. It illustrates promises/lazy evaluation. 
 
 # Special Calls
 1.
@@ -190,17 +195,17 @@ options(newop[which(names(newop) == "verbose")]) #restore just the verbose optio
 ```
 3. My solution doesn't work
 ```{r}
-makeplot <- function(file, plot_code, width=500, height=500) {
+make_plot <- function(file, plot_code, width=500, height=500) {
   png(file, width=width, height=height)
   plot_code
   graphics.off()
 }
 
 simpleplot <- plot(x = c(1:10), y = rnorm(10))
-borked <- plot(x = c(1:9), y = rnorm(10))
+#borked <- plot(x = c(1:9), y = rnorm(10))
 
-makeplot("~/Documents/classes/UBCadv-r/03_Functions/Functions_Susannah_plot.png", borked)
-makeplot("~/Documents/classes/UBCadv-r/03_Functions/Functions_Susannah_plot.png", simpleplot)
+#make_plot("~/Documents/classes/UBCadv-r/03_Functions/Functions_Susannah_plot.png", borked)
+make_plot("~/Documents/classes/UBCadv-r/03_Functions/Functions_Susannah_plot.png", simpleplot)
 ```
 4. Code is easier to understand. Output can't be directed to a specific file with `capture.output2`. Lose access to errors.
 5.
