@@ -192,7 +192,7 @@ str_plus(str_plus)
 ```
 ## function (fun)  
 ##  - attr(*, "srcref")=Class 'srcref'  atomic [1:8] 1 13 12 1 13 1 1 12
-##   .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0x9f58184>
+##   .. ..- attr(*, "srcfile")=Classes 'srcfilecopy', 'srcfile' <environment: 0xa4281b8>
 ```
 
 ```
@@ -229,7 +229,7 @@ a
 
 This allows you to bind a value outside of the function, while having control over the environment.  `<<-` will either replace an existing value or bind in the global environment.
 
-### Create a version of `assign()` that will only bind new names, never re-bind old names. Some programming languages only do this, and are known as single assignment laguages.
+### Create a version of `assign()` that will only bind new names, never re-bind old names. Some programming languages only do this, and are known as single assignment languages.
 
 
 ```r
@@ -250,10 +250,21 @@ single_assign("assign01", "bye")
 
 
 ```r
-flex_assign <- function(name)
+flex_assign <- function(name, value = NULL, env = parent.frame(), 
+                        eval_env = NULL, assign_env = NULL, fun = NULL)
 {
-  
+  if(!is.null(eval_env) && !is.null(assign_env)) {
+    if(!is.null(fun)) warning("Parameters for both delayed and active  assignment were specified.  Defaulting to delayed assignment.")
+    delayedAssign(name, value, eval_env, assign_env)
+  } else if(!is.null(fun)) {
+    makeActiveBinding(name, fun, env)
+  } else {
+    assign(name, value, env)
+  }
 }
+
+# So far this isn't working because `fun` is evaluated and not transmitted as a function
+flex_assign(name = "x", fun = runif(1))
 ```
 
 ***
@@ -310,10 +321,9 @@ ls()
 ```
 
 ```
-##  [1] "ancestors"        "fget"             "flex_assign"     
-##  [4] "metadata"         "my_exists_global" "my_exists_local" 
-##  [7] "my_get"           "my_where"         "name"            
-## [10] "str_plus"
+## [1] "ancestors"        "fget"             "metadata"        
+## [4] "my_exists_global" "my_exists_local"  "my_get"          
+## [7] "my_where"         "name"             "str_plus"
 ```
 
 ```r
@@ -1508,7 +1518,6 @@ ls.str()
 ```
 ## ancestors : function (environ = globalenv())  
 ## fget : function (name, env, recursive = FALSE)  
-## flex_assign : function (name)  
 ## metadata : List of 4
 ##  $ title : chr "Environments"
 ##  $ author: chr "Alathea"
@@ -1585,7 +1594,11 @@ Delayed bindings: `%<d-%` (from `pryr`) or `delayedAssign()`
 
 Active bindings are re-evaluated everytime they are accessed: `%<a-%` (from `pryr`) or `makeActiveBinding()`
 
+### Explicit environments
 
+Modifying an object makes a copy of the object; modifying an environment does not.
+
+Environments can be used to store large amounts of data without fear of copying them.
 
 ***
 
