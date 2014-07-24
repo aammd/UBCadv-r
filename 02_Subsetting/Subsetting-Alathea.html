@@ -183,6 +183,73 @@ hljs.initHighlightingOnLoad();
 
 <h3>Discussion Notes</h3>
 
+<pre><code class="r">mtcars$cyl == 4 | 6
+</code></pre>
+
+<pre><code>##  [1] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+## [15] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+## [29] TRUE TRUE TRUE TRUE
+</code></pre>
+
+<pre><code class="r">mtcars$cyl == 4 || 6
+</code></pre>
+
+<pre><code>## [1] TRUE
+</code></pre>
+
+<pre><code class="r"># this works
+mtcars$cyl == 4 | mtcars$cyl == 6
+</code></pre>
+
+<pre><code>##  [1]  TRUE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
+## [12] FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE FALSE
+## [23] FALSE FALSE FALSE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE
+</code></pre>
+
+<pre><code class="r"># or this
+mtcars$cyl %in% c(4, 6)
+</code></pre>
+
+<pre><code>##  [1]  TRUE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
+## [12] FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE FALSE
+## [23] FALSE FALSE FALSE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE
+</code></pre>
+
+<pre><code class="r"># this gives 5 NAs because NA is a logical vector, which gets recycled
+x &lt;- 1:5
+x[NA]
+</code></pre>
+
+<p>Jenny showed us this:</p>
+
+<pre><code class="r">mod &lt;- lm(mpg ~ wt, data = mtcars)
+str(mod, max.level = 1, give.attr = FALSE)
+</code></pre>
+
+<pre><code>## List of 12
+##  $ coefficients : Named num [1:2] 37.29 -5.34
+##  $ residuals    : Named num [1:32] -2.28 -0.92 -2.09 1.3 -0.2 ...
+##  $ effects      : Named num [1:32] -113.65 -29.116 -1.661 1.631 0.111 ...
+##  $ rank         : int 2
+##  $ fitted.values: Named num [1:32] 23.3 21.9 24.9 20.1 18.9 ...
+##  $ assign       : int [1:2] 0 1
+##  $ qr           :List of 5
+##  $ df.residual  : int 30
+##  $ xlevels      : Named list()
+##  $ call         : language lm(formula = mpg ~ wt, data = mtcars)
+##  $ terms        :Classes &#39;terms&#39;, &#39;formula&#39; length 3 mpg ~ wt
+##  $ model        :&#39;data.frame&#39;:   32 obs. of  2 variables:
+</code></pre>
+
+<pre><code class="r"># linearize the output and force back into the original structure
+df[] &lt;- sample(as.matrix(df))
+</code></pre>
+
+<pre><code>## Error: cannot coerce type &#39;closure&#39; to vector of type &#39;any&#39;
+</code></pre>
+
+<p><code>|</code> vs. <code>||</code>.  The shorter form makes element by element comparisons and the long form compares only the first element of each vector.  Normally the long form is used in <code>if</code> statements.</p>
+
 <hr/>
 
 <h3>Quiz</h3>
@@ -230,7 +297,7 @@ x[2]
 <pre><code>## [1] 2
 </code></pre>
 
-<pre><code class="r">x[c(5, 9)]
+<pre><code class="r">x[c(5,9)]
 </code></pre>
 
 <pre><code>## [1] 5 9
@@ -242,7 +309,7 @@ x[2]
 <pre><code>## [1] 1 2 3 4
 </code></pre>
 
-<pre><code class="r">x[c(TRUE, FALSE, TRUE, TRUE, FALSE)]
+<pre><code class="r">x[c(TRUE,FALSE,TRUE,TRUE,FALSE)]
 </code></pre>
 
 <pre><code>## [1] 1 3 4 6 8 9
@@ -271,8 +338,8 @@ y
 
 <pre><code class="r">df &lt;- data.frame(x = 1:3, y = 3:1, z = letters[1:3])
 
-# There&#39;s an important difference if you select a single column: matrix
-# subsetting simplifies by default, list subsetting does not.
+# There&#39;s an important difference if you select a single column:
+# matrix subsetting simplifies by default, list subsetting does not.
 str(df[&quot;x&quot;])
 </code></pre>
 
@@ -280,8 +347,7 @@ str(df[&quot;x&quot;])
 ##  $ x: int  1 2 3
 </code></pre>
 
-<pre><code class="r">
-str(df[, &quot;x&quot;])
+<pre><code class="r">str(df[, &quot;x&quot;])
 </code></pre>
 
 <pre><code>##  int [1:3] 1 2 3
@@ -349,14 +415,14 @@ diag(x)
 <pre><code>## [1]  1  4  9 16
 </code></pre>
 
-<pre><code class="r">
-get_diag &lt;- function(input_matrix) {
-    n &lt;- min(dim(input_matrix))
-    select &lt;- vector()
-    for (i in 1:n) {
-        select[i] &lt;- input_matrix[i, i]
-    }
-    return(select)
+<pre><code class="r">get_diag &lt;- function(input_matrix)
+{
+  n &lt;- min(dim(input_matrix))
+  select &lt;- vector()
+  for(i in 1:n){
+    select[i] &lt;- input_matrix[i,i]
+  }
+  return(select)
 }
 
 get_diag(x)
@@ -472,15 +538,13 @@ str(mod)
 ##  - attr(*, &quot;class&quot;)= chr &quot;lm&quot;
 </code></pre>
 
-<pre><code class="r">
-(df_mod &lt;- mod[[&quot;df.residual&quot;]])
+<pre><code class="r">(df_mod &lt;- mod[[&quot;df.residual&quot;]])
 </code></pre>
 
 <pre><code>## [1] 30
 </code></pre>
 
-<pre><code class="r">
-mod_sum &lt;- summary(mod)
+<pre><code class="r">mod_sum &lt;- summary(mod)
 str(mod_sum)
 </code></pre>
 
@@ -521,8 +585,7 @@ str(mod_sum)
 ##  - attr(*, &quot;class&quot;)= chr &quot;summary.lm&quot;
 </code></pre>
 
-<pre><code class="r">
-(rsq_mod &lt;- mod_sum[[&quot;r.squared&quot;]])
+<pre><code class="r">(rsq_mod &lt;- mod_sum[[&quot;r.squared&quot;]])
 </code></pre>
 
 <pre><code>## [1] 0.7528
@@ -557,8 +620,7 @@ str(mtcars[])
 ##  $ carb: int  4 4 1 1 2 1 4 2 2 4 ...
 </code></pre>
 
-<pre><code class="r">
-mtcars &lt;- lapply(mtcars, as.integer)
+<pre><code class="r">mtcars &lt;- lapply(mtcars, as.integer)
 str(mtcars)
 </code></pre>
 
@@ -580,8 +642,9 @@ str(mtcars)
 
 <p>Lookup tables:</p>
 
-<pre><code class="r">students &lt;- data.frame(name = c(LETTERS[1:10]), sex = c(&quot;m&quot;, &quot;f&quot;, &quot;m&quot;, &quot;f&quot;, 
-    &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;m&quot;, &quot;m&quot;, &quot;f&quot;), student.number = sample(c(3333:8888), 10))
+<pre><code class="r">students &lt;- data.frame(name = c(LETTERS[1:10]),
+                       sex = c(&quot;m&quot;,&quot;f&quot;,&quot;m&quot;,&quot;f&quot;,&quot;f&quot;,&quot;f&quot;,&quot;f&quot;,&quot;m&quot;,&quot;m&quot;,&quot;f&quot;),
+                       student.number = sample(c(3333:8888), 10))
 lookup &lt;- c(m = &quot;Male&quot;, f = &quot;Female&quot;)
 
 lookup[students$sex]
@@ -610,29 +673,29 @@ lookup[students$sex]
 ## 9 9 i
 </code></pre>
 
-<pre><code class="r">x[sample(nrow(x), 3), ]
+<pre><code class="r">x[sample(nrow(x),3),]
 </code></pre>
 
 <pre><code>##   a b
-## 2 2 b
-## 5 5 e
-## 3 3 c
+## 1 1 a
+## 8 8 h
+## 9 9 i
 </code></pre>
 
 <p>Ordering:</p>
 
-<pre><code class="r">(y &lt;- x[sample(nrow(x), nrow(x)), ])
+<pre><code class="r">(y &lt;- x[sample(nrow(x),nrow(x)),])
 </code></pre>
 
 <pre><code>##   a b
-## 2 2 b
-## 6 6 f
-## 8 8 h
-## 5 5 e
-## 9 9 i
-## 1 1 a
-## 7 7 g
 ## 3 3 c
+## 8 8 h
+## 7 7 g
+## 5 5 e
+## 6 6 f
+## 9 9 i
+## 2 2 b
+## 1 1 a
 ## 4 4 d
 </code></pre>
 
@@ -667,46 +730,45 @@ lookup[students$sex]
 ## 4 4 8 12 16
 </code></pre>
 
-<pre><code class="r">
-# randomly permute the columns
-df[, sample(ncol(df), ncol(df))]
+<pre><code class="r"># randomly permute the columns
+df[ , sample(ncol(df), ncol(df))]
 </code></pre>
 
-<pre><code>##    d  c b a
-## 1 13  9 5 1
-## 2 14 10 6 2
-## 3 15 11 7 3
-## 4 16 12 8 4
+<pre><code>##   b a  c  d
+## 1 5 1  9 13
+## 2 6 2 10 14
+## 3 7 3 11 15
+## 4 8 4 12 16
 </code></pre>
 
-<pre><code class="r">
-# randomize columns and rows simultaneously although I doubt this is really
-# happening simultaneously
+<pre><code class="r"># randomize columns and rows simultaneously
+# although I doubt this is really happening simultaneously
 df[sample(nrow(df), nrow(df)), sample(ncol(df), ncol(df))]
 </code></pre>
 
-<pre><code>##   b  c a  d
-## 1 5  9 1 13
-## 3 7 11 3 15
-## 2 6 10 2 14
-## 4 8 12 4 16
+<pre><code>##   a b  c  d
+## 2 2 6 10 14
+## 1 1 5  9 13
+## 3 3 7 11 15
+## 4 4 8 12 16
 </code></pre>
 
 <ol>
 <li><em>How would you select a random sample of <code>m</code> rows from a data frame? What if the sample had to be contiguous (i.e. with an initial row, a final row, and every row in between)?</em></li>
 </ol>
 
-<pre><code class="r">sample_rows &lt;- function(input_df, sample_size) {
-    input_df[sample(nrow(input_df), sample_size, replace = TRUE), ]
+<pre><code class="r">sample_rows &lt;- function(input_df, sample_size)
+{
+  input_df[sample(nrow(input_df), sample_size, replace = TRUE), ]
 }
 
 sample_rows(df, 3)
 </code></pre>
 
 <pre><code>##     a b  c  d
-## 3   3 7 11 15
-## 3.1 3 7 11 15
-## 3.2 3 7 11 15
+## 1   1 5  9 13
+## 4   4 8 12 16
+## 1.1 1 5  9 13
 </code></pre>
 
 <pre><code class="r">sample_rows(df, 6)
@@ -715,42 +777,44 @@ sample_rows(df, 3)
 <pre><code>##     a b  c  d
 ## 4   4 8 12 16
 ## 2   2 6 10 14
-## 2.1 2 6 10 14
+## 4.1 4 8 12 16
+## 4.2 4 8 12 16
 ## 3   3 7 11 15
-## 1   1 5  9 13
-## 3.1 3 7 11 15
+## 4.3 4 8 12 16
 </code></pre>
 
-<pre><code class="r">sample_contig_rows &lt;- function(input_df) {
-    (row_nums &lt;- sample(nrow(input_df), 2))
-    input_df[min(row_nums):max(row_nums), ]
+<pre><code class="r">sample_contig_rows &lt;- function(input_df)
+{
+  (row_nums &lt;- sample(nrow(input_df), 2))
+  input_df[min(row_nums):max(row_nums), ]
 }
 
 sample_contig_rows(df)
 </code></pre>
 
 <pre><code>##   a b  c  d
-## 1 1 5  9 13
 ## 2 2 6 10 14
 ## 3 3 7 11 15
 ## 4 4 8 12 16
 </code></pre>
 
-<pre><code class="r">
-# if you want a set number of rows:
-sample_contig_rows_2 &lt;- function(input_df, sample_size) {
-    # check that the sample size is smaller than the number of rows
-    if (sample_size &gt; nrow(input_df)) {
-        warning(&quot;Sample size too large.  Selecting all rows starting from a random index.&quot;)
-        return(sample_contig_rows(input_df))
-    } else if (sample_size == nrow(input_df)) {
-        warning(&quot;You just selected the entire data frame!&quot;)
-        return(input_df)
-    } else {
-        row_max &lt;- nrow(input_df) - sample_size + 1
-        first_row &lt;- sample(1:row_max, 1)
-        return(input_df[first_row:(first_row + sample_size - 1), ])
-    }
+<pre><code class="r"># if you want a set number of rows:
+sample_contig_rows_2 &lt;- function(input_df, sample_size)
+{
+  # check that the sample size is smaller than the number of rows
+  if(sample_size &gt; nrow(input_df)){
+    warning(&quot;Sample size too large.  Selecting all rows starting from a random index.&quot;)
+    return(sample_contig_rows(input_df))
+  }
+  else if(sample_size == nrow(input_df)){
+    warning(&quot;You just selected the entire data frame!&quot;)
+    return(input_df)
+  }
+  else{
+    row_max &lt;- nrow(input_df) - sample_size + 1
+    first_row &lt;- sample(1:row_max, 1)
+    return(input_df[first_row:(first_row + sample_size - 1), ])
+  }
 }
 
 sample_contig_rows_2(df, 5)
@@ -761,6 +825,8 @@ sample_contig_rows_2(df, 5)
 </code></pre>
 
 <pre><code>##   a b  c  d
+## 1 1 5  9 13
+## 2 2 6 10 14
 ## 3 3 7 11 15
 ## 4 4 8 12 16
 </code></pre>
@@ -782,25 +848,25 @@ sample_contig_rows_2(df, 5)
 </code></pre>
 
 <pre><code>##   a b  c  d
-## 2 2 6 10 14
 ## 3 3 7 11 15
+## 4 4 8 12 16
 </code></pre>
 
 <ol>
 <li><em>How could you put the columns in a data frame in alphaetical order?</em></li>
 </ol>
 
-<pre><code class="r">(df3a &lt;- df[, sample(ncol(df), ncol(df))])
+<pre><code class="r">(df3a &lt;- df[ ,sample(ncol(df),ncol(df))])
 </code></pre>
 
-<pre><code>##   a  d  c b
-## 1 1 13  9 5
-## 2 2 14 10 6
-## 3 3 15 11 7
-## 4 4 16 12 8
+<pre><code>##    c a b  d
+## 1  9 1 5 13
+## 2 10 2 6 14
+## 3 11 3 7 15
+## 4 12 4 8 16
 </code></pre>
 
-<pre><code class="r">(df3b &lt;- df3a[, order(names(df3a))])
+<pre><code class="r">(df3b &lt;- df3a[ ,order(names(df3a))])
 </code></pre>
 
 <pre><code>##   a b  c  d

@@ -13,6 +13,90 @@ output:
 
 ### Discussion Notes
 
+
+```r
+mtcars$cyl == 4 | 6
+```
+
+```
+##  [1] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+## [15] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+## [29] TRUE TRUE TRUE TRUE
+```
+
+```r
+mtcars$cyl == 4 || 6
+```
+
+```
+## [1] TRUE
+```
+
+```r
+# this works
+mtcars$cyl == 4 | mtcars$cyl == 6
+```
+
+```
+##  [1]  TRUE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
+## [12] FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE FALSE
+## [23] FALSE FALSE FALSE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE
+```
+
+```r
+# or this
+mtcars$cyl %in% c(4, 6)
+```
+
+```
+##  [1]  TRUE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
+## [12] FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE FALSE
+## [23] FALSE FALSE FALSE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE
+```
+
+
+```r
+# this gives 5 NAs because NA is a logical vector, which gets recycled
+x <- 1:5
+x[NA]
+```
+
+Jenny showed us this:
+
+
+```r
+mod <- lm(mpg ~ wt, data = mtcars)
+str(mod, max.level = 1, give.attr = FALSE)
+```
+
+```
+## List of 12
+##  $ coefficients : Named num [1:2] 37.29 -5.34
+##  $ residuals    : Named num [1:32] -2.28 -0.92 -2.09 1.3 -0.2 ...
+##  $ effects      : Named num [1:32] -113.65 -29.116 -1.661 1.631 0.111 ...
+##  $ rank         : int 2
+##  $ fitted.values: Named num [1:32] 23.3 21.9 24.9 20.1 18.9 ...
+##  $ assign       : int [1:2] 0 1
+##  $ qr           :List of 5
+##  $ df.residual  : int 30
+##  $ xlevels      : Named list()
+##  $ call         : language lm(formula = mpg ~ wt, data = mtcars)
+##  $ terms        :Classes 'terms', 'formula' length 3 mpg ~ wt
+##  $ model        :'data.frame':	32 obs. of  2 variables:
+```
+
+
+```r
+# linearize the output and force back into the original structure
+df[] <- sample(as.matrix(df))
+```
+
+```
+## Error: cannot coerce type 'closure' to vector of type 'any'
+```
+
+`|` vs. `||`.  The shorter form makes element by element comparisons and the long form compares only the first element of each vector.  Normally the long form is used in `if` statements.
+
 ***
 
 ### Quiz
@@ -54,7 +138,7 @@ x[2]
 ```
 
 ```r
-x[c(5, 9)]
+x[c(5,9)]
 ```
 
 ```
@@ -70,13 +154,12 @@ x[-c(5:10)]
 ```
 
 ```r
-x[c(TRUE, FALSE, TRUE, TRUE, FALSE)]
+x[c(TRUE,FALSE,TRUE,TRUE,FALSE)]
 ```
 
 ```
 ## [1] 1 3 4 6 8 9
 ```
-
 
 An interesting thing about subsetting with a logical vector is that if the logical vector is shorter than the vector being subsetted, it will act like a pattern and repeat over the entire vector (see above).  I guess this is called recycling.
 
@@ -94,7 +177,6 @@ y
 ##  1  2  3  4  5  6  7  8  9 10
 ```
 
-
 #### Matrices and Arrays
 
 Arrays are stored in column order.  If you subset with a number, e.g. `array[2]` it will count down through each item of each column.
@@ -107,8 +189,8 @@ List-type vs. Matrix type subestting:
 ```r
 df <- data.frame(x = 1:3, y = 3:1, z = letters[1:3])
 
-# There's an important difference if you select a single column: matrix
-# subsetting simplifies by default, list subsetting does not.
+# There's an important difference if you select a single column:
+# matrix subsetting simplifies by default, list subsetting does not.
 str(df["x"])
 ```
 
@@ -118,14 +200,12 @@ str(df["x"])
 ```
 
 ```r
-
 str(df[, "x"])
 ```
 
 ```
 ##  int [1:3] 1 2 3
 ```
-
 
 #### S3 vs. S4 Objects
 
@@ -154,7 +234,6 @@ mtcars[mtcars$cyl == 4 | 6, ]
 mtcars[mtcars$cyl == 4 | mtcars$cyl == 6, ]
 ```
 
-
 2. *Why does `x <- 1:5; x[NA]` yield five missing values? Hint: why is it different from `x[NA_real_]`?*
 
 **Not sure but something to do with `NA` being logical?**
@@ -166,7 +245,6 @@ mtcars[mtcars$cyl == 4 | mtcars$cyl == 6, ]
 x <- outer(1:5, 1:5, FUN = "*")
 x[upper.tri(x)]
 ```
-
 
 **It returns `TRUE` in the upper triangle of the matrix so subsetting with it returns the values in the upper triangle, column by column.**
 
@@ -189,14 +267,14 @@ diag(x)
 ```
 
 ```r
-
-get_diag <- function(input_matrix) {
-    n <- min(dim(input_matrix))
-    select <- vector()
-    for (i in 1:n) {
-        select[i] <- input_matrix[i, i]
-    }
-    return(select)
+get_diag <- function(input_matrix)
+{
+  n <- min(dim(input_matrix))
+  select <- vector()
+  for(i in 1:n){
+    select[i] <- input_matrix[i,i]
+  }
+  return(select)
 }
 
 get_diag(x)
@@ -205,7 +283,6 @@ get_diag(x)
 ```
 ## [1]  1  4  9 16
 ```
-
 
 6. *What does `df[is.na(df)] <- 0` do? How does it work?*
 
@@ -239,7 +316,6 @@ data[[var]]
 ## [1] 3 4 5
 ```
 
-
 The `$` can do partial name matching.  Whoa....dangerous.
 
 
@@ -251,7 +327,6 @@ data$a
 ```
 ## [1] 3 4 5
 ```
-
 
 #### Exercises
 
@@ -324,7 +399,6 @@ str(mod)
 ```
 
 ```r
-
 (df_mod <- mod[["df.residual"]])
 ```
 
@@ -333,7 +407,6 @@ str(mod)
 ```
 
 ```r
-
 mod_sum <- summary(mod)
 str(mod_sum)
 ```
@@ -377,14 +450,12 @@ str(mod_sum)
 ```
 
 ```r
-
 (rsq_mod <- mod_sum[["r.squared"]])
 ```
 
 ```
 ## [1] 0.7528
 ```
-
 
 ### Subsetting and Assignment
 
@@ -397,7 +468,6 @@ x <- c(1:5)
 # this is working OK.
 x[c(1, NA)] <- 0
 ```
-
 
 
 ```r
@@ -422,7 +492,6 @@ str(mtcars[])
 ```
 
 ```r
-
 mtcars <- lapply(mtcars, as.integer)
 str(mtcars)
 ```
@@ -442,15 +511,15 @@ str(mtcars)
 ##  $ carb: int [1:32] 4 4 1 1 2 1 4 2 2 4 ...
 ```
 
-
 ### Applications
 
 Lookup tables:
 
 
 ```r
-students <- data.frame(name = c(LETTERS[1:10]), sex = c("m", "f", "m", "f", 
-    "f", "f", "f", "m", "m", "f"), student.number = sample(c(3333:8888), 10))
+students <- data.frame(name = c(LETTERS[1:10]),
+                       sex = c("m","f","m","f","f","f","f","m","m","f"),
+                       student.number = sample(c(3333:8888), 10))
 lookup <- c(m = "Male", f = "Female")
 
 lookup[students$sex]
@@ -462,7 +531,6 @@ lookup[students$sex]
 ##        f        m 
 ## "Female"   "Male"
 ```
-
 
 Random samples / bootstrap:
 
@@ -485,34 +553,33 @@ Random samples / bootstrap:
 ```
 
 ```r
-x[sample(nrow(x), 3), ]
+x[sample(nrow(x),3),]
 ```
 
 ```
 ##   a b
-## 2 2 b
-## 5 5 e
-## 3 3 c
+## 1 1 a
+## 8 8 h
+## 9 9 i
 ```
-
 
 Ordering:
 
 
 ```r
-(y <- x[sample(nrow(x), nrow(x)), ])
+(y <- x[sample(nrow(x),nrow(x)),])
 ```
 
 ```
 ##   a b
-## 2 2 b
-## 6 6 f
-## 8 8 h
-## 5 5 e
-## 9 9 i
-## 1 1 a
-## 7 7 g
 ## 3 3 c
+## 8 8 h
+## 7 7 g
+## 5 5 e
+## 6 6 f
+## 9 9 i
+## 2 2 b
+## 1 1 a
 ## 4 4 d
 ```
 
@@ -533,7 +600,6 @@ Ordering:
 ## 9 9 i
 ```
 
-
 ### Exercises
 
 1. *How would you randomly permute the columns of a data frame? (This is an important technique in random forests). Can you simultaneously permute the rows and columns in one step?*
@@ -552,41 +618,39 @@ Ordering:
 ```
 
 ```r
-
 # randomly permute the columns
-df[, sample(ncol(df), ncol(df))]
+df[ , sample(ncol(df), ncol(df))]
 ```
 
 ```
-##    d  c b a
-## 1 13  9 5 1
-## 2 14 10 6 2
-## 3 15 11 7 3
-## 4 16 12 8 4
+##   b a  c  d
+## 1 5 1  9 13
+## 2 6 2 10 14
+## 3 7 3 11 15
+## 4 8 4 12 16
 ```
 
 ```r
-
-# randomize columns and rows simultaneously although I doubt this is really
-# happening simultaneously
+# randomize columns and rows simultaneously
+# although I doubt this is really happening simultaneously
 df[sample(nrow(df), nrow(df)), sample(ncol(df), ncol(df))]
 ```
 
 ```
-##   b  c a  d
-## 1 5  9 1 13
-## 3 7 11 3 15
-## 2 6 10 2 14
-## 4 8 12 4 16
+##   a b  c  d
+## 2 2 6 10 14
+## 1 1 5  9 13
+## 3 3 7 11 15
+## 4 4 8 12 16
 ```
-
 
 2. *How would you select a random sample of `m` rows from a data frame? What if the sample had to be contiguous (i.e. with an initial row, a final row, and every row in between)?*
 
 
 ```r
-sample_rows <- function(input_df, sample_size) {
-    input_df[sample(nrow(input_df), sample_size, replace = TRUE), ]
+sample_rows <- function(input_df, sample_size)
+{
+  input_df[sample(nrow(input_df), sample_size, replace = TRUE), ]
 }
 
 sample_rows(df, 3)
@@ -594,9 +658,9 @@ sample_rows(df, 3)
 
 ```
 ##     a b  c  d
-## 3   3 7 11 15
-## 3.1 3 7 11 15
-## 3.2 3 7 11 15
+## 1   1 5  9 13
+## 4   4 8 12 16
+## 1.1 1 5  9 13
 ```
 
 ```r
@@ -607,18 +671,18 @@ sample_rows(df, 6)
 ##     a b  c  d
 ## 4   4 8 12 16
 ## 2   2 6 10 14
-## 2.1 2 6 10 14
+## 4.1 4 8 12 16
+## 4.2 4 8 12 16
 ## 3   3 7 11 15
-## 1   1 5  9 13
-## 3.1 3 7 11 15
+## 4.3 4 8 12 16
 ```
 
 
-
 ```r
-sample_contig_rows <- function(input_df) {
-    (row_nums <- sample(nrow(input_df), 2))
-    input_df[min(row_nums):max(row_nums), ]
+sample_contig_rows <- function(input_df)
+{
+  (row_nums <- sample(nrow(input_df), 2))
+  input_df[min(row_nums):max(row_nums), ]
 }
 
 sample_contig_rows(df)
@@ -626,28 +690,29 @@ sample_contig_rows(df)
 
 ```
 ##   a b  c  d
-## 1 1 5  9 13
 ## 2 2 6 10 14
 ## 3 3 7 11 15
 ## 4 4 8 12 16
 ```
 
 ```r
-
 # if you want a set number of rows:
-sample_contig_rows_2 <- function(input_df, sample_size) {
-    # check that the sample size is smaller than the number of rows
-    if (sample_size > nrow(input_df)) {
-        warning("Sample size too large.  Selecting all rows starting from a random index.")
-        return(sample_contig_rows(input_df))
-    } else if (sample_size == nrow(input_df)) {
-        warning("You just selected the entire data frame!")
-        return(input_df)
-    } else {
-        row_max <- nrow(input_df) - sample_size + 1
-        first_row <- sample(1:row_max, 1)
-        return(input_df[first_row:(first_row + sample_size - 1), ])
-    }
+sample_contig_rows_2 <- function(input_df, sample_size)
+{
+  # check that the sample size is smaller than the number of rows
+  if(sample_size > nrow(input_df)){
+    warning("Sample size too large.  Selecting all rows starting from a random index.")
+    return(sample_contig_rows(input_df))
+  }
+  else if(sample_size == nrow(input_df)){
+    warning("You just selected the entire data frame!")
+    return(input_df)
+  }
+  else{
+    row_max <- nrow(input_df) - sample_size + 1
+    first_row <- sample(1:row_max, 1)
+    return(input_df[first_row:(first_row + sample_size - 1), ])
+  }
 }
 
 sample_contig_rows_2(df, 5)
@@ -660,6 +725,8 @@ sample_contig_rows_2(df, 5)
 
 ```
 ##   a b  c  d
+## 1 1 5  9 13
+## 2 2 6 10 14
 ## 3 3 7 11 15
 ## 4 4 8 12 16
 ```
@@ -686,29 +753,28 @@ sample_contig_rows_2(df, 2)
 
 ```
 ##   a b  c  d
-## 2 2 6 10 14
 ## 3 3 7 11 15
+## 4 4 8 12 16
 ```
-
 
 
 3. *How could you put the columns in a data frame in alphaetical order?*
 
 
 ```r
-(df3a <- df[, sample(ncol(df), ncol(df))])
+(df3a <- df[ ,sample(ncol(df),ncol(df))])
 ```
 
 ```
-##   a  d  c b
-## 1 1 13  9 5
-## 2 2 14 10 6
-## 3 3 15 11 7
-## 4 4 16 12 8
+##    c a b  d
+## 1  9 1 5 13
+## 2 10 2 6 14
+## 3 11 3 7 15
+## 4 12 4 8 16
 ```
 
 ```r
-(df3b <- df3a[, order(names(df3a))])
+(df3b <- df3a[ ,order(names(df3a))])
 ```
 
 ```
@@ -718,4 +784,3 @@ sample_contig_rows_2(df, 2)
 ## 3 3 7 11 15
 ## 4 4 8 12 16
 ```
-
