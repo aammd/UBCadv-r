@@ -5,6 +5,11 @@ date: '2014-07-17'
 output: html_document
 ---
 
+```{r message=FALSE}
+library(dplyr)
+library(magrittr)
+```
+
 
 1.  What function allows you to tell if an object is a function? What function
     allows you to tell if a function is a primitive function?
@@ -46,7 +51,9 @@ funs[which(sapply(funs,function(x) length(formals(x)))==0)] %>% sapply(is.primit
 funs[which(sapply(funs,function(x) length(formals(x)))==0)] %>% lapply(formals)
 
 c <- 10
-c(c = c)```       
+c(c = c)
+
+```       
        
     1. How could you adapt the code to find all primitive functions?
 ```{r}
@@ -60,7 +67,7 @@ formals, body, environment
 
 1. When does printing a function not show what environment it was created in?
 
-When it is made in the base environment
+When it is made in the base environment.
 
 ***
 
@@ -71,12 +78,16 @@ When it is made in the base environment
     c(c = c)
     ```
 
-1st is a function, 2nd a formal, 3rd a variable
+*1st is a function, 2nd a formal, 3rd a variable*
 
 2. What are the four principles that govern how R looks for values?
 
-look through envrionments up to global environment
-if it looks like a function, check only those.
+
+  >  name masking
+  functions vs. variables
+  a fresh start
+  dynamic lookup
+
 
 3. What does the following function return? Make a prediction before 
    running the code yourself.
