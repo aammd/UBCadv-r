@@ -212,8 +212,7 @@ There are also some useful points about invisible returns
     }
     f1()
     ```
-    **returns 3 because it evaluates x to 1 then to 2 then adds 1 even though y was 0 initially
-     BUT I am confused about the y part?**
+    **returns 3 because it evaluates x = {y <- 1; 2} which overwrites the y=0**
 
 3. What does this function return? Why? Which principle does it illustrate?
 
