@@ -70,12 +70,16 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#write-a-function-called-fget-that-finds-only-function-objects.-it-should-have-two-arguments-name-and-env-and-should-obey-the-regular-scoping-rules-for-functions-if-theres-an-object-with-a-matching-name-thats-not-a-function-look-in-the-parent.-for-an-added-challenge-also-add-an-inherits-argument-which-controls-whether-the-function-recurses-up-the-parents-or-only-looks-in-one-environment.">Write a function called <code>fget()</code> that finds only function objects. It should have two arguments, <code>name</code> and <code>env</code>, and should obey the regular scoping rules for functions: if there’s an object with a matching name that’s not a function, look in the parent. For an added challenge, also add an inherits argument which controls whether the function recurses up the parents or only looks in one environment.</a></li>
 <li><a href="#write-your-own-version-of-existsinherits-false-hint-use-ls.-write-a-recursive-version-that-behaves-like-existsinherits-trues.">Write your own version of <code>exists(inherits = FALSE)</code> (Hint: use <code>ls()</code>). Write a recursive version that behaves like <code>exists(inherits = TRUE)</code>s.</a></li>
 <li><a href="#write-an-enhanced-version-of-str-that-provides-more-information-about-functions.-show-where-the-function-was-found-and-what-environment-it-was-defined-in.">Write an enhanced version of <code>str()</code> that provides more information about functions. Show where the function was found and what environment it was defined in.</a></li>
+<li><a href="#what-does-this-function-do-how-does-it-differ-from---and-why-might-you-prefer-it">What does this function do? How does it differ from <code>&lt;&lt;-</code> and why might you prefer it?</a></li>
+<li><a href="#create-a-version-of-assign-that-will-only-bind-new-names-never-re-bind-old-names.-some-programming-languages-only-do-this-and-are-known-as-single-assignment-laguages.">Create a version of <code>assign()</code> that will only bind new names, never re-bind old names. Some programming languages only do this, and are known as single assignment laguages.</a></li>
+<li><a href="#write-an-assignment-function-that-can-do-active-delayed-and-locked-bindings.-what-might-you-call-it-what-arguments-should-it-take-can-you-guess-which-sort-of-assignment-it-should-do-based-on-the-input">Write an assignment function that can do active, delayed, and locked bindings. What might you call it? What arguments should it take? Can you guess which sort of assignment it should do based on the input?</a></li>
 </ul></li>
 <li><a href="#reading-notes">Reading Notes</a><ul>
 <li><a href="#quiz">Quiz</a></li>
 <li><a href="#environment-basics">Environment basics</a></li>
 <li><a href="#recursing-over-environments">Recursing over Environments</a></li>
 <li><a href="#function-environments">Function environments</a></li>
+<li><a href="#binding-names-to-values">Binding names to values</a></li>
 </ul></li>
 <li><a href="#discussion-notes">Discussion Notes</a></li>
 </ul>
@@ -224,7 +228,7 @@ my_exists_local(&quot;do_i_exist&quot;)</code></pre>
 str_plus(str_plus)</code></pre>
 <pre><code>## function (fun)  
 ##  - attr(*, &quot;srcref&quot;)=Class 'srcref'  atomic [1:8] 1 13 12 1 13 1 1 12
-##   .. ..- attr(*, &quot;srcfile&quot;)=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0xa1b7be4&gt;</code></pre>
+##   .. ..- attr(*, &quot;srcfile&quot;)=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x9f58184&gt;</code></pre>
 <pre><code>## $structure
 ## NULL
 ## 
@@ -233,6 +237,46 @@ str_plus(str_plus)</code></pre>
 ## 
 ## $enclosing_env
 ## &lt;environment: R_GlobalEnv&gt;</code></pre>
+</div>
+<div id="what-does-this-function-do-how-does-it-differ-from---and-why-might-you-prefer-it" class="section level3">
+<h3>What does this function do? How does it differ from <code>&lt;&lt;-</code> and why might you prefer it?</h3>
+<pre class="r"><code>rebind &lt;- function(name, value, env = parent.frame()) {
+  if (identical(env, emptyenv())) {
+    stop(&quot;Can't find &quot;, name, call. = FALSE)
+  } else if (exists(name, envir = env, inherits = FALSE)) {
+    assign(name, value, envir = env)
+  } else {
+    rebind(name, value, parent.env(env))
+  }
+}
+rebind(&quot;a&quot;, 10)
+#&gt; Error: Can't find a
+a &lt;- 5
+rebind(&quot;a&quot;, 10)
+a
+#&gt; [1] 10</code></pre>
+<p>This allows you to bind a value outside of the function, while having control over the environment. <code>&lt;&lt;-</code> will either replace an existing value or bind in the global environment.</p>
+</div>
+<div id="create-a-version-of-assign-that-will-only-bind-new-names-never-re-bind-old-names.-some-programming-languages-only-do-this-and-are-known-as-single-assignment-laguages." class="section level3">
+<h3>Create a version of <code>assign()</code> that will only bind new names, never re-bind old names. Some programming languages only do this, and are known as single assignment laguages.</h3>
+<pre class="r"><code>single_assign &lt;- function(name, value, env = globalenv())
+{
+  if(!is.character(name)) stop(&quot;`name` must be a character string.&quot;)
+  if(exists(name, inherits = TRUE)) stop(&quot;This name has already been used.&quot;)
+  
+  assign(name, value, envir = env)
+  return(invisible())
+}
+
+single_assign(&quot;assign01&quot;, &quot;hi&quot;)
+single_assign(&quot;assign01&quot;, &quot;bye&quot;)</code></pre>
+</div>
+<div id="write-an-assignment-function-that-can-do-active-delayed-and-locked-bindings.-what-might-you-call-it-what-arguments-should-it-take-can-you-guess-which-sort-of-assignment-it-should-do-based-on-the-input" class="section level3">
+<h3>Write an assignment function that can do active, delayed, and locked bindings. What might you call it? What arguments should it take? Can you guess which sort of assignment it should do based on the input?</h3>
+<pre class="r"><code>flex_assign &lt;- function(name)
+{
+  
+}</code></pre>
 <hr />
 </div>
 </div>
@@ -279,9 +323,10 @@ str_plus(str_plus)</code></pre>
 ##  [7] &quot;package:datasets&quot;  &quot;package:methods&quot;   &quot;Autoloads&quot;        
 ## [10] &quot;package:base&quot;</code></pre>
 <pre class="r"><code>ls()</code></pre>
-<pre><code>## [1] &quot;ancestors&quot;        &quot;fget&quot;             &quot;metadata&quot;        
-## [4] &quot;my_exists_global&quot; &quot;my_exists_local&quot;  &quot;my_get&quot;          
-## [7] &quot;my_where&quot;         &quot;name&quot;             &quot;str_plus&quot;</code></pre>
+<pre><code>##  [1] &quot;ancestors&quot;        &quot;fget&quot;             &quot;flex_assign&quot;     
+##  [4] &quot;metadata&quot;         &quot;my_exists_global&quot; &quot;my_exists_local&quot; 
+##  [7] &quot;my_get&quot;           &quot;my_where&quot;         &quot;name&quot;            
+## [10] &quot;str_plus&quot;</code></pre>
 <pre class="r"><code>ls(baseenv())</code></pre>
 <pre><code>##    [1] &quot;^&quot;                                 
 ##    [2] &quot;~&quot;                                 
@@ -1464,6 +1509,7 @@ str_plus(str_plus)</code></pre>
 <pre class="r"><code>ls.str()</code></pre>
 <pre><code>## ancestors : function (environ = globalenv())  
 ## fget : function (name, env, recursive = FALSE)  
+## flex_assign : function (name)  
 ## metadata : List of 4
 ##  $ title : chr &quot;Environments&quot;
 ##  $ author: chr &quot;Alathea&quot;
@@ -1503,6 +1549,12 @@ where(&quot;x&quot;)</code></pre>
 <li>calling (<code>parent.frame()</code>)</li>
 </ol>
 <p>Regular scoping rules only look in the function enclosing environment, not calling environment.</p>
+</div>
+<div id="binding-names-to-values" class="section level3">
+<h3>Binding names to values</h3>
+<p>Some names are reserved <code>?Reserved</code> and some can’t be used at all… unless you override the rules by enclosing your function name in backticks <code>`:) &lt;- &quot;smile&quot;`</code></p>
+<p>Delayed bindings: <code>%&lt;d-%</code> (from <code>pryr</code>) or <code>delayedAssign()</code></p>
+<p>Active bindings are re-evaluated everytime they are accessed: <code>%&lt;a-%</code> (from <code>pryr</code>) or <code>makeActiveBinding()</code></p>
 <hr />
 </div>
 </div>

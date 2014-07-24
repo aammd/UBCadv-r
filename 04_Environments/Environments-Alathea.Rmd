@@ -147,6 +147,53 @@ str_plus <- function(fun)
 str_plus(str_plus)
 ```
 
+### What does this function do? How does it differ from `<<-` and why might you prefer it?
+
+```{r bindings, message = FALSE, eval = FALSE}
+rebind <- function(name, value, env = parent.frame()) {
+  if (identical(env, emptyenv())) {
+    stop("Can't find ", name, call. = FALSE)
+  } else if (exists(name, envir = env, inherits = FALSE)) {
+    assign(name, value, envir = env)
+  } else {
+    rebind(name, value, parent.env(env))
+  }
+}
+rebind("a", 10)
+#> Error: Can't find a
+a <- 5
+rebind("a", 10)
+a
+#> [1] 10
+```
+
+This allows you to bind a value outside of the function, while having control over the environment.  `<<-` will either replace an existing value or bind in the global environment.
+
+### Create a version of `assign()` that will only bind new names, never re-bind old names. Some programming languages only do this, and are known as single assignment languages.
+
+```{r single_assignment, eval = FALSE}
+single_assign <- function(name, value, env = globalenv())
+{
+  if(!is.character(name)) stop("`name` must be a character string.")
+  if(exists(name, inherits = TRUE)) stop("This name has already been used.")
+  
+  assign(name, value, envir = env)
+  return(invisible())
+}
+
+single_assign("assign01", "hi")
+single_assign("assign01", "bye")
+```
+
+### Write an assignment function that can do active, delayed, and locked bindings. What might you call it? What arguments should it take? Can you guess which sort of assignment it should do based on the input?
+
+```{r flexible_assignment}
+flex_assign <- function(name)
+{
+  
+}
+```
+
 ***
 
 ## Reading Notes
@@ -221,6 +268,16 @@ The four function environments:
 4. calling (`parent.frame()`)
 
 Regular scoping rules only look in the function enclosing environment, not calling environment.
+
+### Binding names to values
+
+Some names are reserved `?Reserved` and some can't be used at all... unless you override the rules by enclosing your function name in backticks `` `:) <- "smile"` ``
+
+Delayed bindings: `%<d-%` (from `pryr`) or `delayedAssign()`
+
+Active bindings are re-evaluated everytime they are accessed: `%<a-%` (from `pryr`) or `makeActiveBinding()`
+
+
 
 ***
 
