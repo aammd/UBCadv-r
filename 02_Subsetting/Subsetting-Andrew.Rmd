@@ -103,8 +103,6 @@ replicate(n = 200,{data.frame(x = runif(n = 20,10,20)) %>%
   lapply(summary) %>%
   sapply("[[",i = c("fstatistic", "value")) %>%
   qplot(geom = "density",xlab = "fstatistics")
-
-
 ```
 
 # Exercises 3
@@ -153,5 +151,5 @@ contin_samp(testdata,5)
     
 1.  How could you put the columns in a data frame in alphaetical order?
 ```{r}
-df3b[order(names(df3b))]
+#df3b[order(names(df3b))]
 ```

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 title: "Subsetting"
 author: "Alathea"
@@ -8,11 +9,17 @@ output:
     toc: yes
     theme: united
 ---
+=======
+# Subsetting
+Alathea  
+2014-07-09  
+>>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
 
 ***
 
 ### Discussion Notes
 
+<<<<<<< HEAD
 
 ```r
 mtcars$cyl == 4 | 6
@@ -97,6 +104,8 @@ df[] <- sample(as.matrix(df))
 
 `|` vs. `||`.  The shorter form makes element by element comparisons and the long form compares only the first element of each vector.  Normally the long form is used in `if` statements.
 
+=======
+>>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
 ***
 
 ### Quiz
@@ -558,9 +567,15 @@ x[sample(nrow(x),3),]
 
 ```
 ##   a b
+<<<<<<< HEAD
 ## 1 1 a
 ## 8 8 h
 ## 9 9 i
+=======
+## 3 3 c
+## 9 9 i
+## 4 4 d
+>>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
 ```
 
 Ordering:
@@ -572,6 +587,7 @@ Ordering:
 
 ```
 ##   a b
+<<<<<<< HEAD
 ## 3 3 c
 ## 8 8 h
 ## 7 7 g
@@ -581,6 +597,17 @@ Ordering:
 ## 2 2 b
 ## 1 1 a
 ## 4 4 d
+=======
+## 4 4 d
+## 7 7 g
+## 5 5 e
+## 8 8 h
+## 9 9 i
+## 1 1 a
+## 6 6 f
+## 2 2 b
+## 3 3 c
+>>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
 ```
 
 ```r
@@ -623,11 +650,19 @@ df[ , sample(ncol(df), ncol(df))]
 ```
 
 ```
+<<<<<<< HEAD
 ##   b a  c  d
 ## 1 5 1  9 13
 ## 2 6 2 10 14
 ## 3 7 3 11 15
 ## 4 8 4 12 16
+=======
+##   a  d b  c
+## 1 1 13 5  9
+## 2 2 14 6 10
+## 3 3 15 7 11
+## 4 4 16 8 12
+>>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
 ```
 
 ```r
@@ -637,11 +672,19 @@ df[sample(nrow(df), nrow(df)), sample(ncol(df), ncol(df))]
 ```
 
 ```
+<<<<<<< HEAD
 ##   a b  c  d
 ## 2 2 6 10 14
 ## 1 1 5  9 13
 ## 3 3 7 11 15
 ## 4 4 8 12 16
+=======
+##    c  d b a
+## 2 10 14 6 2
+## 4 12 16 8 4
+## 3 11 15 7 3
+## 1  9 13 5 1
+>>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
 ```
 
 2. *How would you select a random sample of `m` rows from a data frame? What if the sample had to be contiguous (i.e. with an initial row, a final row, and every row in between)?*
@@ -659,8 +702,13 @@ sample_rows(df, 3)
 ```
 ##     a b  c  d
 ## 1   1 5  9 13
+<<<<<<< HEAD
 ## 4   4 8 12 16
 ## 1.1 1 5  9 13
+=======
+## 1.1 1 5  9 13
+## 4   4 8 12 16
+>>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
 ```
 
 ```r
@@ -669,12 +717,21 @@ sample_rows(df, 6)
 
 ```
 ##     a b  c  d
+<<<<<<< HEAD
 ## 4   4 8 12 16
 ## 2   2 6 10 14
 ## 4.1 4 8 12 16
 ## 4.2 4 8 12 16
 ## 3   3 7 11 15
 ## 4.3 4 8 12 16
+=======
+## 1   1 5  9 13
+## 2   2 6 10 14
+## 3   3 7 11 15
+## 4   4 8 12 16
+## 1.1 1 5  9 13
+## 4.1 4 8 12 16
+>>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
 ```
 
 
@@ -690,6 +747,10 @@ sample_contig_rows(df)
 
 ```
 ##   a b  c  d
+<<<<<<< HEAD
+=======
+## 1 1 5  9 13
+>>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
 ## 2 2 6 10 14
 ## 3 3 7 11 15
 ## 4 4 8 12 16
@@ -727,8 +788,11 @@ sample_contig_rows_2(df, 5)
 ##   a b  c  d
 ## 1 1 5  9 13
 ## 2 2 6 10 14
+<<<<<<< HEAD
 ## 3 3 7 11 15
 ## 4 4 8 12 16
+=======
+>>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
 ```
 
 ```r
@@ -766,11 +830,19 @@ sample_contig_rows_2(df, 2)
 ```
 
 ```
+<<<<<<< HEAD
 ##    c a b  d
 ## 1  9 1 5 13
 ## 2 10 2 6 14
 ## 3 11 3 7 15
 ## 4 12 4 8 16
+=======
+##    c b  d a
+## 1  9 5 13 1
+## 2 10 6 14 2
+## 3 11 7 15 3
+## 4 12 8 16 4
+>>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
 ```
 
 ```r
