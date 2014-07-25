@@ -275,9 +275,13 @@ There are also some useful points about invisible returns
 (always, regardless of whether or not the plotting code worked).
 
 	```
-	quartz()
-	plot(1)
-	dev.off()
+	plotter <- function(x){
+		pdf("./test_plotter.pdf")
+		x
+		dev.off()	
+	}
+	
+	plotter(plot(1))  #works
 	```
 
 4. We can use on.exit() to implement a simple version of capture.output().
