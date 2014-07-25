@@ -619,8 +619,8 @@ foo
 ```
 
 ```
-##  [1] "January"   "February"  "March"     "April"     "May"      
-##  [6] "June"      "Junuary"   "August"    "September" "October"  
+##  [1] "Junuary"   "February"  "March"     "April"     "May"      
+##  [6] "June"      "July"      "August"    "September" "October"  
 ## [11] "November"  "December"
 ```
 
@@ -730,7 +730,7 @@ To prove I really made a plot, I embed the final one here:
 
 #### Consider this alternative version of `capture.output()`.
 
-We can use `on.exit()` to re-implement `capture.output()`.
+Paraphrasing Hadley: "Compare the function defined below, which uses `on.exit()`, to the real `capture.output()` and think about the simplifications I've made. Is the code easier to understand or harder? Have I removed important functionality?"
 
 
 ```r
@@ -751,12 +751,60 @@ capture.output2(cat("a", "b", "c", sep = "\n"))
 ## [1] "a" "b" "c"
 ```
 
-Compare this function to the real `capture.output()` and think about the simplifications I've made. Is the code easier to understand or harder? Have I removed important functionality?
+First, let me look at the source of [the real `capture.output()`](https://github.com/wch/r-source/blob/trunk/src/library/utils/R/capture.output.R):
 
-__NOT DONE YET__  
 
-#### Compare `capture.output()` to `capture.output2()`. How do the functions 
-  differ? What features have I removed to make the key ideas easier to see? 
-    How have I rewritten the key ideas to be easier to understand?
+```r
+capture.output <- function(..., file=NULL, append=FALSE)
+{
+    args <- substitute(list(...))[-1L]
 
-__NOT DONE YET__  
+    rval <- NULL; closeit <- TRUE
+    if (is.null(file))
+        file <- textConnection("rval", "w", local = TRUE)
+    else if (is.character(file))
+        file <- file(file, if(append) "a" else "w")
+    else if (inherits(file, "connection")) {
+  if (!isOpen(file)) open(file, if(append) "a" else "w")
+	else closeit <- FALSE
+    } else
+        stop("'file' must be NULL, a character string or a connection")
+
+    sink(file)
+    ## for error recovery: all output will be lost if file=NULL
+    on.exit({sink(); if(closeit) close(file)})
+
+    pf <- parent.frame()
+    evalVis <- function(expr)
+        withVisible(eval(expr, pf))
+
+    for(i in seq_along(args)) {
+        expr <- args[[i]]
+        tmp <- switch(mode(expr),
+                      "expression" = lapply(expr, evalVis),
+                      "call" =, "name" =  list(evalVis(expr)),
+                       stop("bad argument"))
+        for(item in tmp)
+            if (item$visible) print(item$value)
+    }
+    ## we need to close the text connection before returning 'rval'
+    on.exit()
+    sink()
+    if(closeit) close(file)
+    if(is.null(rval)) invisible(NULL) else rval
+}
+```
+
+Observations about `capture.output2()` relative to the original:
+
+  * no ability to send output to a file or connection
+  * OMG that's all I can say for sure, just from reading the code vs. running it
+
+The original is much hardier to read. Here are the bits I found puzzling:
+
+  * The 2 calls to `on.exit()` are confusing. I think the way the second call negates the first is actually intentional?
+  * The explicit evalution in the parent frame ... is that necessary? What exactly are we worried about?
+  * Trapping the return value from each expression in "a two element list containing its value and a flag showing whether it would automatically print" (from the documentation for `withVisible()`) ... is that really necessary? Again, what are we worried about?
+  * The call to `switch()` that seems to do something slightly different for expressions, calls, and object names ... is that really necessary?
+
+My conclusion: Hadley's simplified version is much easier to understand. Assuming I'm right that the ability to send captured output to a file/connection is the only thing we've lost, NO, no important functionality has been lost. I can easily handle that part myself.

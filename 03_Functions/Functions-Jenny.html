@@ -469,8 +469,8 @@ x %isect% y</code></pre>
 ## [11] &quot;November&quot;  &quot;December&quot;</code></pre>
 <pre class="r"><code>perturb(foo) &lt;- &quot;Junuary&quot;
 foo</code></pre>
-<pre><code>##  [1] &quot;January&quot;   &quot;February&quot;  &quot;March&quot;     &quot;April&quot;     &quot;May&quot;      
-##  [6] &quot;June&quot;      &quot;Junuary&quot;   &quot;August&quot;    &quot;September&quot; &quot;October&quot;  
+<pre><code>##  [1] &quot;Junuary&quot;   &quot;February&quot;  &quot;March&quot;     &quot;April&quot;     &quot;May&quot;      
+##  [6] &quot;June&quot;      &quot;July&quot;      &quot;August&quot;    &quot;September&quot; &quot;October&quot;  
 ## [11] &quot;November&quot;  &quot;December&quot;</code></pre>
 </div>
 </div>
@@ -540,7 +540,7 @@ dev.list()</code></pre>
 </div>
 <div id="consider-this-alternative-version-of-capture.output." class="section level4">
 <h4>Consider this alternative version of <code>capture.output()</code>.</h4>
-<p>We can use <code>on.exit()</code> to re-implement <code>capture.output()</code>.</p>
+<p>Paraphrasing Hadley: “Compare the function defined below, which uses <code>on.exit()</code>, to the real <code>capture.output()</code> and think about the simplifications I’ve made. Is the code easier to understand or harder? Have I removed important functionality?”</p>
 <pre class="r"><code>capture.output2 &lt;- function(code) {
   temp &lt;- tempfile()
   on.exit(file.remove(temp), add = TRUE)
@@ -553,13 +553,58 @@ dev.list()</code></pre>
   }
 capture.output2(cat(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, sep = &quot;\n&quot;))</code></pre>
 <pre><code>## [1] &quot;a&quot; &quot;b&quot; &quot;c&quot;</code></pre>
-<p>Compare this function to the real <code>capture.output()</code> and think about the simplifications I’ve made. Is the code easier to understand or harder? Have I removed important functionality?</p>
-<p><strong>NOT DONE YET</strong></p>
-</div>
-<div id="compare-capture.output-to-capture.output2.-how-do-the-functions" class="section level4">
-<h4>Compare <code>capture.output()</code> to <code>capture.output2()</code>. How do the functions</h4>
-<p>differ? What features have I removed to make the key ideas easier to see? How have I rewritten the key ideas to be easier to understand?</p>
-<p><strong>NOT DONE YET</strong></p>
+<p>First, let me look at the source of <a href="https://github.com/wch/r-source/blob/trunk/src/library/utils/R/capture.output.R">the real <code>capture.output()</code></a>:</p>
+<pre class="r"><code>capture.output &lt;- function(..., file=NULL, append=FALSE)
+{
+    args &lt;- substitute(list(...))[-1L]
+
+    rval &lt;- NULL; closeit &lt;- TRUE
+    if (is.null(file))
+        file &lt;- textConnection(&quot;rval&quot;, &quot;w&quot;, local = TRUE)
+    else if (is.character(file))
+        file &lt;- file(file, if(append) &quot;a&quot; else &quot;w&quot;)
+    else if (inherits(file, &quot;connection&quot;)) {
+  if (!isOpen(file)) open(file, if(append) &quot;a&quot; else &quot;w&quot;)
+    else closeit &lt;- FALSE
+    } else
+        stop(&quot;'file' must be NULL, a character string or a connection&quot;)
+
+    sink(file)
+    ## for error recovery: all output will be lost if file=NULL
+    on.exit({sink(); if(closeit) close(file)})
+
+    pf &lt;- parent.frame()
+    evalVis &lt;- function(expr)
+        withVisible(eval(expr, pf))
+
+    for(i in seq_along(args)) {
+        expr &lt;- args[[i]]
+        tmp &lt;- switch(mode(expr),
+                      &quot;expression&quot; = lapply(expr, evalVis),
+                      &quot;call&quot; =, &quot;name&quot; =  list(evalVis(expr)),
+                       stop(&quot;bad argument&quot;))
+        for(item in tmp)
+            if (item$visible) print(item$value)
+    }
+    ## we need to close the text connection before returning 'rval'
+    on.exit()
+    sink()
+    if(closeit) close(file)
+    if(is.null(rval)) invisible(NULL) else rval
+}</code></pre>
+<p>Observations about <code>capture.output2()</code> relative to the original:</p>
+<ul>
+<li>no ability to send output to a file or connection</li>
+<li>OMG that’s all I can say for sure, just from reading the code vs. running it</li>
+</ul>
+<p>The original is much hardier to read. Here are the bits I found puzzling:</p>
+<ul>
+<li>The 2 calls to <code>on.exit()</code> are confusing. I think the way the second call negates the first is actually intentional?</li>
+<li>The explicit evalution in the parent frame … is that necessary? What exactly are we worried about?</li>
+<li>Trapping the return value from each expression in “a two element list containing its value and a flag showing whether it would automatically print” (from the documentation for <code>withVisible()</code>) … is that really necessary? Again, what are we worried about?</li>
+<li>The call to <code>switch()</code> that seems to do something slightly different for expressions, calls, and object names … is that really necessary?</li>
+</ul>
+<p>My conclusion: Hadley’s simplified version is much easier to understand. Assuming I’m right that the ability to send captured output to a file/connection is the only thing we’ve lost, NO, no important functionality has been lost. I can easily handle that part myself.</p>
 </div>
 </div>
 </div>
