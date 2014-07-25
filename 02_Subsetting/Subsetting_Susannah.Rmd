@@ -2,6 +2,7 @@
 title: "Subsetting"
 author: "Susannah"
 ---
+=======
 #Subsetting
 
 In the *Data frames* section, I don't understand how this subset works, because I don't understand lists:
@@ -80,13 +81,13 @@ df[sample(ncol(df))]
 ```{r}
 msel <- function(df, n) { 
     #function to sample n rows from a dataframe df
-    stopifnot(n <= dim(df)[2])
-    stopifnot(n > 0)
+    if (n <= dim(df)[2]) stop("you want too many rows!")
+    if (n > 0) stop("n can't be 0 or negative")
     df[sample(nrow(df), n),]
 }
 
-msel(df,3)
-msel(df,5)
+# msel(df,3) 
+# msel(df,5) gies and error
 
 mcon <- function(df, n) {
     #select n continous rows from a dataframe df
@@ -98,8 +99,8 @@ mcon <- function(df, n) {
     df[st:end,]
 }
 
-mcon(df, 4)
-mcon(df, 3)
+# mcon(df, 4)
+# mcon(df, 3)
 ```
 
 3. 

@@ -187,11 +187,22 @@ single_assign("assign01", "bye")
 
 ### Write an assignment function that can do active, delayed, and locked bindings. What might you call it? What arguments should it take? Can you guess which sort of assignment it should do based on the input?
 
-```{r flexible_assignment}
-flex_assign <- function(name)
+```{r flexible_assignment, eval = FALSE}
+flex_assign <- function(name, value = NULL, env = parent.frame(), 
+                        eval_env = NULL, assign_env = NULL, fun = NULL)
 {
-  
+  if(!is.null(eval_env) && !is.null(assign_env)) {
+    if(!is.null(fun)) warning("Parameters for both delayed and active  assignment were specified.  Defaulting to delayed assignment.")
+    delayedAssign(name, value, eval_env, assign_env)
+  } else if(!is.null(fun)) {
+    makeActiveBinding(name, fun, env)
+  } else {
+    assign(name, value, env)
+  }
 }
+
+# So far this isn't working because `fun` is evaluated and not transmitted as a function
+flex_assign(name = "x", fun = runif(1))
 ```
 
 ***
@@ -277,7 +288,11 @@ Delayed bindings: `%<d-%` (from `pryr`) or `delayedAssign()`
 
 Active bindings are re-evaluated everytime they are accessed: `%<a-%` (from `pryr`) or `makeActiveBinding()`
 
+### Explicit environments
 
+Modifying an object makes a copy of the object; modifying an environment does not.
+
+Environments can be used to store large amounts of data without fear of copying them.
 
 ***
 

@@ -1,0 +1,260 @@
+---
+title: "functions-Andrew.Rmd"
+author: "Andrew MacDonald"
+date: '2014-07-17'
+output:
+  html_document:
+    keep_md: TRUE
+---
+
+```{r message=FALSE}
+library(dplyr)
+library(magrittr)
+library(pryr)
+```
+
+
+1.  What function allows you to tell if an object is a function? What function
+    allows you to tell if a function is a primitive function?
+
+
+```{r}
+is.function(ls)
+is.primitive(ls)
+is.primitive(c)
+is.primitive(mean)
+```
+
+
+1.  This code makes a list of all functions in the base package. 
+    
+    ```{r}
+    objs <- mget(ls("package:base"), inherits = TRUE)
+    funs <- Filter(is.function, objs)
+    ```
+
+    Use it to answer the following questions:
+
+    1. Which base function has the most arguments?
+
+```{r}
+which.max(sapply(funs,function(x) length(formals(x))))
+```
+
+    
+    1. How many base functions have no arguments? What's special about those
+       functions.
+       
+```{r}
+funs[which(sapply(funs,function(x) length(formals(x)))==0)] %>% length
+
+funs[which(sapply(funs,function(x) length(formals(x)))==0)] %>% sapply(is.primitive) %>% sum
+
+funs[which(sapply(funs,function(x) length(formals(x)))==0)] %>% lapply(formals)
+
+c <- 10
+c(c = c)
+
+```       
+       
+    1. How could you adapt the code to find all primitive functions?
+```{r}
+Filter(is.primitive, objs)
+```
+
+
+1. What are the three important components of a function?
+
+*formals, body, environment*
+
+1. When does printing a function not show what environment it was created in?
+
+*When it is made in the base environment.*
+
+***
+
+1. What does the following code return? Why? What does each of the three `c`'s mean?
+
+    ```{r, eval = FALSE}
+    c <- 10
+    c(c = c)
+    ```
+
+*1st is a function, 2nd a formal, 3rd a variable*
+
+2. What are the four principles that govern how R looks for values?
+
+*name masking* -- use the most recent assignment to a name, in the "closest" environment
+*functions vs. variables* -- same rules for functions and variables. additionally, R knows when something is a function from context.
+*a fresh start* -- functions spawn new, clean environments to execute.  they don't remember previous runs.
+*dynamic lookup* -- look for values **now**, in the present environments. **BE SO CAREFUL**, since if you don't say what your function uses, you are assuming that those other variables don't change.
+
+3. What does the following function return? Make a prediction before 
+   running the code yourself.
+
+    ```{r, eval = FALSE}
+    f <- function(x) {
+      f <- function(x) {
+        f <- function(x) {
+          x ^ 2
+        }
+        f(x) + 1
+      }
+      f(x) * 2
+    }
+    f(10)
+    ```
+
+PREDICTION: 202
+(weird -- distorting order of operations with closures! perverse)
+
+1.  Clarify the following list of odd function calls:
+
+    ```{r, eval = FALSE}
+#x <- sample(replace = TRUE, 20, x = c(1:10, NA))
+x  <- 1:10 %>%
+  c(NA) %>%
+  sample(20, replace = TRUE)
+
+#y <- runif(min = 0, max = 1, 20)
+y <- runif(20,0,1)
+
+#cor(m = "k", y = y, u = "p", x = x)
+cor(x, y, method = "kendall", use = "pairwise")
+
+    ```
+
+
+1.  What does this function return? Why? Which principle does it illustrate?
+  
+    ```{r, eval = FALSE}    
+    f1 <- function(x = {y <- 1; 2}, y = 0) {
+      x + y
+    }
+    f1()
+    ```
+
+*name masking: x is set to 2, and y is set to 1, once the function body is run.  `y = 0` is not kept.*
+  
+    ```{r, eval = FALSE}    
+    f1 <- function(x = {y <- 1; 2}, y = 0) {
+      print(y)
+      x + y
+    }
+    f1()
+    ```
+
+1.  What does this function return? Why? Which principle does it illustrate?
+
+    ```{r, eval = FALSE}
+    f2 <- function(x = z) {
+      z <- 100
+      x
+    }
+    f2()
+    ```
+
+*er, also lazy evaluation? `x` is defined in terms of an object that exists only in the function body -- which is OK, since R doesn't look for `x` until you ask for it*
+
+
+## adders the closures:
+
+```{r}
+add <- function(x) {
+  function(y) x + y
+}
+adders <- lapply(1:10, add)
+adders[[1]](10)
+#> [1] 20
+adders[[10]](10)
+#> [1] 20
+```
+
+OK, so in the closures created by `add`, x is a "promise".  We can see that all these "promises" have the same environment:
+
+```{r}
+addpromise <- function(x) {
+  print(promise_info(x))
+  function(y) x + y
+}
+
+adders <- lapply(1:10, addpromise)
+adders[[1]](10)
+sapply(adders, environment) %>% sapply(parent.env)
+```
+
+## modify in place
+
+```{r}
+foo <- 1:10
+class(foo)
+address(foo)
+foo[2] <- 5
+address(foo)
+class(foo)
+
+foo <- 1:10
+address(foo)
+foo[2] <- 5L
+address(foo)
+
+
+```
+
+only works if you keep classes the same!
+
+## Exercises
+
+1. Create a list of all the replacement functions found in the base package. 
+   Which ones are primitive functions?
+   
+```{r}
+objs <- mget(ls("package:base"), inherits = TRUE)
+funs <- Filter(is.function, objs)
+replacers <- funs %>% 
+  names %>% 
+  grepl("<-",.) %>% 
+  funs[.] 
+
+replacers[sapply(replacers, is.primitive)]
+```
+
+2. What are valid names for user created infix functions?
+
+`%x%`, where ` x` is anything you can type (except `%`)
+
+3. Create an infix `xor()` operator.
+
+```{r}
+`%xor%` <- function(a, b) {
+  if(sum(a + b) == 1) TRUE else FALSE
+  }
+
+TRUE %xor% FALSE
+TRUE %xor% TRUE
+
+```
+
+4. Create infix versions of the set functions `intersect()`, `union()`, and 
+   `setdiff()`.
+
+```{r}
+`%inter%` <- function(a,b) intersect(a,b)
+
+letters[1:5] %inter% letters[3:7]
+```
+
+5. Create a replacement function that modifies a random location in a vector.
+
+```{r}
+`randomod<-` <- function(x, value) {
+  position <- sample(seq_along(x),size = 1)
+  x[position] <- value
+  x
+}
+
+bar <- 1:5 
+randomod(bar) <- 500
+bar
+```
+

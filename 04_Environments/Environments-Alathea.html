@@ -71,7 +71,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#write-your-own-version-of-existsinherits-false-hint-use-ls.-write-a-recursive-version-that-behaves-like-existsinherits-trues.">Write your own version of <code>exists(inherits = FALSE)</code> (Hint: use <code>ls()</code>). Write a recursive version that behaves like <code>exists(inherits = TRUE)</code>s.</a></li>
 <li><a href="#write-an-enhanced-version-of-str-that-provides-more-information-about-functions.-show-where-the-function-was-found-and-what-environment-it-was-defined-in.">Write an enhanced version of <code>str()</code> that provides more information about functions. Show where the function was found and what environment it was defined in.</a></li>
 <li><a href="#what-does-this-function-do-how-does-it-differ-from---and-why-might-you-prefer-it">What does this function do? How does it differ from <code>&lt;&lt;-</code> and why might you prefer it?</a></li>
-<li><a href="#create-a-version-of-assign-that-will-only-bind-new-names-never-re-bind-old-names.-some-programming-languages-only-do-this-and-are-known-as-single-assignment-laguages.">Create a version of <code>assign()</code> that will only bind new names, never re-bind old names. Some programming languages only do this, and are known as single assignment laguages.</a></li>
+<li><a href="#create-a-version-of-assign-that-will-only-bind-new-names-never-re-bind-old-names.-some-programming-languages-only-do-this-and-are-known-as-single-assignment-languages.">Create a version of <code>assign()</code> that will only bind new names, never re-bind old names. Some programming languages only do this, and are known as single assignment languages.</a></li>
 <li><a href="#write-an-assignment-function-that-can-do-active-delayed-and-locked-bindings.-what-might-you-call-it-what-arguments-should-it-take-can-you-guess-which-sort-of-assignment-it-should-do-based-on-the-input">Write an assignment function that can do active, delayed, and locked bindings. What might you call it? What arguments should it take? Can you guess which sort of assignment it should do based on the input?</a></li>
 </ul></li>
 <li><a href="#reading-notes">Reading Notes</a><ul>
@@ -80,6 +80,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#recursing-over-environments">Recursing over Environments</a></li>
 <li><a href="#function-environments">Function environments</a></li>
 <li><a href="#binding-names-to-values">Binding names to values</a></li>
+<li><a href="#explicit-environments">Explicit environments</a></li>
 </ul></li>
 <li><a href="#discussion-notes">Discussion Notes</a></li>
 </ul>
@@ -228,7 +229,7 @@ my_exists_local(&quot;do_i_exist&quot;)</code></pre>
 str_plus(str_plus)</code></pre>
 <pre><code>## function (fun)  
 ##  - attr(*, &quot;srcref&quot;)=Class 'srcref'  atomic [1:8] 1 13 12 1 13 1 1 12
-##   .. ..- attr(*, &quot;srcfile&quot;)=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0x9f58184&gt;</code></pre>
+##   .. ..- attr(*, &quot;srcfile&quot;)=Classes 'srcfilecopy', 'srcfile' &lt;environment: 0xa4281b8&gt;</code></pre>
 <pre><code>## $structure
 ## NULL
 ## 
@@ -257,8 +258,8 @@ a
 #&gt; [1] 10</code></pre>
 <p>This allows you to bind a value outside of the function, while having control over the environment. <code>&lt;&lt;-</code> will either replace an existing value or bind in the global environment.</p>
 </div>
-<div id="create-a-version-of-assign-that-will-only-bind-new-names-never-re-bind-old-names.-some-programming-languages-only-do-this-and-are-known-as-single-assignment-laguages." class="section level3">
-<h3>Create a version of <code>assign()</code> that will only bind new names, never re-bind old names. Some programming languages only do this, and are known as single assignment laguages.</h3>
+<div id="create-a-version-of-assign-that-will-only-bind-new-names-never-re-bind-old-names.-some-programming-languages-only-do-this-and-are-known-as-single-assignment-languages." class="section level3">
+<h3>Create a version of <code>assign()</code> that will only bind new names, never re-bind old names. Some programming languages only do this, and are known as single assignment languages.</h3>
 <pre class="r"><code>single_assign &lt;- function(name, value, env = globalenv())
 {
   if(!is.character(name)) stop(&quot;`name` must be a character string.&quot;)
@@ -273,10 +274,21 @@ single_assign(&quot;assign01&quot;, &quot;bye&quot;)</code></pre>
 </div>
 <div id="write-an-assignment-function-that-can-do-active-delayed-and-locked-bindings.-what-might-you-call-it-what-arguments-should-it-take-can-you-guess-which-sort-of-assignment-it-should-do-based-on-the-input" class="section level3">
 <h3>Write an assignment function that can do active, delayed, and locked bindings. What might you call it? What arguments should it take? Can you guess which sort of assignment it should do based on the input?</h3>
-<pre class="r"><code>flex_assign &lt;- function(name)
+<pre class="r"><code>flex_assign &lt;- function(name, value = NULL, env = parent.frame(), 
+                        eval_env = NULL, assign_env = NULL, fun = NULL)
 {
-  
-}</code></pre>
+  if(!is.null(eval_env) &amp;&amp; !is.null(assign_env)) {
+    if(!is.null(fun)) warning(&quot;Parameters for both delayed and active  assignment were specified.  Defaulting to delayed assignment.&quot;)
+    delayedAssign(name, value, eval_env, assign_env)
+  } else if(!is.null(fun)) {
+    makeActiveBinding(name, fun, env)
+  } else {
+    assign(name, value, env)
+  }
+}
+
+# So far this isn't working because `fun` is evaluated and not transmitted as a function
+flex_assign(name = &quot;x&quot;, fun = runif(1))</code></pre>
 <hr />
 </div>
 </div>
@@ -323,10 +335,9 @@ single_assign(&quot;assign01&quot;, &quot;bye&quot;)</code></pre>
 ##  [7] &quot;package:datasets&quot;  &quot;package:methods&quot;   &quot;Autoloads&quot;        
 ## [10] &quot;package:base&quot;</code></pre>
 <pre class="r"><code>ls()</code></pre>
-<pre><code>##  [1] &quot;ancestors&quot;        &quot;fget&quot;             &quot;flex_assign&quot;     
-##  [4] &quot;metadata&quot;         &quot;my_exists_global&quot; &quot;my_exists_local&quot; 
-##  [7] &quot;my_get&quot;           &quot;my_where&quot;         &quot;name&quot;            
-## [10] &quot;str_plus&quot;</code></pre>
+<pre><code>## [1] &quot;ancestors&quot;        &quot;fget&quot;             &quot;metadata&quot;        
+## [4] &quot;my_exists_global&quot; &quot;my_exists_local&quot;  &quot;my_get&quot;          
+## [7] &quot;my_where&quot;         &quot;name&quot;             &quot;str_plus&quot;</code></pre>
 <pre class="r"><code>ls(baseenv())</code></pre>
 <pre><code>##    [1] &quot;^&quot;                                 
 ##    [2] &quot;~&quot;                                 
@@ -1509,7 +1520,6 @@ single_assign(&quot;assign01&quot;, &quot;bye&quot;)</code></pre>
 <pre class="r"><code>ls.str()</code></pre>
 <pre><code>## ancestors : function (environ = globalenv())  
 ## fget : function (name, env, recursive = FALSE)  
-## flex_assign : function (name)  
 ## metadata : List of 4
 ##  $ title : chr &quot;Environments&quot;
 ##  $ author: chr &quot;Alathea&quot;
@@ -1555,6 +1565,11 @@ where(&quot;x&quot;)</code></pre>
 <p>Some names are reserved <code>?Reserved</code> and some can’t be used at all… unless you override the rules by enclosing your function name in backticks <code>`:) &lt;- &quot;smile&quot;`</code></p>
 <p>Delayed bindings: <code>%&lt;d-%</code> (from <code>pryr</code>) or <code>delayedAssign()</code></p>
 <p>Active bindings are re-evaluated everytime they are accessed: <code>%&lt;a-%</code> (from <code>pryr</code>) or <code>makeActiveBinding()</code></p>
+</div>
+<div id="explicit-environments" class="section level3">
+<h3>Explicit environments</h3>
+<p>Modifying an object makes a copy of the object; modifying an environment does not.</p>
+<p>Environments can be used to store large amounts of data without fear of copying them.</p>
 <hr />
 </div>
 </div>
