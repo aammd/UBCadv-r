@@ -619,8 +619,8 @@ foo
 ```
 
 ```
-##  [1] "Junuary"   "February"  "March"     "April"     "May"      
-##  [6] "June"      "July"      "August"    "September" "October"  
+##  [1] "January"   "February"  "March"     "April"     "May"      
+##  [6] "June"      "Junuary"   "August"    "September" "October"  
 ## [11] "November"  "December"
 ```
 
@@ -659,57 +659,104 @@ par(op)
 foo <- function(...) {
   op <- par(new = TRUE)
   on.exit(par(op))
+  ...
 }
 ```
 
-1.  Write a function that opens a graphics device, runs the supplied code, and 
-    closes the graphics device (always, regardless of whether or not the plotting 
-    code worked).
+#### Write a function that opens a graphics device, runs the supplied code, and closes the graphics device (always, regardless of whether or not the plotting code worked).
+
+This gave me trouble, eventually leading me to write [this Gist](https://gist.github.com/58466fd018823302f398), but it's best to look at [the rendered HTML](http://htmlpreview.github.io/?https://gist.githubusercontent.com/jennybc/58466fd018823302f398/raw/4c7059558e1525b482f1ee794a5828ca8999bf98/2014-07-25_wrapper-graphics-dev-open-close.html). I'm just inserting my clean answer here now.
     
-__WHY THIS NOT WORKING?__  
 
 ```r
-safe_plot <- function(code, file = "~/tmp/test.pdf", ...) {
-  pdf(file = file, ...)
+safe_plot <- function(code, file = 'jenny_test.png', ...) {
+  png(file = file, ...)
   on.exit(dev.off())
   force(code)
+  invisible(NULL)
+}
+safe_plot({plot(cars)
+           abline(coef(lm(dist ~ speed, cars)), col = "purple", lwd = 3)
+           })
+dev.list()
+```
+
+```
+## pdf 
+##   2
+```
+
+```r
+safe_plot(plot(flying_cars)) # will not work!
+```
+
+```
+## Error: object 'flying_cars' not found
+```
+
+```r
+dev.list()
+```
+
+```
+## pdf 
+##   2
+```
+
+```r
+safe_plot({require(ggplot2)
+           p <- ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) +
+             geom_point()
+           print(p)
+           })
+```
+
+```
+## Loading required package: ggplot2
+```
+
+```r
+dev.list()
+```
+
+```
+## pdf 
+##   2
+```
+
+To prove I really made a plot, I embed the final one here:
+
+![jenny_test.png](jenny_test.png)
+
+#### Consider this alternative version of `capture.output()`.
+
+We can use `on.exit()` to re-implement `capture.output()`.
+
+
+```r
+capture.output2 <- function(code) {
+  temp <- tempfile()
+  on.exit(file.remove(temp), add = TRUE)
+  
+  sink(temp)
+  on.exit(sink(), add = TRUE)
+  
+  force(code)
+  readLines(temp)
   }
-safe_plot("require(ggplot2); p <- ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + geom_point(); print(p)")
+capture.output2(cat("a", "b", "c", sep = "\n"))
 ```
 
 ```
-## [1] "require(ggplot2); p <- ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + geom_point(); print(p)"
+## [1] "a" "b" "c"
 ```
 
-1.  We can use `on.exit()` to implement a simple version of `capture.output()`.
-
-    
-    ```r
-    capture.output2 <- function(code) {
-      temp <- tempfile()
-      on.exit(file.remove(temp), add = TRUE)
-    
-      sink(temp)
-      on.exit(sink(), add = TRUE)
-    
-      force(code)
-      readLines(temp)
-    }
-    capture.output2(cat("a", "b", "c", sep = "\n"))
-    ```
-    
-    ```
-    ## [1] "a" "b" "c"
-    ```
-
-    You might want to compare this function to the real `capture.output()` and 
-    think about the simplifications I've made. Is the code easier to understand 
-    or harder? Have I removed important functionality? \indexc{capture.output()}
+Compare this function to the real `capture.output()` and think about the simplifications I've made. Is the code easier to understand or harder? Have I removed important functionality?
 
 __NOT DONE YET__  
 
-1.  Compare `capture.output()` to `capture.output2()`. How do the functions 
-    differ? What features have I removed to make the key ideas easier to see? 
+#### Compare `capture.output()` to `capture.output2()`. How do the functions 
+  differ? What features have I removed to make the key ideas easier to see? 
     How have I rewritten the key ideas to be easier to understand?
 
 __NOT DONE YET__  
