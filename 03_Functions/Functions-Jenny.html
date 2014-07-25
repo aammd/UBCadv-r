@@ -88,77 +88,59 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <div id="taking-the-quiz" class="section level2">
 <h2>Taking the quiz</h2>
 <p><em>I made myself enter these answers before reading the chapter, most especially before reading the answers. I annotated/corrected my original answers as I read on.</em></p>
-<ol style="list-style-type: decimal">
-<li>What are the three components of a function?</li>
-</ol>
+<div id="what-are-the-three-components-of-a-function" class="section level4">
+<h4>What are the three components of a function?</h4>
 <ul>
 <li>the formal arguments</li>
 <li>the parent environment</li>
 <li>the function body? return value?</li>
 </ul>
 <p><em>Not bad! “The three components of a function are its body, arguments and environment.”</em></p>
-<ol style="list-style-type: decimal">
-<li><p>What does the following code return?</p>
+</div>
+<div id="what-does-the-following-code-return" class="section level4">
+<h4>What does the following code return?</h4>
 <pre class="r"><code>y &lt;- 10
 f1 &lt;- function(x) {
   function() {
     x + 10
+    }
   }
-}
 f1(1)()</code></pre>
-<ul>
-<li>Hmmm … 11?</li>
-</ul></li>
-</ol>
-<p><em>Correct.</em></p>
-<ol style="list-style-type: decimal">
-<li><p>How would you more typically write this code?</p>
+<p>Hmmm … 11? <em>Correct.</em></p>
+</div>
+<div id="how-would-you-more-typically-write-this-code" class="section level4">
+<h4>How would you more typically write this code?</h4>
 <pre class="r"><code>`+`(1, `*`(2, 3))</code></pre>
-<ul>
-<li><code>(2 * 3) + 1</code></li>
-</ul></li>
-</ol>
-<p><em>Correct.</em></p>
-<ol style="list-style-type: decimal">
-<li><p>How could you make this call easier to read?</p>
-<pre class="r"><code>mean(, TRUE, x = c(1:10, NA))</code></pre></li>
-</ol>
-<ul>
-<li><code>mean(c(1:10, NA), na.rm = TRUE)</code></li>
-</ul>
-<p><em>Correct.</em></p>
-<ol style="list-style-type: decimal">
-<li><p>Does the following function throw an error when called? Why/why not?</p>
+<p><code>(2 * 3) + 1</code> <em>Correct.</em></p>
+</div>
+<div id="how-could-you-make-this-call-easier-to-read" class="section level4">
+<h4>How could you make this call easier to read?</h4>
+<pre class="r"><code>mean(, TRUE, x = c(1:10, NA))</code></pre>
+<p><code>mean(c(1:10, NA), na.rm = TRUE)</code> <em>Correct.</em></p>
+</div>
+<div id="does-the-following-function-throw-an-error-when-called-whywhy-not" class="section level4">
+<h4>Does the following function throw an error when called? Why/why not?</h4>
 <pre class="r"><code>f2 &lt;- function(a, b) {
   a * 10
-}
-f2(10, stop(&quot;This is an error!&quot;))</code></pre></li>
-</ol>
-<ul>
-<li>No, because lazy evaluation implies that <code>b</code> will only be evaluated when it comes up in the function. Which it does not.</li>
-</ul>
-<p><em>Correct.</em></p>
-<ol style="list-style-type: decimal">
-<li><p>What is an infix function? How do you write it? What’s a replacement function? How do you write it?</p>
-<ul>
-<li>Not sure about the infix thing.</li>
-<li>A replacement function requires making an assignment to the <code>[&lt;-</code> operator, or something like that.</li>
-</ul></li>
-</ol>
+  }
+f2(10, stop(&quot;This is an error!&quot;))</code></pre>
+<p>No, because lazy evaluation implies that <code>b</code> will only be evaluated when it comes up in the function. Which it does not. <em>Correct.</em></p>
+</div>
+<div id="what-is-an-infix-function-how-do-you-write-it-whats-a-replacement-function-how-do-you-write-it" class="section level4">
+<h4>What is an infix function? How do you write it? What’s a replacement function? How do you write it?</h4>
+<p>Not sure about the infix thing.</p>
+<p>A replacement function requires making an assignment to the <code>[&lt;-</code> operator, or something like that.</p>
 <p><em>Well, he sort of punted on the answer as well and sends the reader to sections on <a href="#infix-functions">infix</a> and <a href="#replacement-functions">replacement functions</a>. I’ll look forward to reading them.</em></p>
-<ol style="list-style-type: decimal">
-<li><p>What function do you use to ensure that a cleanup action occurs regardless of how a function terminates?</p>
-<ul>
-<li><code>on.exit()</code></li>
-</ul></li>
-</ol>
-<p><em>Correct. My favorite use of this is when I change working directory in a function (which I try to avoid, but sometimes can’t). I immediate call <code>on.exit()</code> with instructions to restore the original working directory, so that I don’t puzzle myself later with silent changes to working directory.</em></p>
+</div>
+<div id="what-function-do-you-use-to-ensure-that-a-cleanup-action-occurs-regardless-of-how-a-function-terminates" class="section level4">
+<h4>What function do you use to ensure that a cleanup action occurs regardless of how a function terminates?</h4>
+<p><code>on.exit()</code> <em>Correct. My favorite use of this is when I change working directory in a function (which I try to avoid, but sometimes can’t). I immediate call <code>on.exit()</code> with instructions to restore the original working directory, so that I don’t puzzle myself later with silent changes to working directory.</em></p>
+</div>
 </div>
 <div id="function-components-exercises" class="section level2">
 <h2>Function components – Exercises</h2>
-<ol style="list-style-type: decimal">
-<li>What function allows you to tell if an object is a function? What function allows you to tell if a function is a primitive function?</li>
-</ol>
+<div id="what-function-allows-you-to-tell-if-an-object-is-a-function-what-function-allows-you-to-tell-if-a-function-is-a-primitive-function" class="section level4">
+<h4>What function allows you to tell if an object is a function? What function allows you to tell if a function is a primitive function?</h4>
 <pre class="r"><code>str(sum)</code></pre>
 <pre><code>## function (..., na.rm = FALSE)</code></pre>
 <pre class="r"><code>get(&quot;sum&quot;)</code></pre>
@@ -167,14 +149,13 @@ f2(10, stop(&quot;This is an error!&quot;))</code></pre></li>
 <pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code>is.primitive(sum)</code></pre>
 <pre><code>## [1] TRUE</code></pre>
-<ol style="list-style-type: decimal">
-<li><p>This code makes a list of all functions in the base package.</p>
+</div>
+<div id="which-base-function-has-the-most-arguments" class="section level4">
+<h4>Which base function has the most arguments?</h4>
+<p>He provided this code to list all functions in the base package.</p>
 <pre class="r"><code>objs &lt;- mget(ls(&quot;package:base&quot;), inherits = TRUE)
 funs &lt;- Filter(is.function, objs)</code></pre>
-<p>Use it to answer the following questions:</p>
-<ol style="list-style-type: decimal">
-<li>Which base function has the most arguments?</li>
-</ol>
+<p>Here’s where I answer the question:</p>
 <pre class="r"><code>str(funs, max.level = 1, list.len = 6)</code></pre>
 <pre><code>## List of 1167
 ##  $ -                                 :function (e1, e2)  
@@ -190,19 +171,18 @@ names(funs)[the_one]</code></pre>
 <pre><code>## [1] &quot;scan&quot;</code></pre>
 <pre class="r"><code>length(formals(funs[[the_one]]))</code></pre>
 <pre><code>## [1] 22</code></pre>
-<ol style="list-style-type: decimal">
-<li>How many base functions have no arguments? What’s special about those functions.</li>
-</ol></li>
-</ol>
-<pre class="r"><code>       table(n_args, useNA = &quot;always&quot;)</code></pre>
+</div>
+<div id="how-many-base-functions-have-no-arguments-whats-special-about-those-functions" class="section level4">
+<h4>How many base functions have no arguments? What’s special about those functions?</h4>
+<pre class="r"><code>table(n_args, useNA = &quot;always&quot;)</code></pre>
 <pre><code>## n_args
 ##    0    1    2    3    4    5    6    7    8    9   10   11   12   14   16 
 ##  221  192  341  187   85   81   29   12    8    3    2    1    2    1    1 
 ##   22 &lt;NA&gt; 
 ##    1    0</code></pre>
-<pre class="r"><code>       length(no_args &lt;- which(n_args == 0))</code></pre>
+<pre class="r"><code>length(no_args &lt;- which(n_args == 0))</code></pre>
 <pre><code>## [1] 221</code></pre>
-<pre class="r"><code>       funs[head(no_args)]</code></pre>
+<pre class="r"><code>funs[head(no_args)]</code></pre>
 <pre><code>## $`-`
 ## function (e1, e2)  .Primitive(&quot;-&quot;)
 ## 
@@ -220,7 +200,7 @@ names(funs)[the_one]</code></pre>
 ## 
 ## $`[`
 ## .Primitive(&quot;[&quot;)</code></pre>
-<pre class="r"><code>       addmargins(table(n_args, sapply(funs, is.primitive)))</code></pre>
+<pre class="r"><code>addmargins(table(n_args, sapply(funs, is.primitive)))</code></pre>
 <pre><code>##       
 ## n_args FALSE TRUE  Sum
 ##    0      39  182  221
@@ -240,9 +220,10 @@ names(funs)[the_one]</code></pre>
 ##    16      1    0    1
 ##    22      1    0    1
 ##    Sum   985  182 1167</code></pre>
-<pre><code>   They are mostly primitive functions. No one else got a better answer. Not sure what the real answer is here.
-   
-1. How could you adapt the code to find all primitive functions?</code></pre>
+<p>I note they are mostly primitive functions. No one else got a better answer. Not sure what the real answer is here.</p>
+</div>
+<div id="how-could-you-adapt-the-code-to-find-all-primitive-functions" class="section level4">
+<h4>How could you adapt the code to find all primitive functions?</h4>
 <pre class="r"><code>str(prims &lt;-lapply(funs, function(x) if(is.primitive(x)) x else NULL),
     list.len = 6)</code></pre>
 <pre><code>## List of 1167
@@ -263,14 +244,15 @@ str(prims, list.len = 6)</code></pre>
 ##  $ (              :.Primitive(&quot;(&quot;) 
 ##  $ [              :.Primitive(&quot;[&quot;) 
 ##   [list output truncated]</code></pre>
-<ol style="list-style-type: decimal">
-<li>What are the three important components of a function?</li>
-</ol>
+</div>
+<div id="what-are-the-three-important-components-of-a-function" class="section level4">
+<h4>What are the three important components of a function?</h4>
 <p>Body, environment, arguments.</p>
-<ol style="list-style-type: decimal">
-<li>When does printing a function not show what environment it was created in?</li>
-</ol>
+</div>
+<div id="when-does-printing-a-function-not-show-what-environment-it-was-created-in" class="section level4">
+<h4>When does printing a function not show what environment it was created in?</h4>
 <p>When the function was created in the global environment.</p>
+</div>
 </div>
 <div id="lexical-scoping" class="section level2">
 <h2>Lexical scoping</h2>
@@ -280,58 +262,53 @@ str(prims, list.len = 6)</code></pre>
 </div>
 <div id="exercises" class="section level3">
 <h3>Exercises</h3>
-<ol style="list-style-type: decimal">
-<li><p>What does the following code return? Why? What does each of the three <code>c</code>’s mean?</p>
+<div id="what-does-the-following-code-return-why-what-does-each-of-the-three-cs-mean" class="section level4">
+<h4>What does the following code return? Why? What does each of the three <code>c</code>’s mean?</h4>
 <pre class="r"><code>c &lt;- 10
-c(c = c)</code></pre></li>
-</ol>
+c(c = c)</code></pre>
 <p>You get a numeric vector with a single element, holding the value 10, named <code>c</code>.</p>
-<pre class="r"><code>c(c = c)</code></pre>
-<pre><code>## $c
-## function (..., recursive = FALSE)  .Primitive(&quot;c&quot;)</code></pre>
+<pre class="r"><code>c &lt;- 10
+c(c = c)</code></pre>
+<pre><code>##  c 
+## 10</code></pre>
 <pre class="r"><code>str(c(c = c))</code></pre>
-<pre><code>## List of 1
-##  $ c:function (..., recursive = FALSE)</code></pre>
-<ol start="2" style="list-style-type: decimal">
-<li>What are the four principles that govern how R looks for values?</li>
-</ol>
+<pre><code>##  Named num 10
+##  - attr(*, &quot;names&quot;)= chr &quot;c&quot;</code></pre>
+</div>
+<div id="what-are-the-four-principles-that-govern-how-r-looks-for-values" class="section level4">
+<h4>What are the four principles that govern how R looks for values?</h4>
 <ul>
 <li>name masking</li>
 <li>functions vs. variables</li>
 <li>a fresh start</li>
 <li>dynamic lookup</li>
 </ul>
-<ol start="3" style="list-style-type: decimal">
-<li><p>What does the following function return? Make a prediction before running the code yourself.</p>
+</div>
+<div id="what-does-the-following-function-return-make-a-prediction-before-running-the-code-yourself." class="section level4">
+<h4>What does the following function return? Make a prediction before running the code yourself.</h4>
 <pre class="r"><code>f &lt;- function(x) {
   f &lt;- function(x) {
     f &lt;- function(x) {
       x ^ 2
-    }
+      }
     f(x) + 1
-  }
+    }
   f(x) * 2
-}
-f(10)</code></pre></li>
-</ol>
+  }
+f(10)</code></pre>
 <p>I predict this returns <code>((10 ^ 2) + 1) * 2 = 202</code>. And it does.</p>
+</div>
 </div>
 </div>
 <div id="function-arguments" class="section level2">
 <h2>Function arguments</h2>
-<blockquote>
-<p>Arguments are matched first by exact name (perfect matching), then by prefix matching and finally by position.</p>
-</blockquote>
+<p>Concise statement of how this works: “Arguments are matched first by exact name (perfect matching), then by prefix matching and finally by position.”</p>
 <div id="calling-a-function-given-a-list-of-arguments" class="section level3">
 <h3>Calling a function given a list of arguments</h3>
 <p>Here’s a use of <code>do.call()</code> that’s good to be reminded of:</p>
-<blockquote>
-<p>Suppose you had a list of function arguments:</p>
-</blockquote>
+<p>“Suppose you had a list of function arguments:”</p>
 <pre class="r"><code>args &lt;- list(1:10, na.rm = TRUE)</code></pre>
-<blockquote>
-<p>How could you then send that list to <code>mean()</code>? You need <code>do.call()</code>:</p>
-</blockquote>
+<p>“How could you then send that list to <code>mean()</code>? You need <code>do.call()</code>:”</p>
 <pre class="r"><code>do.call(mean, list(1:10, na.rm = TRUE))</code></pre>
 <pre><code>## [1] 5.5</code></pre>
 <pre class="r"><code># Equivalent to
@@ -359,7 +336,7 @@ lazy_this()</code></pre>
 <div id="lazy-evaluation" class="section level3">
 <h3>Lazy evaluation</h3>
 <p>Good to know: “If you want to ensure that an argument is evaluated you can use <code>force</code>”.</p>
-<p><em>I didn’t really understand the example used to illustrate forcing. “At this point, the loop is complete and the final value of x is 10. Therefore all of the adder functions will add 10 on to their input”. That confuses me because it seems to conflict with this idea that a fresh copy of a function’s environment is created at call time. I think we should revisit this after we’ve read about environments.</em></p>
+<p><em>I didn’t really understand the example used to illustrate forcing. “At this point, the loop is complete and the final value of x is 10. Therefore all of the adder functions will add 10 on to their input”. That confuses me because it seems to conflict with this idea that a fresh copy of a function’s environment is created at call time. We will revisit this after we’ve read about environments.</em></p>
 <p><em>The promise section hasn’t totally sunk in yet. At least partially due to lack of examples and use cases. Is this relevant to my life? See if others want to discuss.</em></p>
 </div>
 <div id="the-...-argument" class="section level3">
@@ -368,32 +345,40 @@ lazy_this()</code></pre>
 </div>
 <div id="exercises-1" class="section level3">
 <h3>Exercises</h3>
-<ol style="list-style-type: decimal">
-<li><p>Clarify the following list of odd function calls:</p>
-<pre class="r"><code>x &lt;- sample(replace = TRUE, 20, x = c(1:10, NA))
+<div id="clarify-the-following-list-of-odd-function-calls" class="section level4">
+<h4>Clarify the following list of odd function calls:</h4>
+<pre class="r"><code>## orig
+x &lt;- sample(replace = TRUE, 20, x = c(1:10, NA))
+## better
+sample(c(1:10, NA), size = 20, replace = TRUE)</code></pre>
+<pre class="r"><code>## orig
 y &lt;- runif(min = 0, max = 1, 20)
-cor(m = &quot;k&quot;, y = y, u = &quot;p&quot;, x = x)</code></pre></li>
-</ol>
-<p><code>sample()</code> call: We’ll be taking a sample with replacement from <code>x</code>, which is <code>c(1:10, NA)</code>, of size 20. Better code: <code>sample(c(1:10, NA), size = 20, replace = TRUE)</code>.</p>
-<p><code>runif()</code>call: We’ll be drawing 20 random uniform variates. Better code: <code>runif(20)</code>. Pet peeve of mine: people who specify arguments at their default values. Especially for functions where the default are blindingly obvious. It’s like crying “Wolf!”.</p>
-<p><code>cor()</code> call: We’re computing Kendall’s tau statistic for <code>(x, y)</code>, as defined in the calling environment, for pairwise complete observations. Better code: <code>cor(x, y, use = &quot;pairwise.complete.obs&quot;, method = &quot;kendall&quot;)</code>. I believe in spelling out arguments and values that I don’t call everyday. The clarity is worth the strenuous typing.</p>
-<ol style="list-style-type: decimal">
-<li><p>What does this function return? Why? Which principle does it illustrate?</p>
+## better
+runif(20)</code></pre>
+<p>Pet peeve of mine: when people specify arguments at their default values. Especially for functions where the defaults are blindingly obvious. It’s like crying “Wolf!”.</p>
+<pre class="r"><code>## orig
+cor(m = &quot;k&quot;, y = y, u = &quot;p&quot;, x = x)
+## better
+cor(x, y, use = &quot;pairwise.complete.obs&quot;, method = &quot;kendall&quot;)</code></pre>
+<p>We’re computing Kendall’s tau statistic for <code>(x, y)</code>, as defined in the calling environment, for pairwise complete observations. I believe in spelling out arguments and values that I don’t call everyday. The clarity is worth the strenuous typing.</p>
+</div>
+<div id="what-does-this-function-return-why-which-principle-does-it-illustrate" class="section level4">
+<h4>What does this function return? Why? Which principle does it illustrate?</h4>
 <pre class="r"><code>f1 &lt;- function(x = {y &lt;- 1; 2}, y = 0) {
   x + y
-}
-f1()</code></pre></li>
-</ol>
+  }
+f1()</code></pre>
 <p>I predict it will return <code>(x = 2) + (y = 1 (was 0 to begin)) = 3</code>. And it does. This illustrates lazy evaluation.</p>
-<ol style="list-style-type: decimal">
-<li><p>What does this function return? Why? Which principle does it illustrate?</p>
+</div>
+<div id="what-does-this-function-return-why-which-principle-does-it-illustrate-1" class="section level4">
+<h4>What does this function return? Why? Which principle does it illustrate?</h4>
 <pre class="r"><code>f2 &lt;- function(x = z) {
   z &lt;- 100
   x
-}
-f2()</code></pre></li>
-</ol>
+  }
+f2()</code></pre>
 <p>I predict it will return 100. And it does. Illustrates dynamic lookup and lazy evaluation.</p>
+</div>
 </div>
 </div>
 <div id="special-calls" class="section level2">
@@ -412,9 +397,8 @@ function_that_might_return_null() %||% default value</code></pre>
 </div>
 <div id="exercises-2" class="section level3">
 <h3>Exercises</h3>
-<ol style="list-style-type: decimal">
-<li>Create a list of all the replacement functions found in the base package. Which ones are primitive functions?</li>
-</ol>
+<div id="create-a-list-of-all-the-replacement-functions-found-in-the-base-package.-which-ones-are-primitive-functions" class="section level4">
+<h4>Create a list of all the replacement functions found in the base package. Which ones are primitive functions?</h4>
 <pre class="r"><code>objs &lt;- mget(ls(&quot;package:base&quot;), inherits = TRUE)
 funs &lt;- Filter(is.function, objs)
 repl_funs &lt;- funs[grepl(&quot;&lt;-$&quot;, names(funs))]
@@ -443,21 +427,22 @@ str(prim_repl_funs, max.level = 1, list.len = 6)</code></pre>
 ##  [9] &quot;class&lt;-&quot;        &quot;dim&lt;-&quot;          &quot;dimnames&lt;-&quot;     &quot;environment&lt;-&quot; 
 ## [13] &quot;length&lt;-&quot;       &quot;levels&lt;-&quot;       &quot;names&lt;-&quot;        &quot;oldClass&lt;-&quot;    
 ## [17] &quot;storage.mode&lt;-&quot;</code></pre>
-<ol start="2" style="list-style-type: decimal">
-<li>What are valid names for user created infix functions?</li>
-</ol>
+</div>
+<div id="what-are-valid-names-for-user-created-infix-functions" class="section level4">
+<h4>What are valid names for user created infix functions?</h4>
 <p>“All user created infix functions names must start and end with <code>%</code>”.</p>
-<ol start="3" style="list-style-type: decimal">
-<li>Create an infix <code>xor()</code> operator.</li>
-</ol>
+</div>
+<div id="create-an-infix-xor-operator." class="section level4">
+<h4>Create an infix <code>xor()</code> operator.</h4>
 <p>First I had to look up what <code>xor</code> means. <a href="http://en.wikipedia.org/wiki/Exclusive_or">Wikipedia</a> did the job. It means “exclusive or”. So instead of returning <code>TRUE</code> if <code>x</code> is <code>TRUE</code> or if <code>y</code> is <code>TRUE</code> or if <code>x</code> and <code>y</code> are both <code>TRUE</code>, the exclusive or requires that <em>exactly</em> one of the conditions being considered is <code>TRUE</code>.</p>
 <pre class="r"><code>`%xor%` &lt;- function(x, y) rowSums(cbind(x, y)) == 1
 (foo &lt;- data.frame(x = c(TRUE, TRUE, FALSE, FALSE),
                    y = c(TRUE, FALSE, TRUE, FALSE)))
 with(foo, data.frame(x, y, test = x %xor% y))</code></pre>
-<ol start="4" style="list-style-type: decimal">
-<li>Create infix versions of the set functions <code>intersect()</code>, <code>union()</code>, and <code>setdiff()</code>.</li>
-</ol>
+<p><em>Notes from discussion: I could have just wrapped the pre-existing <code>xor()</code> function. Duh. Also Diane suggested a solution based on the simplest thing: <code>x != y</code>.</em></p>
+</div>
+<div id="create-infix-versions-of-the-set-functions-intersect-union-and-setdiff." class="section level4">
+<h4>Create infix versions of the set functions <code>intersect()</code>, <code>union()</code>, and <code>setdiff()</code>.</h4>
 <pre class="r"><code>`%isect%` &lt;- function(x, y) x[x %in% y]
 `%union%` &lt;- function(x, y) sort(unique(c(x, y)))
 `%minus%` &lt;- function(x, y) x[!(x %in% y)]
@@ -469,9 +454,10 @@ x %isect% y</code></pre>
 <pre><code>## [1] &quot;Apr&quot; &quot;Feb&quot; &quot;Jan&quot; &quot;Jul&quot; &quot;Jun&quot; &quot;Mar&quot; &quot;May&quot; &quot;Nov&quot; &quot;Sep&quot;</code></pre>
 <pre class="r"><code>x %minus% y</code></pre>
 <pre><code>## [1] &quot;Feb&quot; &quot;Apr&quot; &quot;Jun&quot;</code></pre>
-<ol start="5" style="list-style-type: decimal">
-<li>Create a replacement function that modifies a random location in a vector.</li>
-</ol>
+<p><em>Note from discussion: Continuing the theme, I could have just wrapped the built-in functions <code>intersect()</code>, <code>union()</code>, and <code>setdiff()</code>.</em></p>
+</div>
+<div id="create-a-replacement-function-that-modifies-a-random-location-in-a-vector." class="section level4">
+<h4>Create a replacement function that modifies a random location in a vector.</h4>
 <pre class="r"><code>`perturb&lt;-` &lt;- function(x, value) {
   victim &lt;- sample(length(x), 1)
   x[victim] &lt;- value
@@ -483,9 +469,10 @@ x %isect% y</code></pre>
 ## [11] &quot;November&quot;  &quot;December&quot;</code></pre>
 <pre class="r"><code>perturb(foo) &lt;- &quot;Junuary&quot;
 foo</code></pre>
-<pre><code>##  [1] &quot;January&quot;   &quot;February&quot;  &quot;March&quot;     &quot;April&quot;     &quot;May&quot;      
-##  [6] &quot;Junuary&quot;   &quot;July&quot;      &quot;August&quot;    &quot;September&quot; &quot;October&quot;  
+<pre><code>##  [1] &quot;Junuary&quot;   &quot;February&quot;  &quot;March&quot;     &quot;April&quot;     &quot;May&quot;      
+##  [6] &quot;June&quot;      &quot;July&quot;      &quot;August&quot;    &quot;September&quot; &quot;October&quot;  
 ## [11] &quot;November&quot;  &quot;December&quot;</code></pre>
+</div>
 </div>
 </div>
 <div id="return-values" class="section level2">
@@ -493,22 +480,20 @@ foo</code></pre>
 <p>Hadley says “Generally, I think it’s good style to reserve the use of an explicit <code>return()</code> for when you are returning early, such as for an error, or a simple case of the function. This style of programming can also reduce the level of indentation, and generally make functions easier to understand because you can reason about them locally.” Two questions:</p>
 <ul>
 <li>Not sure I agree. Or at least I had thought it was <em>bad style</em> to not use an explicit <code>return()</code>. It seems easy for the eye to skip over an object name typed on a line alone, i.e. to NOT recognize it for a <code>return()</code> statement. It also looks like a print statement leftover from development or maybe a typo? What do others think?</li>
-<li>The quote is immediately followed by an example but I actually can’t tell if he thinks the example is good or bad!</li>
 </ul>
 <p>The concept of a <strong>pure</strong> function is useful: “functions that always map the same input to the same output and … don’t affect the state of the world in any way apart from the value they return.”</p>
 <p>Separate your pure functions from impure and minimize the creation and use of the latter.</p>
 <div id="exercises-3" class="section level3">
 <h3>Exercises</h3>
-<ol style="list-style-type: decimal">
-<li>How does the <code>chdir</code> parameter of <code>source()</code> compare to <code>in_dir()</code>? Why might you prefer one approach to the other?</li>
-</ol>
+<div id="how-does-the-chdir-parameter-of-source-compare-to-in_dir-why-might-you-prefer-one-approach-to-the-other" class="section level4">
+<h4>How does the <code>chdir</code> parameter of <code>source()</code> compare to <code>in_dir()</code>? Why might you prefer one approach to the other?</h4>
 <p><em>Here’s the documentation on the <code>chdir</code> argument of <code>source()</code>: “logical; if <code>TRUE</code> and <code>file</code> is a pathname, the R working directory is temporarily changed to the directory containing file for evaluating.”</em></p>
-<p><em>The modification of working directory that occurs with <code>in_dir()</code> is completely free, whereas the modification control by <code>chdir</code> of <code>source()</code> is very principled: the working directory is set to the directory containing the source file. Freedom is great and all, but I’m more comfortable with <code>chdir</code> and <code>source()</code>. Constraining the user to do something that seems sensible can help people catch themselves doing bad stuff without meaning to.</em></p>
-<ol style="list-style-type: decimal">
-<li>What function undoes the action of <code>library()</code>? How do you save and restore the values of <code>options()</code> and <code>par()</code>?</li>
-</ol>
-<p><em><code>detach()</code> undoes the action of <code>library()</code>. Why is he asking this here??</em></p>
-<p>*Save and restore values of <code>options()</code> and <code>par()</code> like so:</p>
+<p><em>The modification of working directory that occurs with <code>in_dir()</code> is completely free, whereas the modification control by <code>chdir</code> of <code>source()</code> is very principled: the working directory is set to the directory containing the source file. Freedom is great and all, but I’m more comfortable with <code>chdir</code> and <code>source()</code>. Constraining the user to do something that seems sensible can help people catch themselves doing bad stuff without meaning to. I have no idea is this is a correct answer.</em></p>
+</div>
+<div id="what-function-undoes-the-action-of-library-how-do-you-save-and-restore-the-values-of-options-and-par" class="section level4">
+<h4>What function undoes the action of <code>library()</code>? How do you save and restore the values of <code>options()</code> and <code>par()</code>?</h4>
+<p><code>detach()</code> undoes the action of <code>library()</code>. <em>Why is he asking this here??</em></p>
+<p>Review of good practices for saving and restoring values of <code>options()</code> and <code>par()</code>:</p>
 <pre class="r"><code>## in a script
 op &lt;- par(new = TRUE)
 ...
@@ -551,6 +536,7 @@ capture.output2(cat(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, sep = &quot;\n&
 <li>Compare <code>capture.output()</code> to <code>capture.output2()</code>. How do the functions differ? What features have I removed to make the key ideas easier to see? How have I rewritten the key ideas to be easier to understand?</li>
 </ol>
 <p><strong>NOT DONE YET</strong></p>
+</div>
 </div>
 </div>
 

@@ -10,7 +10,7 @@ Week 02 2014-07-10 we read [Functions](http://adv-r.had.co.nz/Functions.html). S
 
 *I made myself enter these answers before reading the chapter, most especially before reading the answers. I annotated/corrected my original answers as I read on.*
 
-1.  What are the three components of a function?
+#### What are the three components of a function?
 
   * the formal arguments
   * the parent environment
@@ -18,78 +18,66 @@ Week 02 2014-07-10 we read [Functions](http://adv-r.had.co.nz/Functions.html). S
   
 *Not bad! "The three components of a function are its body, arguments and environment."*
 
-1.  What does the following code return?
+#### What does the following code return?
 
-    
-    ```r
-    y <- 10
-    f1 <- function(x) {
-      function() {
-        x + 10
-      }
+
+```r
+y <- 10
+f1 <- function(x) {
+  function() {
+    x + 10
     }
-    f1(1)()
-    ```
+  }
+f1(1)()
+```
     
-    * Hmmm ... 11?
+Hmmm ... 11? *Correct.*
+
+#### How would you more typically write this code?
+
+
+```r
+`+`(1, `*`(2, 3))
+```
     
-*Correct.*
-
-1.  How would you more typically write this code?
-
+`(2 * 3) + 1` *Correct.*
     
-    ```r
-    `+`(1, `*`(2, 3))
-    ```
+#### How could you make this call easier to read?
+
+
+```r
+mean(, TRUE, x = c(1:10, NA))
+```
+
+`mean(c(1:10, NA), na.rm = TRUE)` *Correct.*
+
+#### Does the following function throw an error when called? Why/why not?
+
+
+```r
+f2 <- function(a, b) {
+  a * 10
+  }
+f2(10, stop("This is an error!"))
+```
+
+No, because lazy evaluation implies that `b` will only be evaluated when it comes up in the function. Which it does not. *Correct.*
+
+#### What is an infix function? How do you write it? What's a replacement function? How do you write it?
     
-    * `(2 * 3) + 1`
+Not sure about the infix thing.
 
-*Correct.*
-    
-1.  How could you make this call easier to read?
-
-    
-    ```r
-    mean(, TRUE, x = c(1:10, NA))
-    ```
-
-  * `mean(c(1:10, NA), na.rm = TRUE)`
-
-*Correct.*
-
-1.  Does the following function throw an error when called? Why/why not?
-
-    
-    ```r
-    f2 <- function(a, b) {
-      a * 10
-    }
-    f2(10, stop("This is an error!"))
-    ```
-
-  * No, because lazy evaluation implies that `b` will only be evaluated when it comes up in the function. Which it does not.
-  
-*Correct.*
-
-1.  What is an infix function? How do you write it? What's a replacement 
-    function? How do you write it?
-    
-    * Not sure about the infix thing.
-    * A replacement function requires making an assignment to the `[<-` operator, or something like that.
+A replacement function requires making an assignment to the `[<-` operator, or something like that.
 
 *Well, he sort of punted on the answer as well and sends the reader to sections on [infix](#infix-functions) and [replacement functions](#replacement-functions). I'll look forward to reading them.*
 
-1.  What function do you use to ensure that a cleanup action occurs 
-    regardless of how a function terminates?
+#### What function do you use to ensure that a cleanup action occurs regardless of how a function terminates?
     
-    * `on.exit()`
-    
-*Correct. My favorite use of this is when I change working directory in a function (which I try to avoid, but sometimes can't). I immediate call `on.exit()` with instructions to restore the original working directory, so that I don't puzzle myself later with silent changes to working directory.*
+`on.exit()` *Correct. My favorite use of this is when I change working directory in a function (which I try to avoid, but sometimes can't). I immediate call `on.exit()` with instructions to restore the original working directory, so that I don't puzzle myself later with silent changes to working directory.*
 
 ## Function components -- Exercises
 
-1.  What function allows you to tell if an object is a function? What function
-    allows you to tell if a function is a primitive function?
+#### What function allows you to tell if an object is a function? What function allows you to tell if a function is a primitive function?
     
 
 ```r
@@ -124,58 +112,56 @@ is.primitive(sum)
 ## [1] TRUE
 ```
 
-1.  This code makes a list of all functions in the base package. 
-    
-    
-    ```r
-    objs <- mget(ls("package:base"), inherits = TRUE)
-    funs <- Filter(is.function, objs)
-    ```
+#### Which base function has the most arguments?
 
-    Use it to answer the following questions:
+He provided this code to list all functions in the base package. 
+    
 
-    1. Which base function has the most arguments?
+```r
+objs <- mget(ls("package:base"), inherits = TRUE)
+funs <- Filter(is.function, objs)
+```
+
+Here's where I answer the question:
+
+```r
+str(funs, max.level = 1, list.len = 6)
+```
+
+```
+## List of 1167
+##  $ -                                 :function (e1, e2)  
+##  $ -.Date                            :function (e1, e2)  
+##  $ -.POSIXt                          :function (e1, e2)  
+##  $ :                                 :.Primitive(":") 
+##  $ ::                                :function (pkg, name)  
+##  $ :::                               :function (pkg, name)  
+##   [list output truncated]
+```
+
+```r
+n_args <- sapply(funs, function(x) length(formals(x)))
+the_one <- which.max(n_args)
+names(funs)[the_one]
+```
+
+```
+## [1] "scan"
+```
+
+```r
+length(formals(funs[[the_one]]))
+```
+
+```
+## [1] 22
+```
     
-    
-    ```r
-    str(funs, max.level = 1, list.len = 6)
-    ```
-    
-    ```
-    ## List of 1167
-    ##  $ -                                 :function (e1, e2)  
-    ##  $ -.Date                            :function (e1, e2)  
-    ##  $ -.POSIXt                          :function (e1, e2)  
-    ##  $ :                                 :.Primitive(":") 
-    ##  $ ::                                :function (pkg, name)  
-    ##  $ :::                               :function (pkg, name)  
-    ##   [list output truncated]
-    ```
-    
-    ```r
-    n_args <- sapply(funs, function(x) length(formals(x)))
-    the_one <- which.max(n_args)
-    names(funs)[the_one]
-    ```
-    
-    ```
-    ## [1] "scan"
-    ```
-    
-    ```r
-    length(formals(funs[[the_one]]))
-    ```
-    
-    ```
-    ## [1] 22
-    ```
-    
-    1. How many base functions have no arguments? What's special about those
-       functions.
+#### How many base functions have no arguments? What's special about those functions?
        
 
 ```r
-       table(n_args, useNA = "always")
+table(n_args, useNA = "always")
 ```
 
 ```
@@ -187,7 +173,7 @@ is.primitive(sum)
 ```
 
 ```r
-       length(no_args <- which(n_args == 0))
+length(no_args <- which(n_args == 0))
 ```
 
 ```
@@ -195,7 +181,7 @@ is.primitive(sum)
 ```
 
 ```r
-       funs[head(no_args)]
+funs[head(no_args)]
 ```
 
 ```
@@ -219,7 +205,7 @@ is.primitive(sum)
 ```
 
 ```r
-       addmargins(table(n_args, sapply(funs, is.primitive)))
+addmargins(table(n_args, sapply(funs, is.primitive)))
 ```
 
 ```
@@ -244,9 +230,9 @@ is.primitive(sum)
 ##    Sum   985  182 1167
 ```
        
-       They are mostly primitive functions. No one else got a better answer. Not sure what the real answer is here.
+I note they are mostly primitive functions. No one else got a better answer. Not sure what the real answer is here.
        
-    1. How could you adapt the code to find all primitive functions?
+#### How could you adapt the code to find all primitive functions?
 
 
 ```r
@@ -281,11 +267,11 @@ str(prims, list.len = 6)
 ##   [list output truncated]
 ```
 
-1. What are the three important components of a function?
+#### What are the three important components of a function?
 
 Body, environment, arguments.
 
-1. When does printing a function not show what environment it was created in?
+#### When does printing a function not show what environment it was created in?
 
 When the function was created in the global environment.
 
@@ -297,24 +283,25 @@ This is good to know about: `codetools::findGlobals(f)`. Will show your function
 
 ### Exercises
 
-1. What does the following code return? Why? What does each of the three `c`'s mean?
+#### What does the following code return? Why? What does each of the three `c`'s mean?
 
-    
-    ```r
-    c <- 10
-    c(c = c)
-    ```
+
+```r
+c <- 10
+c(c = c)
+```
 
 You get a numeric vector with a single element, holding the value 10, named `c`.
 
 
 ```r
+c <- 10
 c(c = c)
 ```
 
 ```
-## $c
-## function (..., recursive = FALSE)  .Primitive("c")
+##  c 
+## 10
 ```
 
 ```r
@@ -322,52 +309,50 @@ str(c(c = c))
 ```
 
 ```
-## List of 1
-##  $ c:function (..., recursive = FALSE)
+##  Named num 10
+##  - attr(*, "names")= chr "c"
 ```
 
-2. What are the four principles that govern how R looks for values?
+#### What are the four principles that govern how R looks for values?
 
   * name masking
   * functions vs. variables
   * a fresh start
   * dynamic lookup
 
-3. What does the following function return? Make a prediction before 
-   running the code yourself.
+#### What does the following function return? Make a prediction before running the code yourself.
 
-    
-    ```r
+
+```r
+f <- function(x) {
+  f <- function(x) {
     f <- function(x) {
-      f <- function(x) {
-        f <- function(x) {
-          x ^ 2
-        }
-        f(x) + 1
+      x ^ 2
       }
-      f(x) * 2
+    f(x) + 1
     }
-    f(10)
-    ```
-
+  f(x) * 2
+  }
+f(10)
+```
 I predict this returns `((10 ^ 2) + 1) * 2 = 202`. And it does.
 
 ## Function arguments
 
-> Arguments are matched first by exact name (perfect matching), then by prefix matching and finally by position.
+Concise statement of how this works: "Arguments are matched first by exact name (perfect matching), then by prefix matching and finally by position."
 
 ### Calling a function given a list of arguments
 
 Here's a use of `do.call()` that's good to be reminded of:
 
-> Suppose you had a list of function arguments:
+"Suppose you had a list of function arguments:"
 
 
 ```r
 args <- list(1:10, na.rm = TRUE)
 ```
 
-> How could you then send that list to `mean()`?  You need `do.call()`:
+"How could you then send that list to `mean()`?  You need `do.call()`:"
 
 
 ```r
@@ -427,7 +412,7 @@ Good to know his strategy when the default value is more involved to compute tha
 
 Good to know: "If you want to ensure that an argument is evaluated you can use `force`".
 
-*I didn't really understand the example used to illustrate forcing. "At this point, the loop is complete and the final value of x is 10. Therefore all of the adder functions will add 10 on to their input". That confuses me because it seems to conflict with this idea that a fresh copy of a function's environment is created at call time. I think we should revisit this after we've read about environments.*
+*I didn't really understand the example used to illustrate forcing. "At this point, the loop is complete and the final value of x is 10. Therefore all of the adder functions will add 10 on to their input". That confuses me because it seems to conflict with this idea that a fresh copy of a function's environment is created at call time. We will revisit this after we've read about environments.*
 
 *The promise section hasn't totally sunk in yet. At least partially due to lack of examples and use cases. Is this relevant to my life? See if others want to discuss.*
 
@@ -437,46 +422,57 @@ Good reminder that "To capture ... in a form that is easier to work with, you ca
 
 ### Exercises
 
-1.  Clarify the following list of odd function calls:
+#### Clarify the following list of odd function calls:
 
-    
-    ```r
-    x <- sample(replace = TRUE, 20, x = c(1:10, NA))
-    y <- runif(min = 0, max = 1, 20)
-    cor(m = "k", y = y, u = "p", x = x)
-    ```
 
-`sample()` call: We'll be taking a sample with replacement from `x`, which is `c(1:10, NA)`, of size 20. Better code: `sample(c(1:10, NA), size = 20, replace = TRUE)`.
+```r
+## orig
+x <- sample(replace = TRUE, 20, x = c(1:10, NA))
+## better
+sample(c(1:10, NA), size = 20, replace = TRUE)
+```
 
-`runif()`call: We'll be drawing 20 random uniform variates. Better code: `runif(20)`. Pet peeve of mine: people who specify arguments at their default values. Especially for functions where the default are blindingly obvious. It's like crying "Wolf!".
 
-`cor()` call: We're computing Kendall's tau statistic for `(x, y)`, as defined in the calling environment, for pairwise complete observations. Better code: `cor(x, y, use = "pairwise.complete.obs", method = "kendall")`. I believe in spelling out arguments and values that I don't call everyday. The clarity is worth the strenuous typing.
+```r
+## orig
+y <- runif(min = 0, max = 1, 20)
+## better
+runif(20)
+```
+Pet peeve of mine: when people specify arguments at their default values. Especially for functions where the defaults are blindingly obvious. It's like crying "Wolf!".
 
-1.  What does this function return? Why? Which principle does it illustrate?
-  
-    
-    ```r
-    f1 <- function(x = {y <- 1; 2}, y = 0) {
-      x + y
-    }
-    f1()
-    ```
 
+```r
+## orig
+cor(m = "k", y = y, u = "p", x = x)
+## better
+cor(x, y, use = "pairwise.complete.obs", method = "kendall")
+```
+We're computing Kendall's tau statistic for `(x, y)`, as defined in the calling environment, for pairwise complete observations. I believe in spelling out arguments and values that I don't call everyday. The clarity is worth the strenuous typing.
+
+#### What does this function return? Why? Which principle does it illustrate?
+
+
+```r
+f1 <- function(x = {y <- 1; 2}, y = 0) {
+  x + y
+  }
+f1()
+```
 I predict it will return `(x = 2) + (y = 1 (was 0 to begin)) = 3`. And it does. This illustrates lazy evaluation.
 
-1.  What does this function return? Why? Which principle does it illustrate?
+#### What does this function return? Why? Which principle does it illustrate?
 
-    
-    ```r
-    f2 <- function(x = z) {
-      z <- 100
-      x
-    }
-    f2()
-    ```
-    
-I predict it will return 100. And it does. Illustrates dynamic lookup and lazy evaluation.
-    
+
+```r
+f2 <- function(x = z) {
+  z <- 100
+  x
+  }
+f2()
+```
+I predict it will return 100. And it does. Illustrates dynamic lookup and lazy evaluation.   
+
 ## Special calls
 
 ### Infix functions
@@ -499,8 +495,7 @@ This is the first place he uses `pryr`, I think. But so far I have not installed
 
 ### Exercises
 
-1. Create a list of all the replacement functions found in the base package. 
-   Which ones are primitive functions?
+#### Create a list of all the replacement functions found in the base package. Which ones are primitive functions?
    
 
 ```r
@@ -549,11 +544,11 @@ names(prim_repl_funs)
 ## [17] "storage.mode<-"
 ```
 
-2. What are valid names for user created infix functions?
+#### What are valid names for user created infix functions?
 
 "All user created infix functions names must start and end with `%`".
 
-3. Create an infix `xor()` operator.
+#### Create an infix `xor()` operator.
 
 First I had to look up what `xor` means. [Wikipedia](http://en.wikipedia.org/wiki/Exclusive_or) did the job. It means "exclusive or". So instead of returning `TRUE` if `x` is `TRUE` or if `y` is `TRUE` or if `x` and `y` are both `TRUE`, the exclusive or requires that *exactly* one of the conditions being considered is `TRUE`.
 
@@ -565,8 +560,9 @@ First I had to look up what `xor` means. [Wikipedia](http://en.wikipedia.org/wik
 with(foo, data.frame(x, y, test = x %xor% y))
 ```
 
-4. Create infix versions of the set functions `intersect()`, `union()`, and 
-   `setdiff()`.
+*Notes from discussion: I could have just wrapped the pre-existing `xor()` function. Duh. Also Diane suggested a solution based on the simplest thing: `x != y`.*
+
+#### Create infix versions of the set functions `intersect()`, `union()`, and `setdiff()`.
 
 
 ```r
@@ -597,8 +593,9 @@ x %minus% y
 ```
 ## [1] "Feb" "Apr" "Jun"
 ```
+*Note from discussion: Continuing the theme, I could have just wrapped the built-in functions `intersect()`, `union()`, and `setdiff()`.*
 
-5. Create a replacement function that modifies a random location in a vector.
+#### Create a replacement function that modifies a random location in a vector.
 
 
 ```r
@@ -622,8 +619,8 @@ foo
 ```
 
 ```
-##  [1] "January"   "February"  "March"     "April"     "May"      
-##  [6] "Junuary"   "July"      "August"    "September" "October"  
+##  [1] "Junuary"   "February"  "March"     "April"     "May"      
+##  [6] "June"      "July"      "August"    "September" "October"  
 ## [11] "November"  "December"
 ```
 
@@ -632,7 +629,6 @@ foo
 Hadley says "Generally, I think it’s good style to reserve the use of an explicit `return()` for when you are returning early, such as for an error, or a simple case of the function. This style of programming can also reduce the level of indentation, and generally make functions easier to understand because you can reason about them locally." Two questions:
 
   * Not sure I agree. Or at least I had thought it was *bad style* to not use an explicit `return()`. It seems easy for the eye to skip over an object name typed on a line alone, i.e. to NOT recognize it for a `return()` statement. It also looks like a print statement leftover from development or maybe a typo? What do others think?
-  * The quote is immediately followed by an example but I actually can't tell if he thinks the example is good or bad!
   
 The concept of a __pure__ function is useful: "functions that always map the same input to the same output and ... don’t affect the state of the world in any way apart from the value they return."
 
@@ -640,19 +636,17 @@ Separate your pure functions from impure and minimize the creation and use of th
 
 ### Exercises
 
-1.  How does the `chdir` parameter of `source()` compare to `in_dir()`? Why 
-    might you prefer one approach to the other?
+#### How does the `chdir` parameter of `source()` compare to `in_dir()`? Why might you prefer one approach to the other?
     
 *Here's the documentation on the `chdir` argument of `source()`: "logical; if `TRUE` and `file` is a pathname, the R working directory is temporarily changed to the directory containing file for evaluating."*
 
-*The modification of working directory that occurs with `in_dir()` is completely free, whereas the modification control by `chdir` of `source()` is very principled: the working directory is set to the directory containing the source file. Freedom is great and all, but I'm more comfortable with `chdir` and `source()`. Constraining the user to do something that seems sensible can help people catch themselves doing bad stuff without meaning to.*
+*The modification of working directory that occurs with `in_dir()` is completely free, whereas the modification control by `chdir` of `source()` is very principled: the working directory is set to the directory containing the source file. Freedom is great and all, but I'm more comfortable with `chdir` and `source()`. Constraining the user to do something that seems sensible can help people catch themselves doing bad stuff without meaning to. I have no idea is this is a correct answer.*
 
-1.  What function undoes the action of `library()`? How do you save and restore
-    the values of `options()` and `par()`?
+#### What function undoes the action of `library()`? How do you save and restore the values of `options()` and `par()`?
     
-*`detach()` undoes the action of `library()`. Why is he asking this here??*
+`detach()` undoes the action of `library()`. *Why is he asking this here??*
 
-*Save and restore values of `options()` and `par()` like so:
+Review of good practices for saving and restoring values of `options()` and `par()`:
 
 
 ```r
