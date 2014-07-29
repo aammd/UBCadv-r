@@ -55,7 +55,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <div id="header">
 <h1 class="title">Jenny’s reading of 03_Functions</h1>
 <h4 class="author"><em>Jenny Bryan</em></h4>
-<h4 class="date"><em>24 July, 2014</em></h4>
+<h4 class="date"><em>25 July, 2014</em></h4>
 </div>
 
 <div id="TOC">
@@ -88,77 +88,59 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <div id="taking-the-quiz" class="section level2">
 <h2>Taking the quiz</h2>
 <p><em>I made myself enter these answers before reading the chapter, most especially before reading the answers. I annotated/corrected my original answers as I read on.</em></p>
-<ol style="list-style-type: decimal">
-<li>What are the three components of a function?</li>
-</ol>
+<div id="what-are-the-three-components-of-a-function" class="section level4">
+<h4>What are the three components of a function?</h4>
 <ul>
 <li>the formal arguments</li>
 <li>the parent environment</li>
 <li>the function body? return value?</li>
 </ul>
 <p><em>Not bad! “The three components of a function are its body, arguments and environment.”</em></p>
-<ol style="list-style-type: decimal">
-<li><p>What does the following code return?</p>
+</div>
+<div id="what-does-the-following-code-return" class="section level4">
+<h4>What does the following code return?</h4>
 <pre class="r"><code>y &lt;- 10
 f1 &lt;- function(x) {
   function() {
     x + 10
+    }
   }
-}
 f1(1)()</code></pre>
-<ul>
-<li>Hmmm … 11?</li>
-</ul></li>
-</ol>
-<p><em>Correct.</em></p>
-<ol style="list-style-type: decimal">
-<li><p>How would you more typically write this code?</p>
+<p>Hmmm … 11? <em>Correct.</em></p>
+</div>
+<div id="how-would-you-more-typically-write-this-code" class="section level4">
+<h4>How would you more typically write this code?</h4>
 <pre class="r"><code>`+`(1, `*`(2, 3))</code></pre>
-<ul>
-<li><code>(2 * 3) + 1</code></li>
-</ul></li>
-</ol>
-<p><em>Correct.</em></p>
-<ol style="list-style-type: decimal">
-<li><p>How could you make this call easier to read?</p>
-<pre class="r"><code>mean(, TRUE, x = c(1:10, NA))</code></pre></li>
-</ol>
-<ul>
-<li><code>mean(c(1:10, NA), na.rm = TRUE)</code></li>
-</ul>
-<p><em>Correct.</em></p>
-<ol style="list-style-type: decimal">
-<li><p>Does the following function throw an error when called? Why/why not?</p>
+<p><code>(2 * 3) + 1</code> <em>Correct.</em></p>
+</div>
+<div id="how-could-you-make-this-call-easier-to-read" class="section level4">
+<h4>How could you make this call easier to read?</h4>
+<pre class="r"><code>mean(, TRUE, x = c(1:10, NA))</code></pre>
+<p><code>mean(c(1:10, NA), na.rm = TRUE)</code> <em>Correct.</em></p>
+</div>
+<div id="does-the-following-function-throw-an-error-when-called-whywhy-not" class="section level4">
+<h4>Does the following function throw an error when called? Why/why not?</h4>
 <pre class="r"><code>f2 &lt;- function(a, b) {
   a * 10
-}
-f2(10, stop(&quot;This is an error!&quot;))</code></pre></li>
-</ol>
-<ul>
-<li>No, because lazy evaluation implies that <code>b</code> will only be evaluated when it comes up in the function. Which it does not.</li>
-</ul>
-<p><em>Correct.</em></p>
-<ol style="list-style-type: decimal">
-<li><p>What is an infix function? How do you write it? What’s a replacement function? How do you write it?</p>
-<ul>
-<li>Not sure about the infix thing.</li>
-<li>A replacement function requires making an assignment to the <code>[&lt;-</code> operator, or something like that.</li>
-</ul></li>
-</ol>
+  }
+f2(10, stop(&quot;This is an error!&quot;))</code></pre>
+<p>No, because lazy evaluation implies that <code>b</code> will only be evaluated when it comes up in the function. Which it does not. <em>Correct.</em></p>
+</div>
+<div id="what-is-an-infix-function-how-do-you-write-it-whats-a-replacement-function-how-do-you-write-it" class="section level4">
+<h4>What is an infix function? How do you write it? What’s a replacement function? How do you write it?</h4>
+<p>Not sure about the infix thing.</p>
+<p>A replacement function requires making an assignment to the <code>[&lt;-</code> operator, or something like that.</p>
 <p><em>Well, he sort of punted on the answer as well and sends the reader to sections on <a href="#infix-functions">infix</a> and <a href="#replacement-functions">replacement functions</a>. I’ll look forward to reading them.</em></p>
-<ol style="list-style-type: decimal">
-<li><p>What function do you use to ensure that a cleanup action occurs regardless of how a function terminates?</p>
-<ul>
-<li><code>on.exit()</code></li>
-</ul></li>
-</ol>
-<p><em>Correct. My favorite use of this is when I change working directory in a function (which I try to avoid, but sometimes can’t). I immediate call <code>on.exit()</code> with instructions to restore the original working directory, so that I don’t puzzle myself later with silent changes to working directory.</em></p>
+</div>
+<div id="what-function-do-you-use-to-ensure-that-a-cleanup-action-occurs-regardless-of-how-a-function-terminates" class="section level4">
+<h4>What function do you use to ensure that a cleanup action occurs regardless of how a function terminates?</h4>
+<p><code>on.exit()</code> <em>Correct. My favorite use of this is when I change working directory in a function (which I try to avoid, but sometimes can’t). I immediate call <code>on.exit()</code> with instructions to restore the original working directory, so that I don’t puzzle myself later with silent changes to working directory.</em></p>
+</div>
 </div>
 <div id="function-components-exercises" class="section level2">
 <h2>Function components – Exercises</h2>
-<ol style="list-style-type: decimal">
-<li>What function allows you to tell if an object is a function? What function allows you to tell if a function is a primitive function?</li>
-</ol>
+<div id="what-function-allows-you-to-tell-if-an-object-is-a-function-what-function-allows-you-to-tell-if-a-function-is-a-primitive-function" class="section level4">
+<h4>What function allows you to tell if an object is a function? What function allows you to tell if a function is a primitive function?</h4>
 <pre class="r"><code>str(sum)</code></pre>
 <pre><code>## function (..., na.rm = FALSE)</code></pre>
 <pre class="r"><code>get(&quot;sum&quot;)</code></pre>
@@ -167,14 +149,13 @@ f2(10, stop(&quot;This is an error!&quot;))</code></pre></li>
 <pre><code>## [1] TRUE</code></pre>
 <pre class="r"><code>is.primitive(sum)</code></pre>
 <pre><code>## [1] TRUE</code></pre>
-<ol style="list-style-type: decimal">
-<li><p>This code makes a list of all functions in the base package.</p>
+</div>
+<div id="which-base-function-has-the-most-arguments" class="section level4">
+<h4>Which base function has the most arguments?</h4>
+<p>He provided this code to list all functions in the base package.</p>
 <pre class="r"><code>objs &lt;- mget(ls(&quot;package:base&quot;), inherits = TRUE)
 funs &lt;- Filter(is.function, objs)</code></pre>
-<p>Use it to answer the following questions:</p>
-<ol style="list-style-type: decimal">
-<li>Which base function has the most arguments?</li>
-</ol>
+<p>Here’s where I answer the question:</p>
 <pre class="r"><code>str(funs, max.level = 1, list.len = 6)</code></pre>
 <pre><code>## List of 1167
 ##  $ -                                 :function (e1, e2)  
@@ -190,19 +171,18 @@ names(funs)[the_one]</code></pre>
 <pre><code>## [1] &quot;scan&quot;</code></pre>
 <pre class="r"><code>length(formals(funs[[the_one]]))</code></pre>
 <pre><code>## [1] 22</code></pre>
-<ol style="list-style-type: decimal">
-<li>How many base functions have no arguments? What’s special about those functions.</li>
-</ol></li>
-</ol>
-<pre class="r"><code>       table(n_args, useNA = &quot;always&quot;)</code></pre>
+</div>
+<div id="how-many-base-functions-have-no-arguments-whats-special-about-those-functions" class="section level4">
+<h4>How many base functions have no arguments? What’s special about those functions?</h4>
+<pre class="r"><code>table(n_args, useNA = &quot;always&quot;)</code></pre>
 <pre><code>## n_args
 ##    0    1    2    3    4    5    6    7    8    9   10   11   12   14   16 
 ##  221  192  341  187   85   81   29   12    8    3    2    1    2    1    1 
 ##   22 &lt;NA&gt; 
 ##    1    0</code></pre>
-<pre class="r"><code>       length(no_args &lt;- which(n_args == 0))</code></pre>
+<pre class="r"><code>length(no_args &lt;- which(n_args == 0))</code></pre>
 <pre><code>## [1] 221</code></pre>
-<pre class="r"><code>       funs[head(no_args)]</code></pre>
+<pre class="r"><code>funs[head(no_args)]</code></pre>
 <pre><code>## $`-`
 ## function (e1, e2)  .Primitive(&quot;-&quot;)
 ## 
@@ -220,7 +200,7 @@ names(funs)[the_one]</code></pre>
 ## 
 ## $`[`
 ## .Primitive(&quot;[&quot;)</code></pre>
-<pre class="r"><code>       addmargins(table(n_args, sapply(funs, is.primitive)))</code></pre>
+<pre class="r"><code>addmargins(table(n_args, sapply(funs, is.primitive)))</code></pre>
 <pre><code>##       
 ## n_args FALSE TRUE  Sum
 ##    0      39  182  221
@@ -240,9 +220,10 @@ names(funs)[the_one]</code></pre>
 ##    16      1    0    1
 ##    22      1    0    1
 ##    Sum   985  182 1167</code></pre>
-<pre><code>   They are mostly primitive functions. No one else got a better answer. Not sure what the real answer is here.
-   
-1. How could you adapt the code to find all primitive functions?</code></pre>
+<p>I note they are mostly primitive functions. No one else got a better answer. Not sure what the real answer is here.</p>
+</div>
+<div id="how-could-you-adapt-the-code-to-find-all-primitive-functions" class="section level4">
+<h4>How could you adapt the code to find all primitive functions?</h4>
 <pre class="r"><code>str(prims &lt;-lapply(funs, function(x) if(is.primitive(x)) x else NULL),
     list.len = 6)</code></pre>
 <pre><code>## List of 1167
@@ -263,14 +244,15 @@ str(prims, list.len = 6)</code></pre>
 ##  $ (              :.Primitive(&quot;(&quot;) 
 ##  $ [              :.Primitive(&quot;[&quot;) 
 ##   [list output truncated]</code></pre>
-<ol style="list-style-type: decimal">
-<li>What are the three important components of a function?</li>
-</ol>
+</div>
+<div id="what-are-the-three-important-components-of-a-function" class="section level4">
+<h4>What are the three important components of a function?</h4>
 <p>Body, environment, arguments.</p>
-<ol style="list-style-type: decimal">
-<li>When does printing a function not show what environment it was created in?</li>
-</ol>
+</div>
+<div id="when-does-printing-a-function-not-show-what-environment-it-was-created-in" class="section level4">
+<h4>When does printing a function not show what environment it was created in?</h4>
 <p>When the function was created in the global environment.</p>
+</div>
 </div>
 <div id="lexical-scoping" class="section level2">
 <h2>Lexical scoping</h2>
@@ -280,58 +262,53 @@ str(prims, list.len = 6)</code></pre>
 </div>
 <div id="exercises" class="section level3">
 <h3>Exercises</h3>
-<ol style="list-style-type: decimal">
-<li><p>What does the following code return? Why? What does each of the three <code>c</code>’s mean?</p>
+<div id="what-does-the-following-code-return-why-what-does-each-of-the-three-cs-mean" class="section level4">
+<h4>What does the following code return? Why? What does each of the three <code>c</code>’s mean?</h4>
 <pre class="r"><code>c &lt;- 10
-c(c = c)</code></pre></li>
-</ol>
+c(c = c)</code></pre>
 <p>You get a numeric vector with a single element, holding the value 10, named <code>c</code>.</p>
-<pre class="r"><code>c(c = c)</code></pre>
-<pre><code>## $c
-## function (..., recursive = FALSE)  .Primitive(&quot;c&quot;)</code></pre>
+<pre class="r"><code>c &lt;- 10
+c(c = c)</code></pre>
+<pre><code>##  c 
+## 10</code></pre>
 <pre class="r"><code>str(c(c = c))</code></pre>
-<pre><code>## List of 1
-##  $ c:function (..., recursive = FALSE)</code></pre>
-<ol start="2" style="list-style-type: decimal">
-<li>What are the four principles that govern how R looks for values?</li>
-</ol>
+<pre><code>##  Named num 10
+##  - attr(*, &quot;names&quot;)= chr &quot;c&quot;</code></pre>
+</div>
+<div id="what-are-the-four-principles-that-govern-how-r-looks-for-values" class="section level4">
+<h4>What are the four principles that govern how R looks for values?</h4>
 <ul>
 <li>name masking</li>
 <li>functions vs. variables</li>
 <li>a fresh start</li>
 <li>dynamic lookup</li>
 </ul>
-<ol start="3" style="list-style-type: decimal">
-<li><p>What does the following function return? Make a prediction before running the code yourself.</p>
+</div>
+<div id="what-does-the-following-function-return-make-a-prediction-before-running-the-code-yourself." class="section level4">
+<h4>What does the following function return? Make a prediction before running the code yourself.</h4>
 <pre class="r"><code>f &lt;- function(x) {
   f &lt;- function(x) {
     f &lt;- function(x) {
       x ^ 2
-    }
+      }
     f(x) + 1
-  }
+    }
   f(x) * 2
-}
-f(10)</code></pre></li>
-</ol>
+  }
+f(10)</code></pre>
 <p>I predict this returns <code>((10 ^ 2) + 1) * 2 = 202</code>. And it does.</p>
+</div>
 </div>
 </div>
 <div id="function-arguments" class="section level2">
 <h2>Function arguments</h2>
-<blockquote>
-<p>Arguments are matched first by exact name (perfect matching), then by prefix matching and finally by position.</p>
-</blockquote>
+<p>Concise statement of how this works: “Arguments are matched first by exact name (perfect matching), then by prefix matching and finally by position.”</p>
 <div id="calling-a-function-given-a-list-of-arguments" class="section level3">
 <h3>Calling a function given a list of arguments</h3>
 <p>Here’s a use of <code>do.call()</code> that’s good to be reminded of:</p>
-<blockquote>
-<p>Suppose you had a list of function arguments:</p>
-</blockquote>
+<p>“Suppose you had a list of function arguments:”</p>
 <pre class="r"><code>args &lt;- list(1:10, na.rm = TRUE)</code></pre>
-<blockquote>
-<p>How could you then send that list to <code>mean()</code>? You need <code>do.call()</code>:</p>
-</blockquote>
+<p>“How could you then send that list to <code>mean()</code>? You need <code>do.call()</code>:”</p>
 <pre class="r"><code>do.call(mean, list(1:10, na.rm = TRUE))</code></pre>
 <pre><code>## [1] 5.5</code></pre>
 <pre class="r"><code># Equivalent to
@@ -359,7 +336,7 @@ lazy_this()</code></pre>
 <div id="lazy-evaluation" class="section level3">
 <h3>Lazy evaluation</h3>
 <p>Good to know: “If you want to ensure that an argument is evaluated you can use <code>force</code>”.</p>
-<p><em>I didn’t really understand the example used to illustrate forcing. “At this point, the loop is complete and the final value of x is 10. Therefore all of the adder functions will add 10 on to their input”. That confuses me because it seems to conflict with this idea that a fresh copy of a function’s environment is created at call time. I think we should revisit this after we’ve read about environments.</em></p>
+<p><em>I didn’t really understand the example used to illustrate forcing. “At this point, the loop is complete and the final value of x is 10. Therefore all of the adder functions will add 10 on to their input”. That confuses me because it seems to conflict with this idea that a fresh copy of a function’s environment is created at call time. We will revisit this after we’ve read about environments.</em></p>
 <p><em>The promise section hasn’t totally sunk in yet. At least partially due to lack of examples and use cases. Is this relevant to my life? See if others want to discuss.</em></p>
 </div>
 <div id="the-...-argument" class="section level3">
@@ -368,32 +345,40 @@ lazy_this()</code></pre>
 </div>
 <div id="exercises-1" class="section level3">
 <h3>Exercises</h3>
-<ol style="list-style-type: decimal">
-<li><p>Clarify the following list of odd function calls:</p>
-<pre class="r"><code>x &lt;- sample(replace = TRUE, 20, x = c(1:10, NA))
+<div id="clarify-the-following-list-of-odd-function-calls" class="section level4">
+<h4>Clarify the following list of odd function calls:</h4>
+<pre class="r"><code>## orig
+x &lt;- sample(replace = TRUE, 20, x = c(1:10, NA))
+## better
+sample(c(1:10, NA), size = 20, replace = TRUE)</code></pre>
+<pre class="r"><code>## orig
 y &lt;- runif(min = 0, max = 1, 20)
-cor(m = &quot;k&quot;, y = y, u = &quot;p&quot;, x = x)</code></pre></li>
-</ol>
-<p><code>sample()</code> call: We’ll be taking a sample with replacement from <code>x</code>, which is <code>c(1:10, NA)</code>, of size 20. Better code: <code>sample(c(1:10, NA), size = 20, replace = TRUE)</code>.</p>
-<p><code>runif()</code>call: We’ll be drawing 20 random uniform variates. Better code: <code>runif(20)</code>. Pet peeve of mine: people who specify arguments at their default values. Especially for functions where the default are blindingly obvious. It’s like crying “Wolf!”.</p>
-<p><code>cor()</code> call: We’re computing Kendall’s tau statistic for <code>(x, y)</code>, as defined in the calling environment, for pairwise complete observations. Better code: <code>cor(x, y, use = &quot;pairwise.complete.obs&quot;, method = &quot;kendall&quot;)</code>. I believe in spelling out arguments and values that I don’t call everyday. The clarity is worth the strenuous typing.</p>
-<ol style="list-style-type: decimal">
-<li><p>What does this function return? Why? Which principle does it illustrate?</p>
+## better
+runif(20)</code></pre>
+<p>Pet peeve of mine: when people specify arguments at their default values. Especially for functions where the defaults are blindingly obvious. It’s like crying “Wolf!”.</p>
+<pre class="r"><code>## orig
+cor(m = &quot;k&quot;, y = y, u = &quot;p&quot;, x = x)
+## better
+cor(x, y, use = &quot;pairwise.complete.obs&quot;, method = &quot;kendall&quot;)</code></pre>
+<p>We’re computing Kendall’s tau statistic for <code>(x, y)</code>, as defined in the calling environment, for pairwise complete observations. I believe in spelling out arguments and values that I don’t call everyday. The clarity is worth the strenuous typing.</p>
+</div>
+<div id="what-does-this-function-return-why-which-principle-does-it-illustrate" class="section level4">
+<h4>What does this function return? Why? Which principle does it illustrate?</h4>
 <pre class="r"><code>f1 &lt;- function(x = {y &lt;- 1; 2}, y = 0) {
   x + y
-}
-f1()</code></pre></li>
-</ol>
+  }
+f1()</code></pre>
 <p>I predict it will return <code>(x = 2) + (y = 1 (was 0 to begin)) = 3</code>. And it does. This illustrates lazy evaluation.</p>
-<ol style="list-style-type: decimal">
-<li><p>What does this function return? Why? Which principle does it illustrate?</p>
+</div>
+<div id="what-does-this-function-return-why-which-principle-does-it-illustrate-1" class="section level4">
+<h4>What does this function return? Why? Which principle does it illustrate?</h4>
 <pre class="r"><code>f2 &lt;- function(x = z) {
   z &lt;- 100
   x
-}
-f2()</code></pre></li>
-</ol>
+  }
+f2()</code></pre>
 <p>I predict it will return 100. And it does. Illustrates dynamic lookup and lazy evaluation.</p>
+</div>
 </div>
 </div>
 <div id="special-calls" class="section level2">
@@ -412,9 +397,8 @@ function_that_might_return_null() %||% default value</code></pre>
 </div>
 <div id="exercises-2" class="section level3">
 <h3>Exercises</h3>
-<ol style="list-style-type: decimal">
-<li>Create a list of all the replacement functions found in the base package. Which ones are primitive functions?</li>
-</ol>
+<div id="create-a-list-of-all-the-replacement-functions-found-in-the-base-package.-which-ones-are-primitive-functions" class="section level4">
+<h4>Create a list of all the replacement functions found in the base package. Which ones are primitive functions?</h4>
 <pre class="r"><code>objs &lt;- mget(ls(&quot;package:base&quot;), inherits = TRUE)
 funs &lt;- Filter(is.function, objs)
 repl_funs &lt;- funs[grepl(&quot;&lt;-$&quot;, names(funs))]
@@ -443,21 +427,22 @@ str(prim_repl_funs, max.level = 1, list.len = 6)</code></pre>
 ##  [9] &quot;class&lt;-&quot;        &quot;dim&lt;-&quot;          &quot;dimnames&lt;-&quot;     &quot;environment&lt;-&quot; 
 ## [13] &quot;length&lt;-&quot;       &quot;levels&lt;-&quot;       &quot;names&lt;-&quot;        &quot;oldClass&lt;-&quot;    
 ## [17] &quot;storage.mode&lt;-&quot;</code></pre>
-<ol start="2" style="list-style-type: decimal">
-<li>What are valid names for user created infix functions?</li>
-</ol>
+</div>
+<div id="what-are-valid-names-for-user-created-infix-functions" class="section level4">
+<h4>What are valid names for user created infix functions?</h4>
 <p>“All user created infix functions names must start and end with <code>%</code>”.</p>
-<ol start="3" style="list-style-type: decimal">
-<li>Create an infix <code>xor()</code> operator.</li>
-</ol>
+</div>
+<div id="create-an-infix-xor-operator." class="section level4">
+<h4>Create an infix <code>xor()</code> operator.</h4>
 <p>First I had to look up what <code>xor</code> means. <a href="http://en.wikipedia.org/wiki/Exclusive_or">Wikipedia</a> did the job. It means “exclusive or”. So instead of returning <code>TRUE</code> if <code>x</code> is <code>TRUE</code> or if <code>y</code> is <code>TRUE</code> or if <code>x</code> and <code>y</code> are both <code>TRUE</code>, the exclusive or requires that <em>exactly</em> one of the conditions being considered is <code>TRUE</code>.</p>
 <pre class="r"><code>`%xor%` &lt;- function(x, y) rowSums(cbind(x, y)) == 1
 (foo &lt;- data.frame(x = c(TRUE, TRUE, FALSE, FALSE),
                    y = c(TRUE, FALSE, TRUE, FALSE)))
 with(foo, data.frame(x, y, test = x %xor% y))</code></pre>
-<ol start="4" style="list-style-type: decimal">
-<li>Create infix versions of the set functions <code>intersect()</code>, <code>union()</code>, and <code>setdiff()</code>.</li>
-</ol>
+<p><em>Notes from discussion: I could have just wrapped the pre-existing <code>xor()</code> function. Duh. Also Diane suggested a solution based on the simplest thing: <code>x != y</code>.</em></p>
+</div>
+<div id="create-infix-versions-of-the-set-functions-intersect-union-and-setdiff." class="section level4">
+<h4>Create infix versions of the set functions <code>intersect()</code>, <code>union()</code>, and <code>setdiff()</code>.</h4>
 <pre class="r"><code>`%isect%` &lt;- function(x, y) x[x %in% y]
 `%union%` &lt;- function(x, y) sort(unique(c(x, y)))
 `%minus%` &lt;- function(x, y) x[!(x %in% y)]
@@ -469,9 +454,10 @@ x %isect% y</code></pre>
 <pre><code>## [1] &quot;Apr&quot; &quot;Feb&quot; &quot;Jan&quot; &quot;Jul&quot; &quot;Jun&quot; &quot;Mar&quot; &quot;May&quot; &quot;Nov&quot; &quot;Sep&quot;</code></pre>
 <pre class="r"><code>x %minus% y</code></pre>
 <pre><code>## [1] &quot;Feb&quot; &quot;Apr&quot; &quot;Jun&quot;</code></pre>
-<ol start="5" style="list-style-type: decimal">
-<li>Create a replacement function that modifies a random location in a vector.</li>
-</ol>
+<p><em>Note from discussion: Continuing the theme, I could have just wrapped the built-in functions <code>intersect()</code>, <code>union()</code>, and <code>setdiff()</code>.</em></p>
+</div>
+<div id="create-a-replacement-function-that-modifies-a-random-location-in-a-vector." class="section level4">
+<h4>Create a replacement function that modifies a random location in a vector.</h4>
 <pre class="r"><code>`perturb&lt;-` &lt;- function(x, value) {
   victim &lt;- sample(length(x), 1)
   x[victim] &lt;- value
@@ -483,9 +469,10 @@ x %isect% y</code></pre>
 ## [11] &quot;November&quot;  &quot;December&quot;</code></pre>
 <pre class="r"><code>perturb(foo) &lt;- &quot;Junuary&quot;
 foo</code></pre>
-<pre><code>##  [1] &quot;January&quot;   &quot;February&quot;  &quot;March&quot;     &quot;April&quot;     &quot;May&quot;      
-##  [6] &quot;Junuary&quot;   &quot;July&quot;      &quot;August&quot;    &quot;September&quot; &quot;October&quot;  
+<pre><code>##  [1] &quot;Junuary&quot;   &quot;February&quot;  &quot;March&quot;     &quot;April&quot;     &quot;May&quot;      
+##  [6] &quot;June&quot;      &quot;July&quot;      &quot;August&quot;    &quot;September&quot; &quot;October&quot;  
 ## [11] &quot;November&quot;  &quot;December&quot;</code></pre>
+</div>
 </div>
 </div>
 <div id="return-values" class="section level2">
@@ -493,22 +480,20 @@ foo</code></pre>
 <p>Hadley says “Generally, I think it’s good style to reserve the use of an explicit <code>return()</code> for when you are returning early, such as for an error, or a simple case of the function. This style of programming can also reduce the level of indentation, and generally make functions easier to understand because you can reason about them locally.” Two questions:</p>
 <ul>
 <li>Not sure I agree. Or at least I had thought it was <em>bad style</em> to not use an explicit <code>return()</code>. It seems easy for the eye to skip over an object name typed on a line alone, i.e. to NOT recognize it for a <code>return()</code> statement. It also looks like a print statement leftover from development or maybe a typo? What do others think?</li>
-<li>The quote is immediately followed by an example but I actually can’t tell if he thinks the example is good or bad!</li>
 </ul>
 <p>The concept of a <strong>pure</strong> function is useful: “functions that always map the same input to the same output and … don’t affect the state of the world in any way apart from the value they return.”</p>
 <p>Separate your pure functions from impure and minimize the creation and use of the latter.</p>
 <div id="exercises-3" class="section level3">
 <h3>Exercises</h3>
-<ol style="list-style-type: decimal">
-<li>How does the <code>chdir</code> parameter of <code>source()</code> compare to <code>in_dir()</code>? Why might you prefer one approach to the other?</li>
-</ol>
+<div id="how-does-the-chdir-parameter-of-source-compare-to-in_dir-why-might-you-prefer-one-approach-to-the-other" class="section level4">
+<h4>How does the <code>chdir</code> parameter of <code>source()</code> compare to <code>in_dir()</code>? Why might you prefer one approach to the other?</h4>
 <p><em>Here’s the documentation on the <code>chdir</code> argument of <code>source()</code>: “logical; if <code>TRUE</code> and <code>file</code> is a pathname, the R working directory is temporarily changed to the directory containing file for evaluating.”</em></p>
-<p><em>The modification of working directory that occurs with <code>in_dir()</code> is completely free, whereas the modification control by <code>chdir</code> of <code>source()</code> is very principled: the working directory is set to the directory containing the source file. Freedom is great and all, but I’m more comfortable with <code>chdir</code> and <code>source()</code>. Constraining the user to do something that seems sensible can help people catch themselves doing bad stuff without meaning to.</em></p>
-<ol style="list-style-type: decimal">
-<li>What function undoes the action of <code>library()</code>? How do you save and restore the values of <code>options()</code> and <code>par()</code>?</li>
-</ol>
-<p><em><code>detach()</code> undoes the action of <code>library()</code>. Why is he asking this here??</em></p>
-<p>*Save and restore values of <code>options()</code> and <code>par()</code> like so:</p>
+<p><em>The modification of working directory that occurs with <code>in_dir()</code> is completely free, whereas the modification control by <code>chdir</code> of <code>source()</code> is very principled: the working directory is set to the directory containing the source file. Freedom is great and all, but I’m more comfortable with <code>chdir</code> and <code>source()</code>. Constraining the user to do something that seems sensible can help people catch themselves doing bad stuff without meaning to. I have no idea is this is a correct answer.</em></p>
+</div>
+<div id="what-function-undoes-the-action-of-library-how-do-you-save-and-restore-the-values-of-options-and-par" class="section level4">
+<h4>What function undoes the action of <code>library()</code>? How do you save and restore the values of <code>options()</code> and <code>par()</code>?</h4>
+<p><code>detach()</code> undoes the action of <code>library()</code>. <em>Why is he asking this here??</em></p>
+<p>Review of good practices for saving and restoring values of <code>options()</code> and <code>par()</code>:</p>
 <pre class="r"><code>## in a script
 op &lt;- par(new = TRUE)
 ...
@@ -518,39 +503,109 @@ par(op)
 foo &lt;- function(...) {
   op &lt;- par(new = TRUE)
   on.exit(par(op))
+  ...
 }</code></pre>
-<ol style="list-style-type: decimal">
-<li>Write a function that opens a graphics device, runs the supplied code, and closes the graphics device (always, regardless of whether or not the plotting code worked).</li>
-</ol>
-<p><strong>WHY THIS NOT WORKING?</strong></p>
-<pre class="r"><code>safe_plot &lt;- function(code, file = &quot;~/tmp/test.pdf&quot;, ...) {
-  pdf(file = file, ...)
+</div>
+<div id="write-a-function-that-opens-a-graphics-device-runs-the-supplied-code-and-closes-the-graphics-device-always-regardless-of-whether-or-not-the-plotting-code-worked." class="section level4">
+<h4>Write a function that opens a graphics device, runs the supplied code, and closes the graphics device (always, regardless of whether or not the plotting code worked).</h4>
+<p>This gave me trouble, eventually leading me to write <a href="https://gist.github.com/58466fd018823302f398">this Gist</a>, but it’s best to look at <a href="http://htmlpreview.github.io/?https://gist.githubusercontent.com/jennybc/58466fd018823302f398/raw/4c7059558e1525b482f1ee794a5828ca8999bf98/2014-07-25_wrapper-graphics-dev-open-close.html">the rendered HTML</a>. I’m just inserting my clean answer here now.</p>
+<pre class="r"><code>safe_plot &lt;- function(code, file = 'jenny_test.png', ...) {
+  png(file = file, ...)
   on.exit(dev.off())
   force(code)
-  }
-safe_plot(&quot;require(ggplot2); p &lt;- ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + geom_point(); print(p)&quot;)</code></pre>
-<pre><code>## [1] &quot;require(ggplot2); p &lt;- ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) + geom_point(); print(p)&quot;</code></pre>
-<ol style="list-style-type: decimal">
-<li><p>We can use <code>on.exit()</code> to implement a simple version of <code>capture.output()</code>.</p>
+  invisible(NULL)
+}
+safe_plot({plot(cars)
+           abline(coef(lm(dist ~ speed, cars)), col = &quot;purple&quot;, lwd = 3)
+           })
+dev.list()</code></pre>
+<pre><code>## pdf 
+##   2</code></pre>
+<pre class="r"><code>safe_plot(plot(flying_cars)) # will not work!</code></pre>
+<pre><code>## Error: object 'flying_cars' not found</code></pre>
+<pre class="r"><code>dev.list()</code></pre>
+<pre><code>## pdf 
+##   2</code></pre>
+<pre class="r"><code>safe_plot({require(ggplot2)
+           p &lt;- ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) +
+             geom_point()
+           print(p)
+           })</code></pre>
+<pre><code>## Loading required package: ggplot2</code></pre>
+<pre class="r"><code>dev.list()</code></pre>
+<pre><code>## pdf 
+##   2</code></pre>
+<p>To prove I really made a plot, I embed the final one here:</p>
+<p><img src="data:image/png;base64,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" alt="jenny_test.png" /></p>
+</div>
+<div id="consider-this-alternative-version-of-capture.output." class="section level4">
+<h4>Consider this alternative version of <code>capture.output()</code>.</h4>
+<p>Paraphrasing Hadley: “Compare the function defined below, which uses <code>on.exit()</code>, to the real <code>capture.output()</code> and think about the simplifications I’ve made. Is the code easier to understand or harder? Have I removed important functionality?”</p>
 <pre class="r"><code>capture.output2 &lt;- function(code) {
   temp &lt;- tempfile()
   on.exit(file.remove(temp), add = TRUE)
-
+  
   sink(temp)
   on.exit(sink(), add = TRUE)
-
+  
   force(code)
   readLines(temp)
-}
+  }
 capture.output2(cat(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, sep = &quot;\n&quot;))</code></pre>
 <pre><code>## [1] &quot;a&quot; &quot;b&quot; &quot;c&quot;</code></pre>
-<p>You might want to compare this function to the real <code>capture.output()</code> and think about the simplifications I’ve made. Is the code easier to understand or harder? Have I removed important functionality? </p></li>
-</ol>
-<p><strong>NOT DONE YET</strong></p>
-<ol style="list-style-type: decimal">
-<li>Compare <code>capture.output()</code> to <code>capture.output2()</code>. How do the functions differ? What features have I removed to make the key ideas easier to see? How have I rewritten the key ideas to be easier to understand?</li>
-</ol>
-<p><strong>NOT DONE YET</strong></p>
+<p>First, let me look at the source of <a href="https://github.com/wch/r-source/blob/trunk/src/library/utils/R/capture.output.R">the real <code>capture.output()</code></a>:</p>
+<pre class="r"><code>capture.output &lt;- function(..., file=NULL, append=FALSE)
+{
+    args &lt;- substitute(list(...))[-1L]
+
+    rval &lt;- NULL; closeit &lt;- TRUE
+    if (is.null(file))
+        file &lt;- textConnection(&quot;rval&quot;, &quot;w&quot;, local = TRUE)
+    else if (is.character(file))
+        file &lt;- file(file, if(append) &quot;a&quot; else &quot;w&quot;)
+    else if (inherits(file, &quot;connection&quot;)) {
+  if (!isOpen(file)) open(file, if(append) &quot;a&quot; else &quot;w&quot;)
+    else closeit &lt;- FALSE
+    } else
+        stop(&quot;'file' must be NULL, a character string or a connection&quot;)
+
+    sink(file)
+    ## for error recovery: all output will be lost if file=NULL
+    on.exit({sink(); if(closeit) close(file)})
+
+    pf &lt;- parent.frame()
+    evalVis &lt;- function(expr)
+        withVisible(eval(expr, pf))
+
+    for(i in seq_along(args)) {
+        expr &lt;- args[[i]]
+        tmp &lt;- switch(mode(expr),
+                      &quot;expression&quot; = lapply(expr, evalVis),
+                      &quot;call&quot; =, &quot;name&quot; =  list(evalVis(expr)),
+                       stop(&quot;bad argument&quot;))
+        for(item in tmp)
+            if (item$visible) print(item$value)
+    }
+    ## we need to close the text connection before returning 'rval'
+    on.exit()
+    sink()
+    if(closeit) close(file)
+    if(is.null(rval)) invisible(NULL) else rval
+}</code></pre>
+<p>Observations about <code>capture.output2()</code> relative to the original:</p>
+<ul>
+<li>no ability to send output to a file or connection</li>
+<li>OMG that’s all I can say for sure, just from reading the code vs. running it</li>
+</ul>
+<p>The original is much hardier to read. Here are the bits I found puzzling:</p>
+<ul>
+<li>The 2 calls to <code>on.exit()</code> are confusing. I think the way the second call negates the first is actually intentional?</li>
+<li>The explicit evalution in the parent frame … is that necessary? What exactly are we worried about?</li>
+<li>Trapping the return value from each expression in “a two element list containing its value and a flag showing whether it would automatically print” (from the documentation for <code>withVisible()</code>) … is that really necessary? Again, what are we worried about?</li>
+<li>The call to <code>switch()</code> that seems to do something slightly different for expressions, calls, and object names … is that really necessary?</li>
+</ul>
+<p>My conclusion: Hadley’s simplified version is much easier to understand. Assuming I’m right that the ability to send captured output to a file/connection is the only thing we’ve lost, NO, no important functionality has been lost. I can easily handle that part myself.</p>
+</div>
 </div>
 </div>
 
