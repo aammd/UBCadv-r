@@ -1,0 +1,33 @@
+---
+title: "Untitled"
+author: "Andrew MacDonald"
+date: '2014-07-31'
+output: html_document
+---
+
+html preview -- Bookmark
+
+We are *very* confused about the "unique names" vs "multiple names can point to the same object".  
+
+```{r}
+e <- new.env()
+e$a <- FALSE
+e$b <- "a"
+e$c <- 2.3
+e$d <- 1:3
+
+e$a <- e$d
+
+address(e$a)
+address(e$d)
+
+e$a[3] <- 3
+
+address(e$a)
+address(e$d)
+
+e$a; e$d
+
+```
+
+Seems like you actually *can* have two names for the same object, until one changes.
