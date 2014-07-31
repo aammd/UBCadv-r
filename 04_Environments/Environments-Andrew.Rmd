@@ -1,0 +1,207 @@
+---
+title: "Environments-Andrew"
+author: "Andrew MacDonald"
+date: '2014-07-24'
+output: 
+  html_document:
+    keep_md: yes
+    toc: yes
+---
+
+```{r setup, include = FALSE, cache = FALSE}
+knitr::opts_chunk$set(error = TRUE)
+```
+
+
+# Quiz
+
+1.  List three ways that an environment is different to a list.
+
+lists are ordered, environments are not
+lists are objects
+um, copy-on-modify?
+
+
+1.  What is the parent of the global environment? What is the only 
+    environment that doesn't have a parent?
+The empty environment, which has no parent    
+
+1.  What is the enclosing environment of a function? Why is it 
+    important?
+
+A function's enclosing environment is the environment in which it was created.  
+It contains all the objects that were present when the function was defined.
+
+1.  How do you determine the environment from which a function was called?
+
+uhm, idk. `environment`?
+
+1.  How are `<-` and `<<-` different?
+
+`<-` assigns an object to a name in the current environment.  `<<-` assigns in the parent as well.  Additionally, the latter is evil.
+
+## Exercises
+### List three ways in which an environment differs from a list.
+* NO order
+* everything must have a unique name
+* environments have parents
+
+### If you don’t supply an explicit environment, where do ls() and rm() look? Where does <- make bindings?
+
+I'm betting that this is in the present environment.  Is there a way to test that?
+
+### Using parent.env() and a loop (or a recursive function), verify that the ancestors of globalenv() include baseenv() and emptyenv(). Use the same basic idea to implement your own version of search().
+
+```{r}
+library(magrittr)
+parent.env(parent.env(environment()))
+
+environment() %>% parent.env %>% parent.env
+
+the_env <- globalenv()
+
+while(!identical(the_env,emptyenv())) {
+  print(the_env)
+  the_env <- parent.env(the_env)
+  }
+
+parent_finder <- function(e = globalenv()) {
+  if(identical(e, emptyenv())) {
+    print(e)
+    } else {
+      print(e)
+      parent_finder(parent.env(e))
+      }
+    }
+
+parent_finder()
+
+parent_list <- function(e = globalenv()) {
+  envlist <- list()
+  if(identical(e, emptyenv())) {
+    e
+    } else {
+      envlist <- c(envlist,e)
+      parent_list(parent.env(e))
+      }
+  envlist
+    }
+
+foo <- parent_list()
+
+```
+
+## Exercises 2
+
+### Modify where() to find all environments that contain a binding for name.
+
+```{r}
+
+where_all <- function(name, env = parent.frame()) {
+  env_list <- list()
+  if (identical(env, emptyenv())) {
+    # base case
+    stop("Can't find ", name, call. = FALSE)
+  } else if (exists(name, envir = env, inherits = FALSE)) {
+    # success case
+    env_list <- c(env_list,env)
+  } else {
+    # recursive case
+    where_all(name, env = parent.env(env))
+  }
+  env_list
+}
+
+library(magrittr)
+library(dplyr)
+
+where_all("%>%")
+```
+
+Why didn't that work??
+
+
+### Write your own version of get() using a function written in the style of where().
+
+```{r}
+where_get <- function(name, env = parent.frame()) {
+  if (identical(env, emptyenv())) {
+    # Base case
+    stop("Can't find ", name, call. = FALSE)
+    
+  } else if (exists(name, envir = env, inherits = FALSE)) {
+    # Success case
+    eval(as.name(name),env)
+    
+  } else {
+    # Recursive case
+    where_get(name, parent.env(env))
+    
+  }
+}
+
+x <- 4
+e <- new.env()
+e$y <- 5
+
+where_get("y",env = e)
+where_get("x",env = e)
+```
+
+### Write a function called fget() that finds only function objects
+ It should have two arguments, name and env, and should obey the regular scoping rules for functions: if there’s an object with a matching name that’s not a function, look in the parent. For an added challenge, also add an inherits argument which controls whether the function recurses up the parents or only looks in one environment.
+ 
+```{r}
+fget <- function(name, env = parent.frame(), inherits = TRUE) {
+  if (identical(env, emptyenv())) {
+    # Base case
+    stop("Can't find ", name, call. = FALSE)
+    
+    } else if (exists(name, envir = env, inherits = FALSE) & 
+                 (eval(as.name(name), envir = env) %>% is.function) ) {
+      # Success case
+      eval(as.name(name),env)
+      
+      } else if(inherits) {
+        # Recursive case
+        fget(name, parent.env(env))
+        
+        } else {
+          stop("Não tem não")
+          }
+  }
+
+e$mean <- 100
+fget("mean")
+
+fget("mean",e)
+
+fget("mean",e, inherits = FALSE)
+```
+
+### Write your own version of exists(inherits = FALSE)
+
+```{r}
+andrews_exists <- function(name, env = parent.frame()) {
+  if (identical(env, emptyenv())) {
+    # Base case
+    stop("Can't find ", name, call. = FALSE)
+    
+    } else {
+      # Success case
+      any(name %in% ls(env))
+      }
+  }
+
+andrews_exists("y",e)
+
+andrews_exists("y")
+```
+
+Recursive??
+
+```{r}
+
+
+```
+
