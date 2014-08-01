@@ -2,8 +2,13 @@
 title: "Untitled"
 author: "Andrew MacDonald"
 date: '2014-07-31'
-output: html_document
+output: md_document
 ---
+
+```{r message=FALSE}
+library(pryr)
+```
+
 
 html preview -- Bookmark
 
@@ -31,3 +36,6 @@ e$a; e$d
 ```
 
 Seems like you actually *can* have two names for the same object, until one changes.
+
+
+one interesting use of environments is employed in [this gist](https://gist.github.com/aammd/2d76c4657ab88901c0ed) written by [Rich Fitzjohn](http://nicercode.github.io/about/), formerly of UBC.  In it Rich emulates a Lisp-style "linked list" using Reference Semantics (whatever those are).
