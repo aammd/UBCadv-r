@@ -15,8 +15,8 @@ We meet Thursdays at **1pm PST in Biodiversity 224.**
 | Functions               | week 03 2014 July 17 |
 |                         | week 04 2014 July 24 |
 | Environments            | week 05 2014 July 31 |
-| Debugging               |                      |
-| Fnl Programming         |                      |
+| Debugging               | week 06 2014 Aug  07 |
+| Fnl Programming         | week 07 2014 Aug  21 |
 | Functionals             |                      |
 | Function Operators      |                      |
 | Non-Standard Evaluation |                      |
