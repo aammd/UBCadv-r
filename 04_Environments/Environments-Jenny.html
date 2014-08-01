@@ -55,7 +55,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <div id="header">
 <h1 class="title">Jenny’s reading of Environments</h1>
 <h4 class="author"><em>Jenny Bryan</em></h4>
-<h4 class="date"><em>31 July, 2014</em></h4>
+<h4 class="date"><em>01 August, 2014</em></h4>
 </div>
 
 <div id="TOC">
@@ -155,7 +155,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </div>
 <div id="using-parent.env-and-a-loop-or-a-recursive-function-verify-that-the-ancestors-of-globalenv-include-baseenv-and-emptyenv.-use-the-same-basic-idea-to-implement-your-own-version-of-search." class="section level4">
 <h4>Using <code>parent.env()</code> and a loop (or a recursive function), verify that the ancestors of <code>globalenv()</code> include <code>baseenv()</code> and <code>emptyenv()</code>. Use the same basic idea to implement your own version of <code>search()</code>.</h4>
-<p><em>First, I use a loop to detail the ancestry of <code>globalenv()</code>:</em></p>
+<p>First, I use a loop to detail the ancestry of <code>globalenv()</code>. Warning: this is UGLY:</p>
 <pre class="r"><code>library(plyr)
 foo &lt;- globalenv()
 env_stuff &lt;- vector(&quot;list&quot;, 15)
@@ -171,7 +171,7 @@ env_stuff &lt;- mutate(env_stuff,
                     name = gsub(' - attr\\(\\*, \&quot;name\&quot;\\)= chr ', &quot;&quot;, name))
 env_stuff &lt;- mutate(env_stuff, environment = gsub(&quot;[&lt;&gt;]&quot;, &quot;&quot;, environment),
                     name = gsub('\&quot;', '', name))</code></pre>
-<p><em>Here’s the ancestry:</em></p>
+<p>Here’s the ancestry:</p>
 <table>
 <thead>
 <tr class="header">
@@ -230,7 +230,8 @@ env_stuff &lt;- mutate(env_stuff, environment = gsub(&quot;[&lt;&gt;]&quot;, &qu
 </tr>
 </tbody>
 </table>
-<p><em>Yep, I see that the ancestors of <code>globalenv()</code> include <code>baseenv()</code> and <code>emptyenv()</code>. Now I’ll package this as a function, i.e. write my own version of <code>search()</code>, using recursion and taking advantage of <code>environmentName()</code>.</em></p>
+<p>Yep, I see that the ancestors of <code>globalenv()</code> include <code>baseenv()</code> and <code>emptyenv()</code>.</p>
+<p>Now I’ll write a proper recursive function, i.e. write my own version of <code>search()</code>, and take advantage of <code>environmentName()</code>.</p>
 <pre class="r"><code>j_search &lt;- function(env = globalenv()) {
   if (identical(env, emptyenv())) {
     return(invisible(NULL))
@@ -248,6 +249,7 @@ j_search()</code></pre>
 ##  [4] &quot;package:stats&quot;     &quot;package:graphics&quot;  &quot;package:grDevices&quot;
 ##  [7] &quot;package:utils&quot;     &quot;package:datasets&quot;  &quot;package:methods&quot;  
 ## [10] &quot;Autoloads&quot;         &quot;package:base&quot;</code></pre>
+<p>Other than minor differences in name formatting, my function appears to be equivalent to <code>search()</code>.</p>
 </div>
 </div>
 </div>
@@ -296,8 +298,6 @@ j_where(&quot;median&quot;)</code></pre>
 }
 get(&quot;+&quot;)</code></pre>
 <pre><code>## function (e1, e2)  .Primitive(&quot;+&quot;)</code></pre>
-<pre class="r"><code>eval(&quot;+&quot;)</code></pre>
-<pre><code>## [1] &quot;+&quot;</code></pre>
 <pre class="r"><code>j_get(&quot;+&quot;)</code></pre>
 <pre><code>## function (e1, e2)  .Primitive(&quot;+&quot;)</code></pre>
 <pre class="r"><code>get(&quot;i&quot;)</code></pre>

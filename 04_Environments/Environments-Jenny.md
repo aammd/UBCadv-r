@@ -72,7 +72,7 @@ Notes....
 
 #### Using `parent.env()` and a loop (or a recursive function), verify that the ancestors of `globalenv()` include `baseenv()` and `emptyenv()`. Use the same basic idea to implement your own version of `search()`.
 
-*First, I use a loop to detail the ancestry of `globalenv()`:*
+First, I use a loop to detail the ancestry of `globalenv()`. Warning: this is UGLY:
 
 ```r
 library(plyr)
@@ -91,7 +91,9 @@ env_stuff <- mutate(env_stuff,
 env_stuff <- mutate(env_stuff, environment = gsub("[<>]", "", environment),
                     name = gsub('\"', '', name))
 ```
-*Here's the ancestry:*
+
+Here's the ancestry:
+
 
 |environment        |name              |
 |:------------------|:-----------------|
@@ -108,7 +110,9 @@ env_stuff <- mutate(env_stuff, environment = gsub("[<>]", "", environment),
 |base               |NA                |
 |R_EmptyEnv         |NA                |
 
-*Yep, I see that the ancestors of `globalenv()` include `baseenv()` and `emptyenv()`. Now I'll package this as a function, i.e. write my own version of `search()`, using recursion and taking advantage of `environmentName()`.*
+Yep, I see that the ancestors of `globalenv()` include `baseenv()` and `emptyenv()`.
+
+Now I'll write a proper recursive function, i.e. write my own version of `search()`, and take advantage of `environmentName()`.
 
 
 ```r
@@ -139,6 +143,8 @@ search()
 ##  [7] "package:utils"     "package:datasets"  "package:methods"  
 ## [10] "Autoloads"         "package:base"
 ```
+
+Other than minor differences in name formatting, my function appears to be equivalent to `search()`.
 
 ## Recursing over environments
 
@@ -214,14 +220,6 @@ get("+")
 
 ```
 ## function (e1, e2)  .Primitive("+")
-```
-
-```r
-eval("+")
-```
-
-```
-## [1] "+"
 ```
 
 ```r
