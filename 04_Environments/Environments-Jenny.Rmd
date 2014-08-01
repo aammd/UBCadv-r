@@ -150,7 +150,7 @@ j_get <- function(name, env = parent.frame()) {
     
   } else if (exists(name, envir = env, inherits = FALSE)) {
     # Success case
-    return(eval(name, envir = env))
+    return(eval(as.name(name), envir = env))
     
   } else {
     # Recursive case

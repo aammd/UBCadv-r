@@ -55,7 +55,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <div id="header">
 <h1 class="title">Jenny’s reading of Environments</h1>
 <h4 class="author"><em>Jenny Bryan</em></h4>
-<h4 class="date"><em>28 July, 2014</em></h4>
+<h4 class="date"><em>31 July, 2014</em></h4>
 </div>
 
 <div id="TOC">
@@ -279,6 +279,31 @@ j_where(&quot;median&quot;)</code></pre>
 </div>
 <div id="write-your-own-version-of-get-using-a-function-written-in-the-style-of-where." class="section level4">
 <h4>Write your own version of <code>get()</code> using a function written in the style of <code>where()</code>.</h4>
+<pre class="r"><code>j_get &lt;- function(name, env = parent.frame()) {
+  if (identical(env, emptyenv())) {
+    # Base case
+    stop(&quot;Can't find &quot;, name, call. = FALSE)
+    
+  } else if (exists(name, envir = env, inherits = FALSE)) {
+    # Success case
+    return(eval(as.name(name), envir = env))
+    
+  } else {
+    # Recursive case
+    j_get(name, parent.env(env))
+    
+  }
+}
+get(&quot;+&quot;)</code></pre>
+<pre><code>## function (e1, e2)  .Primitive(&quot;+&quot;)</code></pre>
+<pre class="r"><code>eval(&quot;+&quot;)</code></pre>
+<pre><code>## [1] &quot;+&quot;</code></pre>
+<pre class="r"><code>j_get(&quot;+&quot;)</code></pre>
+<pre><code>## function (e1, e2)  .Primitive(&quot;+&quot;)</code></pre>
+<pre class="r"><code>get(&quot;i&quot;)</code></pre>
+<pre><code>## [1] 12</code></pre>
+<pre class="r"><code>j_get(&quot;i&quot;)</code></pre>
+<pre><code>## [1] 12</code></pre>
 </div>
 <div id="write-a-function-called-fget-that-finds-only-function-objects.-it-should-have-two-arguments-name-and-env-and-should-obey-the-regular-scoping-rules-for-functions-if-theres-an-object-with-a-matching-name-thats-not-a-function-look-in-the-parent.-for-an-added-challenge-also-add-an-inherits-argument-which-controls-whether-the-function-recurses-up-the-parents-or-only-looks-in-one-environment." class="section level4">
 <h4>Write a function called <code>fget()</code> that finds only function objects. It should have two arguments, <code>name</code> and <code>env</code>, and should obey the regular scoping rules for functions: if there’s an object with a matching name that’s not a function, look in the parent. For an added challenge, also add an <code>inherits</code> argument which controls whether the function recurses up the parents or only looks in one environment.</h4>

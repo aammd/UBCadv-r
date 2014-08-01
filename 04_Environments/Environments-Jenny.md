@@ -190,8 +190,64 @@ j_where("median")
 ## [1] "package:stats"
 ```
 
-
 #### Write your own version of `get()` using a function written in the style of `where()`.
+
+
+```r
+j_get <- function(name, env = parent.frame()) {
+  if (identical(env, emptyenv())) {
+    # Base case
+    stop("Can't find ", name, call. = FALSE)
+    
+  } else if (exists(name, envir = env, inherits = FALSE)) {
+    # Success case
+    return(eval(as.name(name), envir = env))
+    
+  } else {
+    # Recursive case
+    j_get(name, parent.env(env))
+    
+  }
+}
+get("+")
+```
+
+```
+## function (e1, e2)  .Primitive("+")
+```
+
+```r
+eval("+")
+```
+
+```
+## [1] "+"
+```
+
+```r
+j_get("+")
+```
+
+```
+## function (e1, e2)  .Primitive("+")
+```
+
+```r
+get("i")
+```
+
+```
+## [1] 12
+```
+
+```r
+j_get("i")
+```
+
+```
+## [1] 12
+```
+
 
 #### Write a function called `fget()` that finds only function objects. It should have two arguments, `name` and `env`, and should obey the regular scoping rules for functions: if there's an object with a matching name that's not a function, look in the parent. For an added challenge, also add an `inherits` argument which controls whether the function recurses up the parents or only looks in one environment.
 
