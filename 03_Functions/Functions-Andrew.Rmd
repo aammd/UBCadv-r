@@ -139,7 +139,8 @@ cor(x, y, method = "kendall", use = "pairwise")
     ```{r, eval = FALSE}    
     f1 <- function(x = {y <- 1; 2}, y = 0) {
       print(y)
-      x + y
+      print(x + y)
+      print(y)
     }
     f1()
     ```
@@ -148,13 +149,15 @@ cor(x, y, method = "kendall", use = "pairwise")
 
     ```{r, eval = FALSE}
     f2 <- function(x = z) {
-      z <- 100
+     
+      z <- NULL
       x
     }
     f2()
     ```
 
-*er, also lazy evaluation? `x` is defined in terms of an object that exists only in the function body -- which is OK, since R doesn't look for `x` until you ask for it*
+*er, also lazy evaluation? `x` is defined in terms of an object that exists only in the function body -- which is OK, since R doesn't look for `x` until you ask for it* 
+* Dynamic lookup* 
 
 
 ## adders the closures:
@@ -194,10 +197,11 @@ address(foo)
 class(foo)
 
 foo <- 1:10
+class(foo)
 address(foo)
 foo[2] <- 5L
+class(foo)
 address(foo)
-
 
 ```
 
@@ -227,11 +231,18 @@ replacers[sapply(replacers, is.primitive)]
 
 ```{r}
 `%xor%` <- function(a, b) {
-  if(sum(a + b) == 1) TRUE else FALSE
+  if(sum(a,b) == 1) TRUE else FALSE
   }
 
 TRUE %xor% FALSE
 TRUE %xor% TRUE
+
+
+`%xorDiane%` <- function(a,b)  a != b
+
+TRUE %xorDiane% FALSE
+
+5789 %xorDiane% "Moose"
 
 ```
 
