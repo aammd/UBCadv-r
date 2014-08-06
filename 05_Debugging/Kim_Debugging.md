@@ -6,12 +6,13 @@ Date: '2014-08-06'
 
 ***
 
-### Discussion Notes
+### Notes
 
 fatal errors are caused by stop() functions while normal errors were caused by the function not being able to continue
 
 defensive programming's aim is to let you fail fast so you can pinpoint problems as they arise
 
+The worst scenario is that your code might crash R completely, leaving you with no way to interactively debug your code. This indicates a bug in underlying C code and can be hard to debug.
 
 ***
 
@@ -33,11 +34,16 @@ defensive programming's aim is to let you fail fast so you can pinpoint problems
    
 1. What function do you use to ignore errors in block of code?
 
-	** **
+	**`try()` wrap it around whatever function is causing the error and the 
+	error message will still be printed but it will continue to execute the 
+	function. (can also suppress the error message with silent=TRUE) and for larger blocks of code, can do `try({ })`**
 
 1. Why might you want to create an error with a custom S3 class?
 
-	** **
+	**I couldn't figure this out, here is Hadley's answer: Because you can 
+	then capture specific types of error with `tryCatch()`, rather than relying 
+	on the comparison of error strings, which is risky, especially when messages 
+	are translated**
 
 
 
@@ -56,8 +62,12 @@ defensive programming's aim is to let you fail fast so you can pinpoint problems
     }
     ```
 
+	**The return value of tryCatch() handlers is returned by tryCatch(), whereas 
+	the return value of withCallingHandlers() handlers is ignored ??**
 
 ### Exercises 2
+
+**I gave up on these exercises currently. I'd rather debug my own code than other code that I haven't written :/**
 
 * The goal of the `col_means()` function defined below is to compute the means
   of all numeric columns in a data frame.
@@ -77,11 +87,11 @@ defensive programming's aim is to let you fail fast so you can pinpoint problems
     in `col_means()` that are particularly prone to problems.)
 
     ```{r, eval = FALSE}
-    col_means(mtcars)
-    col_means(mtcars[, 0])
-    col_means(mtcars[0, ])
-    col_means(mtcars[, "mpg", drop = F])
-    col_means(1:10)
+    col_means(mtcars)  **works fine*
+    col_means(mtcars[, 0])  **error, cannot take 0th column**
+    col_means(mtcars[0, ])  **works, but is taking mean of column names (row 0) so all NaNs**
+    col_means(mtcars[, "mpg", drop = F])  **? works?**
+    col_means(1:10)  **error, 1:10 has no columns?**
     col_means(as.matrix(mtcars))
     col_means(as.list(mtcars))
 
@@ -101,22 +111,3 @@ defensive programming's aim is to let you fail fast so you can pinpoint problems
       c(rep(NA, n), x[seq_len(xlen - n)])
     }
     ```
-
-
-
-## Quiz answers {#debugging-answers}
-
-1. The most useful tool to determine where a error occured is `traceback()`.
-   Or use Rstudio, which displays it automatically where an error occurs.
-   
-1. `browser()` pauses execution at the specified line and allows you to
-   enter an interactive environment. In that environment, there are five
-   useful commands: `n`, execute the next command; `s`, step into the 
-   next function; `f`, finish the current loop or function; `c`, continue
-   execution normally; `Q`, stop the function and return to the console.
-   
-1. You could use `try()` or `tryCatch()`.
-
-1. Because you can then capture specific types of error with `tryCatch()`,
-   rather than relying on the comparison of error strings, which is risky,
-   especially when messages are translated.
