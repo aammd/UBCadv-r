@@ -290,7 +290,11 @@ sample_contig_rows_2 <- function(input_df, sample_size)
 
 sample_contig_rows_2(df, 5)
 sample_contig_rows_2(df, 4)
+<<<<<<< HEAD
 sample_contig_rows_2(df, 2)
+=======
+sample_contig_rows_2(df, 3)
+>>>>>>> upstream/master
 ```
 
 
