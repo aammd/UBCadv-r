@@ -8,22 +8,36 @@ Date: '2014-08-06'
 
 ### Discussion Notes
 
+fatal errors are caused by stop() functions while normal errors were caused by the function not being able to continue
+
+defensive programming's aim is to let you fail fast so you can pinpoint problems as they arise
 
 
 ***
 
 ##### Quiz
 
-Want to skip this chapter? Go for it, if you can answer the questions below. Find the answers at the end of the chapter in [answers](#debugging-answers).
-
 1. How can you find out where an error occured?
+
+	**`traceback()` should do the job.  Hadley also says binary search.**
 
 1. What does `browser()` do? List the five useful single-key commands
    that you can use inside of a `browser()` environment.
    
+   **let's you interactively debug - pauses execution of your commands where the error occurred and lets you investigate the state at that point.
+     __ n executes the next step in the function, s is step into which if the next 
+    step is a function takes you into that function to work through each line, 
+    f finishes execution of the current loop/function, c is for continue which leaves the debugging
+     tool and continues regular execution of the function, and q stops debugging and terminates the function to return to the global
+      workspace. 'enter' also repeats the previous command and `where` prints the stack trace of active calls (interactive equivalent of traceback)**
+   
 1. What function do you use to ignore errors in block of code?
 
+	** **
+
 1. Why might you want to create an error with a custom S3 class?
+
+	** **
 
 
 
