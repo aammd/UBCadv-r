@@ -66,6 +66,7 @@ The worst scenario is that your code might crash R completely, leaving you with 
 	the return value of withCallingHandlers() handlers is ignored ??**
 	
 	```
+	### this is WITH CALLING HANDLERS
 	> message2error(message("hello!"))
 	Error in message("hello!") : hello!
 	> traceback()
@@ -82,6 +83,7 @@ The worst scenario is that your code might crash R completely, leaving you with 
 	3: message("hello!")
 	2: withCallingHandlers(code, message = function(e) stop(e)) at #2
 	1: message2error(message("hello!"))
+	### this is TRY CATCH
 	> message2error <- function(code) {
 	+     tryCatch(code, message = function(e) stop(e))
 	+   }
