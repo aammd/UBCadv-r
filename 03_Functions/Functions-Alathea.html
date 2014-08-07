@@ -9,8 +9,9 @@
 <meta http-equiv="Content-Style-Type" content="text/css" />
 <meta name="generator" content="pandoc" />
 
-<meta name="author" content="Susannah" />
+<meta name="author" content="Alathea" />
 
+<meta name="date" content="2014-07-16" />
 
 <title>Functions</title>
 
@@ -54,261 +55,416 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 
 <div id="header">
 <h1 class="title">Functions</h1>
-<h4 class="author"><em>Susannah</em></h4>
+<h4 class="author"><em>Alathea</em></h4>
+<h4 class="date"><em>2014-07-16</em></h4>
 </div>
 
-
-<div id="quiz" class="section level2">
-<h2>Quiz</h2>
-<ol style="list-style-type: decimal">
-<li>The three elements of a function are the name of the function, the arguments of the function, and the guts of the function. <em>X</em> <em>Functions don’t have to have names in <code>R</code>, but the environment matters. Remember that time Hadley’s plyr masked a function in another package and you got really confused?</em></li>
-<li>11</li>
-<li><code>1 + 2 * 3</code></li>
-<li><code>mean(x = c(1:10, NA), na.rm = TRUE)</code></li>
-<li>No - the <code>stop</code> should be within the function, not the arguments to the function.</li>
-<li>An infix function is a function like <code>+,-,/</code> that generally goes inbetween arguments. I don’t know what a replacement function is. <em>X</em></li>
-<li><code>on.exit()</code></li>
-</ol>
-</div>
-<div id="functional-components" class="section level2">
-<h2>Functional components</h2>
-<ol style="list-style-type: decimal">
-<li><code>class</code> allows you to tell if an <code>R</code> object is a function. I tried to use <code>attributes()</code> to find out whether functions were primitive or not, but returned <code>NULL</code> for many functions - including functions I knew to be not primitive. Just typing the name of the function without parentheses will tell you whether the function is primitive or not. <code>environment(function)</code> returns <code>NULL</code> for all primitive functions.</li>
-<li></li>
-</ol>
-<pre class="r"><code>objs &lt;- mget(ls(&quot;package:base&quot;), inherits = TRUE)
-nullenv &lt;- function(func) {
-    is.null(environment(func))
-}
-funs &lt;- Filter(is.function, objs)
-nulls &lt;- Filter(nullenv, funs)
-
-arg &lt;- lapply(funs, formals) # get formals
-counts &lt;- sapply(arg, length) # count formals
-maxcount &lt;- which.max(counts) #find most args
-zeros &lt;- which(counts == 0) #no args</code></pre>
+<div id="TOC">
 <ul>
-<li><code>scan</code> has the most arguments - 896.</li>
-<li>infixes, math functions, casts, control flow, system calls, and debugging functions have no arguments. These are typically primitive functions (see output of <code>sapply(names(zeros),environment</code>). Since primitive functions handle arguments a bit differently than other functions, I guess it’s best to avoid the problem altogether by not having arguments at all!</li>
-<li></li>
+<li><a href="#exercises">Exercises</a><ul>
+<li><a href="#what-function-allows-you-to-tell-if-an-object-is-a-function-what-function-allows-you-to-tell-if-a-function-is-a-primitive-function">What function allows you to tell if an object is a function? What function allows you to tell if a function is a primitive function?</a></li>
+<li><a href="#this-code-makes-a-list-of-all-functions-in-the-base-package.">This code makes a list of all functions in the base package.</a></li>
+<li><a href="#use-it-to-answer-the-following-questions">Use it to answer the following questions:</a></li>
+<li><a href="#what-are-the-three-important-components-of-a-function">What are the three important components of a function?</a></li>
+<li><a href="#when-does-printing-a-function-not-show-what-environment-it-was-created-in">When does printing a function not show what environment it was created in?</a></li>
+<li><a href="#what-does-the-following-code-return-why-what-does-each-of-the-three-cs-mean">What does the following code return? Why? What does each of the three c’s mean?</a></li>
+<li><a href="#what-are-the-four-principles-that-govern-how-r-looks-for-values">What are the four principles that govern how R looks for values?</a></li>
+<li><a href="#what-does-the-following-function-return-make-a-prediction-before-running-the-code-yourself.">What does the following function return? Make a prediction before running the code yourself.</a></li>
+<li><a href="#clarify-the-following-list-of-odd-function-calls">Clarify the following list of odd function calls:</a></li>
+<li><a href="#what-does-this-function-return-why-which-principle-does-it-illustrate">What does this function return? Why? Which principle does it illustrate?</a></li>
+<li><a href="#what-does-this-function-return-why-which-principle-does-it-illustrate-1">What does this function return? Why? Which principle does it illustrate?</a></li>
+<li><a href="#create-a-list-of-all-the-replacement-functions-found-in-the-base-package.-which-ones-are-primitive-functions">Create a list of all the replacement functions found in the base package. Which ones are primitive functions?</a></li>
+<li><a href="#what-are-valid-names-for-user-created-infix-functions">What are valid names for user created infix functions?</a></li>
+<li><a href="#create-an-infix-xor-operator.">Create an infix <code>xor()</code> operator.</a></li>
+<li><a href="#create-infix-versions-of-the-set-functions-intersect-union-and-setdiff.">Create infix versions of the set functions <code>intersect()</code>, <code>union()</code>, and <code>setdiff()</code>.</a></li>
+<li><a href="#create-a-replacement-function-that-modifies-a-random-location-in-a-vector.">Create a replacement function that modifies a random location in a vector.</a></li>
+<li><a href="#how-does-the-chdir-parameter-of-source-compare-to-in_dir-why-might-you-prefer-one-approach-to-the-other">How does the <code>chdir</code> parameter of <code>source()</code> compare to <code>in_dir()</code>? Why might you prefer one approach to the other?</a></li>
+<li><a href="#what-function-undoes-the-action-of-library-how-do-you-save-and-restore-the-values-of-options-and-par">What function undoes the action of <code>library()</code>? How do you save and restore the values of <code>options()</code> and <code>par()</code>?</a></li>
+<li><a href="#write-a-function-that-opens-a-graphics-device-runs-the-supplied-code-and-closes-the-graphics-device-always-regardless-of-whether-or-not-the-plotting-code-worked.">Write a function that opens a graphics device, runs the supplied code, and closes the graphics device (always, regardless of whether or not the plotting code worked).</a></li>
+<li><a href="#we-can-use-on.exit-to-implement-a-simple-version-of-capture.output.">We can use <code>on.exit()</code> to implement a simple version of <code>capture.output()</code>.</a></li>
+<li><a href="#you-might-want-to-compare-this-function-to-the-real-capture.output-and-think-about-the-simplifications-ive-made.-is-the-code-easier-to-understand-or-harder-have-i-removed-important-functionality">You might want to compare this function to the real <code>capture.output()</code> and think about the simplifications I’ve made. Is the code easier to understand or harder? Have I removed important functionality?</a></li>
+<li><a href="#compare-capture.output-to-capture.output2.-how-do-the-functions-differ-what-features-have-i-removed-to-make-the-key-ideas-easier-to-see-how-have-i-rewritten-the-key-ideas-to-be-easier-to-understand">Compare <code>capture.output()</code> to <code>capture.output2()</code>. How do the functions differ? What features have I removed to make the key ideas easier to see? How have I rewritten the key ideas to be easier to understand?</a></li>
+</ul></li>
+<li><a href="#reading-notes">Reading Notes</a><ul>
+<li><a href="#quiz">Quiz</a></li>
+<li><a href="#function-components">Function components</a></li>
+<li><a href="#lexical-scoping">Lexical scoping</a></li>
+<li><a href="#function-arguments">Function arguments</a></li>
+<li><a href="#return-values">Return Values</a></li>
+</ul></li>
+<li><a href="#discussion-notes">Discussion Notes</a></li>
 </ul>
-<pre class="r"><code>  objs &lt;- mget(ls(&quot;package:base&quot;), inherits = TRUE)
-  
-  nullenv &lt;- function(func) {
-    # returns true if function environment is null
-    is.null(environment(func))
+</div>
+
+<hr />
+<div id="exercises" class="section level2">
+<h2>Exercises</h2>
+<div id="what-function-allows-you-to-tell-if-an-object-is-a-function-what-function-allows-you-to-tell-if-a-function-is-a-primitive-function" class="section level3">
+<h3>What function allows you to tell if an object is a function? What function allows you to tell if a function is a primitive function?</h3>
+<p><code>str</code> or <code>is.function</code> will identify functions. <code>is.primitive</code> tells whether or not a function is primitive.</p>
+</div>
+<div id="this-code-makes-a-list-of-all-functions-in-the-base-package." class="section level3">
+<h3>This code makes a list of all functions in the base package.</h3>
+<pre class="r"><code>objs &lt;- mget(ls(&quot;package:base&quot;), inherits = TRUE)
+funs &lt;- Filter(is.function, objs)</code></pre>
+</div>
+<div id="use-it-to-answer-the-following-questions" class="section level3">
+<h3>Use it to answer the following questions:</h3>
+<div id="which-base-function-has-the-most-arguments" class="section level4">
+<h4>Which base function has the most arguments?</h4>
+<p>The arguments can be obtained using the function <code>formals</code>.</p>
+<pre class="r"><code>require(plyr)</code></pre>
+<pre><code>## Loading required package: plyr</code></pre>
+<pre class="r"><code># create a vector of lengths
+arg_length &lt;- laply(funs, function(x)(length(formals(x))))
+
+# find the max
+max_args &lt;- which(arg_length == max(arg_length))
+
+# get the name of the function
+names(funs[max_args])</code></pre>
+<pre><code>## [1] &quot;scan&quot;</code></pre>
+</div>
+<div id="how-many-base-functions-have-no-arguments-whats-special-about-those-functions." class="section level4">
+<h4>How many base functions have no arguments? What’s special about those functions.</h4>
+<pre class="r"><code>length(which(arg_length == 0))</code></pre>
+<pre><code>## [1] 221</code></pre>
+</div>
+<div id="how-could-you-adapt-the-code-to-find-all-primitive-functions" class="section level4">
+<h4>How could you adapt the code to find all primitive functions?</h4>
+<pre class="r"><code>prims &lt;- Filter(is.primitive, objs)
+names(prims)</code></pre>
+<pre><code>##   [1] &quot;^&quot;               &quot;~&quot;               &quot;&lt;&quot;              
+##   [4] &quot;&lt;&lt;-&quot;             &quot;&lt;=&quot;              &quot;&lt;-&quot;             
+##   [7] &quot;=&quot;               &quot;==&quot;              &quot;&gt;&quot;              
+##  [10] &quot;&gt;=&quot;              &quot;|&quot;               &quot;||&quot;             
+##  [13] &quot;-&quot;               &quot;:&quot;               &quot;!&quot;              
+##  [16] &quot;!=&quot;              &quot;/&quot;               &quot;(&quot;              
+##  [19] &quot;[&quot;               &quot;[&lt;-&quot;             &quot;[[&quot;             
+##  [22] &quot;[[&lt;-&quot;            &quot;{&quot;               &quot;@&quot;              
+##  [25] &quot;@&lt;-&quot;             &quot;$&quot;               &quot;$&lt;-&quot;            
+##  [28] &quot;*&quot;               &quot;&amp;&quot;               &quot;&amp;&amp;&quot;             
+##  [31] &quot;%/%&quot;             &quot;%*%&quot;             &quot;%%&quot;             
+##  [34] &quot;+&quot;               &quot;abs&quot;             &quot;acos&quot;           
+##  [37] &quot;acosh&quot;           &quot;all&quot;             &quot;any&quot;            
+##  [40] &quot;anyNA&quot;           &quot;Arg&quot;             &quot;as.call&quot;        
+##  [43] &quot;as.character&quot;    &quot;as.complex&quot;      &quot;as.double&quot;      
+##  [46] &quot;as.environment&quot;  &quot;asin&quot;            &quot;asinh&quot;          
+##  [49] &quot;as.integer&quot;      &quot;as.logical&quot;      &quot;as.numeric&quot;     
+##  [52] &quot;as.raw&quot;          &quot;atan&quot;            &quot;atanh&quot;          
+##  [55] &quot;attr&quot;            &quot;attr&lt;-&quot;          &quot;attributes&quot;     
+##  [58] &quot;attributes&lt;-&quot;    &quot;baseenv&quot;         &quot;break&quot;          
+##  [61] &quot;browser&quot;         &quot;c&quot;               &quot;call&quot;           
+##  [64] &quot;ceiling&quot;         &quot;class&quot;           &quot;class&lt;-&quot;        
+##  [67] &quot;Conj&quot;            &quot;cos&quot;             &quot;cosh&quot;           
+##  [70] &quot;cospi&quot;           &quot;cummax&quot;          &quot;cummin&quot;         
+##  [73] &quot;cumprod&quot;         &quot;cumsum&quot;          &quot;digamma&quot;        
+##  [76] &quot;dim&quot;             &quot;dim&lt;-&quot;           &quot;dimnames&quot;       
+##  [79] &quot;dimnames&lt;-&quot;      &quot;emptyenv&quot;        &quot;enc2native&quot;     
+##  [82] &quot;enc2utf8&quot;        &quot;environment&lt;-&quot;   &quot;exp&quot;            
+##  [85] &quot;expm1&quot;           &quot;expression&quot;      &quot;floor&quot;          
+##  [88] &quot;for&quot;             &quot;function&quot;        &quot;gamma&quot;          
+##  [91] &quot;gc.time&quot;         &quot;globalenv&quot;       &quot;if&quot;             
+##  [94] &quot;Im&quot;              &quot;interactive&quot;     &quot;invisible&quot;      
+##  [97] &quot;is.array&quot;        &quot;is.atomic&quot;       &quot;is.call&quot;        
+## [100] &quot;is.character&quot;    &quot;is.complex&quot;      &quot;is.double&quot;      
+## [103] &quot;is.environment&quot;  &quot;is.expression&quot;   &quot;is.finite&quot;      
+## [106] &quot;is.function&quot;     &quot;is.infinite&quot;     &quot;is.integer&quot;     
+## [109] &quot;is.language&quot;     &quot;is.list&quot;         &quot;is.logical&quot;     
+## [112] &quot;is.matrix&quot;       &quot;is.na&quot;           &quot;is.name&quot;        
+## [115] &quot;is.nan&quot;          &quot;is.null&quot;         &quot;is.numeric&quot;     
+## [118] &quot;is.object&quot;       &quot;is.pairlist&quot;     &quot;is.raw&quot;         
+## [121] &quot;is.recursive&quot;    &quot;isS4&quot;            &quot;is.single&quot;      
+## [124] &quot;is.symbol&quot;       &quot;lazyLoadDBfetch&quot; &quot;length&quot;         
+## [127] &quot;length&lt;-&quot;        &quot;levels&lt;-&quot;        &quot;lgamma&quot;         
+## [130] &quot;list&quot;            &quot;log&quot;             &quot;log10&quot;          
+## [133] &quot;log1p&quot;           &quot;log2&quot;            &quot;max&quot;            
+## [136] &quot;min&quot;             &quot;missing&quot;         &quot;Mod&quot;            
+## [139] &quot;names&quot;           &quot;names&lt;-&quot;         &quot;nargs&quot;          
+## [142] &quot;next&quot;            &quot;nzchar&quot;          &quot;oldClass&quot;       
+## [145] &quot;oldClass&lt;-&quot;      &quot;on.exit&quot;         &quot;pos.to.env&quot;     
+## [148] &quot;proc.time&quot;       &quot;prod&quot;            &quot;quote&quot;          
+## [151] &quot;range&quot;           &quot;Re&quot;              &quot;rep&quot;            
+## [154] &quot;repeat&quot;          &quot;retracemem&quot;      &quot;return&quot;         
+## [157] &quot;round&quot;           &quot;seq_along&quot;       &quot;seq.int&quot;        
+## [160] &quot;seq_len&quot;         &quot;sign&quot;            &quot;signif&quot;         
+## [163] &quot;sin&quot;             &quot;sinh&quot;            &quot;sinpi&quot;          
+## [166] &quot;sqrt&quot;            &quot;standardGeneric&quot; &quot;storage.mode&lt;-&quot; 
+## [169] &quot;substitute&quot;      &quot;sum&quot;             &quot;switch&quot;         
+## [172] &quot;tan&quot;             &quot;tanh&quot;            &quot;tanpi&quot;          
+## [175] &quot;tracemem&quot;        &quot;trigamma&quot;        &quot;trunc&quot;          
+## [178] &quot;unclass&quot;         &quot;untracemem&quot;      &quot;UseMethod&quot;      
+## [181] &quot;while&quot;           &quot;xtfrm&quot;</code></pre>
+</div>
+</div>
+<div id="what-are-the-three-important-components-of-a-function" class="section level3">
+<h3>What are the three important components of a function?</h3>
+<p><code>formals()</code>: the arguments <code>body()</code>: the function content <code>environment()</code>: the environment where the variables are stored</p>
+</div>
+<div id="when-does-printing-a-function-not-show-what-environment-it-was-created-in" class="section level3">
+<h3>When does printing a function not show what environment it was created in?</h3>
+<p>If the function has a custom print method, or if it is a primitive function.</p>
+</div>
+<div id="what-does-the-following-code-return-why-what-does-each-of-the-three-cs-mean" class="section level3">
+<h3>What does the following code return? Why? What does each of the three c’s mean?</h3>
+<pre class="r"><code>c &lt;- 10
+c(c = c)</code></pre>
+<p>The first <code>c()</code> runs the combine function to create a vector with an item named <code>c</code> with value 10</p>
+</div>
+<div id="what-are-the-four-principles-that-govern-how-r-looks-for-values" class="section level3">
+<h3>What are the four principles that govern how R looks for values?</h3>
+<p>name masking, functions vs. variables, a fresh start, dynamic lookup</p>
+</div>
+<div id="what-does-the-following-function-return-make-a-prediction-before-running-the-code-yourself." class="section level3">
+<h3>What does the following function return? Make a prediction before running the code yourself.</h3>
+<pre class="r"><code>f &lt;- function(x) {
+  f &lt;- function(x) {
+    f &lt;- function(x) {
+      x ^ 2
+    }
+    f(x) + 1
   }
-  
-  funs &lt;- Filter(is.function, objs)
-  nulls &lt;- Filter(nullenv, funs)</code></pre>
+  f(x) * 2
+}
+f(10)</code></pre>
+<p>The function will go down to the lowest level and find <code>x ^ 2</code> so <code>f(x) &lt;- 100</code>. Next, R will arrive at the command <code>f(x) + 1</code> and get <code>100 + 1 = 101</code> and finally multiply by two to get <code>202</code></p>
 </div>
-<div id="lexical-scoping" class="section level2">
-<h2>Lexical scoping</h2>
-<ol style="list-style-type: decimal">
-<li><code>{r} c &lt;- 10   c(c = c)</code> This code returns a vector of length one containing the number 10. The vector has a names attribute of “c.” The first <code>c</code> is the concatenate function. The second c is an attribute assignment and the third c is a variable, which was assigned to 10 in the previous line.</li>
-<li>The four principles are</li>
-</ol>
-<ul>
-<li>name masking: names from the inner environment are used before those in the outer environment</li>
-<li>functions vs. variables: R can distinguish between functions and variables, but it’s confusing to <em>you</em> if you have variables and functions with the same names</li>
-<li>a fresh start: a new environment is created every time a function is run</li>
-<li>dynamic lookup: R looks for values when the function is run, of course. This isn’t a language where you have to compile things, so I don’t think there’s another way to do it…</li>
-</ul>
-<ol start="3" style="list-style-type: decimal">
-<li><ol start="202" style="list-style-type: decimal">
-<li>Evaluate inner to outer.</li>
-</ol></li>
-</ol>
+<div id="clarify-the-following-list-of-odd-function-calls" class="section level3">
+<h3>Clarify the following list of odd function calls:</h3>
+<div id="x---samplereplace-true-20-x-c110-na" class="section level4">
+<h4><code>x &lt;- sample(replace = TRUE, 20, x = c(1:10, NA))</code></h4>
+<p><code>x &lt;- sample(c(1:10, NA), 20, replace = TRUE)</code></p>
 </div>
-<div id="eoiafc" class="section level2">
-<h2>EOiaFC</h2>
-<blockquote>
-<p>Everything that exists is an object. Everything that happens is a function call. – John Chambers</p>
-</blockquote>
+<div id="y---runifmin-0-max-1-20" class="section level4">
+<h4><code>y &lt;- runif(min = 0, max = 1, 20)</code></h4>
+<p><code>y &lt;- runif(20, 0, 1)</code></p>
 </div>
-<div id="function-arguments" class="section level2">
-<h2>Function Arguments</h2>
-<p>Lazy evaluation means that things aren’t evaluated unless you use them. I don’t understand what closures are, <em>e.g.</em> “This is important when creating closures with lapply or a loop”</p>
-<p>This example is confusing. Let’s work through it.</p>
-<pre class="r"><code>add &lt;- function(x) {
-  function(y) x + y
-}
-adders &lt;- lapply(1:10, add) 
-adders[[1]](10)</code></pre>
-<pre><code>## [1] 20</code></pre>
-<p>lapply step creates a list of functions and <em>environments</em> where x is assigned according to the inputs to <code>lapply</code>.</p>
-<pre class="r"><code>ls(environment(adders[[1]]))</code></pre>
-<pre><code>## [1] &quot;x&quot;</code></pre>
-<p>You’d think this would lead to x being 1 in the first environment, 2 in the second environment and so on. However, because of lazy evaluation, <code>x</code> is <code>10</code> in all environments.</p>
-<pre class="r"><code>for (i in 1:10) {
-  print(get(&quot;x&quot;, pos=environment(adders[[i]])))
-}</code></pre>
-<pre><code>## [1] 10
-## [1] 10
-## [1] 10
-## [1] 10
-## [1] 10
-## [1] 10
-## [1] 10
-## [1] 10
-## [1] 10
-## [1] 10</code></pre>
-<p>I think this has to do with promises and the way <code>lapply</code> works. <code>lapply</code> is basically a loop in C that in this case is like</p>
-<p><code>for (i in 1:10) {   adders[[i]] &lt;- add(i) }</code></p>
-<p>This loop executes in its own environment where a promise gets made for x at every iteration. At no point have we been asked to evaluate <code>x</code>, so no value has been assigned to it - just the <a href="http://cran.r-project.org/doc/manuals/r-release/R-lang.html#Promise-objects">expression <code>x</code> and a pointer to the environment the function was called from</a>. At the end of the <code>lapply</code> loop when the promises are due, <code>x</code> is <code>10</code>, so <code>x</code> becomes <code>10</code> in all of the <code>adders</code> environments.</p>
-<p>If we <code>force(x)</code>, we cause the promises to come due <em>before</em> the loop ends, so that x gets assigned to the <code>i</code> in the <code>for</code> loop above instead of just the last number in the sequence.</p>
-<pre class="r"><code>add &lt;- function(x) {
-  force(x)
-  function(y) x + y
-}
-adders &lt;- lapply(1:10, add) 
-adders[[1]](10)</code></pre>
-<pre><code>## [1] 11</code></pre>
-<pre class="r"><code>for (i in 1:10) {
-  print(get(&quot;x&quot;, pos=environment(adders[[i]])))
-}</code></pre>
-<pre><code>## [1] 1
-## [1] 2
-## [1] 3
-## [1] 4
-## [1] 5
-## [1] 6
-## [1] 7
-## [1] 8
-## [1] 9
-## [1] 10</code></pre>
-<ol style="list-style-type: decimal">
-<li></li>
-</ol>
-<pre class="r"><code>x &lt;- sample(c(1:10, NA), 20, replace = TRUE)
-y &lt;- runif(20, min = 0, max = 1)
-cor(x, y, method = &quot;kendall&quot;, use = &quot;pairwise.complete.obs&quot;)</code></pre>
-<ol start="2" style="list-style-type: decimal">
-<li>The function returns 3. It illustrates default arguments and lexical scoping (name masking).</li>
-<li>This function returns 100. It illustrates promises. <em>What is the difference between a promise and lazy evaluation? Is lazy evaluation a <em>type</em> of promise?</em></li>
-</ol>
+<div id="corm-k-y-y-u-p-x-x" class="section level4">
+<h4><code>cor(m = &quot;k&quot;, y = y, u = &quot;p&quot;, x = x)</code></h4>
+<p><code>cor(x, y, use = &quot;pairwise.complete.obs&quot;, method = &quot;kendall&quot;)</code></p>
 </div>
-<div id="special-calls" class="section level1">
-<h1>Special Calls</h1>
-<p>1.</p>
-<pre class="r"><code>objs &lt;- mget(ls(&quot;package:base&quot;), inherits = TRUE)
-funs &lt;- Filter(is.function, objs)
-repfun &lt;- funs[grep(&quot;.*&lt;-&quot;, funs)] # List of all replacement functions
-nulls &lt;- Filter(nullenv, repfun)</code></pre>
-<p>Primitive replacement functions are &lt;&lt;-, &lt;-, [&lt;-, [[&lt;-, @&lt;-, $&lt;-, attr&lt;-, attributes&lt;-, class&lt;-, dim&lt;-, dimnames&lt;-, environment&lt;-, length&lt;-, levels&lt;-, names&lt;-, oldClass&lt;-, storage.mode&lt;- 2. Valid names for infix functions begin and end with <code>%</code>. 3.</p>
-<pre class="r"><code>`%|||%` &lt;- function(x, y) {
-  ( x | y) &amp; !(x &amp; y) # defn on wikipedia
+</div>
+<div id="what-does-this-function-return-why-which-principle-does-it-illustrate" class="section level3">
+<h3>What does this function return? Why? Which principle does it illustrate?</h3>
+<pre class="r"><code>f1 &lt;- function(x = {y &lt;- 1; 2}, y = 0) {
+  x + y
 }
-x &lt;- c(1, 2, 3)
-y &lt;- c(1, 2, 3)
-(x &gt; y) %|||%  (y &lt; x)</code></pre>
-<pre><code>## [1] FALSE FALSE FALSE</code></pre>
-<pre class="r"><code>(x == y) %|||% (x &gt; y)</code></pre>
-<pre><code>## [1] TRUE TRUE TRUE</code></pre>
-<p>4.</p>
-<pre class="r"><code>`%uU%` &lt;- function(x, y) {
-    # find intersection of two vectors
-    matches &lt;- match(x, y, nomatch = 0)
-    unique(y[matches])
-}
-x &lt;- seq(2, 50, 3)
-y &lt;- seq(1, 50, 2)
-
-all(x %uU% y == intersect(x, y))</code></pre>
-<pre><code>## [1] TRUE</code></pre>
-<pre class="r"><code>`%U%` &lt;- function(x, y) {
-    # find the union of two vectors
-    unique(c(x,y))
-}
-
-all(x %U% y == union(x,y))</code></pre>
-<pre><code>## [1] TRUE</code></pre>
-<pre class="r"><code>`%!!%` &lt;- function(x, y) {
-    # find differences between two vectors
-    matches &lt;- match(x, y, nomatch = 0)
-    unique(x[matches==0])
-}
-
-all(x %!!% y == setdiff(x, y))</code></pre>
-<pre><code>## [1] TRUE</code></pre>
-<p>5.</p>
-<pre class="r"><code>`modify_rand&lt;-` &lt;- function(x, value) {
-  position &lt;- floor(runif(1, max = length(x)))
-  x[position] &lt;- value
+f1()</code></pre>
+</div>
+<div id="what-does-this-function-return-why-which-principle-does-it-illustrate-1" class="section level3">
+<h3>What does this function return? Why? Which principle does it illustrate?</h3>
+<pre class="r"><code>f2 &lt;- function(x = z) {
+  z &lt;- 100
   x
 }
-modify_rand(x) &lt;- 10
-x</code></pre>
-<pre><code>##  [1]  2  5  8 11 14 17 20 23 26 29 32 35 38 41 44 10 50</code></pre>
+f2()</code></pre>
+<pre><code>## [1] 100</code></pre>
 </div>
-<div id="return-values" class="section level1">
-<h1>Return Values</h1>
-<p>I don’t understand what <code>on.exit()</code> does when executed without an expression.</p>
-<ol style="list-style-type: decimal">
-<li>If <code>chdir</code> is set to <code>TRUE</code>, the <code>R</code> working directory is temporarily changed to the directory containing the source file. <code>in_dir()</code> allows you to set the directory to a new location, not necessarily the location of the source code, providing more flexibility.</li>
-<li><code>detach()</code> undoes the action of <code>library()</code>. To change the values of <code>options()</code> and <code>par()</code> do something like <code>options(name = value)</code>. Before you go changing individual name-value pairs, assign the entire list of options or parameters to some object so you’ll be able to reset it, like so:</li>
-</ol>
-<pre class="r"><code>newop &lt;- options() # assign options to a new list
-options(verbose=TRUE) # talk to me R! # save a new value of an option
-options(newop) # restore all options
-options(newop[which(names(newop) == &quot;verbose&quot;)]) #restore just the verbose option</code></pre>
-<ol start="3" style="list-style-type: decimal">
-<li>My solution doesn’t work</li>
-</ol>
-<pre class="r"><code>make_plot &lt;- function(file, plot_code, width=500, height=500) {
-  png(file, width=width, height=height)
-  plot_code
-  graphics.off()
+<div id="create-a-list-of-all-the-replacement-functions-found-in-the-base-package.-which-ones-are-primitive-functions" class="section level3">
+<h3>Create a list of all the replacement functions found in the base package. Which ones are primitive functions?</h3>
+<pre class="r"><code>require(plyr)
+
+objs &lt;- mget(ls(&quot;package:base&quot;), inherits = TRUE)
+prims &lt;- Filter(is.primitive, objs)</code></pre>
+</div>
+<div id="what-are-valid-names-for-user-created-infix-functions" class="section level3">
+<h3>What are valid names for user created infix functions?</h3>
+<p>Anything surrounded in <code>%%</code> e.g. <code>%my_function%</code></p>
+</div>
+<div id="create-an-infix-xor-operator." class="section level3">
+<h3>Create an infix <code>xor()</code> operator.</h3>
+<pre class="r"><code>xor(TRUE, FALSE)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>xor(TRUE, TRUE)</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<pre class="r"><code>`%xor%` &lt;- function(x, y)
+{
+  xor(x, y)
 }
 
-simpleplot &lt;- plot(x = c(1:10), y = rnorm(10))</code></pre>
-<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-13" /></p>
-<pre class="r"><code>#borked &lt;- plot(x = c(1:9), y = rnorm(10))
+TRUE %xor% TRUE</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<pre class="r"><code>TRUE %xor% FALSE</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+</div>
+<div id="create-infix-versions-of-the-set-functions-intersect-union-and-setdiff." class="section level3">
+<h3>Create infix versions of the set functions <code>intersect()</code>, <code>union()</code>, and <code>setdiff()</code>.</h3>
+<pre class="r"><code>a &lt;- seq(5, 6)
+b &lt;- seq(6, 7)
 
-#make_plot(&quot;~/Documents/classes/UBCadv-r/03_Functions/Functions_Susannah_plot.png&quot;, borked)
-make_plot(&quot;~/Documents/classes/UBCadv-r/03_Functions/Functions_Susannah_plot.png&quot;, simpleplot)</code></pre>
-<ol start="4" style="list-style-type: decimal">
-<li>Code is easier to understand. Output can’t be directed to a specific file with <code>capture.output2</code>. Lose access to errors. 5.</li>
-</ol>
-<pre class="r"><code>capture.output &lt;- function(..., file=NULL, append=FALSE)
+`%=%` &lt;- function(x, y)
 {
-    args &lt;- substitute(list(...))[-1L]
+  intersect(x, y)
+}
 
-    rval &lt;- NULL; closeit &lt;- TRUE
-    if (is.null(file))
-        file &lt;- textConnection(&quot;rval&quot;, &quot;w&quot;, local = TRUE) #if no file provided make a textConnection
-    else if (is.character(file))
-        file &lt;- file(file, if(append) &quot;a&quot; else &quot;w&quot;)
-    else if (inherits(file, &quot;connection&quot;)) {
-if (!isOpen(file)) open(file, if(append) &quot;a&quot; else &quot;w&quot;)
-else closeit &lt;- FALSE
-    } else
-        stop(&quot;'file' must be NULL, a character string or a connection&quot;)
+`%+%` &lt;- function(x, y)
+{
+  union(x, y)
+}
 
-    sink(file) # divert output to the file
-    ## for error recovery: all output will be lost if file=NULL
-    on.exit({sink(); if(closeit) close(file)})
+`%-%` &lt;- function(x, y)
+{
+  setdiff(x, y)
+}
 
-    pf &lt;- parent.frame() 
-    evalVis &lt;- function(expr)
-        withVisible(eval(expr, pf))
+a %=% b</code></pre>
+<pre><code>## [1] 6</code></pre>
+<pre class="r"><code>a %+% b</code></pre>
+<pre><code>## [1] 5 6 7</code></pre>
+<pre class="r"><code>a %-% b</code></pre>
+<pre><code>## [1] 5</code></pre>
+</div>
+<div id="create-a-replacement-function-that-modifies-a-random-location-in-a-vector." class="section level3">
+<h3>Create a replacement function that modifies a random location in a vector.</h3>
+<pre class="r"><code>`timestwo&lt;-` &lt;- function(x, value = 2 * x[index])
+{
+  index &lt;- sample(1:length(x), 1)
+  x[index] &lt;- value
+  x
+}
 
-    for(i in seq_along(args)) {
-        expr &lt;- args[[i]]
-        tmp &lt;- switch(mode(expr),
-                      &quot;expression&quot; = lapply(expr, evalVis),
-                      &quot;call&quot; =, &quot;name&quot; = list(evalVis(expr)),
-                       stop(&quot;bad argument&quot;)) 
-        for(item in tmp)
-            if (item$visible) print(item$value)
-    }
-    ## we need to close the text connection before returning 'rval'
-    on.exit()
-    sink() # I don't get why there are multiple sinks and on.exits
-    if(closeit) close(file)
-    if(is.null(rval)) invisible(NULL) else rval #how could rval be anything _but_ NULL in this function?
-}</code></pre>
-<p>I don’t have a good understanding of what either function is doing.</p>
+# for some reason, R is not finding this function
+a &lt;- seq(1:10)
+#timestwo(a)</code></pre>
+</div>
+<div id="how-does-the-chdir-parameter-of-source-compare-to-in_dir-why-might-you-prefer-one-approach-to-the-other" class="section level3">
+<h3>How does the <code>chdir</code> parameter of <code>source()</code> compare to <code>in_dir()</code>? Why might you prefer one approach to the other?</h3>
+<p><code>chdir</code> temporarily changes the working directory from within the <code>source()</code> function.</p>
+<p>I can’t even find <code>in_dir()</code></p>
+</div>
+<div id="what-function-undoes-the-action-of-library-how-do-you-save-and-restore-the-values-of-options-and-par" class="section level3">
+<h3>What function undoes the action of <code>library()</code>? How do you save and restore the values of <code>options()</code> and <code>par()</code>?</h3>
+<p><code>detach</code> will remove the library.</p>
+<p><code>options()</code> and <code>par()</code> work the same weird way as <code>setwd()</code>. You can save them while also changing them. So <code>old &lt;- options(newopts)</code> will actually save the old options while also setting the new ones.</p>
+</div>
+<div id="write-a-function-that-opens-a-graphics-device-runs-the-supplied-code-and-closes-the-graphics-device-always-regardless-of-whether-or-not-the-plotting-code-worked." class="section level3">
+<h3>Write a function that opens a graphics device, runs the supplied code, and closes the graphics device (always, regardless of whether or not the plotting code worked).</h3>
+<pre class="r"><code>plotter &lt;- function()
+{
+  x &lt;- seq(1:10)
+  y &lt;- runif(10)
+  plot(x, y)
+  on.exit(dev.off())
+}
+
+plotter()</code></pre>
+</div>
+<div id="we-can-use-on.exit-to-implement-a-simple-version-of-capture.output." class="section level3">
+<h3>We can use <code>on.exit()</code> to implement a simple version of <code>capture.output()</code>.</h3>
+<pre class="r"><code>capture.output2 &lt;- function(code) {
+  temp &lt;- tempfile()
+  on.exit(file.remove(temp), add = TRUE)
+  
+  sink(temp)
+  on.exit(sink(), add = TRUE)
+  
+  force(code)
+  readLines(temp)
+}
+
+capture.output2(cat(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, sep = &quot;\n&quot;))
+#&gt; [1] &quot;a&quot; &quot;b&quot; &quot;c&quot;</code></pre>
+</div>
+<div id="you-might-want-to-compare-this-function-to-the-real-capture.output-and-think-about-the-simplifications-ive-made.-is-the-code-easier-to-understand-or-harder-have-i-removed-important-functionality" class="section level3">
+<h3>You might want to compare this function to the real <code>capture.output()</code> and think about the simplifications I’ve made. Is the code easier to understand or harder? Have I removed important functionality?</h3>
+</div>
+<div id="compare-capture.output-to-capture.output2.-how-do-the-functions-differ-what-features-have-i-removed-to-make-the-key-ideas-easier-to-see-how-have-i-rewritten-the-key-ideas-to-be-easier-to-understand" class="section level3">
+<h3>Compare <code>capture.output()</code> to <code>capture.output2()</code>. How do the functions differ? What features have I removed to make the key ideas easier to see? How have I rewritten the key ideas to be easier to understand?</h3>
+<hr />
+</div>
+</div>
+<div id="reading-notes" class="section level2">
+<h2>Reading Notes</h2>
+<div id="quiz" class="section level3">
+<h3>Quiz</h3>
+<div id="what-are-the-three-components-of-a-function" class="section level4">
+<h4>What are the three components of a function?</h4>
+<p>body, formals, environment</p>
+</div>
+<div id="what-does-the-following-code-return" class="section level4">
+<h4>What does the following code return?</h4>
+<pre class="r"><code>y &lt;- 10
+f1 &lt;- function(x) {
+  function() {
+    x + 10
+  }
+}
+f1(1)()</code></pre>
+<p>11</p>
+</div>
+<div id="how-would-you-more-typically-write-this-code" class="section level4">
+<h4>How would you more typically write this code?</h4>
+<p><strong><code>`+`(1, `*`(2, 3))</code></strong></p>
+<p>I think <code>1 + (2 * 3)</code></p>
+</div>
+<div id="how-could-you-make-this-call-easier-to-read" class="section level4">
+<h4>How could you make this call easier to read?</h4>
+<p><strong><code>mean(, TRUE, x = c(1:10, NA))</code></strong></p>
+<p><code>mean(c(1:10), na.rm = TRUE)</code></p>
+</div>
+<div id="does-the-following-function-throw-an-error-when-called-whywhy-not" class="section level4">
+<h4>Does the following function throw an error when called? Why/why not?</h4>
+<pre class="r"><code>f2 &lt;- function(a, b) {
+  a * 10
+}
+f2(10, stop(&quot;This is an error!&quot;))</code></pre>
+<p>No, because the function is evaluated lazily so R never gets around to using <code>b</code> before completing evaluation. You could force evaluation of <code>b</code> and then cause the error.</p>
+</div>
+<div id="what-is-an-infix-function-how-do-you-write-it-whats-a-replacement-function-how-do-you-write-it" class="section level4">
+<h4>What is an infix function? How do you write it? What’s a replacement function? How do you write it?</h4>
+<p>Infix: It comes in between its arguments, like <code>+</code>. You can make your own by surrounding it with <code>%%</code></p>
+<p>Replacement: They seem to modify their own argument. The are defined like <code>xxx&lt;-</code>. They create a copy of the argument and then modify it, so don’t use if you could lose a lot of performance by doing so.</p>
+</div>
+<div id="what-function-do-you-use-to-ensure-that-a-cleanup-action-occurs-regardless-of-how-a-function-terminates" class="section level4">
+<h4>What function do you use to ensure that a cleanup action occurs regardless of how a function terminates?</h4>
+<p><code>on.exit()</code></p>
+</div>
+</div>
+<div id="function-components" class="section level3">
+<h3>Function components</h3>
+<p>body, formals, environment</p>
+<p>functions can have a custom print method (as in modeling functions)</p>
+<p>primitive functions do not have the three components; different methods are used to match arguments: * <code>switch</code> = chooses an argument based on a given expression * <code>call</code></p>
+</div>
+<div id="lexical-scoping" class="section level3">
+<h3>Lexical scoping</h3>
+<p>components of lexical scoping:</p>
+<ul>
+<li>name masking</li>
+<li>functions vs. variables</li>
+<li>a fresh start</li>
+<li>dynamic lookup</li>
+</ul>
+<p>if a function cannot find the value of a variable, it will check the next level up and so on</p>
+<p>the same behavior is present when R is looking for a function</p>
+<p>a fresh environment is created every time a function is run; R does not remember what happened the last time the function was run</p>
+<p><code>findGlobals()</code> from the package <code>codetools</code> is cool b/c you can look up the external dependencies of your functions</p>
+<hr />
+</div>
+<div id="function-arguments" class="section level3">
+<h3>Function arguments</h3>
+<p>order of argument matching:</p>
+<ol style="list-style-type: decimal">
+<li>exact name</li>
+<li>prefix</li>
+<li>position</li>
+</ol>
+<p><code>do.call()</code>: supply a function with a list of arguments</p>
+<p>e.g. <code>do.call(mean, list(1:10, na.trim = TRUE))</code></p>
+<p><code>missing()</code>: was the argument supplied?</p>
+<p>or set the default to <code>NULL</code> and use <code>is.null()</code></p>
+<p>R only uses the function arguments it needs, unless you use <code>force()</code></p>
+<p><strong>promise</strong>: and unevaluated argument</p>
+</div>
+<div id="return-values" class="section level3">
+<h3>Return Values</h3>
+<p>functions can have invisible return values which are displayed by wrapping <code>( )</code></p>
+<p>Clean up actions can be set with <code>on.exit()</code> but multiple calls of the function will override each other unless <code>add = TRUE</code> is set.</p>
+</div>
+</div>
+<div id="discussion-notes" class="section level2">
+<h2>Discussion Notes</h2>
+<hr />
 </div>
 
 

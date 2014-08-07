@@ -1,0 +1,299 @@
+---
+title: "Environments"
+author: "Alathea"
+date: '2014-07-21'
+output: 
+  html_document:
+    keep_md: yes
+    toc: yes
+---
+
+***
+
+## Exercises
+
+### List three ways in which an environment differs from a list.
+
+* The environment has a parent
+* Objects in an environment have no order
+* Every object in an environment has to have a unique name
+
+### If you don’t supply an explicit environment, where do `ls()` and `rm()` look? Where does `<-` make bindings?
+
+They look in the current environment (usually `globalenv()`) and that is also where `<-` makes bindings.  Within a functions, the bindings are made in the function's environment.
+
+### Using `parent.env()` and a loop (or a recursive function), verify that the ancestors of `globalenv()` include `baseenv()` and `emptyenv()`. Use the same basic idea to implement your own version of `search()`.
+
+```{r ancestors, message = FALSE}
+ancestors <- function(environ = globalenv())
+{
+  p <- parent.env(environ)
+  print(environmentName(p))
+  
+  if(identical(p, emptyenv())) return(invisible())
+  else ancestors(p)
+}
+
+ancestors()
+```
+
+### Modify `where()` to find all environments that contain a binding for `name`.
+
+I'm not entirely sure I understand the question, but:
+
+```{r where_name, message = FALSE}
+my_where <- function(env = parent.frame()) {
+  if (identical(env, emptyenv())) {
+    # Base case
+    stop("Can't find 'name'", call. = FALSE)
+  } else if (exists("name", envir = env, inherits = FALSE)) {
+    # Success case
+    env 
+  } else {
+    # Recursive case
+    my_where(parent.env(env))
+  }
+}
+
+name <- "Alathea"
+my_where()
+```
+
+### Write your own version of `get()` using a function written in the style of `where()`.
+
+```{r get, message = FALSE}
+my_get <- function(obj_name, env = parent.frame(), recursive = TRUE)
+{
+  if (exists(obj_name, envir = env, inherits = FALSE)) {
+    eval(parse(text = obj_name))
+  } else if (!recursive) {
+    stop("Can't find ", obj_name, " in ", environmentName(env), call. = FALSE)
+  } else if (identical(env, emptyenv())) {
+    stop(obj_name, " does not exist", call. = FALSE)
+  } else my_get(obj_name, parent.env(env))
+}
+
+name <- "Alathea"
+
+get("name")
+my_get("name")
+```
+
+### Write a function called `fget()` that finds only function objects. It should have two arguments, `name` and `env`, and should obey the regular scoping rules for functions: if there’s an object with a matching name that’s not a function, look in the parent. For an added challenge, also add an inherits argument which controls whether the function recurses up the parents or only looks in one environment.
+
+```{r fget, message = FALSE}
+fget <- function(name, env, recursive = FALSE){
+  g <- get(name)
+  if(!is.function(g)) stop("The 'name' argument must specify a function.")
+  return(g)
+}
+
+fget("sum")
+```
+
+### Write your own version of `exists(inherits = FALSE)` (Hint: use `ls()`). Write a recursive version that behaves like `exists(inherits = TRUE)`s.
+
+```{r my_exists, message = FALSE}
+my_exists_local <- function(name)
+{
+  if(!is.character(name)) stop("'name' must be a character string.  Please try again.")
+  
+  name_list <- ls(envir = parent.frame())
+  
+  if(any(name_list == name)) {
+    print(paste("Yes it exists and the value is:", name, sep = " "))
+  } else {
+    print("No it doesn't exist.")
+  }
+}
+
+my_exists_global <- function(name, environ = parent.frame())
+{
+  if(!is.character(name)) stop("'name' must be a character string.  Please try again.")
+  
+  name_list <- ls(envir = environ)
+  if(identical(environ, emptyenv())) {
+    print("No it doesnt exist.")
+  } else if(any(name_list == name)) {
+    print(paste("Yes it exists and the value is:", get(name), sep = " "))
+  } else {
+    environ = parent.env(environ)
+    my_exists_global(name, environ)
+  }
+}
+
+assign("do_i_exist", "yes i do exist.", envir = baseenv())
+
+my_exists_local("do_i_exist")
+my_exists_global("do_i_exist")
+```
+
+### Write an enhanced version of `str()` that provides more information about functions. Show where the function was found and what environment it was defined in.
+
+```{r enhanced_str, message = FALSE}
+str_plus <- function(fun)
+{
+  if(!is.function(fun)) stop("Input must be a function.")
+ 
+  require(pryr)
+  
+  output <- list(structure = str(fun), 
+                 binding_env = where(as.character(substitute(fun))), 
+                 enclosing_env = environment(fun)
+                 )
+  output  
+}
+
+str_plus(str_plus)
+```
+
+### What does this function do? How does it differ from `<<-` and why might you prefer it?
+
+```{r bindings, message = FALSE, eval = FALSE}
+rebind <- function(name, value, env = parent.frame()) {
+  if (identical(env, emptyenv())) {
+    stop("Can't find ", name, call. = FALSE)
+  } else if (exists(name, envir = env, inherits = FALSE)) {
+    assign(name, value, envir = env)
+  } else {
+    rebind(name, value, parent.env(env))
+  }
+}
+rebind("a", 10)
+#> Error: Can't find a
+a <- 5
+rebind("a", 10)
+a
+#> [1] 10
+```
+
+This allows you to bind a value outside of the function, while having control over the environment.  `<<-` will either replace an existing value or bind in the global environment.
+
+### Create a version of `assign()` that will only bind new names, never re-bind old names. Some programming languages only do this, and are known as single assignment languages.
+
+```{r single_assignment, eval = FALSE}
+single_assign <- function(name, value, env = globalenv())
+{
+  if(!is.character(name)) stop("`name` must be a character string.")
+  if(exists(name, inherits = TRUE)) stop("This name has already been used.")
+  
+  assign(name, value, envir = env)
+  return(invisible())
+}
+
+single_assign("assign01", "hi")
+single_assign("assign01", "bye")
+```
+
+### Write an assignment function that can do active, delayed, and locked bindings. What might you call it? What arguments should it take? Can you guess which sort of assignment it should do based on the input?
+
+```{r flexible_assignment, eval = FALSE}
+flex_assign <- function(name, value = NULL, env = parent.frame(), 
+                        eval_env = NULL, assign_env = NULL, fun = NULL)
+{
+  if(!is.null(eval_env) && !is.null(assign_env)) {
+    if(!is.null(fun)) warning("Parameters for both delayed and active  assignment were specified.  Defaulting to delayed assignment.")
+    delayedAssign(name, value, eval_env, assign_env)
+  } else if(!is.null(fun)) {
+    makeActiveBinding(name, fun, env)
+  } else {
+    assign(name, value, env)
+  }
+}
+
+# So far this isn't working because `fun` is evaluated and not transmitted as a function
+flex_assign(name = "x", fun = runif(1))
+```
+
+***
+
+## Reading Notes
+
+### Quiz
+
+#### List three ways that an environment is different to a list.
+
+from Hadley:
+
+> * Every object in an environment has a unique name.
+> * The objects in an environment are not ordered (i.e. it doesn’t make sense to ask what the first object in an environment is).
+> * An environment has a parent.
+> * Environments have reference semantics.
+
+#### What is the parent of the global environment? What is the only environment that doesn’t have a parent?
+
+The parent of the global environment is the package that was attached last.  The **empty** environment (`emptyenv`) has no parent.
+
+#### What is the enclosing environment of a function? Why is it important?
+
+#### How do you determine the environment from which a function was called?
+
+`parent.frame()`
+
+#### How are `<-` and `<<-` different?
+
+`<-` sets a value in the current environment. `<<-` sets the value in all environments (i think)
+
+### Environment basics
+
+Variables can point to objects that are equivalent but stored in different places in the environment.  This could be a cause of reduced performance if they are pointing to two different giant objects.
+
+Objects that have lost their name are automatically deleted by the garbage collector.
+
+Use `search()` to get all the parents of the global environment.  Use `ls()` to show all of the bindings in the current environment or a selected environment. Use `ls.str()` to get the structure of the environment.
+
+```{r search, message = FALSE}
+search()
+ls()
+ls(baseenv())
+ls.str()
+```
+
+Use `rm()` to remove a binding from the environment.
+
+```{r exists, message = FALSE}
+a <- new.env()
+y <- 11
+exists("y", envir = a)
+a$y
+exists("x", envir = a, inherits = FALSE)
+```
+
+
+### Recursing over Environments
+
+```{r where, message = FALSE}
+require(pryr)
+
+x <- 10
+where("x")
+```
+
+### Function environments
+
+The four function environments:
+
+1. enclosing (`environment(f)`)
+2. binding: which environment(s) have a binding to the function (`where(f)`)
+3. execution: a temporary environment created during execution of the function, then thrown away; child functions can access everything in the execution environment and this environment is now their enclosing environment.
+4. calling (`parent.frame()`)
+
+Regular scoping rules only look in the function enclosing environment, not calling environment.
+
+### Binding names to values
+
+Some names are reserved `?Reserved` and some can't be used at all... unless you override the rules by enclosing your function name in backticks `` `:) <- "smile"` ``
+
+Delayed bindings: `%<d-%` (from `pryr`) or `delayedAssign()`
+
+Active bindings are re-evaluated everytime they are accessed: `%<a-%` (from `pryr`) or `makeActiveBinding()`
+
+### Explicit environments
+
+Modifying an object makes a copy of the object; modifying an environment does not.
+
+Environments can be used to store large amounts of data without fear of copying them.
+
+***
+
+## Discussion Notes
