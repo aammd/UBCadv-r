@@ -62,8 +62,7 @@ The worst scenario is that your code might crash R completely, leaving you with 
     }
     ```
 
-	**The return value of tryCatch() handlers is returned by tryCatch(), whereas 
-	the return value of withCallingHandlers() handlers is ignored ??**
+	**withCallingHandlers() goes into the function to show you the message that came with the function that had an error**
 	
 	```
 	### this is WITH CALLING HANDLERS
@@ -110,6 +109,16 @@ The worst scenario is that your code might crash R completely, leaving you with 
     col_means <- function(df) {
       numeric <- sapply(df, is.numeric)
       numeric_cols <- df[, numeric]
+
+      data.frame(lapply(numeric_cols, mean))
+    }
+    
+    ### CHANGE TO: (this fixes only some of the below cases)
+    col_means <- function(df) {
+      if (!is.data.frame(df)) stop('not a data frame') ## Davor also adds this to throw an error
+
+      numeric <- vapply(df, is.numeric)
+      numeric_cols <- df[, numeric, drop=FALSE]
 
       data.frame(lapply(numeric_cols, mean))
     }
