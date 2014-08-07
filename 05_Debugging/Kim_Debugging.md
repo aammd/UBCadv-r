@@ -64,7 +64,39 @@ The worst scenario is that your code might crash R completely, leaving you with 
 
 	**The return value of tryCatch() handlers is returned by tryCatch(), whereas 
 	the return value of withCallingHandlers() handlers is ignored ??**
-
+	
+	```
+	> message2error(message("hello!"))
+	Error in message("hello!") : hello!
+	> traceback()
+	9: stop(e) at #2
+	8: (function (e) 
+	   stop(e))(list(message = "hello!\n", call = message("hello!")))
+	7: signalCondition(cond)
+	6: doWithOneRestart(return(expr), restart)
+	5: withOneRestart(expr, restarts[[1L]])
+	4: withRestarts({
+	       signalCondition(cond)
+	       defaultHandler(cond)
+	   }, muffleMessage = function() NULL)
+	3: message("hello!")
+	2: withCallingHandlers(code, message = function(e) stop(e)) at #2
+	1: message2error(message("hello!"))
+	> message2error <- function(code) {
+	+     tryCatch(code, message = function(e) stop(e))
+	+   }
+	> message2error(message("hello!"))
+	Error in message("hello!") : hello!
+	> traceback()
+	6: stop(e) at #2
+	5: value[[3L]](cond)
+	4: tryCatchOne(expr, names, parentenv, handlers[[1L]])
+	3: tryCatchList(expr, classes, parentenv, handlers)
+	2: tryCatch(code, message = function(e) stop(e)) at #2
+	1: message2error(message("hello!"))
+	>
+	```
+	
 ### Exercises 2
 
 **I gave up on these exercises currently. I'd rather debug my own code than other code that I haven't written :/**
