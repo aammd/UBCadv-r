@@ -2,6 +2,14 @@
 title: "Subsetting"
 author: "Andrew MacDonald"
 date: '2014-07-09'
+<<<<<<< HEAD
+output: md_document
+---
+```{r}
+library(dplyr)
+library(tidyr)
+library(magrittr)
+=======
 output: 
   html_document:
     keep_md: yes
@@ -12,6 +20,7 @@ library(dplyr)
 library(tidyr)
 library(magrittr)
 library(ggplot2)
+>>>>>>> upstream/master
 ```
 
 ## Exercises 1
@@ -90,19 +99,30 @@ andrew_diag(x)
 mod <- lm(mpg ~ wt, data = mtcars)
 summary(mod)[[c("fstatistic", "dendf")]]
 
+<<<<<<< HEAD
+## here is a little randomization test:
+replicate(n = 20,{data.frame(x = runif(n = 20,10,20)) %>%
+=======
 data.frame(x = runif(n = 20,10,20)) %>%
   mutate(y = x * 2 + rnorm(20)) %>%
   qplot(x = x, y = y, data = .,geom = "point")
 
 ## here is a little randomization test:
 replicate(n = 200,{data.frame(x = runif(n = 20,10,20)) %>%
+>>>>>>> upstream/master
                     mutate(y = x * 2 + rnorm(20)) %>%
                     lm(y ~ x, data = .)
 },simplify = FALSE
 ) %>% 
   lapply(summary) %>%
+<<<<<<< HEAD
+  sapply("[[",i = c("fstatistic", "value"))
+=======
   sapply("[[",i = c("fstatistic", "value")) %>%
   qplot(geom = "density",xlab = "fstatistics")
+
+>>>>>>> upstream/master
+
 ```
 
 # Exercises 3
@@ -135,15 +155,24 @@ contin_samp <- function(df,m){
     nrow %>% 
     subtract(m) %>% 
     sample(1) %>%
+<<<<<<< HEAD
+    add(seq_len(m)) %>% 
+    df[.,]
+=======
     add(0:m) %>% 
     df[.,,drop = FALSE]
+>>>>>>> upstream/master
   }
 
 data(mtcars)
 
 contin_samp(mtcars,4)
 
+<<<<<<< HEAD
+testdata <- data.frame(a = 1:100, b = 2:101)
+=======
 testdata <- data.frame(a = 1:100)
+>>>>>>> upstream/master
 
 contin_samp(testdata,5)
 ```
@@ -151,5 +180,9 @@ contin_samp(testdata,5)
     
 1.  How could you put the columns in a data frame in alphaetical order?
 ```{r}
-#df3b[order(names(df3b))]
+<<<<<<< HEAD
+mtcars[order(names(mtcars))]
+=======
+df3b[order(names(df3b))]
+>>>>>>> upstream/master
 ```
