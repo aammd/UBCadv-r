@@ -117,7 +117,7 @@ The worst scenario is that your code might crash R completely, leaving you with 
     col_means <- function(df) {
       if (!is.data.frame(df)) stop('not a data frame') ## Davor also adds this to throw an error
 
-      numeric <- vapply(df, is.numeric)
+      numeric <- vapply(df, is.numeric, logical(1))
       numeric_cols <- df[, numeric, drop=FALSE]
 
       data.frame(lapply(numeric_cols, mean))
@@ -130,17 +130,17 @@ The worst scenario is that your code might crash R completely, leaving you with 
     in `col_means()` that are particularly prone to problems.)
 
     ```{r, eval = FALSE}
-    col_means(mtcars)  **works fine*
+    col_means(mtcars)  **works fine**
     col_means(mtcars[, 0])  **error, cannot take 0th column**
     col_means(mtcars[0, ])  **works, but is taking mean of column names (row 0) so all NaNs**
-    col_means(mtcars[, "mpg", drop = F])  **? works?**
-    col_means(1:10)  **error, 1:10 has no columns?**
-    col_means(as.matrix(mtcars))
-    col_means(as.list(mtcars))
+    col_means(mtcars[, "mpg", drop = F])  **works to get mpg mean**
+    col_means(1:10)  **error, 1:10 is a vector not a data frame**
+    col_means(as.matrix(mtcars))  **not a data frame**
+    col_means(as.list(mtcars))  **not a data frame**
 
     mtcars2 <- mtcars
     mtcars2[-1] <- lapply(mtcars2[-1], as.character)
-    col_means(mtcars2)
+    col_means(mtcars2) **works fine**
     ```
 
 * The following function "lags" a vector, returning a version of `x` that is `n`
@@ -153,4 +153,15 @@ The worst scenario is that your code might crash R completely, leaving you with 
       xlen <- length(x)
       c(rep(NA, n), x[seq_len(xlen - n)])
     }
+    
+    ## CHANGED TO:
+    lag <- function(x, n = 1L) {
+  		if (!is.vector(x)) stop("'x' is not a vector")
+  		if (!((is.numeric(n) || is.integer(n)) &&
+  		        length(n) == 1 && !is.na(n))) stop("'n' is not a scalar")
+  		if (n < 0) stop("'n' cannot be negative")
+  		if (n > length(x)) stop("the amount of lag cannot be greater than the length of the vector")
+  		xlen <- length(x)
+  		c(rep(NA, n), x[seq_len(xlen - n)])
+		}
     ```
