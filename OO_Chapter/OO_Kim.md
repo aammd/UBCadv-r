@@ -1,12 +1,18 @@
 ---
-Title: "Functions"
+Title: "OO Field Guide"
 Author: "Kim"
-Date: '2014-07-16'
+Date: '2014-08-19'
 ---
 
 ***
 
 ### Discussion Notes
+
+I thought the introduction of this chapter could be much improved in the writing to more clearly 
+lay out all the information for the reader. It was not easy to follow even though I know some C/C++ 
+and a good bit of R.
+
+- most objects are S3, identify with `pryr::otype()`
 
 ***
 ##### Quiz
@@ -18,7 +24,13 @@ Think you know this material already? If you can answer the following questions 
 
 1. How do you determine the base type (like integer or list) of an object?
 
+	**`typeof()` this is different from class, it is the type underlying the C struct that makes up an object**
+
 1. What is a generic function?
+
+	**A generic function calls specific methods depending on the class of it inputs. 
+	In S3 and S4 object systems, methods belong to generic functions, not classes like in 
+	other programming languages.**
 
 1. What are the main differences between S3 and S4? What are the main 
    differences between S4 & RC?
@@ -30,9 +42,20 @@ Think you know this material already? If you can answer the following questions 
 1.  Read the source code for `t()` and `t.test()` and confirm that 
     `t.test()` is an S3 generic and not an S3 method. What happens if 
     you create an object with class `test` and call `t()` with it?
+    
+    **```
+    > methods("t")
+	[1] t.data.frame t.default    t.ts*       
+	Non-visible functions are asterisked
+	> methods("t.test")
+	[1] t.test.default* t.test.formula*
+	Non-visible functions are asterisked
+   ```**
 
 1.  What classes have a method for the `Math` group generic in base R? Read 
     the source code. How do the methods work?
+    
+**I stopped at this point as I was not finding this chapter useful.**
 
 1.  R has two classes for representing date time data, `POSIXct` and 
     `POSIXlt`, which both inherit from `POSIXt`. Which generics have 
