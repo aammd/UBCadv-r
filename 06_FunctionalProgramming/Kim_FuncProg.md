@@ -21,6 +21,9 @@ lapply() is called a functional, because it takes a function as an argument.
 
 Storing functions in lists and then applying them, e.g. lapply(), is useful
 
+<<- in fact is not always a global assign as I had been led to believe. If the object already 
+exists up an environment, it will just reassign to that value
+
 ***
 ### Exercises 1
 
@@ -63,6 +66,8 @@ Storing functions in lists and then applying them, e.g. lapply(), is useful
 
 1.  Why are functions created by other functions called closures? 
 
+	**Because they enclose the environment of the parent function and can access all its variables**
+	
 1.  What does the following statistical function do? What would be a better 
     name for it? (The existing name is a bit of a hint.)
 
@@ -75,10 +80,20 @@ Storing functions in lists and then applying them, e.g. lapply(), is useful
       }
     }
     ```
+    **Makes a function that takes the log of a number unless the first number is zero in which case 
+    it does 1 over lambda times x. I don't know what this is mathematically nor what it should
+     be called.**
 
 1.  What does `approxfun()` do? What does it return?
 
+	**Just used the help page, not sure what Hadley wanted? Return a list of points which linearly 
+	interpolate given data points, or a function performing the linear (or constant) interpolation.**
+
 1.  What does `ecdf()` do? What does it return?
+
+	**Just used the help page, not sure what Hadley wanted? Compute an empirical cumulative 
+	distribution function, with several methods for plotting, printing and computing with 
+	such an “ecdf” object.**
 
 1.  Create a function that creates functions that compute the ith 
     [central moment](http://en.wikipedia.org/wiki/Central_moment) of a numeric 
@@ -92,6 +107,7 @@ Storing functions in lists and then applying them, e.g. lapply(), is useful
     stopifnot(all.equal(m1(x), 0))
     stopifnot(all.equal(m2(x), var(x) * 99 / 100))
     ```
+    **I haven't tried this one yet.**
 
 1.  Create a function `pick()` that takes an index, `i`, as an argument and 
     returns a function with an argument `x` that subsets `x` with `i`.
@@ -101,9 +117,13 @@ Storing functions in lists and then applying them, e.g. lapply(), is useful
     # should do the same as this
     lapply(mtcars, function(x) x[[5]])
     ```
+    **```
+    pick <- function(i){
+    	function(x) x[[i]]
+    }
+    ```**
     
-    
-### Exercises 4
+### Exercises 3
 
 1.  Implement a summary function that works like `base::summary()`, but uses a 
     list of functions. Modify the function so it returns a closure, making it 
@@ -118,7 +138,7 @@ Storing functions in lists and then applying them, e.g. lapply(), is useful
     (e) It depends.
     
     
-### Exercises
+### Exercises 4
 
 1.  Instead of creating individual functions (e.g., `midpoint()`, 
       `trapezoid()`, `simpson()`, etc.), we could store them in a list. If we 
