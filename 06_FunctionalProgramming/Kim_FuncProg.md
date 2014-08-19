@@ -8,29 +8,55 @@ Date: '2014-08-19'
 
 ### Discussion Notes
 
+You can do anything with functions that you can do with any other object.
+
+Anonymous functions - functions can be made without giving them a name.
+
+Closure = function written by another function.
+
+DRY principle - do not repeat yourself in code. i.e. if you have to come back and change 
+something, make sure it's only in one place.
+
+lapply() is called a functional, because it takes a function as an argument.
+
+Storing functions in lists and then applying them, e.g. lapply(), is useful
 
 ***
 ### Exercises 1
 
 1. Given a function, like `"mean"`, `match.fun()` lets you find a function. 
    Given a function, can you find its name? Why doesn't that make sense in R?
+   
+	**Not exactly sure I know what Hadley means here, but if a function has a name, then that is what
+    you use to find it. If it doen't have a name and is anonymous, then it only exists at that instance 
+    so you wouldn't be able to find it again?**
 
 1. Use `lapply()` and an anonymous function to find the coefficient of 
    variation (the standard deviation divided by the mean) for all columns in 
    the `mtcars` dataset.
+   
+   **`lapply(mtcars, FUN=cv)` this is without an anonymous function though...**
 
 1. Use `integrate()` and an anonymous function to find the area under the 
    curve for the following functions. 
    Use [Wolfram Alpha](http://www.wolframalpha.com/) to check your answers.
 
     1. `y = x ^ 2 - x`, x in [0, 10]
+    	**`integrate(function(x) x ^ 2 - x, 0, 10)` 
+    	283.3333 with absolute error < 3.1e-12**    	
     1. `y = sin(x) + cos(x)`, x in [-$\pi$, $\pi$]
+    	**`integrate(function(x) sin(x) + cos(x), -pi, pi)` 
+    	5.231803e-16 with absolute error < 6.3e-14**
     1. `y = exp(x) / x`, x in [10, 20]
+    	**`integrate(function(x) exp(x) / x, 10, 20)` 
+    	25613160 with absolute error < 2.8e-07**
 
 1. A good rule of thumb is that an anonymous function should fit on one line 
    and shouldn't need to use `{}`. Review your code. Where could you have 
    used an anonymous function instead of a named function? Where should you 
    have used a named function instead of an anonymous function?
+   
+   **probably in plenty of places...**
 
 
 ### Exercises 2
