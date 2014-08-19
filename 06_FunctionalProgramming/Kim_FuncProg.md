@@ -45,12 +45,15 @@ exists up an environment, it will just reassign to that value
    Use [Wolfram Alpha](http://www.wolframalpha.com/) to check your answers.
 
     1. `y = x ^ 2 - x`, x in [0, 10]
+    
     	**`integrate(function(x) x ^ 2 - x, 0, 10)` 
     	283.3333 with absolute error < 3.1e-12**    	
     1. `y = sin(x) + cos(x)`, x in [-$\pi$, $\pi$]
+    
     	**`integrate(function(x) sin(x) + cos(x), -pi, pi)` 
     	5.231803e-16 with absolute error < 6.3e-14**
     1. `y = exp(x) / x`, x in [10, 20]
+    
     	**`integrate(function(x) exp(x) / x, 10, 20)` 
     	25613160 with absolute error < 2.8e-07**
 
@@ -117,11 +120,11 @@ exists up an environment, it will just reassign to that value
     # should do the same as this
     lapply(mtcars, function(x) x[[5]])
     ```
-    **```
+    ```
     pick <- function(i){
     	function(x) x[[i]]
     }
-    ```**
+    ```
     
 ### Exercises 3
 
