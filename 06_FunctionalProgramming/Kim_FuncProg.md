@@ -131,6 +131,23 @@ exists up an environment, it will just reassign to that value
 1.  Implement a summary function that works like `base::summary()`, but uses a 
     list of functions. Modify the function so it returns a closure, making it 
     possible to use it as a function factory.
+    
+    ```
+    my.summ <- function(){
+    funs <- list(
+    			avg = function(x) mean(x),
+    			min = function(x) min(x),
+    			max = function(x) max(x)
+    			)
+    	function(x){
+    		stats <- c(funs$avg(x), funs$min(x), funs$max(x))
+    		return(stats)
+    	}
+    }
+    
+    my.summ()(1:10)
+    ```
+    **it works but not sure this is exactly what was wanted?**
 
 1. Which of the following commands is equivalent to `with(x, f(z))`?
 
@@ -139,7 +156,7 @@ exists up an environment, it will just reassign to that value
     (c) `x$f(z)`.
     (d) `f(z)`.
     (e) It depends.
-    
+    **B I think**
     
 ### Exercises 4
 
@@ -147,6 +164,8 @@ exists up an environment, it will just reassign to that value
       `trapezoid()`, `simpson()`, etc.), we could store them in a list. If we 
     did that, how would that change the code? Can you create the list of 
     functions from a list of coefficients for the Newton-Cotes formulae?
+    
+    **Didn't get to this or the following problem.**
 
 1.  The trade-off between integration rules is that more complex rules are 
     slower to compute, but need fewer pieces. For `sin()` in the range 
