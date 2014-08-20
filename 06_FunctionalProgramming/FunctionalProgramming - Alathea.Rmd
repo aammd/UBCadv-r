@@ -37,6 +37,72 @@ integrate(function(x) exp(x)/x, 10, 20)
 
 ### A good rule of thumb is that an anonymous function should fit on one line and shouldn’t need to use `{}`. Review your code. Where could you have used an anonymous function instead of a named function? Where should you have used a named function instead of an anonymous function?
 
+### Why are functions created by other functions called closures?
+
+Why does Hadley think I know that?
+
+### What does the following statistical function do? What would be a better name for it? (The existing name is a bit of a hint.)
+
+```{r bc, eval = FALSE}
+bc <- function(lambda) {
+  if (lambda == 0) {
+    function(x) log(x)
+  } else {
+    function(x) (x ^ lambda - 1) / lambda
+  }
+}
+```
+
+### What does `approxfun()` do? What does it return?
+
+It returns a function that will produce the linear interpolation of  a set of points.
+
+```{r approxfun}
+x <- c(1:10)
+y <- c(11:20)
+
+approx(x, y)
+approxfun(x, y)
+```
+
+### What does `ecdf()` do? What does it return?
+
+It returns the cumulative distribution function for a distribution.
+
+```{r ecdf}
+x <- c(1:10)
+ecdf(x)
+plot(ecdf(x))
+```
+
+### Create a function that creates functions that compute the ith central moment of a numeric vector. You can test it by running the following code:
+
+```{r ith_central_moment, eval = FALSE}
+m1 <- moment(1)
+m2 <- moment(2)
+
+x <- runif(100)
+stopifnot(all.equal(m1(x), 0))
+stopifnot(all.equal(m2(x), var(x) * 99 / 100))
+```
+
+### Create a function `pick()` that takes an index, `i`, as an argument and returns a function with an argument `x` that subsets `x` with `i`.
+
+```{r pick, eval = FALSE}
+lapply(mtcars, pick(5))
+# should do the same as this
+lapply(mtcars, function(x) x[[5]])
+```
+
+```{r my_pick, eval = FALSE}
+pick <- function(index)
+{
+  function(x) x[[index]]
+}
+
+pick5 <- lapply(mtcars, pick(5))
+data.frame(pick5)
+```
 
 
 ***
@@ -64,3 +130,35 @@ The three building blocks of functional programming are:
 ### Anonymous functions
 
 functions without a name
+
+### Closures
+
+function within a function.  these can often be anonymous
+
+#### Function factories are cool
+
+#### Mutable state
+
+> What happens if you don’t use a closure? What happens if you use <- instead of <<-? Make predictions about what will happen if you replace `new_counter()` with the variants below, then run the code and check your predictions.
+
+```{r new_counter2, eval = FALSE}
+i <- 0
+new_counter2 <- function() {
+  i <<- i + 1
+  i
+}
+```
+
+In `new_counter2()`, you cannot use separate instances of the counter because they modify `i` in the parent environment.  So, if you create more than one `new_counter2()`, the counter will be messed up because each one changes the same object `i`.
+
+```{r new_counter3, eval = FALSE}
+new_counter3 <- function() {
+  i <- 0
+  function() {
+    i <- i + 1
+    i
+  }
+}
+```
+
+Every time `new_counter3()` is called, `i` is reset to `0`.  Since you are using the `<-` instead of `<<-`, the sub-function does not modify the original value of `i` so it reads in `i <- 0` on each call.
