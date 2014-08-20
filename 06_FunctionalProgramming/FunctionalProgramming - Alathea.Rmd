@@ -1,0 +1,7 @@
+---
+title: "Functional Programming"
+author: "Alathea"
+date: '2014-08-20'
+output: html_document
+---
+
