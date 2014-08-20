@@ -133,8 +133,8 @@ approx(x, y)</code></pre>
 <pre class="r"><code>approxfun(x, y)</code></pre>
 <pre><code>## function (v) 
 ## .approxfun(x, y, v, method, yleft, yright, f)
-## &lt;bytecode: 0x89dc484&gt;
-## &lt;environment: 0x89dc874&gt;</code></pre>
+## &lt;bytecode: 0x9f68b18&gt;
+## &lt;environment: 0x9f536dc&gt;</code></pre>
 </div>
 <div id="what-does-ecdf-do-what-does-it-return" class="section level3">
 <h3>What does <code>ecdf()</code> do? What does it return?</h3>
@@ -168,6 +168,43 @@ lapply(mtcars, function(x) x[[5]])</code></pre>
 
 pick5 &lt;- lapply(mtcars, pick(5))
 data.frame(pick5)</code></pre>
+</div>
+<div id="implement-a-summary-function-that-works-like-basesummary-but-uses-a-list-of-functions.-modify-the-function-so-it-returns-a-closure-making-it-possible-to-use-it-as-a-function-factory." class="section level3">
+<h3>Implement a summary function that works like <code>base::summary()</code>, but uses a list of functions. Modify the function so it returns a closure, making it possible to use it as a function factory.</h3>
+<pre class="r"><code>x &lt;- c(1:10)
+y &lt;- runif(10)
+
+fit &lt;- lm(y ~ x)
+summary(fit)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = y ~ x)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -0.4682 -0.2009  0.0175  0.1087  0.5330 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept)  0.42060    0.21760    1.93    0.089 .
+## x            0.00944    0.03507    0.27    0.795  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.319 on 8 degrees of freedom
+## Multiple R-squared:  0.00897,    Adjusted R-squared:  -0.115 
+## F-statistic: 0.0724 on 1 and 8 DF,  p-value: 0.795</code></pre>
+</div>
+<div id="which-of-the-following-commands-is-equivalent-to-withx-fz" class="section level3">
+<h3>Which of the following commands is equivalent to <code>with(x, f(z))</code>?</h3>
+<ol style="list-style-type: decimal">
+<li>x$f(x$z).</li>
+<li>f(x$z).</li>
+<li>x$f(z).</li>
+<li>f(z).</li>
+<li>It depends.</li>
+</ol>
+<p>It depends on what you have defined where. Most likely #3.</p>
 <hr />
 <hr />
 </div>
@@ -219,6 +256,12 @@ new_counter2 &lt;- function() {
   }
 }</code></pre>
 <p>Every time <code>new_counter3()</code> is called, <code>i</code> is reset to <code>0</code>. Since you are using the <code>&lt;-</code> instead of <code>&lt;&lt;-</code>, the sub-function does not modify the original value of <code>i</code> so it reads in <code>i &lt;- 0</code> on each call.</p>
+</div>
+<div id="lists-of-functions" class="section level4">
+<h4>Lists of functions</h4>
+<p><code>lapply</code> can be used to call each item in a list of functions. e.g. <code>lapply(compute_mean, function(f) f(x))</code></p>
+<p>a list of functions can be used to summarize a data set in multiple ways, (e.g. take the mean, median, standard deviation… etc. all at once)</p>
+<p><code>lapply</code> can also be used to send an extra argument to each function in the list, e.g. <code>lapply(funs, function(f) f(x, na.rm = TRUE))</code></p>
 </div>
 </div>
 </div>

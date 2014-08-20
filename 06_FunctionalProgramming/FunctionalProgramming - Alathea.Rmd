@@ -104,6 +104,37 @@ pick5 <- lapply(mtcars, pick(5))
 data.frame(pick5)
 ```
 
+### Implement a summary function that works like `base::summary()`, but uses a list of functions. Modify the function so it returns a closure, making it possible to use it as a function factory.
+
+I half don't understand this question.  I also didn't duplicate the whole summary because I got bored.
+
+
+```{r my_summary}
+x <- c(1:10)
+y <- runif(10)
+
+fit <- lm(y ~ x)
+summary(fit)
+
+my_summary <- list(
+    resid_min = function(x) min(x$residuals),
+    resid_median = function(x) median(x$residuals),
+    resid_max = function(x) max(x$residuals),
+    resid_se = function(x) sd(x$residuals)/length(x$residuals),
+    resid_df = function(x) x$df.residual
+)
+
+lapply(my_summary, function(f) f(fit))
+```
+
+### Which of the following commands is equivalent to `with(x, f(z))`?
+1. x\$f(x\$z).
+2. f(x$z).
+3. x$f(z).
+4. f(z).
+5. It depends.
+
+It depends on what you have defined where.  Most likely #3.
 
 ***
 ***
@@ -162,3 +193,11 @@ new_counter3 <- function() {
 ```
 
 Every time `new_counter3()` is called, `i` is reset to `0`.  Since you are using the `<-` instead of `<<-`, the sub-function does not modify the original value of `i` so it reads in `i <- 0` on each call.
+
+#### Lists of functions
+
+`lapply` can be used to call each item in a list of functions.  e.g. `lapply(compute_mean, function(f) f(x))`
+
+a list of functions can be used to summarize a data set in multiple ways, (e.g. take the mean, median, standard deviation... etc. all at once)
+
+`lapply` can also be used to send an extra argument to each function in the list, e.g. `lapply(funs, function(f) f(x, na.rm = TRUE))`
