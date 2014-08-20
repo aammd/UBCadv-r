@@ -8,19 +8,19 @@ We meet Thursdays at **1pm PST in Biodiversity 224.**
 
 ## Schedule
 
-| Reading                                                                           | Week(s)              |
-|-------------------------                                                          |----------------------|
-| [Data Structures](http://adv-r.had.co.nz/Data-structures.html)                    | week 01 2014 July 03 |
-| [Subsetting](http://adv-r.had.co.nz/Subsetting.html)                              | week 02 2014 July 10 |
-| [Functions](http://adv-r.had.co.nz/Functions.html)                                | week 03 2014 July 17 |
-|                                                                                   | week 04 2014 July 24 |
-| [Environments](http://adv-r.had.co.nz/Environments.html)                          | week 05 2014 July 31 |
-| [Debugging](http://adv-r.had.co.nz/Exceptions-Debugging.html)                     | week 06 2014 Aug  07 |
-| [Fnl Programming](http://adv-r.had.co.nz/Functional-programming.html)             | week 07 2014 Aug  21 |
-| [Functionals](http://adv-r.had.co.nz/Functionals.html)                            |                      |
-| [Function Operators](http://adv-r.had.co.nz/Function-operators.html)              |                      |
-| [Non-Standard Evaluation](http://adv-r.had.co.nz/Computing-on-the-language.html)  |                      |
-| [Expressions](http://adv-r.had.co.nz/Expressions.html)                            |                      |
+| Reading                                                                           | Week(s)               |
+|-------------------------                                                          |-----------------------|
+| [Data Structures](http://adv-r.had.co.nz/Data-structures.html)                    | week 01: 2014 July 03 |
+| [Subsetting](http://adv-r.had.co.nz/Subsetting.html)                              | week 02: 2014 July 10 |
+| [Functions](http://adv-r.had.co.nz/Functions.html)                                | week 03: 2014 July 17 |
+|                                                                                   | week 04: 2014 July 24 |
+| [Environments](http://adv-r.had.co.nz/Environments.html)                          | week 05: 2014 July 31 |
+| [Debugging](http://adv-r.had.co.nz/Exceptions-Debugging.html)                     | week 06: 2014 Aug  07 |
+| [Fnl Programming](http://adv-r.had.co.nz/Functional-programming.html)             | week 07: 2014 Aug  21 |
+| [Functionals](http://adv-r.had.co.nz/Functionals.html)                            | week 08               |
+| [Function Operators](http://adv-r.had.co.nz/Function-operators.html)              | week 09               |
+| [Non-Standard Evaluation](http://adv-r.had.co.nz/Computing-on-the-language.html)  | week 10               |
+| [Expressions](http://adv-r.had.co.nz/Expressions.html)                            | week 11               |
 
 ## how to contribute to this repository
 
