@@ -60,9 +60,6 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </div>
 
 
-<div id="this-chapter-is-the-best" class="section level3">
-<h3><em>This chapter is the best!</em></h3>
-</div>
 <div id="exercises" class="section level2">
 <h2>Exercises</h2>
 <div id="given-a-function-like-mean-match.fun-lets-you-find-a-function.-given-a-function-can-you-find-its-name-why-doesnt-that-make-sense-in-r" class="section level3">
@@ -133,8 +130,8 @@ approx(x, y)</code></pre>
 <pre class="r"><code>approxfun(x, y)</code></pre>
 <pre><code>## function (v) 
 ## .approxfun(x, y, v, method, yleft, yright, f)
-## &lt;bytecode: 0x9f68b18&gt;
-## &lt;environment: 0x9f536dc&gt;</code></pre>
+## &lt;bytecode: 0x90d1acc&gt;
+## &lt;environment: 0x90c6094&gt;</code></pre>
 </div>
 <div id="what-does-ecdf-do-what-does-it-return" class="section level3">
 <h3>What does <code>ecdf()</code> do? What does it return?</h3>
@@ -171,6 +168,7 @@ data.frame(pick5)</code></pre>
 </div>
 <div id="implement-a-summary-function-that-works-like-basesummary-but-uses-a-list-of-functions.-modify-the-function-so-it-returns-a-closure-making-it-possible-to-use-it-as-a-function-factory." class="section level3">
 <h3>Implement a summary function that works like <code>base::summary()</code>, but uses a list of functions. Modify the function so it returns a closure, making it possible to use it as a function factory.</h3>
+<p>I half don’t understand this question. I also didn’t duplicate the whole summary because I got bored.</p>
 <pre class="r"><code>x &lt;- c(1:10)
 y &lt;- runif(10)
 
@@ -182,18 +180,41 @@ summary(fit)</code></pre>
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -0.4682 -0.2009  0.0175  0.1087  0.5330 
+## -0.3937 -0.2043 -0.0268  0.2187  0.4662 
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(&gt;|t|)  
-## (Intercept)  0.42060    0.21760    1.93    0.089 .
-## x            0.00944    0.03507    0.27    0.795  
+## (Intercept)   0.5899     0.2040    2.89     0.02 *
+## x            -0.0346     0.0329   -1.05     0.32  
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.319 on 8 degrees of freedom
-## Multiple R-squared:  0.00897,    Adjusted R-squared:  -0.115 
-## F-statistic: 0.0724 on 1 and 8 DF,  p-value: 0.795</code></pre>
+## Residual standard error: 0.299 on 8 degrees of freedom
+## Multiple R-squared:  0.122,  Adjusted R-squared:  0.012 
+## F-statistic: 1.11 on 1 and 8 DF,  p-value: 0.323</code></pre>
+<pre class="r"><code>my_summary &lt;- list(
+    resid_min = function(x) min(x$residuals),
+    resid_median = function(x) median(x$residuals),
+    resid_max = function(x) max(x$residuals),
+    resid_se = function(x) sd(x$residuals)/length(x$residuals),
+    resid_df = function(x) x$df.residual
+)
+
+lapply(my_summary, function(f) f(fit))</code></pre>
+<pre><code>## $resid_min
+## [1] -0.3937
+## 
+## $resid_median
+## [1] -0.02683
+## 
+## $resid_max
+## [1] 0.4662
+## 
+## $resid_se
+## [1] 0.02815
+## 
+## $resid_df
+## [1] 8</code></pre>
 </div>
 <div id="which-of-the-following-commands-is-equivalent-to-withx-fz" class="section level3">
 <h3>Which of the following commands is equivalent to <code>with(x, f(z))</code>?</h3>
@@ -205,6 +226,62 @@ summary(fit)</code></pre>
 <li>It depends.</li>
 </ol>
 <p>It depends on what you have defined where. Most likely #3.</p>
+</div>
+<div id="instead-of-creating-individual-functions-e.g.-midpoint-trapezoid-simpson-etc.-we-could-store-them-in-a-list.-if-we-did-that-how-would-that-change-the-code-can-you-create-the-list-of-functions-from-a-list-of-coefficients-for-the-newton-cotes-formulae" class="section level3">
+<h3>Instead of creating individual functions (e.g., <code>midpoint()</code>, <code>trapezoid()</code>, <code>simpson()</code>, etc.), we could store them in a list. If we did that, how would that change the code? Can you create the list of functions from a list of coefficients for the Newton-Cotes formulae?</h3>
+<pre class="r"><code>newton_cotes &lt;- function(coef, open = FALSE) {
+  n &lt;- length(coef) + open
+
+  function(f, a, b) {
+    pos &lt;- function(i) a + i * (b - a) / n
+    points &lt;- pos(seq.int(0, length(coef) - 1))
+
+    (b - a) / sum(coef) * sum(f(points) * coef)
+  }
+}
+
+
+get_rules &lt;- function()
+{
+  coeffs &lt;- list(closed = list(trapezoid_c = c(1,1),
+                               simpson = c(1,4,1),
+                               simpson38 = c(1,3,3,1),
+                               boole = c(7,32,12,32,7)),
+                 open = list(midpoint = c(1),
+                             trapezoid_o = c(1,1),
+                             milne = c(2,-1,2),
+                             no_name = c(11,1,1,11)))
+
+  rules_closed &lt;- lapply(coeffs$closed, function(x) newton_cotes(x))
+  rules_open &lt;- lapply(coeffs$open, function(x) newton_cotes(x, open = TRUE))
+  
+  c(rules_closed, rules_open)
+}
+
+compose_function &lt;- function(rule)
+{
+  function(f, a, b, n = 10) {
+    points &lt;- seq(a, b, length = n + 1)
+  
+    area &lt;- 0
+    for (i in seq_len(n)) {
+      area &lt;- area + rule(f, points[i], points[i + 1])
+    }
+  
+    area
+  }
+}
+
+rules &lt;- get_rules()
+integration_funs &lt;- lapply(rules, function(x) compose_function(x))</code></pre>
+<p>Now you can <code>lapply</code> the list of functions to whichever values you want. e.g.</p>
+<pre class="r"><code>areas &lt;- lapply(integration_funs, function(f) f(sin, 0, pi))
+data.frame(areas)</code></pre>
+<pre><code>##   trapezoid_c simpson simpson38 boole midpoint trapezoid_o milne no_name
+## 1       1.996   1.996     1.996 1.996    1.996       1.996 1.996   1.996</code></pre>
+</div>
+<div id="the-trade-off-between-integration-rules-is-that-more-complex-rules-are-slower-to-compute-but-need-fewer-pieces.-for-sin-in-the-range-0--determine-the-number-of-pieces-needed-so-that-each-rule-will-be-equally-accurate.-illustrate-your-results-with-a-graph.-how-do-they-change-for-different-functions-sin1-x2-is-particularly-challenging." class="section level3">
+<h3>The trade-off between integration rules is that more complex rules are slower to compute, but need fewer pieces. For <code>sin()</code> in the range <code>[0, π]</code>, determine the number of pieces needed so that each rule will be equally accurate. Illustrate your results with a graph. How do they change for different functions? <code>sin(1 / x^2)</code> is particularly challenging.</h3>
 <hr />
 <hr />
 </div>
@@ -218,7 +295,6 @@ summary(fit)</code></pre>
 <h2>Reading Notes</h2>
 <div id="motivation" class="section level3">
 <h3>Motivation</h3>
-<p>I am so happy right now. :D</p>
 <p>The three building blocks of functional programming are:</p>
 <ul>
 <li>anonymous functions</li>

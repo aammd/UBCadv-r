@@ -5,8 +5,6 @@ date: '2014-08-20'
 output: html_document
 ---
 
-### *This chapter is the best!*
-
 ## Exercises
 
 ### Given a function, like `mean`, `match.fun()` lets you find a function. Given a function, can you find its name? Why doesn’t that make sense in R?
@@ -136,6 +134,65 @@ lapply(my_summary, function(f) f(fit))
 
 It depends on what you have defined where.  Most likely #3.
 
+### Instead of creating individual functions (e.g., `midpoint()`, `trapezoid()`, `simpson()`, etc.), we could store them in a list. If we did that, how would that change the code? Can you create the list of functions from a list of coefficients for the Newton-Cotes formulae?
+
+```{r newton_cotes}
+newton_cotes <- function(coef, open = FALSE) {
+  n <- length(coef) + open
+
+  function(f, a, b) {
+    pos <- function(i) a + i * (b - a) / n
+    points <- pos(seq.int(0, length(coef) - 1))
+
+    (b - a) / sum(coef) * sum(f(points) * coef)
+  }
+}
+
+
+get_rules <- function()
+{
+  coeffs <- list(closed = list(trapezoid_c = c(1,1),
+                               simpson = c(1,4,1),
+                               simpson38 = c(1,3,3,1),
+                               boole = c(7,32,12,32,7)),
+                 open = list(midpoint = c(1),
+                             trapezoid_o = c(1,1),
+                             milne = c(2,-1,2),
+                             no_name = c(11,1,1,11)))
+
+  rules_closed <- lapply(coeffs$closed, function(x) newton_cotes(x))
+  rules_open <- lapply(coeffs$open, function(x) newton_cotes(x, open = TRUE))
+  
+  c(rules_closed, rules_open)
+}
+
+compose_function <- function(rule)
+{
+  function(f, a, b, n = 10) {
+    points <- seq(a, b, length = n + 1)
+  
+    area <- 0
+    for (i in seq_len(n)) {
+      area <- area + rule(f, points[i], points[i + 1])
+    }
+  
+    area
+  }
+}
+
+rules <- get_rules()
+integration_funs <- lapply(rules, function(x) compose_function(x))
+```
+
+Now you can `lapply` the list of functions to whichever values you want. e.g.
+
+```{r applied_integration}
+areas <- lapply(integration_funs, function(f) f(sin, 0, pi))
+data.frame(areas)
+```
+
+### The trade-off between integration rules is that more complex rules are slower to compute, but need fewer pieces. For `sin()` in the range `[0, π]`, determine the number of pieces needed so that each rule will be equally accurate. Illustrate your results with a graph. How do they change for different functions? `sin(1 / x^2)` is particularly challenging.
+
 ***
 ***
 
@@ -147,8 +204,6 @@ It depends on what you have defined where.  Most likely #3.
 ## Reading Notes
 
 ### Motivation
-
-I am so happy right now. :D
 
 The three building blocks of functional programming are:
 
