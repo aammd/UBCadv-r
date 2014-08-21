@@ -62,9 +62,42 @@ The worst scenario is that your code might crash R completely, leaving you with 
     }
     ```
 
-	**The return value of tryCatch() handlers is returned by tryCatch(), whereas 
-	the return value of withCallingHandlers() handlers is ignored ??**
-
+	**withCallingHandlers() goes into the function to show you the message that came with the function that had an error**
+	
+	```
+	### this is WITH CALLING HANDLERS
+	> message2error(message("hello!"))
+	Error in message("hello!") : hello!
+	> traceback()
+	9: stop(e) at #2
+	8: (function (e) 
+	   stop(e))(list(message = "hello!\n", call = message("hello!")))
+	7: signalCondition(cond)
+	6: doWithOneRestart(return(expr), restart)
+	5: withOneRestart(expr, restarts[[1L]])
+	4: withRestarts({
+	       signalCondition(cond)
+	       defaultHandler(cond)
+	   }, muffleMessage = function() NULL)
+	3: message("hello!")
+	2: withCallingHandlers(code, message = function(e) stop(e)) at #2
+	1: message2error(message("hello!"))
+	### this is TRY CATCH
+	> message2error <- function(code) {
+	+     tryCatch(code, message = function(e) stop(e))
+	+   }
+	> message2error(message("hello!"))
+	Error in message("hello!") : hello!
+	> traceback()
+	6: stop(e) at #2
+	5: value[[3L]](cond)
+	4: tryCatchOne(expr, names, parentenv, handlers[[1L]])
+	3: tryCatchList(expr, classes, parentenv, handlers)
+	2: tryCatch(code, message = function(e) stop(e)) at #2
+	1: message2error(message("hello!"))
+	>
+	```
+	
 ### Exercises 2
 
 **I gave up on these exercises currently. I'd rather debug my own code than other code that I haven't written :/**
@@ -79,6 +112,16 @@ The worst scenario is that your code might crash R completely, leaving you with 
 
       data.frame(lapply(numeric_cols, mean))
     }
+    
+    ### CHANGE TO: (this fixes only some of the below cases)
+    col_means <- function(df) {
+      if (!is.data.frame(df)) stop('not a data frame') ## Davor also adds this to throw an error
+
+      numeric <- vapply(df, is.numeric, logical(1))
+      numeric_cols <- df[, numeric, drop=FALSE]
+
+      data.frame(lapply(numeric_cols, mean))
+    }
     ```
 
     However, the function is not robust to unusual inputs. Look at
@@ -87,17 +130,17 @@ The worst scenario is that your code might crash R completely, leaving you with 
     in `col_means()` that are particularly prone to problems.)
 
     ```{r, eval = FALSE}
-    col_means(mtcars)  **works fine*
+    col_means(mtcars)  **works fine**
     col_means(mtcars[, 0])  **error, cannot take 0th column**
     col_means(mtcars[0, ])  **works, but is taking mean of column names (row 0) so all NaNs**
-    col_means(mtcars[, "mpg", drop = F])  **? works?**
-    col_means(1:10)  **error, 1:10 has no columns?**
-    col_means(as.matrix(mtcars))
-    col_means(as.list(mtcars))
+    col_means(mtcars[, "mpg", drop = F])  **works to get mpg mean**
+    col_means(1:10)  **error, 1:10 is a vector not a data frame**
+    col_means(as.matrix(mtcars))  **not a data frame**
+    col_means(as.list(mtcars))  **not a data frame**
 
     mtcars2 <- mtcars
     mtcars2[-1] <- lapply(mtcars2[-1], as.character)
-    col_means(mtcars2)
+    col_means(mtcars2) **works fine**
     ```
 
 * The following function "lags" a vector, returning a version of `x` that is `n`
@@ -110,4 +153,15 @@ The worst scenario is that your code might crash R completely, leaving you with 
       xlen <- length(x)
       c(rep(NA, n), x[seq_len(xlen - n)])
     }
+    
+    ## CHANGED TO:
+    lag <- function(x, n = 1L) {
+  		if (!is.vector(x)) stop("'x' is not a vector")
+  		if (!((is.numeric(n) || is.integer(n)) &&
+  		        length(n) == 1 && !is.na(n))) stop("'n' is not a scalar")
+  		if (n < 0) stop("'n' cannot be negative")
+  		if (n > length(x)) stop("the amount of lag cannot be greater than the length of the vector")
+  		xlen <- length(x)
+  		c(rep(NA, n), x[seq_len(xlen - n)])
+		}
     ```
