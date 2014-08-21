@@ -1,4 +1,8 @@
 <<<<<<< HEAD
+# Subsetting
+Alathea  
+2014-07-09  
+=======
 ---
 title: "Subsetting"
 author: "Alathea"
@@ -9,103 +13,12 @@ output:
     toc: yes
     theme: united
 ---
-=======
-# Subsetting
-Alathea  
-2014-07-09  
->>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
+>>>>>>> upstream/master
 
 ***
 
 ### Discussion Notes
 
-<<<<<<< HEAD
-
-```r
-mtcars$cyl == 4 | 6
-```
-
-```
-##  [1] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
-## [15] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
-## [29] TRUE TRUE TRUE TRUE
-```
-
-```r
-mtcars$cyl == 4 || 6
-```
-
-```
-## [1] TRUE
-```
-
-```r
-# this works
-mtcars$cyl == 4 | mtcars$cyl == 6
-```
-
-```
-##  [1]  TRUE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
-## [12] FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE FALSE
-## [23] FALSE FALSE FALSE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE
-```
-
-```r
-# or this
-mtcars$cyl %in% c(4, 6)
-```
-
-```
-##  [1]  TRUE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
-## [12] FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE FALSE
-## [23] FALSE FALSE FALSE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE
-```
-
-
-```r
-# this gives 5 NAs because NA is a logical vector, which gets recycled
-x <- 1:5
-x[NA]
-```
-
-Jenny showed us this:
-
-
-```r
-mod <- lm(mpg ~ wt, data = mtcars)
-str(mod, max.level = 1, give.attr = FALSE)
-```
-
-```
-## List of 12
-##  $ coefficients : Named num [1:2] 37.29 -5.34
-##  $ residuals    : Named num [1:32] -2.28 -0.92 -2.09 1.3 -0.2 ...
-##  $ effects      : Named num [1:32] -113.65 -29.116 -1.661 1.631 0.111 ...
-##  $ rank         : int 2
-##  $ fitted.values: Named num [1:32] 23.3 21.9 24.9 20.1 18.9 ...
-##  $ assign       : int [1:2] 0 1
-##  $ qr           :List of 5
-##  $ df.residual  : int 30
-##  $ xlevels      : Named list()
-##  $ call         : language lm(formula = mpg ~ wt, data = mtcars)
-##  $ terms        :Classes 'terms', 'formula' length 3 mpg ~ wt
-##  $ model        :'data.frame':	32 obs. of  2 variables:
-```
-
-
-```r
-# linearize the output and force back into the original structure
-df[] <- sample(as.matrix(df))
-```
-
-```
-## Error: cannot coerce type 'closure' to vector of type 'any'
-```
-
-`|` vs. `||`.  The shorter form makes element by element comparisons and the long form compares only the first element of each vector.  Normally the long form is used in `if` statements.
-
-=======
->>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
 ***
 
 ### Quiz
@@ -147,7 +60,11 @@ x[2]
 ```
 
 ```r
+<<<<<<< HEAD
 x[c(5,9)]
+=======
+x[c(5, 9)]
+>>>>>>> upstream/master
 ```
 
 ```
@@ -163,13 +80,21 @@ x[-c(5:10)]
 ```
 
 ```r
+<<<<<<< HEAD
 x[c(TRUE,FALSE,TRUE,TRUE,FALSE)]
+=======
+x[c(TRUE, FALSE, TRUE, TRUE, FALSE)]
+>>>>>>> upstream/master
 ```
 
 ```
 ## [1] 1 3 4 6 8 9
 ```
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master
 An interesting thing about subsetting with a logical vector is that if the logical vector is shorter than the vector being subsetted, it will act like a pattern and repeat over the entire vector (see above).  I guess this is called recycling.
 
 You can use character vectors to select from a named vector.  I did not know that was possible!
@@ -186,6 +111,10 @@ y
 ##  1  2  3  4  5  6  7  8  9 10
 ```
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master
 #### Matrices and Arrays
 
 Arrays are stored in column order.  If you subset with a number, e.g. `array[2]` it will count down through each item of each column.
@@ -198,8 +127,13 @@ List-type vs. Matrix type subestting:
 ```r
 df <- data.frame(x = 1:3, y = 3:1, z = letters[1:3])
 
+<<<<<<< HEAD
 # There's an important difference if you select a single column:
 # matrix subsetting simplifies by default, list subsetting does not.
+=======
+# There's an important difference if you select a single column: matrix
+# subsetting simplifies by default, list subsetting does not.
+>>>>>>> upstream/master
 str(df["x"])
 ```
 
@@ -209,6 +143,10 @@ str(df["x"])
 ```
 
 ```r
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master
 str(df[, "x"])
 ```
 
@@ -216,6 +154,10 @@ str(df[, "x"])
 ##  int [1:3] 1 2 3
 ```
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master
 #### S3 vs. S4 Objects
 
 Noooooooooooooooooo!!!
@@ -243,6 +185,10 @@ mtcars[mtcars$cyl == 4 | 6, ]
 mtcars[mtcars$cyl == 4 | mtcars$cyl == 6, ]
 ```
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master
 2. *Why does `x <- 1:5; x[NA]` yield five missing values? Hint: why is it different from `x[NA_real_]`?*
 
 **Not sure but something to do with `NA` being logical?**
@@ -255,6 +201,10 @@ x <- outer(1:5, 1:5, FUN = "*")
 x[upper.tri(x)]
 ```
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master
 **It returns `TRUE` in the upper triangle of the matrix so subsetting with it returns the values in the upper triangle, column by column.**
 
 4. *Why does `mtcars[1:20]` return an error? How does it differ from the similar `mtcars[1:20, ]`?*
@@ -276,6 +226,7 @@ diag(x)
 ```
 
 ```r
+<<<<<<< HEAD
 get_diag <- function(input_matrix)
 {
   n <- min(dim(input_matrix))
@@ -284,6 +235,16 @@ get_diag <- function(input_matrix)
     select[i] <- input_matrix[i,i]
   }
   return(select)
+=======
+
+get_diag <- function(input_matrix) {
+    n <- min(dim(input_matrix))
+    select <- vector()
+    for (i in 1:n) {
+        select[i] <- input_matrix[i, i]
+    }
+    return(select)
+>>>>>>> upstream/master
 }
 
 get_diag(x)
@@ -293,6 +254,10 @@ get_diag(x)
 ## [1]  1  4  9 16
 ```
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master
 6. *What does `df[is.na(df)] <- 0` do? How does it work?*
 
 **It sets `NA` values to 0 by selecting those values (`is.na` generates a data frame with `TRUE` or `FALSE` depending on whether the condition is satisfied)**
@@ -325,6 +290,10 @@ data[[var]]
 ## [1] 3 4 5
 ```
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master
 The `$` can do partial name matching.  Whoa....dangerous.
 
 
@@ -337,6 +306,10 @@ data$a
 ## [1] 3 4 5
 ```
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master
 #### Exercises
 
 1. *Given a linear model, e.g. `mod <- lm(mpg ~ wt, data = mtcars)`, extract the residual degrees of freedom. Extract the R squared from the model summary (`summary(mod)`)*
@@ -408,6 +381,10 @@ str(mod)
 ```
 
 ```r
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master
 (df_mod <- mod[["df.residual"]])
 ```
 
@@ -416,6 +393,10 @@ str(mod)
 ```
 
 ```r
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master
 mod_sum <- summary(mod)
 str(mod_sum)
 ```
@@ -459,6 +440,10 @@ str(mod_sum)
 ```
 
 ```r
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master
 (rsq_mod <- mod_sum[["r.squared"]])
 ```
 
@@ -466,6 +451,10 @@ str(mod_sum)
 ## [1] 0.7528
 ```
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master
 ### Subsetting and Assignment
 
 Can you combine integer indices with integer NA?
@@ -479,6 +468,10 @@ x[c(1, NA)] <- 0
 ```
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master
 ```r
 data(mtcars)
 mtcars[] <- lapply(mtcars, as.integer)
@@ -501,6 +494,10 @@ str(mtcars[])
 ```
 
 ```r
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master
 mtcars <- lapply(mtcars, as.integer)
 str(mtcars)
 ```
@@ -520,15 +517,24 @@ str(mtcars)
 ##  $ carb: int [1:32] 4 4 1 1 2 1 4 2 2 4 ...
 ```
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master
 ### Applications
 
 Lookup tables:
 
 
 ```r
+<<<<<<< HEAD
 students <- data.frame(name = c(LETTERS[1:10]),
                        sex = c("m","f","m","f","f","f","f","m","m","f"),
                        student.number = sample(c(3333:8888), 10))
+=======
+students <- data.frame(name = c(LETTERS[1:10]), sex = c("m", "f", "m", "f", 
+    "f", "f", "f", "m", "m", "f"), student.number = sample(c(3333:8888), 10))
+>>>>>>> upstream/master
 lookup <- c(m = "Male", f = "Female")
 
 lookup[students$sex]
@@ -541,6 +547,10 @@ lookup[students$sex]
 ## "Female"   "Male"
 ```
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master
 Random samples / bootstrap:
 
 
@@ -562,52 +572,63 @@ Random samples / bootstrap:
 ```
 
 ```r
+<<<<<<< HEAD
 x[sample(nrow(x),3),]
+=======
+x[sample(nrow(x), 3), ]
+>>>>>>> upstream/master
 ```
 
 ```
 ##   a b
 <<<<<<< HEAD
-## 1 1 a
-## 8 8 h
-## 9 9 i
-=======
 ## 3 3 c
 ## 9 9 i
 ## 4 4 d
->>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
 ```
 
+=======
+## 2 2 b
+## 5 5 e
+## 3 3 c
+```
+
+
+>>>>>>> upstream/master
 Ordering:
 
 
 ```r
+<<<<<<< HEAD
 (y <- x[sample(nrow(x),nrow(x)),])
+=======
+(y <- x[sample(nrow(x), nrow(x)), ])
+>>>>>>> upstream/master
 ```
 
 ```
 ##   a b
 <<<<<<< HEAD
-## 3 3 c
-## 8 8 h
+## 4 4 d
 ## 7 7 g
 ## 5 5 e
-## 6 6 f
+## 8 8 h
 ## 9 9 i
-## 2 2 b
 ## 1 1 a
-## 4 4 d
+## 6 6 f
+## 2 2 b
+## 3 3 c
 =======
-## 4 4 d
-## 7 7 g
-## 5 5 e
+## 2 2 b
+## 6 6 f
 ## 8 8 h
+## 5 5 e
 ## 9 9 i
 ## 1 1 a
-## 6 6 f
-## 2 2 b
+## 7 7 g
 ## 3 3 c
->>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
+## 4 4 d
+>>>>>>> upstream/master
 ```
 
 ```r
@@ -627,6 +648,10 @@ Ordering:
 ## 9 9 i
 ```
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master
 ### Exercises
 
 1. *How would you randomly permute the columns of a data frame? (This is an important technique in random forests). Can you simultaneously permute the rows and columns in one step?*
@@ -645,55 +670,75 @@ Ordering:
 ```
 
 ```r
+<<<<<<< HEAD
 # randomly permute the columns
 df[ , sample(ncol(df), ncol(df))]
 ```
 
 ```
-<<<<<<< HEAD
-##   b a  c  d
-## 1 5 1  9 13
-## 2 6 2 10 14
-## 3 7 3 11 15
-## 4 8 4 12 16
-=======
 ##   a  d b  c
 ## 1 1 13 5  9
 ## 2 2 14 6 10
 ## 3 3 15 7 11
 ## 4 4 16 8 12
->>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
 ```
 
 ```r
 # randomize columns and rows simultaneously
 # although I doubt this is really happening simultaneously
+=======
+
+# randomly permute the columns
+df[, sample(ncol(df), ncol(df))]
+```
+
+```
+##    d  c b a
+## 1 13  9 5 1
+## 2 14 10 6 2
+## 3 15 11 7 3
+## 4 16 12 8 4
+```
+
+```r
+
+# randomize columns and rows simultaneously although I doubt this is really
+# happening simultaneously
+>>>>>>> upstream/master
 df[sample(nrow(df), nrow(df)), sample(ncol(df), ncol(df))]
 ```
 
 ```
 <<<<<<< HEAD
-##   a b  c  d
-## 2 2 6 10 14
-## 1 1 5  9 13
-## 3 3 7 11 15
-## 4 4 8 12 16
-=======
 ##    c  d b a
 ## 2 10 14 6 2
 ## 4 12 16 8 4
 ## 3 11 15 7 3
 ## 1  9 13 5 1
->>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
 ```
 
+=======
+##   b  c a  d
+## 1 5  9 1 13
+## 3 7 11 3 15
+## 2 6 10 2 14
+## 4 8 12 4 16
+```
+
+
+>>>>>>> upstream/master
 2. *How would you select a random sample of `m` rows from a data frame? What if the sample had to be contiguous (i.e. with an initial row, a final row, and every row in between)?*
 
 
 ```r
+<<<<<<< HEAD
 sample_rows <- function(input_df, sample_size)
 {
   input_df[sample(nrow(input_df), sample_size, replace = TRUE), ]
+=======
+sample_rows <- function(input_df, sample_size) {
+    input_df[sample(nrow(input_df), sample_size, replace = TRUE), ]
+>>>>>>> upstream/master
 }
 
 sample_rows(df, 3)
@@ -701,14 +746,15 @@ sample_rows(df, 3)
 
 ```
 ##     a b  c  d
-## 1   1 5  9 13
 <<<<<<< HEAD
-## 4   4 8 12 16
+## 1   1 5  9 13
 ## 1.1 1 5  9 13
+## 4   4 8 12 16
 =======
-## 1.1 1 5  9 13
-## 4   4 8 12 16
->>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
+## 3   3 7 11 15
+## 3.1 3 7 11 15
+## 3.2 3 7 11 15
+>>>>>>> upstream/master
 ```
 
 ```r
@@ -718,20 +764,12 @@ sample_rows(df, 6)
 ```
 ##     a b  c  d
 <<<<<<< HEAD
-## 4   4 8 12 16
-## 2   2 6 10 14
-## 4.1 4 8 12 16
-## 4.2 4 8 12 16
-## 3   3 7 11 15
-## 4.3 4 8 12 16
-=======
 ## 1   1 5  9 13
 ## 2   2 6 10 14
 ## 3   3 7 11 15
 ## 4   4 8 12 16
 ## 1.1 1 5  9 13
 ## 4.1 4 8 12 16
->>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
 ```
 
 
@@ -740,6 +778,22 @@ sample_contig_rows <- function(input_df)
 {
   (row_nums <- sample(nrow(input_df), 2))
   input_df[min(row_nums):max(row_nums), ]
+=======
+## 4   4 8 12 16
+## 2   2 6 10 14
+## 2.1 2 6 10 14
+## 3   3 7 11 15
+## 1   1 5  9 13
+## 3.1 3 7 11 15
+```
+
+
+
+```r
+sample_contig_rows <- function(input_df) {
+    (row_nums <- sample(nrow(input_df), 2))
+    input_df[min(row_nums):max(row_nums), ]
+>>>>>>> upstream/master
 }
 
 sample_contig_rows(df)
@@ -747,16 +801,14 @@ sample_contig_rows(df)
 
 ```
 ##   a b  c  d
-<<<<<<< HEAD
-=======
 ## 1 1 5  9 13
->>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
 ## 2 2 6 10 14
 ## 3 3 7 11 15
 ## 4 4 8 12 16
 ```
 
 ```r
+<<<<<<< HEAD
 # if you want a set number of rows:
 sample_contig_rows_2 <- function(input_df, sample_size)
 {
@@ -774,6 +826,23 @@ sample_contig_rows_2 <- function(input_df, sample_size)
     first_row <- sample(1:row_max, 1)
     return(input_df[first_row:(first_row + sample_size - 1), ])
   }
+=======
+
+# if you want a set number of rows:
+sample_contig_rows_2 <- function(input_df, sample_size) {
+    # check that the sample size is smaller than the number of rows
+    if (sample_size > nrow(input_df)) {
+        warning("Sample size too large.  Selecting all rows starting from a random index.")
+        return(sample_contig_rows(input_df))
+    } else if (sample_size == nrow(input_df)) {
+        warning("You just selected the entire data frame!")
+        return(input_df)
+    } else {
+        row_max <- nrow(input_df) - sample_size + 1
+        first_row <- sample(1:row_max, 1)
+        return(input_df[first_row:(first_row + sample_size - 1), ])
+    }
+>>>>>>> upstream/master
 }
 
 sample_contig_rows_2(df, 5)
@@ -786,13 +855,13 @@ sample_contig_rows_2(df, 5)
 
 ```
 ##   a b  c  d
+<<<<<<< HEAD
 ## 1 1 5  9 13
 ## 2 2 6 10 14
-<<<<<<< HEAD
+=======
 ## 3 3 7 11 15
 ## 4 4 8 12 16
-=======
->>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
+>>>>>>> upstream/master
 ```
 
 ```r
@@ -817,36 +886,53 @@ sample_contig_rows_2(df, 2)
 
 ```
 ##   a b  c  d
+<<<<<<< HEAD
 ## 3 3 7 11 15
 ## 4 4 8 12 16
 ```
 
 
+=======
+## 2 2 6 10 14
+## 3 3 7 11 15
+```
+
+
+
+>>>>>>> upstream/master
 3. *How could you put the columns in a data frame in alphaetical order?*
 
 
 ```r
+<<<<<<< HEAD
 (df3a <- df[ ,sample(ncol(df),ncol(df))])
 ```
 
 ```
-<<<<<<< HEAD
-##    c a b  d
-## 1  9 1 5 13
-## 2 10 2 6 14
-## 3 11 3 7 15
-## 4 12 4 8 16
-=======
 ##    c b  d a
 ## 1  9 5 13 1
 ## 2 10 6 14 2
 ## 3 11 7 15 3
 ## 4 12 8 16 4
->>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
 ```
 
 ```r
 (df3b <- df3a[ ,order(names(df3a))])
+=======
+(df3a <- df[, sample(ncol(df), ncol(df))])
+```
+
+```
+##   a  d  c b
+## 1 1 13  9 5
+## 2 2 14 10 6
+## 3 3 15 11 7
+## 4 4 16 12 8
+```
+
+```r
+(df3b <- df3a[, order(names(df3a))])
+>>>>>>> upstream/master
 ```
 
 ```
@@ -856,3 +942,7 @@ sample_contig_rows_2(df, 2)
 ## 3 3 7 11 15
 ## 4 4 8 12 16
 ```
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master

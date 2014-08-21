@@ -1,8 +1,4 @@
 <<<<<<< HEAD
-# Jenny's reading of 02_Subsetting
-Jenny Bryan  
-10 July, 2014  
-=======
 ---
 title: "Jenny's reading of 02_Subsetting"
 author: "Jenny Bryan"
@@ -11,7 +7,11 @@ output:
   html_document:
     toc: yes
 ---
->>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
+=======
+# Jenny's reading of 02_Subsetting
+Jenny Bryan  
+10 July, 2014  
+>>>>>>> upstream/master
 
 
 
@@ -69,12 +69,12 @@ Week 02 2014-07-10 we read [Subsetting](http://adv-r.had.co.nz/Subsetting.html).
   * `mtcars[-1:4, ]` *Indexing vector mixes negative and positive integers which is a no-no; if goal is to drop elements 1 through 4 surround with parentheses, i.e. `mtcars[-(1:4), ]`.*
   * `mtcars[mtcars$cyl <= 5]` *This is vector-style indexing of data frame; I assume user meant to type `mtcars[mtcars$cyl <= 5, ]`.*
 <<<<<<< HEAD
-  * `mtcars[mtcars$cyl == 4 | 6, ]` *Sadly, you can't use `|` like that, but beware because this will NOT produce an error. It just won't return rows with cylinder equal to 4 or 6; in fact, it returns all the rows. Why? Because the combination of coercion and recycling implies that `6` will become a logical vector ot `TRUE`s of length equal to the rows in `mtcars`. How to fix? Pick one of these options: `mtcars[mtcars$cyl %in% c(4, 6), ]` or `mtcars[mtcars$cyl == 4 | mtcars$cyl == 6, ]`*
-  * Why does `x <- 1:5; x[NA]` yield five missing values? Hint: why is it different from `x[NA_real_]?` *`NA` is a logical vector of length one. It's perfectly OK to index by a logical vector. Recycling will expand this to 5 logical `NA`s. And then indexing by `NA` always gives back an `NA`, so you get five of them. Indexing by `NA_real_` is indexing by a double. It will get truncated and be as if you're indexing by the integer `1`.*
-=======
   * `mtcars[mtcars$cyl == 4 | 6, ]` *Sadly, you can't use `|` like that, but beware because this will NOT produce an error. It just won't return rows with cylinder equal to 4 or 6. How to fix? Pick one of these options: `mtcars[mtcars$cyl %in% c(4, 6), ]` or `mtcars[mtcars$cyl == 4 | mtcars$cyl == 6, ]`*
   * Why does `x <- 1:5; x[NA]` yield five missing values? Hint: why is it different from `x[NA_real_]?` *`NA` is a logical vector of length one. It's perfectly OK to index by a logical vector. Recycling will expand this to 5 logical `NA`s. And then indexing by `NA` always gives back an `NA`, so you get five of them.*
->>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
+=======
+  * `mtcars[mtcars$cyl == 4 | 6, ]` *Sadly, you can't use `|` like that, but beware because this will NOT produce an error. It just won't return rows with cylinder equal to 4 or 6; in fact, it returns all the rows. Why? Because the combination of coercion and recycling implies that `6` will become a logical vector ot `TRUE`s of length equal to the rows in `mtcars`. How to fix? Pick one of these options: `mtcars[mtcars$cyl %in% c(4, 6), ]` or `mtcars[mtcars$cyl == 4 | mtcars$cyl == 6, ]`*
+  * Why does `x <- 1:5; x[NA]` yield five missing values? Hint: why is it different from `x[NA_real_]?` *`NA` is a logical vector of length one. It's perfectly OK to index by a logical vector. Recycling will expand this to 5 logical `NA`s. And then indexing by `NA` always gives back an `NA`, so you get five of them. Indexing by `NA_real_` is indexing by a double. It will get truncated and be as if you're indexing by the integer `1`.*
+>>>>>>> upstream/master
 
 #### What does `upper.tri()` return? How does subsetting a matrix with it work? Do we need any additional subsetting rules to describe its behaviour?
 
@@ -93,10 +93,10 @@ x[upper.tri(x)]
 #### Why does `mtcars[1:20]` return a error? How does it differ from the similar `mtcars[1:20, ]`?
 
 <<<<<<< HEAD
-  * Don't forget data frames are lists, not matrices. When you index a data frame vector style, with `[`, you'll index it as a list. Since `mtcars` does not have 20 variables, asking for variables 1 through 20 will trigger an error about selecting "undefined columns". If you indexed a matrix this way, the indexing would go into "vector mode" and you'd get the first 20 elements, even if that grabbed values from multiple columns. This doesn't happen -- and doesn't make sense -- with a data frame, since there's no guarantee that the contituent variables even have the same type.
-=======
   * Don't forget data frames are lists, not matrices. Since there's no guarantee that the contituent variables have the same type, data frames can't go into "vector mode" and therefore you can't index them vector style. You must index in a 2D, e.g. `mtcars[1:20, ]`, or list style.
->>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
+=======
+  * Don't forget data frames are lists, not matrices. When you index a data frame vector style, with `[`, you'll index it as a list. Since `mtcars` does not have 20 variables, asking for variables 1 through 20 will trigger an error about selecting "undefined columns". If you indexed a matrix this way, the indexing would go into "vector mode" and you'd get the first 20 elements, even if that grabbed values from multiple columns. This doesn't happen -- and doesn't make sense -- with a data frame, since there's no guarantee that the contituent variables even have the same type.
+>>>>>>> upstream/master
 
 #### Implement your own function that extracts the diagonal entries from a matrix (it should behave like `diag(x)` where `x` is a matrix).
 
@@ -221,6 +221,7 @@ Great tweet:
 Remember that `$` does partial matching, whereas `[[` does not. I am not a fan of partial matching. Be explicit. Use autocompletion to help with all that strenuous typing.
 
 <<<<<<< HEAD
+=======
 Andrew was really excited by this re: indexing via `[[` with a vector:
 
 
@@ -282,8 +283,7 @@ mod[[c("qr", "rank")]]
 ```
 This goes into the fitted model, gets the `qr` list element, and then goes into that to retrieve the `rank` element. Cleaner than `mod[["qr"]][["rank"]]`.
 
-=======
->>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
+>>>>>>> upstream/master
 ### Working the exercises
 
 #### Given a linear model, e.g. `mod <- lm(mpg ~ wt, data = mtcars)`, extract the residual degrees of freedom. Extract the R squared from the model summary (`summary(mod)`).
@@ -441,16 +441,6 @@ jMat[sample(length(jMat))]
 
 ```
 <<<<<<< HEAD
-##      col4 col2 col1 col3
-## row1  x14  x12  x11  x13
-## row2  x24  x22  x21  x23
-## row3  x34  x32  x31  x33
-## row4  x44  x42  x41  x43
-```
-
-```r
-## permute rows and columns in one step -- my original solution
-=======
 ##      col2 col4 col1 col3
 ## row1  x12  x14  x11  x13
 ## row2  x22  x24  x21  x23
@@ -460,12 +450,30 @@ jMat[sample(length(jMat))]
 
 ```r
 ## permute rows and columns in one step
->>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
+=======
+##      col4 col2 col1 col3
+## row1  x14  x12  x11  x13
+## row2  x24  x22  x21  x23
+## row3  x34  x32  x31  x33
+## row4  x44  x42  x41  x43
+```
+
+```r
+## permute rows and columns in one step -- my original solution
+>>>>>>> upstream/master
 jMat[sample(length(jMat))][sample(nrow(jMat)), ]
 ```
 
 ```
 <<<<<<< HEAD
+##      col3 col4 col2 col1
+## row2  x23  x24  x22  x21
+## row4  x43  x44  x42  x41
+## row1  x13  x14  x12  x11
+## row3  x33  x34  x32  x31
+```
+
+=======
 ##      col2 col1 col3 col4
 ## row3  x32  x31  x33  x34
 ## row4  x42  x41  x43  x44
@@ -488,15 +496,7 @@ jMat[sample(nrow(jMat)), sample(length(jMat))]
 
 I had worried (but not constructively enough to test!) that shuffling rows and columns at the same time would violate the integrity of rows and columns. But it does not.
 
-=======
-##      col3 col4 col2 col1
-## row2  x23  x24  x22  x21
-## row4  x43  x44  x42  x41
-## row1  x13  x14  x12  x11
-## row3  x33  x34  x32  x31
-```
-
->>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
+>>>>>>> upstream/master
 #### How would you select a random sample of `m` rows from a data frame? What if the sample had to be contiguous (i.e. with an initial row, a final row, and every row in between)?
 
 
@@ -520,12 +520,12 @@ jMat[sample(nrow(jMat) - m + 1, size = 1) + (0:(m - 1)), ]
 ```
 ##      col1 col2 col3 col4
 <<<<<<< HEAD
-## row1  x11  x12  x13  x14
-## row2  x21  x22  x23  x24
-=======
 ## row3  x31  x32  x33  x34
 ## row4  x41  x42  x43  x44
->>>>>>> 78ea7b204c074194de2800abfb119a3b03135c13
+=======
+## row1  x11  x12  x13  x14
+## row2  x21  x22  x23  x24
+>>>>>>> upstream/master
 ```
     
 #### How could you put the columns in a data frame in alphaetical order?

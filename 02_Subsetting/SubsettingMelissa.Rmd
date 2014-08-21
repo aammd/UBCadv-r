@@ -1,0 +1,124 @@
+---
+title: "Subsetting"
+author: "Melissa"
+date: "10 July, 2014"
+output: html_document
+---
+
+
+```{r, echo=FALSE}
+rm(list=ls())
+```
+
+**1.Fix each of the following common data frame subsetting errors:**
+
+```{r}
+     
+mtcars[mtcars$cyl==4,]
+                
+mtcars[-(1:4),]
+     
+mtcars[mtcars$cyl <= 5,]
+
+mtcars[mtcars$cyl == 4 | mtcars$cyl == 6, ] 
+mtcars[mtcars$cyl %in% c(4,6),]
+```
+%in% maps the second thing to the first things, like match. 
+
+**2. Why does x <- 1:5; x[NA] yield five missing values? Hint: why is it different from x[NA_real_]?**
+
+Logical vectors are recycled. So NA being a logical vector gets recycled five times. When NA is real, it doesnt get recycled. And a missing value on the index returns a missing value on the output.
+```{r}
+  x<-1:5 
+  x[NA]
+  x[NA_real_]
+```
+  
+**3. What does upper.tri() return? How does subsetting a matrix with it work? Do we need any additional subsetting rules to describe its behaviour?**
+
+```{r}
+x <- outer(1:5, 1:5, FUN = "*")
+x[upper.tri(x)]
+```
+It returns a logical matrix of the the upper triangle of the matrix (ignoring the diagonal). Subsetting with it returns an atomic vector of the TRUE values in a column-major order.
+
+
+**4.Why does mtcars[1:20] return a error? How does it differ from the similar mtcars[1:20, ]?**
+
+```{r}
+mtcars[1:20,]
+nrow(mtcars)
+ncol(mtcars)
+```
+Too many columns, mtcars[1:20] calls for the columns, so in this case there are too many columns. mtcars[1:20,] calls the first 20 rows in all the columns 
+
+**5.Implement your own function that extracts the diagonal entries from a matrix (it should behave like diag(x) where x is a matrix).**
+
+```{r}
+x<-matrix(1:9,ncol=3)
+y<-matrix(c(1:ncol(x),1:nrow(x)),nrow=ncol(x))
+x[y]
+diag(x)
+```
+Sorry not a function :(
+
+**6.What does df[is.na(df)] <- 0 do? How does it work?**
+
+It replaces NA in the data frame by 0. is.na(df) creates a logical df with TRUE and FALSE, and then df[] selects the values that returned TRUE
+
+
+
+**7.Given a linear model, e.g. mod <- lm(mpg ~ wt, data = mtcars), extract the residual degrees of freedom. Extract the R squared from the model summary (summary(mod))**
+
+```{r}
+mod<-lm (mpg~wt, data=mtcars)
+str(summary(mod),give.attr=FALSE)
+summary(mod)$r.squared
+summary(mod)$df.residual
+```
+
+8.
+How would you randomly permute the columns of a data frame? (This is an important technique in random forests). Can you simultaneously permute the rows and columns in one step?
+
+
+
+
+```{r}
+df <- data.frame(x = rep(1:3, each = 2), y = 6:1, z = letters[1:6],w=8:13)
+
+df
+
+sample(ncol(df))
+df[sample(nrow(df)),sample(ncol(df))]
+
+```
+
+
+
+
+9.
+How would you select a random sample of m rows from a data frame? What if the sample had to be contiguous (i.e. with an initial row, a final row, and every row in between)?
+
+```{r}
+df <- data.frame(x = rep(1:3, each = 2), y = 6:1, z = letters[1:6],w=8:13)
+
+sample(nrow(df),2)
+
+```
+
+
+10.
+How could you put the columns in a data frame in alphaetical order?
+
+
+```{r}
+df <- data.frame(a = rep(1:3, each = 2), b = 6:1, c = letters[1:6],d=8:13)
+
+df1<-df[,sample(ncol(df))]
+
+df1[order(names(df1))]
+
+```
+
+
+

@@ -91,9 +91,9 @@ Which base function has the most arguments?
 
 ```{r}
 
-arg_num<-lapply(funs,FUN=function(x){length(formals(x))})
-max(as.character(arg_num))
-which(arg_num==9)
+arg_num<-sapply(funs,FUN=function(x){length(formals(x))})
+max(arg_num)
+which(arg_num==21)
 
 ```
 
@@ -126,7 +126,7 @@ It means that the function was created in the global environment.
 
 
 1. What does the following code return? Why? What does each of the three c’s mean?
- -c1 is a variable (10)
+ -c1 is a object (10)
  -c2 is a function (concatenate)
  -c3 is a name (c)
  
@@ -157,19 +157,24 @@ f <- function(x) {
 f(10)
 ```
 
+rm(list=ls())
+data.frame(x=1:10,y=x*2)
+
 
 
 1. Clarify the following list of odd function calls:
 
 ```{r}
 x <- sample(replace = TRUE, 20, x = c(1:10, NA))
+x<- sample(1:10, 20, replace=TRUE)
 y <- runif(min = 0, max = 1, 20)
+y<- runif(20)
 cor(m = "k", y = y, u = "p", x = x)
-cor(x,y,method='kendall',use='pairwise.complete.obs')
+cor(x, y, method='kendall', use='pairwise.complete.obs')
 ```
 
 2. What does this function return? Why? Which principle does it illustrate?
-3, The default value can be evaluated in terms of other arguments 
+3, lazy evaluation for y=0 and dynamic lookup in the sense that values are only evaluated when used
 
 ```{r}
 f1 <- function(x = {y <- 1; 2}, y = 0) {
@@ -179,7 +184,7 @@ f1()
 ```
 
 3. What does this function return? Why? Which principle does it illustrate?
-100. Default arguments are evaluated inside the function. This means that if the expression depends on the current environment the results will differ depending on whether you use the default value or explicitly provide one
+100. Default arguments are evaluated inside the function. This means that if the expression depends on the current environment the results will differ depending on whether you use the default value or explicitly provide one. Dynamic look up, it looks it up in the environment of the functions body and then it would look in the global environment. 
 
 ```{r}
 f2 <- function(x = z) {
@@ -194,14 +199,131 @@ f2()
 
 1. Create a list of all the replacement functions found in the base package. Which ones are primitive functions?
 
+```{r}
+objs <- mget(ls("package:base"), inherits = TRUE)
+funs <- Filter(is.function, objs)
+repfun<-funs[agrep('<-',funs)]
+
+??agrep for '<-'
+
+```
+
+2. What are valid names for user created infix functions?
+
+%something%
+
+3.Create an infix xor() operator.
+rm(list=ls())
+
+```{r}
+'%or%'<-function(x,y){
+  if((x== TRUE & y== FALSE) | (x==FALSE & y== TRUE)) {TRUE}  
+  else {FALSE}
+  }
+
+xor(0,1)
+0 %or% 1
+
+'%orDiane%'<-function (a,b) a!=b
 
 
-What are valid names for user created infix functions?
+```
 
-Create an infix xor() operator.
+4. Create infix versions of the set functions intersect(), union(), and setdiff().
 
-Create infix versions of the set functions intersect(), union(), and setdiff().
 
-Create a replacement function that modifies a random location in a vector.
+```{r}
+rm(list=ls())
 
+y<-1:10
+x<-3:15
+
+
+'%intersect%'<-function(x,y){
+  x[x %in% y]
+}
+
+x %intersect% y
+intersect(x,y)
+
+'%union%'<-function(x,y){
+  unique(c(x,y))
+}
+
+y %union% x
+union(y,x)
+
+'%setdiff%'<-function(x,y){
+  x[!(x %in% y)]
+}
+
+setdiff(y,x)
+y %setdiff% x
+```
+
+
+5. Create a replacement function that modifies a random location in a vector.
+
+data.table!! use it for very big data. Good for copying things faster. Manages very big data!
+
+```{r}
+`ranreplacement<-` <- function(x, value){
+  x[sample(length(x),1)]<-value
+  x
+}
+
+x<-1:15
+ranreplacement(x)<-25
+x
+```
+
+
+
+
+
+1. How does the chdir parameter of source() compare to in_dir()? Why might you prefer one approach to the other?
+
+chdir will actually change the working directory temporarily, whereas the in_dir will not. If you need to do other things like save in that other wd, then chdir might be more useful than indir()
+
+2. What function undoes the action of library()? How do you save and restore the values of options() and par()?
+
+detach-> library
+foo<-par() - par(foo)
+
+
+3. Write a function that opens a graphics device, runs the supplied code, and closes the graphics device (always, regardless of whether or not the plotting code worked).
+
+on.exit(dev.off())
+force(code)
+
+4. We can use on.exit() to implement a simple version of capture.output().
+
+rm(list=ls())
+
+capture.output2 <- function(code) {
+  temp <- tempfile()
+  on.exit(file.remove(temp), add = TRUE)
+
+  sink(temp)
+  on.exit(sink(), add = TRUE)
+
+  force(code)
+  readLines(temp)
+}
+capture.output2(cat("a", "b", "c", sep = "\n"))
+#> [1] "a" "b" "c"
+
+capture.output
+
+capture.output(cat("a", "b", "c", sep = "\n"))
+You might want to compare this function to the real capture.output() and think about the simplifications I’ve made. Is the code easier to understand or harder? Have I removed important functionality?
+
+5. Compare capture.output() to capture.output2(). How do the functions differ? What features have I removed to make the key ideas easier to see? How have I rewritten the key ideas to be easier to understand?
+
+help
+
+
+
+
+**** use on.exit()
 

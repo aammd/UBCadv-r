@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 
@@ -35,15 +36,197 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
       hljs.initHighlighting();
    }, 0);
 }
+=======
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=9" >
+
+<title>Discussion Notes</title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: rgb(88, 72, 246)
+   }
+
+   pre .number {
+     color: rgb(0, 0, 205);
+   }
+
+   pre .comment {
+     color: rgb(76, 136, 107);
+   }
+
+   pre .keyword {
+     color: rgb(0, 0, 255);
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: rgb(3, 106, 7);
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+>>>>>>> upstream/master
 </script>
 
 
 
+<<<<<<< HEAD
 </head>
 
 <body>
 
-<div class="container-fluid">
+<style type="text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+<div class="container-fluid main-container">
 
 
 <div id="header">
@@ -67,45 +250,6 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <hr />
 <div id="discussion-notes" class="section level3">
 <h3>Discussion Notes</h3>
-<pre class="r"><code>mtcars$cyl == 4 | 6</code></pre>
-<pre><code>##  [1] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
-## [15] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
-## [29] TRUE TRUE TRUE TRUE</code></pre>
-<pre class="r"><code>mtcars$cyl == 4 || 6</code></pre>
-<pre><code>## [1] TRUE</code></pre>
-<pre class="r"><code># this works
-mtcars$cyl == 4 | mtcars$cyl == 6</code></pre>
-<pre><code>##  [1]  TRUE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
-## [12] FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE FALSE
-## [23] FALSE FALSE FALSE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE</code></pre>
-<pre class="r"><code># or this
-mtcars$cyl %in% c(4, 6)</code></pre>
-<pre><code>##  [1]  TRUE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE
-## [12] FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE FALSE
-## [23] FALSE FALSE FALSE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE</code></pre>
-<pre class="r"><code># this gives 5 NAs because NA is a logical vector, which gets recycled
-x &lt;- 1:5
-x[NA]</code></pre>
-<p>Jenny showed us this:</p>
-<pre class="r"><code>mod &lt;- lm(mpg ~ wt, data = mtcars)
-str(mod, max.level = 1, give.attr = FALSE)</code></pre>
-<pre><code>## List of 12
-##  $ coefficients : Named num [1:2] 37.29 -5.34
-##  $ residuals    : Named num [1:32] -2.28 -0.92 -2.09 1.3 -0.2 ...
-##  $ effects      : Named num [1:32] -113.65 -29.116 -1.661 1.631 0.111 ...
-##  $ rank         : int 2
-##  $ fitted.values: Named num [1:32] 23.3 21.9 24.9 20.1 18.9 ...
-##  $ assign       : int [1:2] 0 1
-##  $ qr           :List of 5
-##  $ df.residual  : int 30
-##  $ xlevels      : Named list()
-##  $ call         : language lm(formula = mpg ~ wt, data = mtcars)
-##  $ terms        :Classes 'terms', 'formula' length 3 mpg ~ wt
-##  $ model        :'data.frame':   32 obs. of  2 variables:</code></pre>
-<pre class="r"><code># linearize the output and force back into the original structure
-df &lt;- data.frame(x = 1:3, y = 4:6)
-df[] &lt;- sample(as.matrix(df))</code></pre>
-<p><code>|</code> vs. <code>||</code>. The shorter form makes element by element comparisons and the long form compares only the first element of each vector. Normally the long form is used in <code>if</code> statements.</p>
 <hr />
 </div>
 <div id="quiz" class="section level3">
@@ -180,6 +324,131 @@ str(df[&quot;x&quot;])</code></pre>
 <li><em>Fix each of the following common data frame subsetting errors:</em></li>
 </ol>
 <pre class="r"><code>mtcars[mtcars$cyl = 4, ]
+=======
+
+</head>
+
+<body>
+<hr/>
+
+<h3>Discussion Notes</h3>
+
+<hr/>
+
+<h3>Quiz</h3>
+
+<ol>
+<li><em>What does subsetting a vector with: positive integers, negative integers, logical vector, character vector?</em></li>
+</ol>
+
+<p><strong>I guess this means what happens when you subset a vector with one of the above.  A positive integer will select the item at that index and a negative integer will remove the item at that index.  I don&#39;t know about the vectors.</strong></p>
+
+<ol>
+<li><em>What’s the difference between <code>[</code>, <code>[[</code> and <code>$</code> when applied to a list?</em></li>
+</ol>
+
+<p><strong>Subsetting with <code>[</code> will select a list at that location but <code>[[</code> selects the item within that list.  <code>$</code> works for a named list.</strong></p>
+
+<ol>
+<li><em>When should you use <code>drop = FALSE</code>?</em></li>
+</ol>
+
+<p><strong>No one knows!</strong></p>
+
+<ol>
+<li><em>If x is a matrix, what does <code>x[] &lt;- 0</code> do? How is it different to <code>x &lt;- 0</code>?</em></li>
+</ol>
+
+<p><strong>Don&#39;t know.</strong></p>
+
+<ol>
+<li><em>How can you use a named vector to relabel categorical variables?</em></li>
+</ol>
+
+<p><strong>Maybe <code>names(data_frame) &lt;- names(vector)</code> or something like that.</strong></p>
+
+<hr/>
+
+<h3>Data Types</h3>
+
+<h4>Atomic Vectors</h4>
+
+<pre><code class="r">x &lt;- c(1:10)
+x[2]
+</code></pre>
+
+<pre><code>## [1] 2
+</code></pre>
+
+<pre><code class="r">x[c(5, 9)]
+</code></pre>
+
+<pre><code>## [1] 5 9
+</code></pre>
+
+<pre><code class="r">x[-c(5:10)]
+</code></pre>
+
+<pre><code>## [1] 1 2 3 4
+</code></pre>
+
+<pre><code class="r">x[c(TRUE, FALSE, TRUE, TRUE, FALSE)]
+</code></pre>
+
+<pre><code>## [1] 1 3 4 6 8 9
+</code></pre>
+
+<p>An interesting thing about subsetting with a logical vector is that if the logical vector is shorter than the vector being subsetted, it will act like a pattern and repeat over the entire vector (see above).  I guess this is called recycling.</p>
+
+<p>You can use character vectors to select from a named vector.  I did not know that was possible!</p>
+
+<pre><code class="r">y &lt;- c(1:10)
+names(y) &lt;- letters[1:10]
+y
+</code></pre>
+
+<pre><code>##  a  b  c  d  e  f  g  h  i  j 
+##  1  2  3  4  5  6  7  8  9 10
+</code></pre>
+
+<h4>Matrices and Arrays</h4>
+
+<p>Arrays are stored in column order.  If you subset with a number, e.g. <code>array[2]</code> it will count down through each item of each column.</p>
+
+<h4>Data Frames</h4>
+
+<p>List-type vs. Matrix type subestting:</p>
+
+<pre><code class="r">df &lt;- data.frame(x = 1:3, y = 3:1, z = letters[1:3])
+
+# There&#39;s an important difference if you select a single column: matrix
+# subsetting simplifies by default, list subsetting does not.
+str(df[&quot;x&quot;])
+</code></pre>
+
+<pre><code>## &#39;data.frame&#39;:    3 obs. of  1 variable:
+##  $ x: int  1 2 3
+</code></pre>
+
+<pre><code class="r">
+str(df[, &quot;x&quot;])
+</code></pre>
+
+<pre><code>##  int [1:3] 1 2 3
+</code></pre>
+
+<h4>S3 vs. S4 Objects</h4>
+
+<p>Noooooooooooooooooo!!!</p>
+
+<h4>Exercises</h4>
+
+<ol>
+<li><em>Fix each of the following common data frame subsetting errors:</em></li>
+</ol>
+
+<pre><code class="r">mtcars[mtcars$cyl = 4, ]
+>>>>>>> upstream/master
 # to select values equal to 4, use &quot;==&quot;
 mtcars[mtcars$cyl == 4, ]
 
@@ -193,6 +462,7 @@ mtcars[mtcars$cyl &lt;= 5, ]
 
 mtcars[mtcars$cyl == 4 | 6, ]
 # you have to do this:
+<<<<<<< HEAD
 mtcars[mtcars$cyl == 4 | mtcars$cyl == 6, ]</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li><em>Why does <code>x &lt;- 1:5; x[NA]</code> yield five missing values? Hint: why is it different from <code>x[NA_real_]</code>?</em></li>
@@ -256,6 +526,110 @@ data$a</code></pre>
 </ol>
 <pre class="r"><code>mod &lt;- lm(mpg ~ wt, data = mtcars)
 str(mod)</code></pre>
+=======
+mtcars[mtcars$cyl == 4 | mtcars$cyl == 6, ]
+</code></pre>
+
+<ol>
+<li><em>Why does <code>x &lt;- 1:5; x[NA]</code> yield five missing values? Hint: why is it different from <code>x[NA_real_]</code>?</em></li>
+</ol>
+
+<p><strong>Not sure but something to do with <code>NA</code> being logical?</strong></p>
+
+<ol>
+<li><em>What does <code>upper.tri()</code> return? How does subsetting a matrix with it work? Do we need any additional subsetting rules to describe its behaviour?</em></li>
+</ol>
+
+<pre><code class="r">x &lt;- outer(1:5, 1:5, FUN = &quot;*&quot;)
+x[upper.tri(x)]
+</code></pre>
+
+<p><strong>It returns <code>TRUE</code> in the upper triangle of the matrix so subsetting with it returns the values in the upper triangle, column by column.</strong></p>
+
+<ol>
+<li><em>Why does <code>mtcars[1:20]</code> return an error? How does it differ from the similar <code>mtcars[1:20, ]</code>?</em></li>
+</ol>
+
+<p><strong>Cuz you didn&#39;t tell it which columns to select.</strong></p>
+
+<ol>
+<li><em>Implement your own function that extracts the diagonal entries from a matrix (it should behave like <code>diag(x)</code> where <code>x</code> is a matrix).</em></li>
+</ol>
+
+<p><strong>Whyyyy????</strong></p>
+
+<pre><code class="r">x &lt;- outer(1:4, 1:5, FUN = &quot;*&quot;)
+diag(x)
+</code></pre>
+
+<pre><code>## [1]  1  4  9 16
+</code></pre>
+
+<pre><code class="r">
+get_diag &lt;- function(input_matrix) {
+    n &lt;- min(dim(input_matrix))
+    select &lt;- vector()
+    for (i in 1:n) {
+        select[i] &lt;- input_matrix[i, i]
+    }
+    return(select)
+}
+
+get_diag(x)
+</code></pre>
+
+<pre><code>## [1]  1  4  9 16
+</code></pre>
+
+<ol>
+<li><em>What does <code>df[is.na(df)] &lt;- 0</code> do? How does it work?</em></li>
+</ol>
+
+<p><strong>It sets <code>NA</code> values to 0 by selecting those values (<code>is.na</code> generates a data frame with <code>TRUE</code> or <code>FALSE</code> depending on whether the condition is satisfied)</strong></p>
+
+<hr/>
+
+<h3>Subsetting Operators</h3>
+
+<p>Some subset operations are <em>simplifying</em> and drop a bunch of information and others are <em>preserving</em> and retain the same structure as the original data.</p>
+
+<p>To access a column with a name contained in another variable, use <code>[[</code>. e.g.</p>
+
+<pre><code class="r">data &lt;- data.frame(a = c(3:5), b = c(10:12), c = c(89:91))
+var &lt;- &quot;a&quot;
+
+data$var
+</code></pre>
+
+<pre><code>## NULL
+</code></pre>
+
+<pre><code class="r">data[[var]]
+</code></pre>
+
+<pre><code>## [1] 3 4 5
+</code></pre>
+
+<p>The <code>$</code> can do partial name matching.  Whoa&hellip;.dangerous.</p>
+
+<pre><code class="r">data2 &lt;- data.frame(abc = c(3:5), bcd = c(10:12), cde = c(89:91))
+data$a
+</code></pre>
+
+<pre><code>## [1] 3 4 5
+</code></pre>
+
+<h4>Exercises</h4>
+
+<ol>
+<li><em>Given a linear model, e.g. <code>mod &lt;- lm(mpg ~ wt, data = mtcars)</code>, extract the residual degrees of freedom. Extract the R squared from the model summary (<code>summary(mod)</code>)</em></li>
+</ol>
+
+<pre><code class="r">mod &lt;- lm(mpg ~ wt, data = mtcars)
+str(mod)
+</code></pre>
+
+>>>>>>> upstream/master
 <pre><code>## List of 12
 ##  $ coefficients : Named num [1:2] 37.29 -5.34
 ##   ..- attr(*, &quot;names&quot;)= chr [1:2] &quot;(Intercept)&quot; &quot;wt&quot;
@@ -281,7 +655,11 @@ str(mod)</code></pre>
 ##  $ df.residual  : int 30
 ##  $ xlevels      : Named list()
 ##  $ call         : language lm(formula = mpg ~ wt, data = mtcars)
+<<<<<<< HEAD
 ##  $ terms        :Classes 'terms', 'formula' length 3 mpg ~ wt
+=======
+##  $ terms        :Classes &#39;terms&#39;, &#39;formula&#39; length 3 mpg ~ wt
+>>>>>>> upstream/master
 ##   .. ..- attr(*, &quot;variables&quot;)= language list(mpg, wt)
 ##   .. ..- attr(*, &quot;factors&quot;)= int [1:2, 1] 0 1
 ##   .. .. ..- attr(*, &quot;dimnames&quot;)=List of 2
@@ -295,10 +673,17 @@ str(mod)</code></pre>
 ##   .. ..- attr(*, &quot;predvars&quot;)= language list(mpg, wt)
 ##   .. ..- attr(*, &quot;dataClasses&quot;)= Named chr [1:2] &quot;numeric&quot; &quot;numeric&quot;
 ##   .. .. ..- attr(*, &quot;names&quot;)= chr [1:2] &quot;mpg&quot; &quot;wt&quot;
+<<<<<<< HEAD
 ##  $ model        :'data.frame':   32 obs. of  2 variables:
 ##   ..$ mpg: num [1:32] 21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...
 ##   ..$ wt : num [1:32] 2.62 2.88 2.32 3.21 3.44 ...
 ##   ..- attr(*, &quot;terms&quot;)=Classes 'terms', 'formula' length 3 mpg ~ wt
+=======
+##  $ model        :&#39;data.frame&#39;:   32 obs. of  2 variables:
+##   ..$ mpg: num [1:32] 21 21 22.8 21.4 18.7 18.1 14.3 24.4 22.8 19.2 ...
+##   ..$ wt : num [1:32] 2.62 2.88 2.32 3.21 3.44 ...
+##   ..- attr(*, &quot;terms&quot;)=Classes &#39;terms&#39;, &#39;formula&#39; length 3 mpg ~ wt
+>>>>>>> upstream/master
 ##   .. .. ..- attr(*, &quot;variables&quot;)= language list(mpg, wt)
 ##   .. .. ..- attr(*, &quot;factors&quot;)= int [1:2, 1] 0 1
 ##   .. .. .. ..- attr(*, &quot;dimnames&quot;)=List of 2
@@ -312,6 +697,7 @@ str(mod)</code></pre>
 ##   .. .. ..- attr(*, &quot;predvars&quot;)= language list(mpg, wt)
 ##   .. .. ..- attr(*, &quot;dataClasses&quot;)= Named chr [1:2] &quot;numeric&quot; &quot;numeric&quot;
 ##   .. .. .. ..- attr(*, &quot;names&quot;)= chr [1:2] &quot;mpg&quot; &quot;wt&quot;
+<<<<<<< HEAD
 ##  - attr(*, &quot;class&quot;)= chr &quot;lm&quot;</code></pre>
 <pre class="r"><code>(df_mod &lt;- mod[[&quot;df.residual&quot;]])</code></pre>
 <pre><code>## [1] 30</code></pre>
@@ -320,6 +706,26 @@ str(mod_sum)</code></pre>
 <pre><code>## List of 11
 ##  $ call         : language lm(formula = mpg ~ wt, data = mtcars)
 ##  $ terms        :Classes 'terms', 'formula' length 3 mpg ~ wt
+=======
+##  - attr(*, &quot;class&quot;)= chr &quot;lm&quot;
+</code></pre>
+
+<pre><code class="r">
+(df_mod &lt;- mod[[&quot;df.residual&quot;]])
+</code></pre>
+
+<pre><code>## [1] 30
+</code></pre>
+
+<pre><code class="r">
+mod_sum &lt;- summary(mod)
+str(mod_sum)
+</code></pre>
+
+<pre><code>## List of 11
+##  $ call         : language lm(formula = mpg ~ wt, data = mtcars)
+##  $ terms        :Classes &#39;terms&#39;, &#39;formula&#39; length 3 mpg ~ wt
+>>>>>>> upstream/master
 ##   .. ..- attr(*, &quot;variables&quot;)= language list(mpg, wt)
 ##   .. ..- attr(*, &quot;factors&quot;)= int [1:2, 1] 0 1
 ##   .. .. ..- attr(*, &quot;dimnames&quot;)=List of 2
@@ -351,6 +757,7 @@ str(mod_sum)</code></pre>
 ##   ..- attr(*, &quot;dimnames&quot;)=List of 2
 ##   .. ..$ : chr [1:2] &quot;(Intercept)&quot; &quot;wt&quot;
 ##   .. ..$ : chr [1:2] &quot;(Intercept)&quot; &quot;wt&quot;
+<<<<<<< HEAD
 ##  - attr(*, &quot;class&quot;)= chr &quot;summary.lm&quot;</code></pre>
 <pre class="r"><code>(rsq_mod &lt;- mod_sum[[&quot;r.squared&quot;]])</code></pre>
 <pre><code>## [1] 0.7528</code></pre>
@@ -367,6 +774,34 @@ x[c(1, NA)] &lt;- 0</code></pre>
 mtcars[] &lt;- lapply(mtcars, as.integer)
 str(mtcars[])</code></pre>
 <pre><code>## 'data.frame':    32 obs. of  11 variables:
+=======
+##  - attr(*, &quot;class&quot;)= chr &quot;summary.lm&quot;
+</code></pre>
+
+<pre><code class="r">
+(rsq_mod &lt;- mod_sum[[&quot;r.squared&quot;]])
+</code></pre>
+
+<pre><code>## [1] 0.7528
+</code></pre>
+
+<h3>Subsetting and Assignment</h3>
+
+<p>Can you combine integer indices with integer NA?</p>
+
+<pre><code class="r">x &lt;- c(1:5)
+
+# this is working OK.
+x[c(1, NA)] &lt;- 0
+</code></pre>
+
+<pre><code class="r">data(mtcars)
+mtcars[] &lt;- lapply(mtcars, as.integer)
+str(mtcars[])
+</code></pre>
+
+<pre><code>## &#39;data.frame&#39;:    32 obs. of  11 variables:
+>>>>>>> upstream/master
 ##  $ mpg : int  21 21 22 21 18 18 14 24 22 19 ...
 ##  $ cyl : int  6 6 4 6 8 6 8 4 4 6 ...
 ##  $ disp: int  160 160 108 258 360 225 360 146 140 167 ...
@@ -377,9 +812,20 @@ str(mtcars[])</code></pre>
 ##  $ vs  : int  0 0 1 1 0 1 0 1 1 1 ...
 ##  $ am  : int  1 1 1 0 0 0 0 0 0 0 ...
 ##  $ gear: int  4 4 4 3 3 3 3 4 4 4 ...
+<<<<<<< HEAD
 ##  $ carb: int  4 4 1 1 2 1 4 2 2 4 ...</code></pre>
 <pre class="r"><code>mtcars &lt;- lapply(mtcars, as.integer)
 str(mtcars)</code></pre>
+=======
+##  $ carb: int  4 4 1 1 2 1 4 2 2 4 ...
+</code></pre>
+
+<pre><code class="r">
+mtcars &lt;- lapply(mtcars, as.integer)
+str(mtcars)
+</code></pre>
+
+>>>>>>> upstream/master
 <pre><code>## List of 11
 ##  $ mpg : int [1:32] 21 21 22 21 18 18 14 24 22 19 ...
 ##  $ cyl : int [1:32] 6 6 4 6 8 6 8 4 4 6 ...
@@ -391,6 +837,7 @@ str(mtcars)</code></pre>
 ##  $ vs  : int [1:32] 0 0 1 1 0 1 0 1 1 1 ...
 ##  $ am  : int [1:32] 1 1 1 0 0 0 0 0 0 0 ...
 ##  $ gear: int [1:32] 4 4 4 3 3 3 3 4 4 4 ...
+<<<<<<< HEAD
 ##  $ carb: int [1:32] 4 4 1 1 2 1 4 2 2 4 ...</code></pre>
 </div>
 <div id="applications" class="section level3">
@@ -408,6 +855,33 @@ lookup[students$sex]</code></pre>
 ## &quot;Female&quot;   &quot;Male&quot;</code></pre>
 <p>Random samples / bootstrap:</p>
 <pre class="r"><code>(x &lt;- data.frame(a = c(1:9), b = letters[1:9]))</code></pre>
+=======
+##  $ carb: int [1:32] 4 4 1 1 2 1 4 2 2 4 ...
+</code></pre>
+
+<h3>Applications</h3>
+
+<p>Lookup tables:</p>
+
+<pre><code class="r">students &lt;- data.frame(name = c(LETTERS[1:10]), sex = c(&quot;m&quot;, &quot;f&quot;, &quot;m&quot;, &quot;f&quot;, 
+    &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;m&quot;, &quot;m&quot;, &quot;f&quot;), student.number = sample(c(3333:8888), 10))
+lookup &lt;- c(m = &quot;Male&quot;, f = &quot;Female&quot;)
+
+lookup[students$sex]
+</code></pre>
+
+<pre><code>##        f        m        f        m        m        m        m        f 
+## &quot;Female&quot;   &quot;Male&quot; &quot;Female&quot;   &quot;Male&quot;   &quot;Male&quot;   &quot;Male&quot;   &quot;Male&quot; &quot;Female&quot; 
+##        f        m 
+## &quot;Female&quot;   &quot;Male&quot;
+</code></pre>
+
+<p>Random samples / bootstrap:</p>
+
+<pre><code class="r">(x &lt;- data.frame(a = c(1:9), b = letters[1:9]))
+</code></pre>
+
+>>>>>>> upstream/master
 <pre><code>##   a b
 ## 1 1 a
 ## 2 2 b
@@ -417,25 +891,60 @@ lookup[students$sex]</code></pre>
 ## 6 6 f
 ## 7 7 g
 ## 8 8 h
+<<<<<<< HEAD
 ## 9 9 i</code></pre>
 <pre class="r"><code>x[sample(nrow(x),3),]</code></pre>
 <pre><code>##   a b
-## 8 8 h
-## 4 4 d
-## 5 5 e</code></pre>
+## 3 3 c
+## 9 9 i
+## 4 4 d</code></pre>
 <p>Ordering:</p>
 <pre class="r"><code>(y &lt;- x[sample(nrow(x),nrow(x)),])</code></pre>
 <pre><code>##   a b
-## 7 7 g
 ## 4 4 d
+## 7 7 g
 ## 5 5 e
 ## 8 8 h
-## 1 1 a
-## 2 2 b
 ## 9 9 i
-## 3 3 c
-## 6 6 f</code></pre>
+## 1 1 a
+## 6 6 f
+## 2 2 b
+## 3 3 c</code></pre>
 <pre class="r"><code>(y &lt;- y[order(y$a), ])</code></pre>
+=======
+## 9 9 i
+</code></pre>
+
+<pre><code class="r">x[sample(nrow(x), 3), ]
+</code></pre>
+
+<pre><code>##   a b
+## 2 2 b
+## 5 5 e
+## 3 3 c
+</code></pre>
+
+<p>Ordering:</p>
+
+<pre><code class="r">(y &lt;- x[sample(nrow(x), nrow(x)), ])
+</code></pre>
+
+<pre><code>##   a b
+## 2 2 b
+## 6 6 f
+## 8 8 h
+## 5 5 e
+## 9 9 i
+## 1 1 a
+## 7 7 g
+## 3 3 c
+## 4 4 d
+</code></pre>
+
+<pre><code class="r">(y &lt;- y[order(y$a), ])
+</code></pre>
+
+>>>>>>> upstream/master
 <pre><code>##   a b
 ## 1 1 a
 ## 2 2 b
@@ -445,6 +954,7 @@ lookup[students$sex]</code></pre>
 ## 6 6 f
 ## 7 7 g
 ## 8 8 h
+<<<<<<< HEAD
 ## 9 9 i</code></pre>
 </div>
 <div id="exercises-2" class="section level3">
@@ -453,26 +963,41 @@ lookup[students$sex]</code></pre>
 <li><em>How would you randomly permute the columns of a data frame? (This is an important technique in random forests). Can you simultaneously permute the rows and columns in one step?</em></li>
 </ol>
 <pre class="r"><code>(df &lt;- data.frame(a = c(1:4), b = c(5:8), c = c(9:12), d = c(13:16)))</code></pre>
+=======
+## 9 9 i
+</code></pre>
+
+<h3>Exercises</h3>
+
+<ol>
+<li><em>How would you randomly permute the columns of a data frame? (This is an important technique in random forests). Can you simultaneously permute the rows and columns in one step?</em></li>
+</ol>
+
+<pre><code class="r">(df &lt;- data.frame(a = c(1:4), b = c(5:8), c = c(9:12), d = c(13:16)))
+</code></pre>
+
+>>>>>>> upstream/master
 <pre><code>##   a b  c  d
 ## 1 1 5  9 13
 ## 2 2 6 10 14
 ## 3 3 7 11 15
+<<<<<<< HEAD
 ## 4 4 8 12 16</code></pre>
 <pre class="r"><code># randomly permute the columns
 df[ , sample(ncol(df), ncol(df))]</code></pre>
-<pre><code>##   a  c  d b
-## 1 1  9 13 5
-## 2 2 10 14 6
-## 3 3 11 15 7
-## 4 4 12 16 8</code></pre>
+<pre><code>##   a  d b  c
+## 1 1 13 5  9
+## 2 2 14 6 10
+## 3 3 15 7 11
+## 4 4 16 8 12</code></pre>
 <pre class="r"><code># randomize columns and rows simultaneously
 # although I doubt this is really happening simultaneously
 df[sample(nrow(df), nrow(df)), sample(ncol(df), ncol(df))]</code></pre>
-<pre><code>##    c b a  d
-## 2 10 6 2 14
-## 1  9 5 1 13
-## 3 11 7 3 15
-## 4 12 8 4 16</code></pre>
+<pre><code>##    c  d b a
+## 2 10 14 6 2
+## 4 12 16 8 4
+## 3 11 15 7 3
+## 1  9 13 5 1</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li><em>How would you select a random sample of <code>m</code> rows from a data frame? What if the sample had to be contiguous (i.e. with an initial row, a final row, and every row in between)?</em></li>
 </ol>
@@ -483,17 +1008,17 @@ df[sample(nrow(df), nrow(df)), sample(ncol(df), ncol(df))]</code></pre>
 
 sample_rows(df, 3)</code></pre>
 <pre><code>##     a b  c  d
-## 4   4 8 12 16
-## 2   2 6 10 14
-## 4.1 4 8 12 16</code></pre>
+## 1   1 5  9 13
+## 1.1 1 5  9 13
+## 4   4 8 12 16</code></pre>
 <pre class="r"><code>sample_rows(df, 6)</code></pre>
 <pre><code>##     a b  c  d
 ## 1   1 5  9 13
-## 4   4 8 12 16
 ## 2   2 6 10 14
-## 1.1 1 5  9 13
 ## 3   3 7 11 15
-## 2.1 2 6 10 14</code></pre>
+## 4   4 8 12 16
+## 1.1 1 5  9 13
+## 4.1 4 8 12 16</code></pre>
 <pre class="r"><code>sample_contig_rows &lt;- function(input_df)
 {
   (row_nums &lt;- sample(nrow(input_df), 2))
@@ -501,9 +1026,79 @@ sample_rows(df, 3)</code></pre>
 }
 
 sample_contig_rows(df)</code></pre>
+=======
+## 4 4 8 12 16
+</code></pre>
+
+<pre><code class="r">
+# randomly permute the columns
+df[, sample(ncol(df), ncol(df))]
+</code></pre>
+
+<pre><code>##    d  c b a
+## 1 13  9 5 1
+## 2 14 10 6 2
+## 3 15 11 7 3
+## 4 16 12 8 4
+</code></pre>
+
+<pre><code class="r">
+# randomize columns and rows simultaneously although I doubt this is really
+# happening simultaneously
+df[sample(nrow(df), nrow(df)), sample(ncol(df), ncol(df))]
+</code></pre>
+
+<pre><code>##   b  c a  d
+## 1 5  9 1 13
+## 3 7 11 3 15
+## 2 6 10 2 14
+## 4 8 12 4 16
+</code></pre>
+
+<ol>
+<li><em>How would you select a random sample of <code>m</code> rows from a data frame? What if the sample had to be contiguous (i.e. with an initial row, a final row, and every row in between)?</em></li>
+</ol>
+
+<pre><code class="r">sample_rows &lt;- function(input_df, sample_size) {
+    input_df[sample(nrow(input_df), sample_size, replace = TRUE), ]
+}
+
+sample_rows(df, 3)
+</code></pre>
+
+<pre><code>##     a b  c  d
+## 3   3 7 11 15
+## 3.1 3 7 11 15
+## 3.2 3 7 11 15
+</code></pre>
+
+<pre><code class="r">sample_rows(df, 6)
+</code></pre>
+
+<pre><code>##     a b  c  d
+## 4   4 8 12 16
+## 2   2 6 10 14
+## 2.1 2 6 10 14
+## 3   3 7 11 15
+## 1   1 5  9 13
+## 3.1 3 7 11 15
+</code></pre>
+
+<pre><code class="r">sample_contig_rows &lt;- function(input_df) {
+    (row_nums &lt;- sample(nrow(input_df), 2))
+    input_df[min(row_nums):max(row_nums), ]
+}
+
+sample_contig_rows(df)
+</code></pre>
+
+>>>>>>> upstream/master
 <pre><code>##   a b  c  d
 ## 1 1 5  9 13
-## 2 2 6 10 14</code></pre>
+## 2 2 6 10 14
+## 3 3 7 11 15
+<<<<<<< HEAD
+## 4 4 8 12 16</code></pre>
 <pre class="r"><code># if you want a set number of rows:
 sample_contig_rows_2 &lt;- function(input_df, sample_size)
 {
@@ -527,29 +1122,69 @@ sample_contig_rows_2(df, 5)</code></pre>
 <pre><code>## Warning: Sample size too large.  Selecting all rows starting from a random
 ## index.</code></pre>
 <pre><code>##   a b  c  d
-## 3 3 7 11 15
-## 4 4 8 12 16</code></pre>
+## 1 1 5  9 13
+## 2 2 6 10 14</code></pre>
 <pre class="r"><code>sample_contig_rows_2(df, 4)</code></pre>
 <pre><code>## Warning: You just selected the entire data frame!</code></pre>
+=======
+## 4 4 8 12 16
+</code></pre>
+
+<pre><code class="r">
+# if you want a set number of rows:
+sample_contig_rows_2 &lt;- function(input_df, sample_size) {
+    # check that the sample size is smaller than the number of rows
+    if (sample_size &gt; nrow(input_df)) {
+        warning(&quot;Sample size too large.  Selecting all rows starting from a random index.&quot;)
+        return(sample_contig_rows(input_df))
+    } else if (sample_size == nrow(input_df)) {
+        warning(&quot;You just selected the entire data frame!&quot;)
+        return(input_df)
+    } else {
+        row_max &lt;- nrow(input_df) - sample_size + 1
+        first_row &lt;- sample(1:row_max, 1)
+        return(input_df[first_row:(first_row + sample_size - 1), ])
+    }
+}
+
+sample_contig_rows_2(df, 5)
+</code></pre>
+
+<pre><code>## Warning: Sample size too large.  Selecting all rows starting from a random
+## index.
+</code></pre>
+
+<pre><code>##   a b  c  d
+## 3 3 7 11 15
+## 4 4 8 12 16
+</code></pre>
+
+<pre><code class="r">sample_contig_rows_2(df, 4)
+</code></pre>
+
+<pre><code>## Warning: You just selected the entire data frame!
+</code></pre>
+
+>>>>>>> upstream/master
 <pre><code>##   a b  c  d
 ## 1 1 5  9 13
 ## 2 2 6 10 14
 ## 3 3 7 11 15
+<<<<<<< HEAD
 ## 4 4 8 12 16</code></pre>
-<pre class="r"><code>sample_contig_rows_2(df, 3)</code></pre>
+<pre class="r"><code>sample_contig_rows_2(df, 2)</code></pre>
 <pre><code>##   a b  c  d
-## 1 1 5  9 13
-## 2 2 6 10 14
-## 3 3 7 11 15</code></pre>
+## 3 3 7 11 15
+## 4 4 8 12 16</code></pre>
 <ol start="3" style="list-style-type: decimal">
 <li><em>How could you put the columns in a data frame in alphaetical order?</em></li>
 </ol>
 <pre class="r"><code>(df3a &lt;- df[ ,sample(ncol(df),ncol(df))])</code></pre>
-<pre><code>##    d a  c b
-## 1 13 1  9 5
-## 2 14 2 10 6
-## 3 15 3 11 7
-## 4 16 4 12 8</code></pre>
+<pre><code>##    c b  d a
+## 1  9 5 13 1
+## 2 10 6 14 2
+## 3 11 7 15 3
+## 4 12 8 16 4</code></pre>
 <pre class="r"><code>(df3b &lt;- df3a[ ,order(names(df3a))])</code></pre>
 <pre><code>##   a b  c  d
 ## 1 1 5  9 13
@@ -582,3 +1217,44 @@ $(document).ready(function () {
 
 </body>
 </html>
+=======
+## 4 4 8 12 16
+</code></pre>
+
+<pre><code class="r">sample_contig_rows_2(df, 2)
+</code></pre>
+
+<pre><code>##   a b  c  d
+## 2 2 6 10 14
+## 3 3 7 11 15
+</code></pre>
+
+<ol>
+<li><em>How could you put the columns in a data frame in alphaetical order?</em></li>
+</ol>
+
+<pre><code class="r">(df3a &lt;- df[, sample(ncol(df), ncol(df))])
+</code></pre>
+
+<pre><code>##   a  d  c b
+## 1 1 13  9 5
+## 2 2 14 10 6
+## 3 3 15 11 7
+## 4 4 16 12 8
+</code></pre>
+
+<pre><code class="r">(df3b &lt;- df3a[, order(names(df3a))])
+</code></pre>
+
+<pre><code>##   a b  c  d
+## 1 1 5  9 13
+## 2 2 6 10 14
+## 3 3 7 11 15
+## 4 4 8 12 16
+</code></pre>
+
+</body>
+
+</html>
+
+>>>>>>> upstream/master
