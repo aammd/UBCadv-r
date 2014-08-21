@@ -72,7 +72,7 @@ Notes....
 
 #### Using `parent.env()` and a loop (or a recursive function), verify that the ancestors of `globalenv()` include `baseenv()` and `emptyenv()`. Use the same basic idea to implement your own version of `search()`.
 
-*First, I use a loop to detail the ancestry of `globalenv()`:*
+First, I use a loop to detail the ancestry of `globalenv()`. Warning: this is UGLY:
 
 ```r
 library(plyr)
@@ -91,7 +91,9 @@ env_stuff <- mutate(env_stuff,
 env_stuff <- mutate(env_stuff, environment = gsub("[<>]", "", environment),
                     name = gsub('\"', '', name))
 ```
-*Here's the ancestry:*
+
+Here's the ancestry:
+
 
 |environment        |name              |
 |:------------------|:-----------------|
@@ -108,7 +110,9 @@ env_stuff <- mutate(env_stuff, environment = gsub("[<>]", "", environment),
 |base               |NA                |
 |R_EmptyEnv         |NA                |
 
-*Yep, I see that the ancestors of `globalenv()` include `baseenv()` and `emptyenv()`. Now I'll package this as a function, i.e. write my own version of `search()`, using recursion and taking advantage of `environmentName()`.*
+Yep, I see that the ancestors of `globalenv()` include `baseenv()` and `emptyenv()`.
+
+Now I'll write a proper recursive function, i.e. write my own version of `search()`, and take advantage of `environmentName()`.
 
 
 ```r
@@ -139,6 +143,8 @@ search()
 ##  [7] "package:utils"     "package:datasets"  "package:methods"  
 ## [10] "Autoloads"         "package:base"
 ```
+
+Other than minor differences in name formatting, my function appears to be equivalent to `search()`.
 
 ## Recursing over environments
 
@@ -190,8 +196,56 @@ j_where("median")
 ## [1] "package:stats"
 ```
 
-
 #### Write your own version of `get()` using a function written in the style of `where()`.
+
+
+```r
+j_get <- function(name, env = parent.frame()) {
+  if (identical(env, emptyenv())) {
+    # Base case
+    stop("Can't find ", name, call. = FALSE)
+    
+  } else if (exists(name, envir = env, inherits = FALSE)) {
+    # Success case
+    return(eval(as.name(name), envir = env))
+    
+  } else {
+    # Recursive case
+    j_get(name, parent.env(env))
+    
+  }
+}
+get("+")
+```
+
+```
+## function (e1, e2)  .Primitive("+")
+```
+
+```r
+j_get("+")
+```
+
+```
+## function (e1, e2)  .Primitive("+")
+```
+
+```r
+get("i")
+```
+
+```
+## [1] 12
+```
+
+```r
+j_get("i")
+```
+
+```
+## [1] 12
+```
+
 
 #### Write a function called `fget()` that finds only function objects. It should have two arguments, `name` and `env`, and should obey the regular scoping rules for functions: if there's an object with a matching name that's not a function, look in the parent. For an added challenge, also add an `inherits` argument which controls whether the function recurses up the parents or only looks in one environment.
 
