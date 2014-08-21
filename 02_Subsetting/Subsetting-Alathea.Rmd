@@ -13,6 +13,37 @@ output:
 
 ### Discussion Notes
 
+```{r}
+mtcars$cyl == 4 | 6
+mtcars$cyl == 4 || 6
+
+# this works
+mtcars$cyl == 4 | mtcars$cyl == 6
+# or this
+mtcars$cyl %in% c(4, 6)
+```
+
+```{r eval = FALSE}
+# this gives 5 NAs because NA is a logical vector, which gets recycled
+x <- 1:5
+x[NA]
+```
+
+Jenny showed us this:
+
+```{r}
+mod <- lm(mpg ~ wt, data = mtcars)
+str(mod, max.level = 1, give.attr = FALSE)
+```
+
+```{r}
+# linearize the output and force back into the original structure
+df <- data.frame(x = 1:3, y = 4:6)
+df[] <- sample(as.matrix(df))
+```
+
+`|` vs. `||`.  The shorter form makes element by element comparisons and the long form compares only the first element of each vector.  Normally the long form is used in `if` statements.
+
 ***
 
 ### Quiz
@@ -291,7 +322,11 @@ sample_contig_rows_2 <- function(input_df, sample_size)
 sample_contig_rows_2(df, 5)
 sample_contig_rows_2(df, 4)
 <<<<<<< HEAD
+<<<<<<< HEAD
 sample_contig_rows_2(df, 2)
+=======
+sample_contig_rows_2(df, 3)
+>>>>>>> upstream/master
 =======
 sample_contig_rows_2(df, 3)
 >>>>>>> upstream/master

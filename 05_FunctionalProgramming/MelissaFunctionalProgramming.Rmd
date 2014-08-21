@@ -1,0 +1,264 @@
+---
+title: "Funtional Programming"
+author: "Melissa"
+date: "August 14, 2014"
+output: html_document
+---
+
+rm(list=ls())
+library(pryr)
+
+```{r setup, include = FALSE, cache = FALSE}
+knitr::opts_chunk$set(error = TRUE)
+```
+
+**Motivation**
+
+```{r}
+set.seed(1014)
+df <- data.frame(replicate(6, sample(c(1:10, -99), 6, rep = TRUE)))
+names(df) <- letters[1:6]
+df
+
+fix_missing <- function(x) {
+  x[x == -99] <- NA
+  x
+}
+df[] <- lapply(df, fix_missing)
+
+```
+
+-lapply() is called a functional, because it takes a function as an argument
+-Another functional programming technique: storing functions in lists
+
+```{r}
+summary <- function(x) {
+  funs <- c(mean, median, sd, mad, IQR)
+  lapply(funs, function(f) f(x, na.rm = TRUE))
+}
+
+summary(df)
+
+summary <- function(x) {
+ c(mean(x, na.rm = TRUE),
+   median(x, na.rm = TRUE),
+   sd(x, na.rm = TRUE),
+   mad(x, na.rm = TRUE),
+   IQR(x, na.rm = TRUE))
+}
+```
+Question?- the summary above didnt apply the functions to all the columns right?
+
+
+
+**Anonymous functions**
+
+1. Given a function, like "mean", match.fun() lets you find a function. Given a function, can you find its name? Why doesn’t that make sense in R?
+
+No because functions in R are not immediately bound to a name. This is why you can have anonymous functions.
+
+```{r}
+match.fun(sd)
+```
+
+2. Use lapply() and an anonymous function to find the coefficient of variation (the standard deviation divided by the mean) for all columns in the mtcars dataset.
+
+```{r}
+lapply(mtcars, FUN=function(x) sd(x)/mean(x))
+
+```
+
+
+3. Use integrate() and an anonymous function to find the area under the curve for the following functions. Use Wolfram Alpha to check your answers.
+
+y = x ^ 2 - x, x in [0, 10]
+
+```{r}
+integrate(f= function(x) x^2-x, lower=0, upper=10)
+
+```
+
+y = sin(x) + cos(x), x in [-π, π]
+
+```{r}
+integrate(f= function(x) sin(x) + cos(x), lower=-pi, upper=pi)
+
+```
+
+y = exp(x) / x, x in [10, 20]
+
+```{r}
+integrate(f= function(x) exp(x)/x, lower=10, upper=20)
+
+```
+
+
+4. A good rule of thumb is that an anonymous function should fit on one line and shouldn’t need to use {}. Review your code. Where could you have used an anonymous function instead of a named function? Where should you have used a named function instead of an anonymous function?
+
+
+**Closures**
+
+-Closures get their name because they enclose the environment of the parent function and can access all its variables
+-unenclose() This function replaces variables defined in the enclosing environment with their values
+-Function factories are particularly well suited to maximum likelihood problems
+-Having variables at two levels allows you to maintain state across function invocations. This is possible because while the execution environment is refreshed every time, the enclosing environment is constant.
+
+
+
+```{r}
+i <- 0
+new_counter2 <- function() {
+  i <<- i + 1
+  i
+}
+
+new_counter2()
+new_counter2()
+```
+Counter 2 does increase everytime the function is called because i is changed in the global environment using <<-
+However, new_counter has to be called for the counter to increase and it doesnt create another function. 
+
+```{r}
+new_counter3 <- function() {
+  i <- 0
+  function() {
+    i <- i + 1
+    i
+  }
+}
+
+counter_one<-new_counter3()
+counter_one()
+counter_one()
+```
+In this case, in counter 3, a new function is created, however, since the counter is not modified in the closure but on the calling environment, it is restarted every time the function counter_one is called. Not using <<- means the counter is not modified in the parent environment. 
+
+
+1. Why are functions created by other functions called closures?
+
+Because they enclose the environment of the parent environment, and they can use all of the parents objects. 
+
+2. What does the following statistical function do? What would be a better name for it? (The existing name is a bit of a hint.)
+
+It creates two functions depending on the value of lambda. One where if lamba is zero, it  creates a function that calculates the log of x, otherwise, it creates a function that calculates x to the power of lamba-1/lambda.
+
+```{r}
+bc <- function(lambda) {
+  if (lambda == 0) {
+    function(x) log(x)
+  } else {
+    function(x) (x ^ lambda - 1) / lambda
+  }
+}
+
+```
+
+
+3. What does approxfun() do? What does it return?
+
+aproxfun() is a function that creates a function that interpolates between data points. 
+It returns a function
+
+```{r}
+x<-1:10
+y<-rnorm(10)
+
+plot(x,y)
+inter<-approxfun(x,y)
+inter
+inter(5:10)
+
+```
+
+
+4. What does ecdf() do? What does it return?
+
+ecdf creates a function that returns the percentiles for x
+
+5. Create a function that creates functions that compute the ith central moment of a numeric vector. You can test it by running the following code:
+
+
+```{r}
+moment<-function(k){
+  function(x){
+    if(!is.numeric(x)){stop('x not numeric')}
+    m<-(1/length(x))*((sum(x-mean(x)))^k)
+    return(m)
+  } 
+}
+```
+
+```{r}
+m1 <- moment(1)
+m2 <- moment(2)
+
+x <- runif(100)
+stopifnot(all.equal(m1(x), 0))
+stopifnot(all.equal(m2(x), var(x) * 99 / 100))
+
+```
+
+
+
+6. Create a function pick() that takes an index, i, as an argument and returns a function with an argument x that subsets x with i.
+
+```{r}
+pick<-function(i){
+  function(x){
+    x[[i]]
+  }
+}
+
+lapply(mtcars, pick(5))
+# should do the same as this
+lapply(mtcars, function(x) x[[5]])
+```
+
+
+**List of functions**
+
+-easier to work with groups of related functions
+-to summarise an object in multiple ways
+
+
+1. Implement a summary function that works like base::summary(), but uses a list of functions. Modify the function so it returns a closure, making it possible to use it as a function factory.
+
+```{r}
+summary(x)
+
+sum_Melissa<-list(
+  Mel_min = function(x) min(x),
+  Mel_1Qua = function(x) quantile(x,0.25),
+  Mel_median = function(x) median(x),
+  Mel_mean = function(x) mean(x),
+  Mel_3Qua = function(x) quantile(x,0.75),
+  Mel_max = function(x) max(x)
+  )
+
+lapply(sum_Melissa,function(f) f(x))
+
+sum_Melissa_factory<-function(){
+  list(
+    Mel_min<- function(x) min(x),
+  Mel_1Qua<- function(x) quantile(x,0.25),
+  Mel_median<- function(x) median(x),
+  Mel_mean<- function(x) mean(x),
+  Mel_3Qua<- function(x) quantile(x,0.75),
+  Mel_max<-function(x) max(x)
+  ) 
+}
+
+
+m<-sum_Melissa_factory()
+m[[2]](1:10)
+
+```
+
+
+2. Which of the following commands is equivalent to with(x, f(z))?
+
+```{r}
+with(mtcars, mean(mpg))
+```
+f(x$z) or f(z) if mtcars is attached before
+

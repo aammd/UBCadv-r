@@ -10,16 +10,33 @@ knitr::opts_chunk$set(error = TRUE)
 ```
 
 
+
+show_condition <- function(code) {
+  tryCatch(code,
+    error = function(c) "error",
+    warning = function(c) "warning",
+    message = function(c) "message"
+  )
+}
+It shows the message error when the function runs into any error, but it could be any message. 
+
+
 1. Compare the following two implementations of message2error(). What is the main advantage of withCallingHandlers() in this scenario? (Hint: look carefully at the traceback.)
 
 ```{r}
-message2error <- function(code) {
+message2error_wch <- function(code) {
   withCallingHandlers(code, message = function(e) stop(e))
 }
 
-message2error <- function(code) {
+message2error_tc <- function(code) {
   tryCatch(code, message = function(e) stop(e))
 }
+
+message2error_tc(message('hello'))
+traceback()
+
+message2error_wch(message('hello'))
+traceback()
 ```
 
 
@@ -95,7 +112,7 @@ col_means2 <- function(df) {
 lag <- function(x, n = 1L) {
   
   if(!is.numeric(n)) {stop('n is not a numeric')}
-  if(n==0) {warning('n is 0, so it didnt lag')}
+  if(n==0) {message('n is 0, so it didnt lag')}
   if(n>length(x)){stop('n is larger than x!')}
   xlen <- length(x)
   c(rep(NA, n), x[seq_len(xlen - n)])

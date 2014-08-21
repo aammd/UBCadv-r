@@ -1,9 +1,16 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> upstream/master
 ---
 title: "Subsetting"
 author: "Susannah"
 ---
+<<<<<<< HEAD
+>>>>>>> upstream/master
+=======
+=======
 >>>>>>> upstream/master
 #Subsetting
 
@@ -38,7 +45,13 @@ df[c("x", "z")]
  `upper.tri` returns a matrix of logicals the same size of a given matrix with entries `TRUE` in the lower or upper triangle. Subsetting a matrix with it returns the entries of the triangle in column order flattened into a vector. We do not need additional subsetting rules to describe its behavior.
  
 <<<<<<< HEAD
+<<<<<<< HEAD
  4. `mtcars[1:20]` returns an error because R doesn't know what dimension to subset. `mtcars[1:20,]` specifies both rows and columns (indirectly).
+=======
+ 4. `mtcars[1:20]` returns an error because you're asking for columns that don't exist. `mtcars[1:20,]` doesn't return an error because you're asking for the first 20 rows. 
+
+I thought you always had to specify two dimensions for two dimensional objects (see my question at the beginning of this document), but dataframes are secretely lists and you can use list subsetting on them. You have to be careful about this because anytime you use any subsetting but pretty lists of integers (like logical subsetting), this is likely to break if you don't specify both dimensions. Also, there are many cases where you *think* you're working with a dataframe, but you actually aren't (dig into the grades example, for example.) In general, if you want to avoid errors about incorrect dimensions or undefined columns, specify both dimensions when subsetting with `[]`.
+>>>>>>> upstream/master
 =======
  4. `mtcars[1:20]` returns an error because you're asking for columns that don't exist. `mtcars[1:20,]` doesn't return an error because you're asking for the first 20 rows. 
 
@@ -65,9 +78,12 @@ I thought you always had to specify two dimensions for two dimensional objects (
  `df[is.na(df)] <- 0` sets all `NA`s in a data frame to `0`. `is.na(df)` creates a data frame of logicals. `[` selects the `TRUE` values and `<- 0` assigns them to 0.
  
 <<<<<<< HEAD
+<<<<<<< HEAD
  
  
 =======
+=======
+>>>>>>> upstream/master
 ## Subsetting operators
 
 1. 
@@ -91,13 +107,13 @@ df[sample(ncol(df))]
 ```{r}
 msel <- function(df, n) { 
     #function to sample n rows from a dataframe df
-    stopifnot(n <= dim(df)[2])
-    stopifnot(n > 0)
+    if (n <= dim(df)[2]) stop("you want too many rows!")
+    if (n > 0) stop("n can't be 0 or negative")
     df[sample(nrow(df), n),]
 }
 
-msel(df,3)
-msel(df,5)
+# msel(df,3) 
+# msel(df,5) gies and error
 
 mcon <- function(df, n) {
     #select n continous rows from a dataframe df
@@ -109,8 +125,8 @@ mcon <- function(df, n) {
     df[st:end,]
 }
 
-mcon(df, 4)
-mcon(df, 3)
+# mcon(df, 4)
+# mcon(df, 3)
 ```
 
 3. 
@@ -118,5 +134,9 @@ mcon(df, 3)
 df <- data.frame(matrix(1:25, nrow=5,ncol=5))
 colnames(df) <- sample(letters[1:5])
 df[order(names(df))]
+<<<<<<< HEAD
 >>>>>>> upstream/master
  
+=======
+ 
+>>>>>>> upstream/master
