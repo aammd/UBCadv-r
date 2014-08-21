@@ -174,4 +174,6 @@ Is there a pretty way to use `mapply` here ?
 ### Which of the following commands is equivalent to with(x, f(z))?
 c, unless you've attached it (in which case it would be d) so I guess e
 
+## Exercises 4
+
 
