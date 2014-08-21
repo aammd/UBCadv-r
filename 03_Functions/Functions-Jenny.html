@@ -55,7 +55,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <div id="header">
 <h1 class="title">Jenny’s reading of 03_Functions</h1>
 <h4 class="author"><em>Jenny Bryan</em></h4>
-<h4 class="date"><em>25 July, 2014</em></h4>
+<h4 class="date"><em>01 August, 2014</em></h4>
 </div>
 
 <div id="TOC">
@@ -84,7 +84,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </ul>
 </div>
 
-<p>Week 02 2014-07-10 we read <a href="http://adv-r.had.co.nz/Functions.html">Functions</a>. Source is found <a href="https://github.com/hadley/adv-r/blob/master/Functions.rmd">here on github</a>.</p>
+<p>Weeks 02, 03 and even a bit of 04 (!), we discussed <a href="http://adv-r.had.co.nz/Functions.html">Functions</a>. Source is found <a href="https://github.com/hadley/adv-r/blob/master/Functions.rmd">here on github</a>.</p>
 <div id="taking-the-quiz" class="section level2">
 <h2>Taking the quiz</h2>
 <p><em>I made myself enter these answers before reading the chapter, most especially before reading the answers. I annotated/corrected my original answers as I read on.</em></p>
@@ -469,7 +469,7 @@ x %isect% y</code></pre>
 ## [11] &quot;November&quot;  &quot;December&quot;</code></pre>
 <pre class="r"><code>perturb(foo) &lt;- &quot;Junuary&quot;
 foo</code></pre>
-<pre><code>##  [1] &quot;Junuary&quot;   &quot;February&quot;  &quot;March&quot;     &quot;April&quot;     &quot;May&quot;      
+<pre><code>##  [1] &quot;January&quot;   &quot;February&quot;  &quot;Junuary&quot;   &quot;April&quot;     &quot;May&quot;      
 ##  [6] &quot;June&quot;      &quot;July&quot;      &quot;August&quot;    &quot;September&quot; &quot;October&quot;  
 ## [11] &quot;November&quot;  &quot;December&quot;</code></pre>
 </div>
@@ -597,7 +597,7 @@ capture.output2(cat(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, sep = &quot;\n&
 <li>no ability to send output to a file or connection</li>
 <li>OMG that’s all I can say for sure, just from reading the code vs. running it</li>
 </ul>
-<p>The original is much hardier to read. Here are the bits I found puzzling:</p>
+<p>The original is much harder to read. Here are the bits I found puzzling:</p>
 <ul>
 <li>The 2 calls to <code>on.exit()</code> are confusing. I think the way the second call negates the first is actually intentional?</li>
 <li>The explicit evalution in the parent frame … is that necessary? What exactly are we worried about?</li>
