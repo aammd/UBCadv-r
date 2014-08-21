@@ -176,4 +176,112 @@ c, unless you've attached it (in which case it would be d) so I guess e
 
 ## Exercises 4
 
+### Instead of creating individual functions (e.g., midpoint(), trapezoid(), simpson(), etc.), we could store them in a list. If we did that, how would that change the code? Can you create the list of functions from a list of coefficients for the Newton-Cotes formulae?
+
+First, run all of Hadley's functions : 
+```{r}
+midpoint <- function(f, a, b) {
+  (b - a) * f((a + b) / 2)
+}
+
+trapezoid <- function(f, a, b) {
+  (b - a) / 2 * (f(a) + f(b))
+}
+
+midpoint(sin, 0, pi)
+#> [1] 3.141593
+trapezoid(sin, 0, pi)
+#> [1] 1.923671e-16
+
+composite <- function(f, a, b, n = 10, rule) {
+  points <- seq(a, b, length = n + 1)
+
+  area <- 0
+  for (i in seq_len(n)) {
+    area <- area + rule(f, points[i], points[i + 1])
+  }
+
+  area
+}
+
+composite(sin, 0, pi, n = 10, rule = midpoint)
+#> [1] 2.008248
+composite(sin, 0, pi, n = 10, rule = trapezoid)
+
+simpson <- function(f, a, b) {
+  (b - a) / 6 * (f(a) + 4 * f((a + b) / 2) + f(b))
+}
+
+boole <- function(f, a, b) {
+  pos <- function(i) a + i * (b - a) / 4
+  fi <- function(i) f(pos(i))
+
+  (b - a) / 90 *
+    (7 * fi(0) + 32 * fi(1) + 12 * fi(2) + 32 * fi(3) + 7 * fi(4))
+}
+
+composite(sin, 0, pi, n = 10, rule = simpson)
+#> [1] 2.000007
+composite(sin, 0, pi, n = 10, rule = boole)
+#> [1] 2
+
+
+
+newton_cotes <- function(coef, open = FALSE) {
+  n <- length(coef) + open
+
+  function(f, a, b) {
+    pos <- function(i) a + i * (b - a) / n
+    points <- pos(seq.int(0, length(coef) - 1))
+
+    (b - a) / sum(coef) * sum(f(points) * coef)
+  }
+}
+
+boole <- newton_cotes(c(7, 32, 12, 32, 7))
+milne <- newton_cotes(c(2, -1, 2), open = TRUE)
+composite(sin, 0, pi, n = 10, rule = milne)
+#> [1] 1.993829
+```
+
+Now we can put all the premade functions in a list, and run an anonymous wrapper for `composite()` over it:
+
+```{r}
+rulelist <- list(
+  midpoint = midpoint,
+  trapezoid = trapezoid,
+  simpson = simpson,
+  boole = boole
+  )
+
+lapply(rulelist, function(r) composite(sin, 0, pi, n = 10, rule = r))
+
+```
+
+Are they really different speeds?
+
+```{r}
+rulerunner <- function(listrule) {
+  force(listrule)
+  function() composite(sin, 0, pi, n = 10, rule = listrule)
+  }
+
+library(microbenchmark)
+
+lapply(rulelist, rulerunner) %>%
+  microbenchmark(list = .)
+```
+
+#### making a list from the newton-cotes formula
+
+```{r}
+1:5 %>%
+  lapply(function(x) {
+    force(x) 
+    newton_cotes(coef = x)
+    }) %>%
+  lapply(rulerunner) %>%
+  lapply(function(f) f())
+```
+
 

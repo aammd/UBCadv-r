@@ -66,7 +66,21 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#use-integrate-and-an-anonymous-function-to-find-the-area-under-the-curve-for-the-following-functions.-use-wolfram-alpha-to-check-your-answers.">Use <code>integrate()</code> and an anonymous function to find the area under the curve for the following functions. Use <a href="http://www.wolframalpha.com/">Wolfram Alpha</a> to check your answers.</a></li>
 <li><a href="#review-your-own-code">Review your own code</a></li>
 </ul></li>
-<li><a href="#exercises-2">Exercises 2</a></li>
+<li><a href="#exercises-2">Exercises 2</a><ul>
+<li><a href="#why-are-functions-created-by-other-functions-called-closures">Why are functions created by other functions called closures?</a></li>
+<li><a href="#what-does-the-following-statistical-function-do-what-would-be-a-better-name-for-it-the-existing-name-is-a-bit-of-a-hint.">What does the following statistical function do? What would be a better name for it? (The existing name is a bit of a hint.)</a></li>
+<li><a href="#what-does-approxfun-do-what-does-it-return">What does <code>approxfun()</code> do? What does it return?</a></li>
+<li><a href="#what-does-ecdf-do-what-does-it-return">What does <code>ecdf()</code> do? What does it return?</a></li>
+<li><a href="#create-a-function-that-creates-functions-that-compute-the-ith-central-moment-of-a-numeric-vector.">Create a function that creates functions that compute the ith central moment of a numeric vector.</a></li>
+<li><a href="#create-a-function-pick-that-takes-an-index-i-as-an-argument-and-returns-a-function-with-an-argument-x-that-subsets-x-with-i.">Create a function pick() that takes an index, i, as an argument and returns a function with an argument x that subsets x with i.</a></li>
+</ul></li>
+<li><a href="#exercises-3">Exercises 3</a><ul>
+<li><a href="#implement-a-summary-function-that-works-like-basesummary-but-uses-a-list-of-functions.">Implement a summary function that works like base::summary(), but uses a list of functions.</a></li>
+<li><a href="#which-of-the-following-commands-is-equivalent-to-withx-fz">Which of the following commands is equivalent to with(x, f(z))?</a></li>
+</ul></li>
+<li><a href="#exercises-4">Exercises 4</a><ul>
+<li><a href="#instead-of-creating-individual-functions-e.g.-midpoint-trapezoid-simpson-etc.-we-could-store-them-in-a-list.-if-we-did-that-how-would-that-change-the-code-can-you-create-the-list-of-functions-from-a-list-of-coefficients-for-the-newton-cotes-formulae">Instead of creating individual functions (e.g., midpoint(), trapezoid(), simpson(), etc.), we could store them in a list. If we did that, how would that change the code? Can you create the list of functions from a list of coefficients for the Newton-Cotes formulae?</a></li>
+</ul></li>
 </ul>
 </div>
 
@@ -157,6 +171,280 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </div>
 <div id="exercises-2" class="section level2">
 <h2>Exercises 2</h2>
+<div id="why-are-functions-created-by-other-functions-called-closures" class="section level3">
+<h3>Why are functions created by other functions called closures?</h3>
+<p>Because they <em>enclose</em> the environment in which they were created</p>
+</div>
+<div id="what-does-the-following-statistical-function-do-what-would-be-a-better-name-for-it-the-existing-name-is-a-bit-of-a-hint." class="section level3">
+<h3>What does the following statistical function do? What would be a better name for it? (The existing name is a bit of a hint.)</h3>
+<pre class="r"><code>bc &lt;- function(lambda) {
+  if (lambda == 0) {
+    function(x) log(x)
+    } else {
+      function(x) (x ^ lambda - 1) / lambda
+      }
+  }</code></pre>
+<p>the function <code>bc</code> is a function factory that has a single argument, <code>lambda</code>. it either returns the function <code>log(x)</code> (if <code>lambda</code> is 0) or the polynomial <code>(x ^ lambda - 1) / lambda</code> otherwise.<br />Some creative Googling reveals that this is the <a href="http://onlinestatbook.com/2/transformations/box-cox.html">Box-Cox Transformation</a>, so I’d probably call this function <code>box_cox</code>.</p>
+</div>
+<div id="what-does-approxfun-do-what-does-it-return" class="section level3">
+<h3>What does <code>approxfun()</code> do? What does it return?</h3>
+<pre class="r"><code>#?approxfun</code></pre>
+<p><code>approxfun</code> creates a closure function which remembers the data on which <code>approxfun</code> was called. This function interpolates the data that was used to create it. Neat!</p>
+</div>
+<div id="what-does-ecdf-do-what-does-it-return" class="section level3">
+<h3>What does <code>ecdf()</code> do? What does it return?</h3>
+<p><code>ecdf()</code> is the empirical cumulative distribution function, which I’m going to guess is also a function factory that makes a closure:</p>
+<pre class="r"><code>x &lt;- rnorm(12)
+Fn &lt;- ecdf(x)
+is.function(Fn) # it's a function!</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>plot(Fn)</code></pre>
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-8" /></p>
+</div>
+<div id="create-a-function-that-creates-functions-that-compute-the-ith-central-moment-of-a-numeric-vector." class="section level3">
+<h3>Create a function that creates functions that compute the ith central moment of a numeric vector.</h3>
+<pre class="r"><code>moment &lt;- function(i){
+  function(x) {
+    mean((x - mean(x)) ^ i)
+    }
+  }</code></pre>
+<p>Test it out</p>
+<pre class="r"><code>m1 &lt;- moment(1)
+m2 &lt;- moment(2)
+
+x &lt;- runif(100)
+stopifnot(all.equal(m1(x), 0))
+stopifnot(all.equal(m2(x), var(x) * 99 / 100))</code></pre>
+</div>
+<div id="create-a-function-pick-that-takes-an-index-i-as-an-argument-and-returns-a-function-with-an-argument-x-that-subsets-x-with-i." class="section level3">
+<h3>Create a function pick() that takes an index, i, as an argument and returns a function with an argument x that subsets x with i.</h3>
+<pre class="r"><code>pick &lt;- function(index) function(x) x[[index]]
+
+all.equal(lapply(mtcars, pick(5)),
+          lapply(mtcars, function(x) x[[5]]))</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+</div>
+</div>
+<div id="exercises-3" class="section level2">
+<h2>Exercises 3</h2>
+<div id="implement-a-summary-function-that-works-like-basesummary-but-uses-a-list-of-functions." class="section level3">
+<h3>Implement a summary function that works like base::summary(), but uses a list of functions.</h3>
+<p>I assume we are making a version of <code>summary</code> as it works on data.frames :</p>
+<pre class="r"><code>summary(iris)</code></pre>
+<pre><code>##   Sepal.Length   Sepal.Width    Petal.Length   Petal.Width 
+##  Min.   :4.30   Min.   :2.00   Min.   :1.00   Min.   :0.1  
+##  1st Qu.:5.10   1st Qu.:2.80   1st Qu.:1.60   1st Qu.:0.3  
+##  Median :5.80   Median :3.00   Median :4.35   Median :1.3  
+##  Mean   :5.84   Mean   :3.06   Mean   :3.76   Mean   :1.2  
+##  3rd Qu.:6.40   3rd Qu.:3.30   3rd Qu.:5.10   3rd Qu.:1.8  
+##  Max.   :7.90   Max.   :4.40   Max.   :6.90   Max.   :2.5  
+##        Species  
+##  setosa    :50  
+##  versicolor:50  
+##  virginica :50  
+##                 
+##                 
+## </code></pre>
+<pre class="r"><code>## make a list of functions
+funs &lt;- list(
+  &quot;Min.&quot; = min,
+  &quot;1st Qu.&quot; = function(x) quantile(x, probs = 0.25),
+  &quot;Median&quot; = median,
+  &quot;Mean&quot; = mean,
+  &quot;3rd Qu&quot; =  function(x) quantile(x, probs = 0.75),
+  &quot;Max.&quot; = max)
+
+summary_andrew &lt;- function(flist = funs){
+  function(data) {
+    lapply(data, function(d) sapply(flist, function(f) f(d)))
+  }
+  }
+## do that list to each element of a dataframe/ list
+summary_andrew()(mtcars)</code></pre>
+<pre><code>## $mpg
+##        Min. 1st Qu..25%      Median        Mean  3rd Qu.75%        Max. 
+##       10.40       15.43       19.20       20.09       22.80       33.90 
+## 
+## $cyl
+##        Min. 1st Qu..25%      Median        Mean  3rd Qu.75%        Max. 
+##       4.000       4.000       6.000       6.188       8.000       8.000 
+## 
+## $disp
+##        Min. 1st Qu..25%      Median        Mean  3rd Qu.75%        Max. 
+##        71.1       120.8       196.3       230.7       326.0       472.0 
+## 
+## $hp
+##        Min. 1st Qu..25%      Median        Mean  3rd Qu.75%        Max. 
+##        52.0        96.5       123.0       146.7       180.0       335.0 
+## 
+## $drat
+##        Min. 1st Qu..25%      Median        Mean  3rd Qu.75%        Max. 
+##       2.760       3.080       3.695       3.597       3.920       4.930 
+## 
+## $wt
+##        Min. 1st Qu..25%      Median        Mean  3rd Qu.75%        Max. 
+##       1.513       2.581       3.325       3.217       3.610       5.424 
+## 
+## $qsec
+##        Min. 1st Qu..25%      Median        Mean  3rd Qu.75%        Max. 
+##       14.50       16.89       17.71       17.85       18.90       22.90 
+## 
+## $vs
+##        Min. 1st Qu..25%      Median        Mean  3rd Qu.75%        Max. 
+##      0.0000      0.0000      0.0000      0.4375      1.0000      1.0000 
+## 
+## $am
+##        Min. 1st Qu..25%      Median        Mean  3rd Qu.75%        Max. 
+##      0.0000      0.0000      0.0000      0.4062      1.0000      1.0000 
+## 
+## $gear
+##        Min. 1st Qu..25%      Median        Mean  3rd Qu.75%        Max. 
+##       3.000       3.000       4.000       3.688       4.000       5.000 
+## 
+## $carb
+##        Min. 1st Qu..25%      Median        Mean  3rd Qu.75%        Max. 
+##       1.000       2.000       2.000       2.812       4.000       8.000</code></pre>
+<p>Is there a pretty way to use <code>mapply</code> here ?</p>
+</div>
+<div id="which-of-the-following-commands-is-equivalent-to-withx-fz" class="section level3">
+<h3>Which of the following commands is equivalent to with(x, f(z))?</h3>
+<p>c, unless you’ve attached it (in which case it would be d) so I guess e</p>
+</div>
+</div>
+<div id="exercises-4" class="section level2">
+<h2>Exercises 4</h2>
+<div id="instead-of-creating-individual-functions-e.g.-midpoint-trapezoid-simpson-etc.-we-could-store-them-in-a-list.-if-we-did-that-how-would-that-change-the-code-can-you-create-the-list-of-functions-from-a-list-of-coefficients-for-the-newton-cotes-formulae" class="section level3">
+<h3>Instead of creating individual functions (e.g., midpoint(), trapezoid(), simpson(), etc.), we could store them in a list. If we did that, how would that change the code? Can you create the list of functions from a list of coefficients for the Newton-Cotes formulae?</h3>
+<p>First, run all of Hadley’s functions :</p>
+<pre class="r"><code>midpoint &lt;- function(f, a, b) {
+  (b - a) * f((a + b) / 2)
+}
+
+trapezoid &lt;- function(f, a, b) {
+  (b - a) / 2 * (f(a) + f(b))
+}
+
+midpoint(sin, 0, pi)</code></pre>
+<pre><code>## [1] 3.142</code></pre>
+<pre class="r"><code>#&gt; [1] 3.141593
+trapezoid(sin, 0, pi)</code></pre>
+<pre><code>## [1] 1.924e-16</code></pre>
+<pre class="r"><code>#&gt; [1] 1.923671e-16
+
+composite &lt;- function(f, a, b, n = 10, rule) {
+  points &lt;- seq(a, b, length = n + 1)
+
+  area &lt;- 0
+  for (i in seq_len(n)) {
+    area &lt;- area + rule(f, points[i], points[i + 1])
+  }
+
+  area
+}
+
+composite(sin, 0, pi, n = 10, rule = midpoint)</code></pre>
+<pre><code>## [1] 2.008</code></pre>
+<pre class="r"><code>#&gt; [1] 2.008248
+composite(sin, 0, pi, n = 10, rule = trapezoid)</code></pre>
+<pre><code>## [1] 1.984</code></pre>
+<pre class="r"><code>simpson &lt;- function(f, a, b) {
+  (b - a) / 6 * (f(a) + 4 * f((a + b) / 2) + f(b))
+}
+
+boole &lt;- function(f, a, b) {
+  pos &lt;- function(i) a + i * (b - a) / 4
+  fi &lt;- function(i) f(pos(i))
+
+  (b - a) / 90 *
+    (7 * fi(0) + 32 * fi(1) + 12 * fi(2) + 32 * fi(3) + 7 * fi(4))
+}
+
+composite(sin, 0, pi, n = 10, rule = simpson)</code></pre>
+<pre><code>## [1] 2</code></pre>
+<pre class="r"><code>#&gt; [1] 2.000007
+composite(sin, 0, pi, n = 10, rule = boole)</code></pre>
+<pre><code>## [1] 2</code></pre>
+<pre class="r"><code>#&gt; [1] 2
+
+
+
+newton_cotes &lt;- function(coef, open = FALSE) {
+  n &lt;- length(coef) + open
+
+  function(f, a, b) {
+    pos &lt;- function(i) a + i * (b - a) / n
+    points &lt;- pos(seq.int(0, length(coef) - 1))
+
+    (b - a) / sum(coef) * sum(f(points) * coef)
+  }
+}
+
+boole &lt;- newton_cotes(c(7, 32, 12, 32, 7))
+milne &lt;- newton_cotes(c(2, -1, 2), open = TRUE)
+composite(sin, 0, pi, n = 10, rule = milne)</code></pre>
+<pre><code>## [1] 1.994</code></pre>
+<pre class="r"><code>#&gt; [1] 1.993829</code></pre>
+<p>Now we can put all the premade functions in a list, and run an anonymous wrapper for <code>composite()</code> over it:</p>
+<pre class="r"><code>rulelist &lt;- list(
+  midpoint = midpoint,
+  trapezoid = trapezoid,
+  simpson = simpson,
+  boole = boole
+  )
+
+lapply(rulelist, function(r) composite(sin, 0, pi, n = 10, rule = r))</code></pre>
+<pre><code>## $midpoint
+## [1] 2.008
+## 
+## $trapezoid
+## [1] 1.984
+## 
+## $simpson
+## [1] 2
+## 
+## $boole
+## [1] 2.002</code></pre>
+<p>Are they really different speeds?</p>
+<pre class="r"><code>rulerunner &lt;- function(listrule) {
+  force(listrule)
+  function() composite(sin, 0, pi, n = 10, rule = listrule)
+  }
+
+library(microbenchmark)
+
+lapply(rulelist, rulerunner) %&gt;%
+  microbenchmark(list = .)</code></pre>
+<pre><code>## Unit: nanoseconds
+##       expr min lq median uq   max neval
+##   midpoint   5  6    6.0  8   209   100
+##  trapezoid   5  6    6.5  7    82   100
+##    simpson   5  6    7.0  8 40638   100
+##      boole   5  6    7.0  8    75   100</code></pre>
+<div id="making-a-list-from-the-newton-cotes-formula" class="section level4">
+<h4>making a list from the newton-cotes formula</h4>
+<pre class="r"><code>1:5 %&gt;%
+  lapply(function(x) {
+    force(x) 
+    newton_cotes(coef = x)
+    }) %&gt;%
+  lapply(rulerunner) %&gt;%
+  lapply(function(f) f())</code></pre>
+<pre><code>## [[1]]
+## [1] 1.984
+## 
+## [[2]]
+## [1] 1.984
+## 
+## [[3]]
+## [1] 1.984
+## 
+## [[4]]
+## [1] 1.984
+## 
+## [[5]]
+## [1] 1.984</code></pre>
+</div>
+</div>
 </div>
 
 
