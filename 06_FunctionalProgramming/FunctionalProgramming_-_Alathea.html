@@ -59,6 +59,32 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <h4 class="date"><em>2014-08-20</em></h4>
 </div>
 
+<div id="TOC">
+<ul>
+<li><a href="#exercises">Exercises</a><ul>
+<li><a href="#given-a-function-like-mean-match.fun-lets-you-find-a-function.-given-a-function-can-you-find-its-name-why-doesnt-that-make-sense-in-r">Given a function, like <code>mean</code>, <code>match.fun()</code> lets you find a function. Given a function, can you find its name? Why doesn’t that make sense in R?</a></li>
+<li><a href="#use-lapply-and-an-anonymous-function-to-find-the-coefficient-of-variation-the-standard-deviation-divided-by-the-mean-for-all-columns-in-the-mtcars-dataset.">Use <code>lapply()</code> and an anonymous function to find the coefficient of variation (the standard deviation divided by the mean) for all columns in the <code>mtcars</code> dataset.</a></li>
+<li><a href="#use-integrate-and-an-anonymous-function-to-find-the-area-under-the-curve-for-the-following-functions.-use-wolfram-alpha-to-check-your-answers.">Use <code>integrate()</code> and an anonymous function to find the area under the curve for the following functions. Use Wolfram Alpha to check your answers.</a></li>
+<li><a href="#a-good-rule-of-thumb-is-that-an-anonymous-function-should-fit-on-one-line-and-shouldnt-need-to-use-.-review-your-code.-where-could-you-have-used-an-anonymous-function-instead-of-a-named-function-where-should-you-have-used-a-named-function-instead-of-an-anonymous-function">A good rule of thumb is that an anonymous function should fit on one line and shouldn’t need to use <code>{}</code>. Review your code. Where could you have used an anonymous function instead of a named function? Where should you have used a named function instead of an anonymous function?</a></li>
+<li><a href="#why-are-functions-created-by-other-functions-called-closures">Why are functions created by other functions called closures?</a></li>
+<li><a href="#what-does-the-following-statistical-function-do-what-would-be-a-better-name-for-it-the-existing-name-is-a-bit-of-a-hint.">What does the following statistical function do? What would be a better name for it? (The existing name is a bit of a hint.)</a></li>
+<li><a href="#what-does-approxfun-do-what-does-it-return">What does <code>approxfun()</code> do? What does it return?</a></li>
+<li><a href="#what-does-ecdf-do-what-does-it-return">What does <code>ecdf()</code> do? What does it return?</a></li>
+<li><a href="#create-a-function-that-creates-functions-that-compute-the-ith-central-moment-of-a-numeric-vector.-you-can-test-it-by-running-the-following-code">Create a function that creates functions that compute the ith central moment of a numeric vector. You can test it by running the following code:</a></li>
+<li><a href="#create-a-function-pick-that-takes-an-index-i-as-an-argument-and-returns-a-function-with-an-argument-x-that-subsets-x-with-i.">Create a function <code>pick()</code> that takes an index, <code>i</code>, as an argument and returns a function with an argument <code>x</code> that subsets <code>x</code> with <code>i</code>.</a></li>
+<li><a href="#implement-a-summary-function-that-works-like-basesummary-but-uses-a-list-of-functions.-modify-the-function-so-it-returns-a-closure-making-it-possible-to-use-it-as-a-function-factory.">Implement a summary function that works like <code>base::summary()</code>, but uses a list of functions. Modify the function so it returns a closure, making it possible to use it as a function factory.</a></li>
+<li><a href="#which-of-the-following-commands-is-equivalent-to-withx-fz">Which of the following commands is equivalent to <code>with(x, f(z))</code>?</a></li>
+<li><a href="#instead-of-creating-individual-functions-e.g.-midpoint-trapezoid-simpson-etc.-we-could-store-them-in-a-list.-if-we-did-that-how-would-that-change-the-code-can-you-create-the-list-of-functions-from-a-list-of-coefficients-for-the-newton-cotes-formulae">Instead of creating individual functions (e.g., <code>midpoint()</code>, <code>trapezoid()</code>, <code>simpson()</code>, etc.), we could store them in a list. If we did that, how would that change the code? Can you create the list of functions from a list of coefficients for the Newton-Cotes formulae?</a></li>
+<li><a href="#the-trade-off-between-integration-rules-is-that-more-complex-rules-are-slower-to-compute-but-need-fewer-pieces.-for-sin-in-the-range-0--determine-the-number-of-pieces-needed-so-that-each-rule-will-be-equally-accurate.-illustrate-your-results-with-a-graph.-how-do-they-change-for-different-functions-sin1-x2-is-particularly-challenging.">The trade-off between integration rules is that more complex rules are slower to compute, but need fewer pieces. For <code>sin()</code> in the range <code>[0, π]</code>, determine the number of pieces needed so that each rule will be equally accurate. Illustrate your results with a graph. How do they change for different functions? <code>sin(1 / x^2)</code> is particularly challenging.</a></li>
+</ul></li>
+<li><a href="#discussion-notes">Discussion Notes</a></li>
+<li><a href="#reading-notes">Reading Notes</a><ul>
+<li><a href="#motivation">Motivation</a></li>
+<li><a href="#anonymous-functions">Anonymous functions</a></li>
+<li><a href="#closures">Closures</a></li>
+</ul></li>
+</ul>
+</div>
 
 <div id="exercises" class="section level2">
 <h2>Exercises</h2>
@@ -130,8 +156,8 @@ approx(x, y)</code></pre>
 <pre class="r"><code>approxfun(x, y)</code></pre>
 <pre><code>## function (v) 
 ## .approxfun(x, y, v, method, yleft, yright, f)
-## &lt;bytecode: 0x90d1acc&gt;
-## &lt;environment: 0x90c6094&gt;</code></pre>
+## &lt;bytecode: 0x9e77060&gt;
+## &lt;environment: 0x9e77cac&gt;</code></pre>
 </div>
 <div id="what-does-ecdf-do-what-does-it-return" class="section level3">
 <h3>What does <code>ecdf()</code> do? What does it return?</h3>
@@ -179,19 +205,19 @@ summary(fit)</code></pre>
 ## lm(formula = y ~ x)
 ## 
 ## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -0.3937 -0.2043 -0.0268  0.2187  0.4662 
+##    Min     1Q Median     3Q    Max 
+## -0.463 -0.288 -0.023  0.231  0.478 
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(&gt;|t|)  
-## (Intercept)   0.5899     0.2040    2.89     0.02 *
-## x            -0.0346     0.0329   -1.05     0.32  
+## (Intercept)   0.6933     0.2434    2.85    0.022 *
+## x            -0.0244     0.0392   -0.62    0.551  
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.299 on 8 degrees of freedom
-## Multiple R-squared:  0.122,  Adjusted R-squared:  0.012 
-## F-statistic: 1.11 on 1 and 8 DF,  p-value: 0.323</code></pre>
+## Residual standard error: 0.356 on 8 degrees of freedom
+## Multiple R-squared:  0.0461, Adjusted R-squared:  -0.0731 
+## F-statistic: 0.387 on 1 and 8 DF,  p-value: 0.551</code></pre>
 <pre class="r"><code>my_summary &lt;- list(
     resid_min = function(x) min(x$residuals),
     resid_median = function(x) median(x$residuals),
@@ -202,16 +228,16 @@ summary(fit)</code></pre>
 
 lapply(my_summary, function(f) f(fit))</code></pre>
 <pre><code>## $resid_min
-## [1] -0.3937
+## [1] -0.4632
 ## 
 ## $resid_median
-## [1] -0.02683
+## [1] -0.02302
 ## 
 ## $resid_max
-## [1] 0.4662
+## [1] 0.4779
 ## 
 ## $resid_se
-## [1] 0.02815
+## [1] 0.0336
 ## 
 ## $resid_df
 ## [1] 8</code></pre>
