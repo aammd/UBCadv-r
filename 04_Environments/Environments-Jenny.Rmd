@@ -79,7 +79,7 @@ Notes....
 
 #### Using `parent.env()` and a loop (or a recursive function), verify that the ancestors of `globalenv()` include `baseenv()` and `emptyenv()`. Use the same basic idea to implement your own version of `search()`.
 
-*First, I use a loop to detail the ancestry of `globalenv()`:*
+First, I use a loop to detail the ancestry of `globalenv()`. Warning: this is UGLY:
 ```{r}
 library(plyr)
 foo <- globalenv()
@@ -97,12 +97,16 @@ env_stuff <- mutate(env_stuff,
 env_stuff <- mutate(env_stuff, environment = gsub("[<>]", "", environment),
                     name = gsub('\"', '', name))
 ```
-*Here's the ancestry:*
+
+Here's the ancestry:
+
 ```{r echo = FALSE, results = 'asis'}
 knitr::kable(env_stuff)
 ```
 
-*Yep, I see that the ancestors of `globalenv()` include `baseenv()` and `emptyenv()`. Now I'll package this as a function, i.e. write my own version of `search()`, using recursion and taking advantage of `environmentName()`.*
+Yep, I see that the ancestors of `globalenv()` include `baseenv()` and `emptyenv()`.
+
+Now I'll write a proper recursive function, i.e. write my own version of `search()`, and take advantage of `environmentName()`.
 
 ```{r}
 j_search <- function(env = globalenv()) {
@@ -115,6 +119,8 @@ j_search <- function(env = globalenv()) {
 j_search()
 search()
 ```
+
+Other than minor differences in name formatting, my function appears to be equivalent to `search()`.
 
 ## Recursing over environments
 
@@ -150,7 +156,7 @@ j_get <- function(name, env = parent.frame()) {
     
   } else if (exists(name, envir = env, inherits = FALSE)) {
     # Success case
-    return(eval(name, envir = env))
+    return(eval(as.name(name), envir = env))
     
   } else {
     # Recursive case
@@ -159,7 +165,6 @@ j_get <- function(name, env = parent.frame()) {
   }
 }
 get("+")
-eval("+")
 j_get("+")
 get("i")
 j_get("i")

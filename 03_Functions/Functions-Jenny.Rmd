@@ -12,7 +12,7 @@ output:
 knitr::opts_chunk$set(error = TRUE)
 ```
 
-Week 02 2014-07-10 we read [Functions](http://adv-r.had.co.nz/Functions.html). Source is found [here on github](https://github.com/hadley/adv-r/blob/master/Functions.rmd).
+Weeks 02, 03 and even a bit of 04 (!), we discussed [Functions](http://adv-r.had.co.nz/Functions.html). Source is found [here on github](https://github.com/hadley/adv-r/blob/master/Functions.rmd).
 
 ## Taking the quiz
 
@@ -498,7 +498,7 @@ Observations about `capture.output2()` relative to the original:
   * no ability to send output to a file or connection
   * OMG that's all I can say for sure, just from reading the code vs. running it
 
-The original is much hardier to read. Here are the bits I found puzzling:
+The original is much harder to read. Here are the bits I found puzzling:
 
   * The 2 calls to `on.exit()` are confusing. I think the way the second call negates the first is actually intentional?
   * The explicit evalution in the parent frame ... is that necessary? What exactly are we worried about?
