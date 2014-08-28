@@ -109,8 +109,8 @@ approxfun(x, y)
 ```
 ## function (v) 
 ## .approxfun(x, y, v, method, yleft, yright, f)
-## <bytecode: 0x894f69c>
-## <environment: 0x894f370>
+## <bytecode: 0x96767e4>
+## <environment: 0x99f1434>
 ```
 
 ### What does `ecdf()` do? What does it return?
@@ -187,19 +187,17 @@ summary(fit)
 ## lm(formula = y ~ x)
 ## 
 ## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -0.361 -0.104  0.000  0.114  0.508 
+##     Min      1Q  Median      3Q     Max 
+## -0.3458 -0.2088 -0.0343  0.1364  0.4532 
 ## 
 ## Coefficients:
-##             Estimate Std. Error t value Pr(>|t|)  
-## (Intercept)  0.51108    0.17898    2.86    0.021 *
-## x           -0.00863    0.02884   -0.30    0.772  
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+##             Estimate Std. Error t value Pr(>|t|)
+## (Intercept)   0.0979     0.1882    0.52     0.62
+## x             0.0334     0.0303    1.10     0.30
 ## 
-## Residual standard error: 0.262 on 8 degrees of freedom
-## Multiple R-squared:  0.0111,	Adjusted R-squared:  -0.113 
-## F-statistic: 0.0895 on 1 and 8 DF,  p-value: 0.772
+## Residual standard error: 0.276 on 8 degrees of freedom
+## Multiple R-squared:  0.132,	Adjusted R-squared:  0.0232 
+## F-statistic: 1.21 on 1 and 8 DF,  p-value: 0.303
 ```
 
 ```r
@@ -216,16 +214,16 @@ lapply(my_summary, function(f) f(fit))
 
 ```
 ## $resid_min
-## [1] -0.3607
+## [1] -0.3458
 ## 
 ## $resid_median
-## [1] 3.289e-05
+## [1] -0.03427
 ## 
 ## $resid_max
-## [1] 0.508
+## [1] 0.4532
 ## 
 ## $resid_se
-## [1] 0.0247
+## [1] 0.02598
 ## 
 ## $resid_df
 ## [1] 8
@@ -312,6 +310,8 @@ data.frame(areas)
 ***
 
 ## Discussion Notes
+
+Exercise #2 = Box-Cox transformation.
 
 ***
 ***
