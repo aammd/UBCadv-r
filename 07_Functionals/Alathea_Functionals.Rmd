@@ -1,0 +1,15 @@
+---
+title: "Functionals"
+author: "Alathea"
+date: '2014-09-04'
+output:
+  html_document:
+    keep_md: yes
+---
+
+# The Exercises
+
+# Discussion Notes
+
+# Reading Notes
+
