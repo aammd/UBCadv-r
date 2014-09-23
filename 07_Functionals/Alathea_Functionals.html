@@ -71,6 +71,13 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#why-is-using-sapply-to-get-the-class-of-each-element-in-a-data-frame-dangerous">Why is using <code>sapply()</code> to get the <code>class()</code> of each element in a data frame dangerous?</a></li>
 <li><a href="#the-following-code-simulates-the-performance-of-a-t-test-for-non-normal-data.-use-sapply-and-an-anonymous-function-to-extract-the-p-value-from-every-trial.-extra-challenge-get-rid-of-the-anonymous-function-by-using-directly.">The following code simulates the performance of a t-test for non-normal data. Use <code>sapply()</code> and an anonymous function to extract the p-value from every trial. Extra challenge: get rid of the anonymous function by using [[ directly.</a></li>
 <li><a href="#what-does-replicate-do-what-sort-of-for-loop-does-it-eliminate-why-do-its-arguments-differ-from-lapply-and-friends">What does <code>replicate()</code> do? What sort of for loop does it eliminate? Why do its arguments differ from <code>lapply()</code> and friends?</a></li>
+<li><a href="#implement-a-version-of-lapply-that-supplies-fun-with-both-the-name-and-the-value-of-each-component.">Implement a version of <code>lapply()</code> that supplies <code>FUN</code> with both the name and the value of each component.</a></li>
+<li><a href="#implement-a-combination-of-map-and-vapply-to-create-an-lapply-variant-that-iterates-in-parallel-over-all-of-its-inputs-and-stores-its-outputs-in-a-vector-or-a-matrix.-what-arguments-should-the-function-take">Implement a combination of <code>Map()</code> and <code>vapply()</code> to create an <code>lapply()</code> variant that iterates in parallel over all of its inputs and stores its outputs in a vector (or a matrix). What arguments should the function take?</a></li>
+<li><a href="#implement-mcsapply-a-multicore-version-of-sapply.-can-you-implement-mcvapply-a-parallel-version-of-vapply-why-or-why-not">Implement <code>mcsapply()</code>, a multicore version of <code>sapply()</code>. Can you implement <code>mcvapply()</code>, a parallel version of <code>vapply()</code>? Why or why not?</a></li>
+<li><a href="#how-does-apply-arrange-the-output-read-the-documentation-and-perform-some-experiments.">How does <code>apply()</code> arrange the output? Read the documentation and perform some experiments.</a></li>
+<li><a href="#theres-no-equivalent-to-split-vapply.-should-there-be-when-would-it-be-useful-implement-one-yourself.">There’s no equivalent to <code>split()</code> + <code>vapply()</code>. Should there be? When would it be useful? Implement one yourself.</a></li>
+<li><a href="#implement-a-pure-r-version-of-split.-hint-use-unique-and-subsetting.-can-you-do-it-without-a-for-loop">Implement a pure R version of <code>split()</code>. (Hint: use <code>unique()</code> and subsetting.) Can you do it without a <code>for</code> loop?</a></li>
+<li><a href="#what-other-types-of-input-and-output-are-missing-brainstorm-before-you-look-up-some-answers-in-the-plyr-paper.">What other types of input and output are missing? Brainstorm before you look up some answers in the <code>plyr</code> paper.</a></li>
 </ul></li>
 <li><a href="#discussion-notes">Discussion Notes</a></li>
 <li><a href="#reading-notes">Reading Notes</a></li>
@@ -145,7 +152,7 @@ bootstraps &lt;- lapply(1:10, function(i) {
 models &lt;- lapply(bootstraps, function(x) lm(mpg ~ disp, data = x))
 
 unlist(lapply(models, function(x) rsq(x)))</code></pre>
-<pre><code>##  [1] 0.6767 0.6641 0.7508 0.7232 0.7722 0.7411 0.8113 0.7535 0.5698 0.7193</code></pre>
+<pre><code>##  [1] 0.6291 0.8473 0.7640 0.8014 0.7092 0.5669 0.7041 0.7760 0.7549 0.7475</code></pre>
 </div>
 <div id="use-vapply-to-a-compute-the-standard-deviation-of-every-column-in-a-numeric-data-frame.-b-compute-the-standard-deviation-of-every-numeric-column-in-a-mixed-data-frame.-hint-youll-need-to-use-vapply-twice." class="section level2">
 <h2>Use <code>vapply()</code> to: a) Compute the standard deviation of every column in a numeric data frame. b) Compute the standard deviation of every numeric column in a mixed data frame. (Hint: you’ll need to use vapply() twice.)</h2>
@@ -182,6 +189,62 @@ sapply(trials, function(x) get(&quot;p.value&quot;, x))</code></pre>
 <h2>What does <code>replicate()</code> do? What sort of for loop does it eliminate? Why do its arguments differ from <code>lapply()</code> and friends?</h2>
 <p><code>replicate()</code></p>
 </div>
+<div id="implement-a-version-of-lapply-that-supplies-fun-with-both-the-name-and-the-value-of-each-component." class="section level2">
+<h2>Implement a version of <code>lapply()</code> that supplies <code>FUN</code> with both the name and the value of each component.</h2>
+</div>
+<div id="implement-a-combination-of-map-and-vapply-to-create-an-lapply-variant-that-iterates-in-parallel-over-all-of-its-inputs-and-stores-its-outputs-in-a-vector-or-a-matrix.-what-arguments-should-the-function-take" class="section level2">
+<h2>Implement a combination of <code>Map()</code> and <code>vapply()</code> to create an <code>lapply()</code> variant that iterates in parallel over all of its inputs and stores its outputs in a vector (or a matrix). What arguments should the function take?</h2>
+<p>You could do this by writing a function that uses <code>Map()</code> on a list of items, given input vectors that should be applied in parallel to this list of items. You basically need a combination of the arguments from vapply, and those from Map.</p>
+<pre class="r"><code>vapply_map &lt;- function(x, f, FUN.VALUE, ...)
+{
+  vapply(x, Map(f, ...), FUN.VALUE)
+}</code></pre>
+</div>
+<div id="implement-mcsapply-a-multicore-version-of-sapply.-can-you-implement-mcvapply-a-parallel-version-of-vapply-why-or-why-not" class="section level2">
+<h2>Implement <code>mcsapply()</code>, a multicore version of <code>sapply()</code>. Can you implement <code>mcvapply()</code>, a parallel version of <code>vapply()</code>? Why or why not?</h2>
+</div>
+<div id="how-does-apply-arrange-the-output-read-the-documentation-and-perform-some-experiments." class="section level2">
+<h2>How does <code>apply()</code> arrange the output? Read the documentation and perform some experiments.</h2>
+<pre class="r"><code>apply(mtcars, 1, mean)</code></pre>
+<pre><code>##           Mazda RX4       Mazda RX4 Wag          Datsun 710 
+##               29.91               29.98               23.60 
+##      Hornet 4 Drive   Hornet Sportabout             Valiant 
+##               38.74               53.66               35.05 
+##          Duster 360           Merc 240D            Merc 230 
+##               59.72               24.63               27.23 
+##            Merc 280           Merc 280C          Merc 450SE 
+##               31.86               31.79               46.43 
+##          Merc 450SL         Merc 450SLC  Cadillac Fleetwood 
+##               46.50               46.35               66.23 
+## Lincoln Continental   Chrysler Imperial            Fiat 128 
+##               66.06               65.97               19.44 
+##         Honda Civic      Toyota Corolla       Toyota Corona 
+##               17.74               18.81               24.89 
+##    Dodge Challenger         AMC Javelin          Camaro Z28 
+##               47.24               46.01               58.75 
+##    Pontiac Firebird           Fiat X1-9       Porsche 914-2 
+##               57.38               18.93               24.78 
+##        Lotus Europa      Ford Pantera L        Ferrari Dino 
+##               24.88               60.97               34.51 
+##       Maserati Bora          Volvo 142E 
+##               63.16               26.26</code></pre>
+<pre class="r"><code>apply(mtcars, 2, mean)</code></pre>
+<pre><code>##      mpg      cyl     disp       hp     drat       wt     qsec       vs 
+##  20.0906   6.1875 230.7219 146.6875   3.5966   3.2172  17.8487   0.4375 
+##       am     gear     carb 
+##   0.4062   3.6875   2.8125</code></pre>
+<p><code>apply()</code> returns a vector ordered by row or column, depending on which was used as input.</p>
+</div>
+<div id="theres-no-equivalent-to-split-vapply.-should-there-be-when-would-it-be-useful-implement-one-yourself." class="section level2">
+<h2>There’s no equivalent to <code>split()</code> + <code>vapply()</code>. Should there be? When would it be useful? Implement one yourself.</h2>
+<p>This might be useful if you had a complex data structure such as a list of lists. You could split by one level of list and apply a function to that subset.</p>
+</div>
+<div id="implement-a-pure-r-version-of-split.-hint-use-unique-and-subsetting.-can-you-do-it-without-a-for-loop" class="section level2">
+<h2>Implement a pure R version of <code>split()</code>. (Hint: use <code>unique()</code> and subsetting.) Can you do it without a <code>for</code> loop?</h2>
+</div>
+<div id="what-other-types-of-input-and-output-are-missing-brainstorm-before-you-look-up-some-answers-in-the-plyr-paper." class="section level2">
+<h2>What other types of input and output are missing? Brainstorm before you look up some answers in the <code>plyr</code> paper.</h2>
+</div>
 </div>
 <div id="discussion-notes" class="section level1">
 <h1>Discussion Notes</h1>
@@ -214,6 +277,20 @@ for (i in seq_along(xs)) {
 <li><code>Map</code> is very similar to <code>mapply</code></li>
 <li><code>apply</code> functions work well with parallelisation because the order doesn’t matter</li>
 </ul>
+<p><code>sweep()</code></p>
+<pre class="r"><code>(x &lt;- matrix(rnorm(20, 0, 10), nrow = 4))</code></pre>
+<pre><code>##        [,1]   [,2]    [,3]     [,4]   [,5]
+## [1,] -8.431  2.271  -2.621  15.9053 20.265
+## [2,] 14.113  6.352 -21.782  -0.3917 -3.196
+## [3,]  3.724  6.425  -6.940   8.5159  7.918
+## [4,] -7.672 -6.979   3.724 -19.2354  6.662</code></pre>
+<pre class="r"><code>(x1 &lt;- sweep(x, 1, apply(x, 1, min), `-`))</code></pre>
+<pre><code>##       [,1]  [,2]   [,3]  [,4]  [,5]
+## [1,]  0.00 10.70  5.809 24.34 28.70
+## [2,] 35.89 28.13  0.000 21.39 18.59
+## [3,] 10.66 13.36  0.000 15.46 14.86
+## [4,] 11.56 12.26 22.960  0.00 25.90</code></pre>
+<pre class="r"><code>x2 &lt;- sweep(x1, 1, apply(x1, 1, max), `/`)</code></pre>
 </div>
 
 
