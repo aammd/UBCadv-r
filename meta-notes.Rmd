@@ -68,6 +68,10 @@ This will probably get resolved after reading [Expressions][expr], but several e
   
 In these contexts, we've needed to write functions where code, objects, or object names are passed as arguments of functions. There's been lots of trial and error about whether to surround code or a name with quotes, when to put multi-line expressions into curly braces, and how to use `as.name()`, `parse()`, `eval()`.
 
+## Functional programming
+
+The challenge to predict what the   `new_counter` functions do would make a better exercise.
+
 [func]: http://adv-r.had.co.nz/Functions.html
 [ret val]: http://adv-r.had.co.nz/Functions.html#return-values
 [env]: http://adv-r.had.co.nz/Environments.html

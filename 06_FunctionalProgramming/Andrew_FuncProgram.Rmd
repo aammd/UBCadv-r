@@ -285,3 +285,16 @@ lapply(rulelist, rulerunner) %>%
 ```
 
 
+```{r}
+test <- 1:5 %>%
+  lapply(function(x) {
+    force(x) 
+    newton_cotes(coef = x)
+    })
+
+unenclose(test[[1]])
+
+
+
+```
+

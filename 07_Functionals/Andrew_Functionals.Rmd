@@ -1,0 +1,229 @@
+---
+title: "Andrew_Functionals"
+author: "Andrew MacDonald"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    toc: yes
+    keep_md: TRUE
+---
+
+## Exercises 1
+### Why are the following two invocations of `lapply()` equivalent?
+Because the first element of `mean()` gets interpreted as the value of `trim` **IF** the value of x is already supplied.
+
+```{r}
+mean(0.5, x = c(0:10,50))
+```
+
+### The function below scales a vector so it falls in the range [0, 1]. How would you apply it to every column of a data frame? How would you apply it to every numeric column in a data frame?
+
+```{r scale_vector_lapply}
+scale01 <- function(x) {
+  rng <- range(x, na.rm = TRUE)
+  (x - rng[1]) / (rng[2] - rng[1])
+}
+
+mtcars_scale <- mtcars[]
+mtcars_scale[] <- lapply(mtcars, scale01)
+head(mtcars_scale)
+
+scale_numerics <- function(dat){
+  if(is.numeric(dat)){
+    scale01(dat)
+    } else {
+      dat
+      }
+  }
+
+iris_scale <- iris
+
+iris_scale[] <- lapply(iris, scale_numerics)
+
+head(iris)
+
+try(lapply(iris, scale01))
+```
+
+### Use both for loops and `lapply()` to fit linear models to the mtcars using the formulas stored in this list:
+
+```{r}
+formulas <- list(
+  mpg ~ disp,
+  mpg ~ I(1 / disp),
+  mpg ~ disp + wt,
+  mpg ~ I(1 / disp) + wt
+)
+
+mods <- vector("list", length(formulas))
+
+for (i in seq_along(formulas)){
+  mods[[i]] <- lm(formulas[[i]], data = mtcars)
+  }
+```
+
+The `lapply()` method is interesting. normally I would use an anonymous function, but I learned from the examples in this chapter that this is not actually necessary:
+
+```{r}
+models_mtcars <- lapply(formulas, lm, data = mtcars)
+# old way
+#lapply(formulas, function(form) lm(form, data = mtcars))
+```
+
+
+### Fit the model `mpg ~ disp` to each of the bootstrap replicates of mtcars in the list below by using a for loop and `lapply()`. Can you do it without an anonymous function?
+
+```{r}
+
+bootstraps <- lapply(1:10, function(i) {
+  rows <- sample(1:nrow(mtcars), rep = TRUE)
+  mtcars[rows, ]
+})
+
+## for loop
+
+bootstrap_models <- vector("list",length(bootstraps))
+for(i in seq_along(bootstraps)){
+  bootstrap_models[[i]] <- lm(mpg ~ disp, data = bootstraps[[i]])
+  }
+
+## lapply
+
+bootstrap_models_lapply <- lapply(bootstraps, lm, formula = mpg ~ disp)
+```
+
+I must say, although I love this approach (avoiding anonymous functions) because of its simple elegance, I have my doubts.  It strikes me as both harder to read and error prone.  Harder to read, because your reader might not remember/know that `data` is the second argument to `lm()` (I had to check, and I've been doing this for years). Error-prone, because you might inadvertently pass the list elements to the wrong argument, and not immediately realize your mistake.
+
+### For each model in the previous two exercises, extract R2 using the function below.
+
+```{r}
+rsq <- function(mod) summary(mod)$r.squared
+
+sapply(bootstrap_models_lapply, rsq)
+
+sapply(models_mtcars, rsq)
+
+```
+
+### Use vapply() to Compute the standard deviation of every column in a numeric data frame.
+
+```{r}
+library(magrittr)
+
+species_abundances <- sample(seq_len(100),size = 5) %>%
+  sapply(rpois, n = 20) %>%
+  data.frame %>%
+  set_names(paste0("sp",1:5))
+
+vapply(species_abundances, sd, numeric(1))
+
+```
+
+### Compute the standard deviation of every numeric column in a mixed data frame. (Hint: you’ll need to use vapply() twice.)
+
+```{r}
+library(dplyr)
+site_species <- species_abundances %>% 
+  mutate(site = paste0("site",LETTERS[1:5]) %>%
+           rep(times = 4))
+
+vapply(site_species[vapply(site_species, is.numeric, logical(1))], sd, numeric(1))
+
+## Equivalently, in magrittr style:
+site_species %>%
+  vapply(is.numeric, logical(1)) %>%
+  site_species[.] %>%
+  vapply(sd, numeric(1))
+
+```
+
+
+### Why is using sapply() to get the class() of each element in a data frame dangerous?
+Because many elements will have >1 classes, and`sapply` will silently return a list (you probably wanted a vector, or you would have just used `lapply` directly).
+
+### Use sapply() and an anonymous function to extract the p-value from every trial.
+
+```{r}
+trials <- replicate(
+  100, 
+  t.test(rpois(10, 10), rpois(7, 10)),
+  simplify = FALSE
+)
+
+sapply(trials, function(test) test$p.value)
+
+sapply(trials, '[[', i = "p.value") 
+```
+
+### What does replicate() do? What sort of for loop does it eliminate? Why do its arguments differ from lapply() and friends?
+
+replicate is just sapply run over a vector of length `n` (first arg), that evaluates an expression once for each element and then simplifies the result.  
+It eliminates for loops which just repeatedly evaluate an expression. Usually for random numbers; I can't think of a reason to use `replicate()` if something isn't random.
+The second argument of `replicate()` isn't a function, it's an expression.  That's because it isn't actually *doing* anything with the vector of numbers, unlike the apply family.
+
+```{r replicate}
+replicate(5, rnorm(2))
+
+replicate(4, "blue")
+```
+
+
+### Implement a version of lapply() that supplies FUN with both the name and the value of each component.
+
+Not exactly sure what is meant by "component" here, but here goes:
+
+```{r}
+colnum <- c("blue" = 2, "green" = 7)
+
+lapply(colnum, function(x) x/2)
+```
+
+ahh, it actually requires a `Map` or mapply solution!
+```{r}
+name_val_lapply <- function(X, FUN, ...){
+  i <- seq_along(X)
+  Map(FUN, names(X)[i], X[i])
+}
+
+funtest <- function(name_of, val_of){
+  paste("the value of", name_of, "is", val_of)
+}
+
+name_val_lapply(colnum, funtest)
+
+```
+
+### Implement a combination of Map() and vapply() to create an lapply() variant that iterates in parallel over all of its inputs and stores its outputs in a vector (or a matrix). What arguments should the function take?
+
+I am hazy about what is going on here.  IN fact, rereading this section after looking at this question suggests to me that there are two different uses of the word "parallel" going on here: one refers to sending computations to different cores, and the other to the "zipper" action of `Map` | `mapply`.  not sure what do to here?
+
+```{r}
+
+```
+
+
+### Implement mcsapply(), a multicore version of sapply(). Can you implement mcvapply(), a parallel version of vapply()? Why or why not?
+
+my intuition is that `mcvapply` is impossible, since it allocates the vector first and how can you do that with parallel? you probably can't.
+
+## Matrix functionals
+
+### How does apply() arrange the output? Read the documentation and perform some experiments.
+
+## reading notes 
+
+I really liked this simple example of a functional to make randomized versions of common summary functions:
+
+```{r normal_randomizer}
+randomise <- function(f) f(runif(1e3))
+randomise(mean)
+#> [1] 0.5115665
+randomise(mean)
+#> [1] 0.503939
+randomise(sum)
+
+replicate(500,randomise(sum)) %>%
+  data.frame(x = .) %>%
+  ggplot(aes(x = x)) + geom_density()
+```
+
