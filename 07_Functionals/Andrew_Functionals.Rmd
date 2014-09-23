@@ -155,6 +155,60 @@ sapply(trials, function(test) test$p.value)
 sapply(trials, '[[', i = "p.value") 
 ```
 
+### What does replicate() do? What sort of for loop does it eliminate? Why do its arguments differ from lapply() and friends?
+
+replicate is just sapply run over a vector of length `n` (first arg), that evaluates an expression once for each element and then simplifies the result.  
+It eliminates for loops which just repeatedly evaluate an expression. Usually for random numbers; I can't think of a reason to use `replicate()` if something isn't random.
+The second argument of `replicate()` isn't a function, it's an expression.  That's because it isn't actually *doing* anything with the vector of numbers, unlike the apply family.
+
+```{r replicate}
+replicate(5, rnorm(2))
+
+replicate(4, "blue")
+```
+
+
+### Implement a version of lapply() that supplies FUN with both the name and the value of each component.
+
+Not exactly sure what is meant by "component" here, but here goes:
+
+```{r}
+colnum <- c("blue" = 2, "green" = 7)
+
+lapply(colnum, function(x) x/2)
+```
+
+ahh, it actually requires a `Map` or mapply solution!
+```{r}
+name_val_lapply <- function(X, FUN, ...){
+  i <- seq_along(X)
+  Map(FUN, names(X)[i], X[i])
+}
+
+funtest <- function(name_of, val_of){
+  paste("the value of", name_of, "is", val_of)
+}
+
+name_val_lapply(colnum, funtest)
+
+```
+
+### Implement a combination of Map() and vapply() to create an lapply() variant that iterates in parallel over all of its inputs and stores its outputs in a vector (or a matrix). What arguments should the function take?
+
+I am hazy about what is going on here.  IN fact, rereading this section after looking at this question suggests to me that there are two different uses of the word "parallel" going on here: one refers to sending computations to different cores, and the other to the "zipper" action of `Map` | `mapply`.  not sure what do to here?
+
+```{r}
+
+```
+
+
+### Implement mcsapply(), a multicore version of sapply(). Can you implement mcvapply(), a parallel version of vapply()? Why or why not?
+
+my intuition is that `mcvapply` is impossible, since it allocates the vector first and how can you do that with parallel? you probably can't.
+
+## Matrix functionals
+
+### How does apply() arrange the output? Read the documentation and perform some experiments.
 
 ## reading notes 
 
