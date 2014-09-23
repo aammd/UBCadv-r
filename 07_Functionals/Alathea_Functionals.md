@@ -49,178 +49,107 @@ for(i in 1:length(formulas))
   model <- lm(formulas[[i]], data = mtcars)
   print(summary(model))
 }
-```
 
-```
-## 
-## Call:
-## lm(formula = formulas[[i]], data = mtcars)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -4.892 -2.202 -0.963  1.627  7.231 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(>|t|)    
-## (Intercept) 29.59985    1.22972   24.07  < 2e-16 ***
-## disp        -0.04122    0.00471   -8.75  9.4e-10 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 3.25 on 30 degrees of freedom
-## Multiple R-squared:  0.718,	Adjusted R-squared:  0.709 
-## F-statistic: 76.5 on 1 and 30 DF,  p-value: 9.38e-10
-## 
-## 
-## Call:
-## lm(formula = formulas[[i]], data = mtcars)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -3.738 -1.822 -0.075  1.049  4.610 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)   10.752      0.799    13.4  3.1e-14 ***
-## I(1/disp)   1557.674    114.894    13.6  2.5e-14 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 2.29 on 30 degrees of freedom
-## Multiple R-squared:  0.86,	Adjusted R-squared:  0.855 
-## F-statistic:  184 on 1 and 30 DF,  p-value: 2.49e-14
-## 
-## 
-## Call:
-## lm(formula = formulas[[i]], data = mtcars)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -3.409 -2.324 -0.768  1.772  6.348 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(>|t|)    
-## (Intercept) 34.96055    2.16454   16.15  4.9e-16 ***
-## disp        -0.01772    0.00919   -1.93   0.0636 .  
-## wt          -3.35083    1.16413   -2.88   0.0074 ** 
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 2.92 on 29 degrees of freedom
-## Multiple R-squared:  0.781,	Adjusted R-squared:  0.766 
-## F-statistic: 51.7 on 2 and 29 DF,  p-value: 2.74e-10
-## 
-## 
-## Call:
-## lm(formula = formulas[[i]], data = mtcars)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -2.709 -1.512 -0.619  1.514  4.231 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)   19.024      3.452    5.51  6.1e-06 ***
-## I(1/disp)   1142.560    199.843    5.72  3.5e-06 ***
-## wt            -1.798      0.733   -2.45     0.02 *  
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 2.12 on 29 degrees of freedom
-## Multiple R-squared:  0.884,	Adjusted R-squared:  0.876 
-## F-statistic:  110 on 2 and 29 DF,  p-value: 2.79e-14
-```
-
-```r
 lapply(formulas, function(x) summary(lm(x, data = mtcars)))
 ```
 
+## Fit the model `mpg ~ disp` to each of the bootstrap replicates of `mtcars` in the list below by using a `for` loop and `lapply()`. Can you do it without an anonymous function?
+
+
+```r
+bootstraps <- lapply(1:10, function(i) {
+  rows <- sample(1:nrow(mtcars), rep = TRUE)
+  mtcars[rows, ]
+})
+
+lapply(bootstraps, function(x) lm(mpg ~ disp, data = x))
+
+for(i in 1:length(bootstraps)){
+  print(lm(mpg ~ disp, data = bootstraps[[i]]))
+}
 ```
-## [[1]]
-## 
-## Call:
-## lm(formula = x, data = mtcars)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -4.892 -2.202 -0.963  1.627  7.231 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(>|t|)    
-## (Intercept) 29.59985    1.22972   24.07  < 2e-16 ***
-## disp        -0.04122    0.00471   -8.75  9.4e-10 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 3.25 on 30 degrees of freedom
-## Multiple R-squared:  0.718,	Adjusted R-squared:  0.709 
-## F-statistic: 76.5 on 1 and 30 DF,  p-value: 9.38e-10
-## 
-## 
-## [[2]]
-## 
-## Call:
-## lm(formula = x, data = mtcars)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -3.738 -1.822 -0.075  1.049  4.610 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)   10.752      0.799    13.4  3.1e-14 ***
-## I(1/disp)   1557.674    114.894    13.6  2.5e-14 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 2.29 on 30 degrees of freedom
-## Multiple R-squared:  0.86,	Adjusted R-squared:  0.855 
-## F-statistic:  184 on 1 and 30 DF,  p-value: 2.49e-14
-## 
-## 
-## [[3]]
-## 
-## Call:
-## lm(formula = x, data = mtcars)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -3.409 -2.324 -0.768  1.772  6.348 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(>|t|)    
-## (Intercept) 34.96055    2.16454   16.15  4.9e-16 ***
-## disp        -0.01772    0.00919   -1.93   0.0636 .  
-## wt          -3.35083    1.16413   -2.88   0.0074 ** 
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 2.92 on 29 degrees of freedom
-## Multiple R-squared:  0.781,	Adjusted R-squared:  0.766 
-## F-statistic: 51.7 on 2 and 29 DF,  p-value: 2.74e-10
-## 
-## 
-## [[4]]
-## 
-## Call:
-## lm(formula = x, data = mtcars)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -2.709 -1.512 -0.619  1.514  4.231 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)   19.024      3.452    5.51  6.1e-06 ***
-## I(1/disp)   1142.560    199.843    5.72  3.5e-06 ***
-## wt            -1.798      0.733   -2.45     0.02 *  
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 2.12 on 29 degrees of freedom
-## Multiple R-squared:  0.884,	Adjusted R-squared:  0.876 
-## F-statistic:  110 on 2 and 29 DF,  p-value: 2.79e-14
+
+## For each model in the previous two exercises, extract R2 using the function below.
+
+
+```r
+rsq <- function(mod) summary(mod)$r.squared
+
+bootstraps <- lapply(1:10, function(i) {
+  rows <- sample(1:nrow(mtcars), rep = TRUE)
+  mtcars[rows, ]
+})
+models <- lapply(bootstraps, function(x) lm(mpg ~ disp, data = x))
+
+unlist(lapply(models, function(x) rsq(x)))
 ```
+
+```
+##  [1] 0.6767 0.6641 0.7508 0.7232 0.7722 0.7411 0.8113 0.7535 0.5698 0.7193
+```
+
+## Use `vapply()` to: a) Compute the standard deviation of every column in a numeric data frame. b) Compute the standard deviation of every numeric column in a mixed data frame. (Hint: you’ll need to use vapply() twice.)
+
+
+```r
+vapply(mtcars, sd, double(1))
+```
+
+```
+##      mpg      cyl     disp       hp     drat       wt     qsec       vs 
+##   6.0269   1.7859 123.9387  68.5629   0.5347   0.9785   1.7869   0.5040 
+##       am     gear     carb 
+##   0.4990   0.7378   1.6152
+```
+
+```r
+# using the iris dataset:
+vapply(iris, is.numeric, logical(1))
+```
+
+```
+## Sepal.Length  Sepal.Width Petal.Length  Petal.Width      Species 
+##         TRUE         TRUE         TRUE         TRUE        FALSE
+```
+
+## Why is using `sapply()` to get the `class()` of each element in a data frame dangerous?
+
+
+```r
+sapply(iris, class)
+```
+
+```
+## Sepal.Length  Sepal.Width Petal.Length  Petal.Width      Species 
+##    "numeric"    "numeric"    "numeric"    "numeric"     "factor"
+```
+
+```r
+vapply(iris, class, character(1))
+```
+
+```
+## Sepal.Length  Sepal.Width Petal.Length  Petal.Width      Species 
+##    "numeric"    "numeric"    "numeric"    "numeric"     "factor"
+```
+
+## The following code simulates the performance of a t-test for non-normal data. Use `sapply()` and an anonymous function to extract the p-value from every trial.  Extra challenge: get rid of the anonymous function by using [[ directly.
+
+
+
+```r
+trials <- replicate(
+  100, 
+  t.test(rpois(10, 10), rpois(7, 10)),
+  simplify = FALSE
+)
+
+sapply(trials, function(x) get("p.value", x))
+```
+
+## What does `replicate()` do? What sort of for loop does it eliminate? Why do its arguments differ from `lapply()` and friends?
+
+`replicate()` 
 
 # Discussion Notes
 
@@ -256,3 +185,9 @@ for (i in seq_along(xs)) {
   res[i] <- sqrt(xs[i])
 }
 ```
+
+* `sapply` and `vapply` are both wrappers for `lapply` that return vectors
+* `vapply` is better for use within functions because it is more verbose about errors
+* Use `Map` to process two lists in parallel
+* `Map` is very similar to `mapply`
+* `apply` functions work well with parallelisation because the order doesn't matter

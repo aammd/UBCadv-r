@@ -6,6 +6,7 @@
 
 <meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
 <meta name="generator" content="pandoc" />
 
 <meta name="author" content="Alathea" />
@@ -64,6 +65,12 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#why-are-the-following-two-invocations-of-lapply-equivalent">Why are the following two invocations of <code>lapply()</code> equivalent?</a></li>
 <li><a href="#the-function-below-scales-a-vector-so-it-falls-in-the-range-0-1.-how-would-you-apply-it-to-every-column-of-a-data-frame-how-would-you-apply-it-to-every-numeric-column-in-a-data-frame">The function below scales a vector so it falls in the range [0, 1]. How would you apply it to every column of a data frame? How would you apply it to every numeric column in a data frame?</a></li>
 <li><a href="#use-both-for-loops-and-lapply-to-fit-linear-models-to-the-mtcars-using-the-formulas-stored-in-this-list">Use both <code>for</code> loops and <code>lapply()</code> to fit linear models to the <code>mtcars</code> using the formulas stored in this list:</a></li>
+<li><a href="#fit-the-model-mpg-disp-to-each-of-the-bootstrap-replicates-of-mtcars-in-the-list-below-by-using-a-for-loop-and-lapply.-can-you-do-it-without-an-anonymous-function">Fit the model <code>mpg ~ disp</code> to each of the bootstrap replicates of <code>mtcars</code> in the list below by using a <code>for</code> loop and <code>lapply()</code>. Can you do it without an anonymous function?</a></li>
+<li><a href="#for-each-model-in-the-previous-two-exercises-extract-r2-using-the-function-below.">For each model in the previous two exercises, extract R2 using the function below.</a></li>
+<li><a href="#use-vapply-to-a-compute-the-standard-deviation-of-every-column-in-a-numeric-data-frame.-b-compute-the-standard-deviation-of-every-numeric-column-in-a-mixed-data-frame.-hint-youll-need-to-use-vapply-twice.">Use <code>vapply()</code> to: a) Compute the standard deviation of every column in a numeric data frame. b) Compute the standard deviation of every numeric column in a mixed data frame. (Hint: you’ll need to use vapply() twice.)</a></li>
+<li><a href="#why-is-using-sapply-to-get-the-class-of-each-element-in-a-data-frame-dangerous">Why is using <code>sapply()</code> to get the <code>class()</code> of each element in a data frame dangerous?</a></li>
+<li><a href="#the-following-code-simulates-the-performance-of-a-t-test-for-non-normal-data.-use-sapply-and-an-anonymous-function-to-extract-the-p-value-from-every-trial.-extra-challenge-get-rid-of-the-anonymous-function-by-using-directly.">The following code simulates the performance of a t-test for non-normal data. Use <code>sapply()</code> and an anonymous function to extract the p-value from every trial. Extra challenge: get rid of the anonymous function by using [[ directly.</a></li>
+<li><a href="#what-does-replicate-do-what-sort-of-for-loop-does-it-eliminate-why-do-its-arguments-differ-from-lapply-and-friends">What does <code>replicate()</code> do? What sort of for loop does it eliminate? Why do its arguments differ from <code>lapply()</code> and friends?</a></li>
 </ul></li>
 <li><a href="#discussion-notes">Discussion Notes</a></li>
 <li><a href="#reading-notes">Reading Notes</a></li>
@@ -110,169 +117,70 @@ for(i in 1:length(formulas))
 {
   model &lt;- lm(formulas[[i]], data = mtcars)
   print(summary(model))
+}
+
+lapply(formulas, function(x) summary(lm(x, data = mtcars)))</code></pre>
+</div>
+<div id="fit-the-model-mpg-disp-to-each-of-the-bootstrap-replicates-of-mtcars-in-the-list-below-by-using-a-for-loop-and-lapply.-can-you-do-it-without-an-anonymous-function" class="section level2">
+<h2>Fit the model <code>mpg ~ disp</code> to each of the bootstrap replicates of <code>mtcars</code> in the list below by using a <code>for</code> loop and <code>lapply()</code>. Can you do it without an anonymous function?</h2>
+<pre class="r"><code>bootstraps &lt;- lapply(1:10, function(i) {
+  rows &lt;- sample(1:nrow(mtcars), rep = TRUE)
+  mtcars[rows, ]
+})
+
+lapply(bootstraps, function(x) lm(mpg ~ disp, data = x))
+
+for(i in 1:length(bootstraps)){
+  print(lm(mpg ~ disp, data = bootstraps[[i]]))
 }</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = formulas[[i]], data = mtcars)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -4.892 -2.202 -0.963  1.627  7.231 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 29.59985    1.22972   24.07  &lt; 2e-16 ***
-## disp        -0.04122    0.00471   -8.75  9.4e-10 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 3.25 on 30 degrees of freedom
-## Multiple R-squared:  0.718,  Adjusted R-squared:  0.709 
-## F-statistic: 76.5 on 1 and 30 DF,  p-value: 9.38e-10
-## 
-## 
-## Call:
-## lm(formula = formulas[[i]], data = mtcars)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -3.738 -1.822 -0.075  1.049  4.610 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)   10.752      0.799    13.4  3.1e-14 ***
-## I(1/disp)   1557.674    114.894    13.6  2.5e-14 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 2.29 on 30 degrees of freedom
-## Multiple R-squared:  0.86,   Adjusted R-squared:  0.855 
-## F-statistic:  184 on 1 and 30 DF,  p-value: 2.49e-14
-## 
-## 
-## Call:
-## lm(formula = formulas[[i]], data = mtcars)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -3.409 -2.324 -0.768  1.772  6.348 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 34.96055    2.16454   16.15  4.9e-16 ***
-## disp        -0.01772    0.00919   -1.93   0.0636 .  
-## wt          -3.35083    1.16413   -2.88   0.0074 ** 
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 2.92 on 29 degrees of freedom
-## Multiple R-squared:  0.781,  Adjusted R-squared:  0.766 
-## F-statistic: 51.7 on 2 and 29 DF,  p-value: 2.74e-10
-## 
-## 
-## Call:
-## lm(formula = formulas[[i]], data = mtcars)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -2.709 -1.512 -0.619  1.514  4.231 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)   19.024      3.452    5.51  6.1e-06 ***
-## I(1/disp)   1142.560    199.843    5.72  3.5e-06 ***
-## wt            -1.798      0.733   -2.45     0.02 *  
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 2.12 on 29 degrees of freedom
-## Multiple R-squared:  0.884,  Adjusted R-squared:  0.876 
-## F-statistic:  110 on 2 and 29 DF,  p-value: 2.79e-14</code></pre>
-<pre class="r"><code>lapply(formulas, function(x) summary(lm(x, data = mtcars)))</code></pre>
-<pre><code>## [[1]]
-## 
-## Call:
-## lm(formula = x, data = mtcars)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -4.892 -2.202 -0.963  1.627  7.231 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 29.59985    1.22972   24.07  &lt; 2e-16 ***
-## disp        -0.04122    0.00471   -8.75  9.4e-10 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 3.25 on 30 degrees of freedom
-## Multiple R-squared:  0.718,  Adjusted R-squared:  0.709 
-## F-statistic: 76.5 on 1 and 30 DF,  p-value: 9.38e-10
-## 
-## 
-## [[2]]
-## 
-## Call:
-## lm(formula = x, data = mtcars)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -3.738 -1.822 -0.075  1.049  4.610 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)   10.752      0.799    13.4  3.1e-14 ***
-## I(1/disp)   1557.674    114.894    13.6  2.5e-14 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 2.29 on 30 degrees of freedom
-## Multiple R-squared:  0.86,   Adjusted R-squared:  0.855 
-## F-statistic:  184 on 1 and 30 DF,  p-value: 2.49e-14
-## 
-## 
-## [[3]]
-## 
-## Call:
-## lm(formula = x, data = mtcars)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -3.409 -2.324 -0.768  1.772  6.348 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 34.96055    2.16454   16.15  4.9e-16 ***
-## disp        -0.01772    0.00919   -1.93   0.0636 .  
-## wt          -3.35083    1.16413   -2.88   0.0074 ** 
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 2.92 on 29 degrees of freedom
-## Multiple R-squared:  0.781,  Adjusted R-squared:  0.766 
-## F-statistic: 51.7 on 2 and 29 DF,  p-value: 2.74e-10
-## 
-## 
-## [[4]]
-## 
-## Call:
-## lm(formula = x, data = mtcars)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -2.709 -1.512 -0.619  1.514  4.231 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)   19.024      3.452    5.51  6.1e-06 ***
-## I(1/disp)   1142.560    199.843    5.72  3.5e-06 ***
-## wt            -1.798      0.733   -2.45     0.02 *  
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 2.12 on 29 degrees of freedom
-## Multiple R-squared:  0.884,  Adjusted R-squared:  0.876 
-## F-statistic:  110 on 2 and 29 DF,  p-value: 2.79e-14</code></pre>
+</div>
+<div id="for-each-model-in-the-previous-two-exercises-extract-r2-using-the-function-below." class="section level2">
+<h2>For each model in the previous two exercises, extract R2 using the function below.</h2>
+<pre class="r"><code>rsq &lt;- function(mod) summary(mod)$r.squared
+
+bootstraps &lt;- lapply(1:10, function(i) {
+  rows &lt;- sample(1:nrow(mtcars), rep = TRUE)
+  mtcars[rows, ]
+})
+models &lt;- lapply(bootstraps, function(x) lm(mpg ~ disp, data = x))
+
+unlist(lapply(models, function(x) rsq(x)))</code></pre>
+<pre><code>##  [1] 0.6767 0.6641 0.7508 0.7232 0.7722 0.7411 0.8113 0.7535 0.5698 0.7193</code></pre>
+</div>
+<div id="use-vapply-to-a-compute-the-standard-deviation-of-every-column-in-a-numeric-data-frame.-b-compute-the-standard-deviation-of-every-numeric-column-in-a-mixed-data-frame.-hint-youll-need-to-use-vapply-twice." class="section level2">
+<h2>Use <code>vapply()</code> to: a) Compute the standard deviation of every column in a numeric data frame. b) Compute the standard deviation of every numeric column in a mixed data frame. (Hint: you’ll need to use vapply() twice.)</h2>
+<pre class="r"><code>vapply(mtcars, sd, double(1))</code></pre>
+<pre><code>##      mpg      cyl     disp       hp     drat       wt     qsec       vs 
+##   6.0269   1.7859 123.9387  68.5629   0.5347   0.9785   1.7869   0.5040 
+##       am     gear     carb 
+##   0.4990   0.7378   1.6152</code></pre>
+<pre class="r"><code># using the iris dataset:
+vapply(iris, is.numeric, logical(1))</code></pre>
+<pre><code>## Sepal.Length  Sepal.Width Petal.Length  Petal.Width      Species 
+##         TRUE         TRUE         TRUE         TRUE        FALSE</code></pre>
+</div>
+<div id="why-is-using-sapply-to-get-the-class-of-each-element-in-a-data-frame-dangerous" class="section level2">
+<h2>Why is using <code>sapply()</code> to get the <code>class()</code> of each element in a data frame dangerous?</h2>
+<pre class="r"><code>sapply(iris, class)</code></pre>
+<pre><code>## Sepal.Length  Sepal.Width Petal.Length  Petal.Width      Species 
+##    &quot;numeric&quot;    &quot;numeric&quot;    &quot;numeric&quot;    &quot;numeric&quot;     &quot;factor&quot;</code></pre>
+<pre class="r"><code>vapply(iris, class, character(1))</code></pre>
+<pre><code>## Sepal.Length  Sepal.Width Petal.Length  Petal.Width      Species 
+##    &quot;numeric&quot;    &quot;numeric&quot;    &quot;numeric&quot;    &quot;numeric&quot;     &quot;factor&quot;</code></pre>
+</div>
+<div id="the-following-code-simulates-the-performance-of-a-t-test-for-non-normal-data.-use-sapply-and-an-anonymous-function-to-extract-the-p-value-from-every-trial.-extra-challenge-get-rid-of-the-anonymous-function-by-using-directly." class="section level2">
+<h2>The following code simulates the performance of a t-test for non-normal data. Use <code>sapply()</code> and an anonymous function to extract the p-value from every trial. Extra challenge: get rid of the anonymous function by using [[ directly.</h2>
+<pre class="r"><code>trials &lt;- replicate(
+  100, 
+  t.test(rpois(10, 10), rpois(7, 10)),
+  simplify = FALSE
+)
+
+sapply(trials, function(x) get(&quot;p.value&quot;, x))</code></pre>
+</div>
+<div id="what-does-replicate-do-what-sort-of-for-loop-does-it-eliminate-why-do-its-arguments-differ-from-lapply-and-friends" class="section level2">
+<h2>What does <code>replicate()</code> do? What sort of for loop does it eliminate? Why do its arguments differ from <code>lapply()</code> and friends?</h2>
+<p><code>replicate()</code></p>
 </div>
 </div>
 <div id="discussion-notes" class="section level1">
@@ -299,6 +207,13 @@ res &lt;- numeric(length(xs))
 for (i in seq_along(xs)) {
   res[i] &lt;- sqrt(xs[i])
 }</code></pre>
+<ul>
+<li><code>sapply</code> and <code>vapply</code> are both wrappers for <code>lapply</code> that return vectors</li>
+<li><code>vapply</code> is better for use within functions because it is more verbose about errors</li>
+<li>Use <code>Map</code> to process two lists in parallel</li>
+<li><code>Map</code> is very similar to <code>mapply</code></li>
+<li><code>apply</code> functions work well with parallelisation because the order doesn’t matter</li>
+</ul>
 </div>
 
 
@@ -313,12 +228,12 @@ $(document).ready(function () {
 
 </script>
 
-<!-- dynamically load mathjax for compatibility with self-contained -->
+<!-- dynamically load mathjax for compatibility with --self-contained -->
 <script>
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>

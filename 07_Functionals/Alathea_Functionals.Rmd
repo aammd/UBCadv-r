@@ -56,6 +56,68 @@ for(i in 1:length(formulas))
 lapply(formulas, function(x) summary(lm(x, data = mtcars)))
 ```
 
+## Fit the model `mpg ~ disp` to each of the bootstrap replicates of `mtcars` in the list below by using a `for` loop and `lapply()`. Can you do it without an anonymous function?
+
+```{r bootstrap, eval = FALSE}
+bootstraps <- lapply(1:10, function(i) {
+  rows <- sample(1:nrow(mtcars), rep = TRUE)
+  mtcars[rows, ]
+})
+
+lapply(bootstraps, function(x) lm(mpg ~ disp, data = x))
+
+for(i in 1:length(bootstraps)){
+  print(lm(mpg ~ disp, data = bootstraps[[i]]))
+}
+```
+
+## For each model in the previous two exercises, extract R2 using the function below.
+
+```{r r-sqaure}
+rsq <- function(mod) summary(mod)$r.squared
+
+bootstraps <- lapply(1:10, function(i) {
+  rows <- sample(1:nrow(mtcars), rep = TRUE)
+  mtcars[rows, ]
+})
+models <- lapply(bootstraps, function(x) lm(mpg ~ disp, data = x))
+
+unlist(lapply(models, function(x) rsq(x)))
+```
+
+## Use `vapply()` to: a) Compute the standard deviation of every column in a numeric data frame. b) Compute the standard deviation of every numeric column in a mixed data frame. (Hint: you’ll need to use vapply() twice.)
+
+```{r vapply}
+vapply(mtcars, sd, double(1))
+
+# using the iris dataset:
+vapply(iris, is.numeric, logical(1))
+```
+
+## Why is using `sapply()` to get the `class()` of each element in a data frame dangerous?
+
+```{r sapply}
+sapply(iris, class)
+vapply(iris, class, character(1))
+```
+
+## The following code simulates the performance of a t-test for non-normal data. Use `sapply()` and an anonymous function to extract the p-value from every trial.  Extra challenge: get rid of the anonymous function by using [[ directly.
+
+
+```{r p_vals, eval = FALSE}
+trials <- replicate(
+  100, 
+  t.test(rpois(10, 10), rpois(7, 10)),
+  simplify = FALSE
+)
+
+sapply(trials, function(x) get("p.value", x))
+```
+
+## What does `replicate()` do? What sort of for loop does it eliminate? Why do its arguments differ from `lapply()` and friends?
+
+`replicate()` 
+
 # Discussion Notes
 
 # Reading Notes
@@ -81,3 +143,9 @@ for (i in seq_along(xs)) {
   res[i] <- sqrt(xs[i])
 }
 ```
+
+* `sapply` and `vapply` are both wrappers for `lapply` that return vectors
+* `vapply` is better for use within functions because it is more verbose about errors
+* Use `Map` to process two lists in parallel
+* `Map` is very similar to `mapply`
+* `apply` functions work well with parallelisation because the order doesn't matter
