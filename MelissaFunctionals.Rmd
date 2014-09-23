@@ -1,0 +1,264 @@
+---
+title: "Functionals"
+author: "Melissa"
+date: "September 2, 2014"
+output: html_document
+---
+
+
+```{r setup, include = FALSE, cache = FALSE}
+knitr::opts_chunk$set(error = TRUE)
+```
+
+rm(list=ls())
+
+**lapply**
+
+```{r}
+trims <- c(0, 0.1, 0.2, 0.5)
+x <- rcauchy(1000)
+unlist(lapply(trims, function(trim) mean(x, trim = trim)))
+```
+
+1. Why are the following two invocations of lapply() equivalent?
+
+trims <- c(0, 0.1, 0.2, 0.5)
+x <- rcauchy(100)
+
+lapply(trims, function(trim) mean(x, trim = trim))
+lapply(trims, mean, x = x)
+
+
+2. The function below scales a vector so it falls in the range [0, 1]. How would you apply it to every column of a data frame? How would you apply it to every numeric column in a data frame?
+
+scale01 <- function(x) {
+  rng <- range(x, na.rm = TRUE)
+  (x - rng[1]) / (rng[2] - rng[1])
+}
+
+```{r}
+lapply(mtcars, FUN=scale01)
+```
+```{r}
+mydf<-data.frame(letters,1:26)
+
+scale01numeric <- function(x) {
+  if(is.numeric(x)){
+    rng <- range(x, na.rm = TRUE)
+  (x - rng[1]) / (rng[2] - rng[1])
+  }
+}
+
+lapply(mydf, FUN=scale01numeric)
+```
+
+
+
+3. Use both for loops and lapply() to fit linear models to the mtcars using the formulas stored in this list:
+
+formulas <- list(
+  mpg ~ disp,
+  mpg ~ I(1 / disp),
+  mpg ~ disp + wt,
+  mpg ~ I(1 / disp) + wt
+)
+
+```{r}
+res<-list()
+
+for(i in 1:length(formulas)){
+  res[[i]]<-lm(formulas[[i]], data=mtcars)
+  }
+res
+
+```
+
+```{r}
+lapply(formulas, FUN=function(x) lm(formula=x, data=mtcars))
+```
+
+
+
+4. Fit the model mpg ~ disp to each of the bootstrap replicates of mtcars in the list below by using a for loop and lapply(). Can you do it without an anonymous function?
+
+bootstraps <- lapply(1:10, function(i) {
+  rows <- sample(1:nrow(mtcars), rep = TRUE)
+  mtcars[rows, ]
+})
+
+```{r}
+
+
+for(i in 1:length(bootstraps)){
+  res2[i]<-lm(mpg~disp, data=bootstraps[i])
+}
+#not sure why its not working?? 
+res2
+```
+
+```{r}
+lapply(bootstraps, FUN=function(x) lm(mpg~disp, data=x))
+
+```
+
+
+
+5. For each model in the previous two exercises, extract R2 using the function below.
+
+rsq <- function(mod) summary(mod)$r.squared
+
+```{r}
+lapply(formulas, FUN=function(x) rsq(lm(formula=x, data=mtcars)))
+```
+
+
+```{r}
+lapply(bootstraps, FUN=function(x) rsq(lm(mpg~disp, data=x)))
+
+```
+
+
+**friends of lapply**
+
+
+1. Use vapply() to:
+
+  a. Compute the standard deviation of every column in a numeric data frame.
+  
+```{r}
+vapply(mtcars, FUN=sd, FUN.VALUE=1)
+```
+
+  b. Compute the standard deviation of every numeric column in a mixed data frame. (Hint: you’ll need to use vapply() twice.)
+  
+```{r}
+mydf2<-data.frame(rep('a',26),1:26,2:27)
+
+mydf.numeric<-vapply(mydf2, FUN=is.numeric, FUN.VALUE=1)
+
+vapply(mydf.numeric,FUN=function(x) sd(mydf2[,x]),FUN.VALUE=1)
+
+```
+
+
+2. Why is using sapply() to get the class() of each element in a data frame dangerous?
+
+Because sapply will work even if class has more than one value. 
+
+3. The following code simulates the performance of a t-test for non-normal data. Use sapply() and an anonymous function to extract the p-value from every trial.
+
+trials <- replicate(
+  100, 
+  t.test(rpois(10, 10), rpois(7, 10)),
+  simplify = FALSE
+)
+Extra challenge: get rid of the anonymous function by using [[ directly.
+
+```{r}
+sapply(trials, function(x) x$ p.value)
+
+```
+
+
+4. What does replicate() do? What sort of for loop does it eliminate? Why do its arguments differ from lapply() and friends?
+
+it evaluates an expression n number of times. It differs because it evaluates expressions and not just functions. 
+
+```{r}
+replicate(3,'dont stop')
+```
+
+
+5. Implement a version of lapply() that supplies FUN with both the name and the value of each component.
+
+6. Implement a combination of Map() and vapply() to create an lapply() variant that iterates in parallel over all of its inputs and stores its outputs in a vector (or a matrix). What arguments should the function take?
+
+7. Implement mcsapply(), a multicore version of sapply(). Can you implement mcvapply(), a parallel version of vapply()? Why or why not?
+
+
+
+
+**apply and sweep**
+
+1. How does apply() arrange the output? Read the documentation and perform some experiments.
+
+It reduces the number of dimensions by one (by the margin given) , giving either a vector or a matrix
+
+```{r}
+a<-matrix(1:20, nrow=5)
+apply(a, MARGIN=2, sum)
+```
+
+
+2. There’s no equivalent to split() + vapply(). Should there be? When would it be useful? Implement one yourself.
+
+```{r}
+
+pulse <- round(rnorm(22, 70, 10 / 3)) + rep(c(0, 5), c(10, 12))
+group <- rep(c("A", "B"), c(10, 12))
+tapply(pulse, group, mean)
+
+tapply3 <- function(x, group, f, ..., output) {
+  pieces <- split(x, group)
+  vapply(pieces, f, FUN.VALUE=output)
+}
+
+tapply3(pulse, group, mean, output=1)
+```
+
+3. Implement a pure R version of split(). (Hint: use unique() and subsetting.) Can you do it without a for loop?
+
+```{r}
+pulse <- round(rnorm(22, 70, 10 / 3)) + rep(c(0, 5), c(10, 12))
+group <- rep(c("A", "B"), c(10, 12))
+pieces <- split(pulse, group)
+```
+
+```{r}
+unique(group)
+split2<-function(vector, group){
+  types<-unique(group)
+  numgroup<-lapply(types,FUN= function(x) sum(group==x))
+  lapply(numgroup)
+  subset(pulse,1:10)
+}
+
+  
+```
+
+
+4. What other types of input and output are missing? Brainstorm before you look up some answers in the plyr paper.
+
+output: data frame
+
+
+
+**Manipulating lists**
+
+1. Why isn’t is.na() a predicate function? What base R function is closest to being a predicate version of is.na()?
+
+v<-c(NA)
+is.na(v)
+
+2. Use Filter() and vapply() to create a function that applies a summary statistic to every numeric column in a data frame.
+
+```{r}
+
+df<- data.frame(x = 1:3, y = c("a", "b", "c"))
+
+
+numsum<-function(df1){
+  filter(is.double, df)
+}
+```
+
+
+3. What’s the relationship between which() and Position()? What’s the relationship between where() and Filter()?
+
+which is the general form of position. where is the general form of filter? where will show you the true and false, filter only shows the true. 
+
+4. Implement Any(), a function that takes a list and a predicate function, and returns TRUE if the predicate function returns TRUE for any of the inputs. Implement All() similarly.
+
+5. Implement the span() function from Haskell: given a list x and a predicate function f, span returns the location of the longest sequential run of elements where the predicate is true. (Hint: you might find rle() helpful.)
+
+
