@@ -1,0 +1,292 @@
+---
+title: "Exercises for 'Functional Programming"
+author: "Davor Cubranic"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    toc: no
+    keep_md: TRUE
+---
+
+1. Errors:
+   ```{r eval=FALSE}
+df$c[df$c == -98] <- NA
+df$f[df$g == -99] <- NA
+   ```
+
+
+Anonymous Functions
+-------
+
+1. Given a function, like "mean", match.fun() lets you find a
+   function. Given a function, can you find its name? Why doesn’t that
+   make sense in R?
+   
+   No, because name binding is a property of an environment.
+
+2. Use lapply() and an anonymous function to find the coefficient of
+   variation (the standard deviation divided by the mean) for all
+   columns in the mtcars dataset.
+
+    ```{r}
+    lapply(mtcars, function(x) sd(x)/mean(x))
+    ```
+
+3. Use integrate() and an anonymous function to find the area under
+   the curve for the following functions. Use Wolfram Alpha to check
+   your answers.
+   
+   $y = x ^ 2 - x, x \in [0, 10]$
+   ```{r}
+   integrate(function(x) x^2 - x, 0, 10)
+   ```
+   
+   $y = sin(x) + cos(x), x \in [-π, π]$
+   ```{r}
+   integrate(function(x) sin(x) + cos(x), -pi, pi)
+   ```
+   
+   $y = exp(x) / x, x \in [10, 20]$
+   ```{r}
+   integrate(function(x) exp(x) / x, 10, 20)
+   ```
+  
+Closures
+-----
+
+1. Why are functions created by other functions called closures?
+
+   Because they enclose the environment of their parent function.
+
+2. What does the following statistical function do? What would be a
+   better name for it? (The existing name is a bit of a hint.)
+
+    ```{r eval=FALSE}
+    bc <- function(lambda) {
+      if (lambda == 0) {
+        function(x) log(x)
+      } else {
+        function(x) (x ^ lambda - 1) / lambda
+      }
+    }
+    ```
+    
+   It's a function factory that returns a different function depending
+   on the value of the `lambda` parameter, corresponding to the
+   following formula:
+
+   $$ f(x) = \left\{
+        \begin{array}{lr}
+          \log(x) & : \lambda = 0 \\\\
+          \frac{x ^ \lambda - 1}{\lambda} & : \lambda \ne 0
+        \end{array}
+      \right.
+   $$
+
+3. What does `approxfun()` do? What does it return?
+
+   It's a function factory that returns a function performing (linear
+   or constant) interpolation of the data points given to the factory.
+
+4. What does ecdf() do? What does it return?
+
+   It's a function factory that returns a function that calculates the
+   value of empirical cumulative distribution function of the data
+   points given to the factory.
+
+5. Create a function that creates functions that compute the ith
+   central moment of a numeric vector. You can test it by running the
+   following code:
+   
+   ```{r}
+   moment <- function(n) {
+       function(x) mean((x - mean(x))^n)
+   }
+   m1 <- moment(1)
+   m2 <- moment(2)
+
+   x <- runif(100)
+   stopifnot(all.equal(m1(x), 0))
+   stopifnot(all.equal(m2(x), var(x) * 99 / 100))
+   ```
+   
+6. Create a function `pick()` that takes an index, i, as an argument
+   and returns a function with an argument x that subsets x with i.
+
+   ```{r}
+   pick <- function(i) {
+       function(x) x[[i]]
+   }
+
+   stopifnot(all.equal(lapply(mtcars, pick(5)),
+                       lapply(mtcars, function(x) x[[5]])))
+   ```
+
+Lists of Functions
+---------
+
+1. Implement a summary function that works like `base::summary()`, but
+   uses a list of functions. Modify the function so it returns a
+   closure, making it possible to use it as a function factory.
+
+   ```{r}
+   my_summary <- function(x) {
+       fns <- list(min, function(x, ...) quantile(x, probs = .25, ...),
+                   median, mean,
+                   function(x, ...) quantile(x, probs = .75, ...), max)
+       summs <- sapply(fns, function(f) f(x, na.rm = TRUE))
+       names(summs) <- c('Min.', '1st Qu.', 'Median', 'Mean', '3rd Qu.', 'Max.')
+       summs
+   }
+   my_summary(x)
+   ```
+
+2. Which of the following commands is equivalent to `with(x, f(z))`?
+   
+   Assuming `z` is in `x`, it's (b): `f(x$z)`. If `f` is also part of
+   `x`, then it's (a): `x$f(x$z)`. But if neither is in `x`, then
+   it's equivalent to (d): `f(z)`.
+
+
+Numerical integration
+----
+
+```{r results = 'hide', echo=FALSE}
+midpoint <- function(f, a, b) {
+  (b - a) * f((a + b) / 2)
+}
+
+trapezoid <- function(f, a, b) {
+  (b - a) / 2 * (f(a) + f(b))
+}
+
+composite <- function(f, a, b, n = 10, rule) {
+  points <- seq(a, b, length = n + 1)
+
+  area <- 0
+  for (i in seq_len(n)) {
+    area <- area + rule(f, points[i], points[i + 1])
+  }
+
+  area
+}
+
+composite(sin, 0, pi, n = 10, rule = midpoint)
+
+composite(sin, 0, pi, n = 10, rule = trapezoid)
+
+simpson <- function(f, a, b) {
+  (b - a) / 6 * (f(a) + 4 * f((a + b) / 2) + f(b))
+}
+
+boole <- function(f, a, b) {
+  pos <- function(i) a + i * (b - a) / 4
+  fi <- function(i) f(pos(i))
+
+  (b - a) / 90 *
+    (7 * fi(0) + 32 * fi(1) + 12 * fi(2) + 32 * fi(3) + 7 * fi(4))
+}
+
+composite(sin, 0, pi, n = 10, rule = simpson)
+
+composite(sin, 0, pi, n = 10, rule = boole)
+
+newton_cotes <- function(coef, open = FALSE) {
+  n <- length(coef) + open
+
+  function(f, a, b) {
+    pos <- function(i) a + i * (b - a) / n
+    points <- pos(seq.int(0, length(coef) - 1))
+
+    (b - a) / sum(coef) * sum(f(points) * coef)
+  }
+}
+
+#boole <- newton_cotes(c(7, 32, 12, 32, 7))
+milne <- newton_cotes(c(2, -1, 2), open = TRUE)
+composite(sin, 0, pi, n = 10, rule = milne)
+```
+
+1. Instead of creating individual functions (e.g., `midpoint()`,
+   `trapezoid()`, `simpson()`, etc.), we could store them in a list.
+   If we did that, how would that change the code? Can you create the
+   list of functions from a list of coefficients for the Newton-Cotes
+   formulae?
+
+   I must have something wrong because the new rules don't operate the
+   same as the old ones:
+   ```{r}
+   nc_args <- list(midpoint=list(coef = c(0, 1), open=TRUE),
+   trapezoid=list(coef=c(1,1)), simpson=list(coef=c(1, 4, 1)),
+   boole=list(coef=c(7, 32, 12, 32, 7)), milne=list(coef=c(2, -1, 2),
+   open = TRUE))
+   rules <- (lapply(nc_args, function(args) do.call('newton_cotes',
+   args)))
+
+   stopifnot(all.equal(composite(sin, 0, pi, n=10, rule = midpoint),
+                       composite(sin, 0, pi, n=10, rule = rules$midpoint)))
+   stopifnot(all.equal(composite(sin, 0, pi, n=10, rule = trapezoid),
+                       composite(sin, 0, pi, n=10, rule = rules$trapezoid)))
+   stopifnot(all.equal(composite(sin, 0, pi, n=10, rule = simpson),
+                       composite(sin, 0, pi, n=10, rule = rules$simpson)))
+   stopifnot(all.equal(composite(sin, 0, pi, n=10, rule = boole),
+                       composite(sin, 0, pi, n=10, rule = rules$boole)))
+   stopifnot(all.equal(composite(sin, 0, pi, n=10, rule = milne),
+                       composite(sin, 0, pi, n=10, rule = rules$milne)))
+   ```
+
+2. The trade-off between integration rules is that more complex rules
+   are slower to compute, but need fewer pieces. For sin() in the
+   range [0, π], determine the number of pieces needed so that each
+   rule will be equally accurate. Illustrate your results with a
+   graph.
+   
+   As can be seen from the table below, midpoint, trapezoid, and milne
+   rules take over 10,000 iterations to get to where simpson and boole
+   were at 1,000:
+   
+   ```{r}
+   results <- lapply(list(midpoint = midpoint, trapezoid = trapezoid, simpson = simpson, boole = boole, milne = milne),
+                     function(f) sapply(1:5,
+                                        function(i) abs(2-composite(sin, 0, pi, n=10^i, rule=f))))
+   results <- cbind(n = 10^(1:5), as.data.frame(results))
+   results
+   ```
+
+   Viewed graphically, we see that the error decreases linearly in the
+   number of iterations. Again, simpson and boole improve much quicker
+   than the other three, essentially reaching the limit of machine
+   precision at 1,000 and 100 iterations, respectively:
+   
+   ```{r}
+   library(reshape2)
+   results <- melt(results, id='n', 
+                   variable.name = 'rule', value.name = 'error')
+
+   library(ggplot2, quietly = TRUE)
+   ggplot(results, aes(n, error)) + geom_line() + geom_point() + facet_grid(.~rule) + scale_x_log10() + scale_y_log10()
+   ```
+
+   Q: How do they change for different functions? sin(1 / x^2) is
+   particularly challenging.
+
+   Solution with `integrate` and Wolfram Alpha:
+   ```{r}
+   int_sol <- integrate(function(x) sin(1/x^2), 0, pi, subdivisions = 8570L)
+   int_sol
+   ### Wolfram Alpha: 0.935113
+   ```
+
+   To avoid producing NaN's at $x=0$, I'll use the interval
+   $ [`r .Machine$double.eps`, \pi] $:
+   ```{r}
+   results <- lapply(list(midpoint = midpoint, trapezoid = trapezoid, simpson = simpson, boole = boole, milne = milne),
+                     function(f) sapply(1:5,
+                                        function(i) abs(int_sol$value-composite(function(x) sin(1/x^2), .Machine$double.eps, pi, n=10^i, rule=f))))
+   results <- cbind(n = 10^(1:5), as.data.frame(results))
+   results
+   ```
+   This time, all algorithms are similar and within the reported
+   absolute error of `integrate` (`r int_sol$abs.error`) after 10,000
+   iterations, except for boole, which reaches it after 10,000
+   iterations.
