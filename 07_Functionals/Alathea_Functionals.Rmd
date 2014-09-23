@@ -5,11 +5,79 @@ date: '2014-09-04'
 output:
   html_document:
     keep_md: yes
+    toc: yes
 ---
 
 # The Exercises
+
+## Why are the following two invocations of `lapply()` equivalent?
+```{r cauchy, eval = FALSE}
+trims <- c(0, 0.1, 0.2, 0.5)
+x <- rcauchy(100)
+
+lapply(trims, function(trim) mean(x, trim = trim))
+lapply(trims, mean, x = x)
+```
+
+## The function below scales a vector so it falls in the range [0, 1]. How would you apply it to every column of a data frame? How would you apply it to every numeric column in a data frame?
+```{r scale01, eval = FALSE}
+scale01 <- function(x) {
+  rng <- range(x, na.rm = TRUE)
+  (x - rng[1]) / (rng[2] - rng[1])
+}
+
+not_scaled <- data.frame(a = runif(10, 1, 1000),
+                         b = runif(10, 1, 1000))
+not_scaled2 <- not_scaled
+not_scaled2$c <- c(letters[1:10])
+
+not_scaled
+
+lapply(not_scaled, function(x) scale01(x))
+lapply(not_scaled, function(x) scale01(x))
+```
+
+## Use both `for` loops and `lapply()` to fit linear models to the `mtcars` using the formulas stored in this list:
+
+```{r formula_list, eval = FALSE}
+formulas <- list(
+  mpg ~ disp,
+  mpg ~ I(1 / disp),
+  mpg ~ disp + wt,
+  mpg ~ I(1 / disp) + wt
+)
+
+for(i in 1:length(formulas))
+{
+  model <- lm(formulas[[i]], data = mtcars)
+  print(summary(model))
+}
+
+lapply(formulas, function(x) summary(lm(x, data = mtcars)))
+```
 
 # Discussion Notes
 
 # Reading Notes
 
+A *functional* takes a function as input and returns a vector as output
+
+```{r lapply}
+unlist(lapply(mtcars, class))
+```
+
+```{r faster_loops, eval = FALSE}
+# slow loop
+xs <- runif(1e3)
+res <- c()
+for (x in xs) {
+  # This is slow!
+  res <- c(res, sqrt(x))
+}
+
+#fast loop
+res <- numeric(length(xs))
+for (i in seq_along(xs)) {
+  res[i] <- sqrt(xs[i])
+}
+```
