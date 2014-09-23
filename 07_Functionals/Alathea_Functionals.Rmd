@@ -190,3 +190,5 @@ for (i in seq_along(xs)) {
 (x1 <- sweep(x, 1, apply(x, 1, min), `-`))
 x2 <- sweep(x1, 1, apply(x1, 1, max), `/`)
 ```
+
+`Reduce()` useful for recursive operations
