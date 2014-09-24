@@ -9,8 +9,8 @@ output:
 ---
 
 ```{r}
-knitr::opts_chunk$set(error = TRUE)
-
+knitr::opts_chunk$set(error = TRUE, cache = TRUE)
+library(ggplot2)
 
 ```
 
@@ -475,6 +475,134 @@ span(is.character, green30)
 
 ### Implement arg_max(). It should take a function and a vector of inputs, and return the elements of the input where the function returns the highest value. For example, arg_max(-10:5, function(x) x ^ 2) should return -10. arg_max(-5:5, function(x) x ^ 2) should return c(-5, 5). Also implement the matching arg_min() function.
 
+```{r}
+
+arg_maxmin <- function(FUN = max) {
+  arg_max <- function(vec, f){
+    vals <- f(vec)
+    crit <- FUN(vals)
+    vec[vals %in% crit]
+    }
+  }
+
+arg_max <- arg_maxmin()
+
+arg_max(-10:5, function(x) x ^ 2)
+arg_max(-5:5, function(x) x ^ 2)
+
+
+arg_min <- arg_maxmin(min)
+arg_min(-10:5, function(x) - x ^ 2)
+arg_min(-5:5, function(x) - x ^ 2)
+```
+
+## CHALLENGE
+
+first the fixed point procedure
+
+```{r fixedpoint}
+
+running_diff <- function(x){
+  t <- length(x)
+  abs(x[-t] - x[-1])
+}
+
+
+reducify <- function(f){
+  function(x, y){
+    f(x)
+  }
+}
+
+fixed_point <- function(f, tries, init = 1, tol = 0.00001){
+  try_vec <- seq_len(tries)
+  fixingpoints <- Reduce(reducify(f), try_vec, init = init, accumulate = TRUE)
+  passing_tol <- vapply(running_diff(fixingpoints), `<`, y = tol, logical(1))
+  
+  if(!any(passing_tol)) message("you need more tries")
+  
+  firstpass <- min(which(passing_tol))
+  
+  qplot(x = try_vec, y = fixingpoints[-1], geom = "path",
+        main = paste0("the approximation is ", fixingpoints[firstpass]),
+        xlab = "successive interations", ylab = "Approximations") + theme_bw()
+}
+
+fixed_point(cos, 30)
+
+fixed_point(function(x) cos(x) + sin(x), 30)
+
+## impossible; will never converge:
+fixed_point(function(x) 5 / x, 300)
+
+## but with slight modification..
+fixed_point(function(x) (x + 5 / x) / 2, 400)
+
+```
+
+
+The loveliest of numbers, the Golden Ratio itself:
+
+```{r GoldenRatio}
+fixed_point(function(x) 1 + 1/x, 50)
+```
+
+## 1.36 the effect of damping
+
+```{r}
+
+fixed_point(function(x) ((log(1000) / log(x)) + x) / 2, 40, init = 2.5)
+
+fixed_point(function(x) log(1000) / log(x), 40, init = 2.5)
+
+```
+
+### recursive fractions
+```{r}
+frac_maker <- function(n, d){
+  force(n)
+  force(d)
+  function(x) n / (d + x)
+  }
+  
+
+cont_frac <- function(Ns, Ds){
+  Ns <- rev(Ns)
+  Ds <- rev(Ds)
+  funs <- Map(frac_maker, Ns, Ds)
+  Reduce(function(f1,f2) f2(f1), x = funs, init = 0)
+  }
+
+ans <- cont_frac(Ns = rep(1,40), Ds = rep(1, 40))
+
+1/ans
+```
+
+### 1.38 Euler's number
+```{r euler}
+
+denominator <- function(k){
+  nums <- lapply(seq_len(k)*2, function(x) c(1, 1, x))
+  out <- do.call(c, nums)
+  out[-1]
+}
+
+cont_frac(Ds = denominator(20), Ns = rep(1, 3 * 20 -1))
+
+```
+
+### let's do $pi$ ! 
+
+There is another continued fraction on Wikipedia, in the [page for Euler](http://en.wikipedia.org/wiki/Euler%27s_continued_fraction_formula)
+
+```{r}
+pi_numerator <- function(k){
+  exps <- seq(from = 1, length.out = k, by = 2) ^ 2
+  c(4, exps)
+}
+
+cont_frac(Ds = c(1, rep(2, 200)), Ns = pi_numerator(200))
+```
 
 
 ## reading notes 
