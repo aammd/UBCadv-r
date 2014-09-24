@@ -353,7 +353,7 @@ is.numeric(c("fo","bar"))
 
 `anyNA` is closest to a predicate:
 
-```{r}
+```{r napred}
 anyNA(c(NA,NA))
 anyNA(c("foo","bar"))
 ```
@@ -361,7 +361,7 @@ um in fact it IS a predicate??
 
 ### Use Filter() and vapply() to create a function that applies a summary statistic to every numeric column in a data frame.
 
-```{r}
+```{r sumnum}
 numsum <- function(dat, sumstat){
   so_numeros <- Filter(is.numeric, dat)
   vapply(so_numeros, sumstat, numeric(1))
@@ -382,7 +382,7 @@ min(which(scramble == 1))
 ```
 
 `where()` returns a logical vector, while `Filter()` returns the subset that you might produce with it:
-```{r}
+```{r makewhere}
 where <- function(f, x) {
   vapply(x, f, logical(1))
 }
@@ -392,7 +392,7 @@ where <- function(f, x) {
 
 I can think of a couple of ways to do this. is it cheating to use `any()` and `all()`?
 
-```{r}
+```{r anyall}
 AnyAll <- function(FUN){
   function(f, x){
     test <- vapply(x, f, logical(1))
@@ -475,7 +475,7 @@ span(is.character, green30)
 
 ### Implement arg_max(). It should take a function and a vector of inputs, and return the elements of the input where the function returns the highest value. For example, arg_max(-10:5, function(x) x ^ 2) should return -10. arg_max(-5:5, function(x) x ^ 2) should return c(-5, 5). Also implement the matching arg_min() function.
 
-```{r}
+```{r arg_maxmin}
 
 arg_maxmin <- function(FUN = max) {
   arg_max <- function(vec, f){
@@ -549,7 +549,7 @@ fixed_point(function(x) 1 + 1/x, 50)
 
 ## 1.36 the effect of damping
 
-```{r}
+```{r damping_log}
 
 fixed_point(function(x) ((log(1000) / log(x)) + x) / 2, 40, init = 2.5)
 
@@ -558,7 +558,7 @@ fixed_point(function(x) log(1000) / log(x), 40, init = 2.5)
 ```
 
 ### recursive fractions
-```{r}
+```{r inverse_golden}
 frac_maker <- function(n, d){
   force(n)
   force(d)
@@ -566,10 +566,10 @@ frac_maker <- function(n, d){
   }
   
 
-cont_frac <- function(Ns, Ds){
+cont_frac <- function(Ns, Ds, frac_fun = frac_maker){
   Ns <- rev(Ns)
   Ds <- rev(Ds)
-  funs <- Map(frac_maker, Ns, Ds)
+  funs <- Map(frac_fun, Ns, Ds)
   Reduce(function(f1,f2) f2(f1), x = funs, init = 0)
   }
 
@@ -595,7 +595,7 @@ cont_frac(Ds = denominator(20), Ns = rep(1, 3 * 20 -1))
 
 There is another continued fraction on Wikipedia, in the [page for Euler](http://en.wikipedia.org/wiki/Euler%27s_continued_fraction_formula)
 
-```{r}
+```{r pi_time}
 pi_numerator <- function(k){
   exps <- seq(from = 1, length.out = k, by = 2) ^ 2
   c(4, exps)
@@ -604,6 +604,29 @@ pi_numerator <- function(k){
 cont_frac(Ds = c(1, rep(2, 200)), Ns = pi_numerator(200))
 ```
 
+It might be fun to contrast the speed of convergence of some of these fractions for [transcendental numbers](http://en.wikipedia.org/wiki/Generalized_continued_fraction#Transcendental_functions_and_numbers). 
+
+### Lambert's tangent line
+
+```{r }
+
+frac_maker_minus <- function(n, d){
+  force(n)
+  force(d)
+  function(x) n / (d - x)
+  }
+
+tan_cf <- function(x, k){
+  numerators <- rep(x, k - 1) ^ 2
+  numerators <- c(x, numerators)
+  denominators <- seq(from = 1, by = 2, length.out = k)
+  cont_frac(Ns = numerators, Ds = denominators, frac_fun = frac_maker_minus)
+}
+
+tan_cf(pi*0.2, 20)
+
+tan(pi*0.2)
+```
 
 ## reading notes 
 
