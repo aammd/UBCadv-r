@@ -503,28 +503,21 @@ first the fixed point procedure
 ```{r fixedpoint}
 
 running_diff <- function(x){
-  t <- length(x)
-  abs(x[-t] - x[-1])
-}
-
-
-reducify <- function(f){
-  function(x, y){
-    f(x)
-  }
+  tot <- length(x)
+  abs(x[-tot] - x[-1])
 }
 
 fixed_point <- function(f, tries, init = 1, tol = 0.00001){
-  try_vec <- seq_len(tries)
-  fixingpoints <- Reduce(reducify(f), try_vec, init = init, accumulate = TRUE)
+  fvec <- replicate(n = tries, expr = f, simplify = FALSE)
+  fixingpoints <- Reduce(function(f1,f2) f2(f1), x = fvec, init = init, accumulate = TRUE)
   passing_tol <- vapply(running_diff(fixingpoints), `<`, y = tol, logical(1))
   
-  if(!any(passing_tol)) message("you need more tries")
+  if(!any(passing_tol)) message("you need more tries!!")
   
   firstpass <- min(which(passing_tol))
   
-  qplot(x = try_vec, y = fixingpoints[-1], geom = "path",
-        main = paste0("the approximation is ", fixingpoints[firstpass]),
+  qplot(x = 0:tries, y = fixingpoints, geom = "path",
+        main = paste0("value of approximation is ", fixingpoints[firstpass]),
         xlab = "successive interations", ylab = "Approximations") + theme_bw()
 }
 
@@ -556,21 +549,6 @@ fixed_point(function(x) ((log(1000) / log(x)) + x) / 2, 40, init = 2.5)
 fixed_point(function(x) log(1000) / log(x), 40, init = 2.5)
 
 ``` 
-
-```{r}
-fixed_point2 <- function(f, tries, init = 1, tol = 0.00001){
-  fvec <- replicate(n = tries, expr = f, simplify = FALSE)
-  Reduce(function(f1,f2) f2(f1), x = fvec, init = init, accumulate = TRUE)
-}
-
-
-
-fixed_point2(cos, 30)
-
-
-```
-
-
 
 ### recursive fractions
 ```{r inverse_golden}
