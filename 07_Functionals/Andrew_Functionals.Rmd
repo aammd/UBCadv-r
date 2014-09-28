@@ -555,7 +555,22 @@ fixed_point(function(x) ((log(1000) / log(x)) + x) / 2, 40, init = 2.5)
 
 fixed_point(function(x) log(1000) / log(x), 40, init = 2.5)
 
+``` 
+
+```{r}
+fixed_point2 <- function(f, tries, init = 1, tol = 0.00001){
+  fvec <- replicate(n = tries, expr = f, simplify = FALSE)
+  Reduce(function(f1,f2) f2(f1), x = fvec, init = init, accumulate = TRUE)
+}
+
+
+
+fixed_point2(cos, 30)
+
+
 ```
+
+
 
 ### recursive fractions
 ```{r inverse_golden}
