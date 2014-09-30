@@ -8,10 +8,11 @@ output:
     keep_md: TRUE
 ---
 
-```{r}
+```{r opts}
 knitr::opts_chunk$set(error = TRUE, cache = TRUE)
 library(ggplot2)
-
+library(tidyr)
+library(magrittr)
 ```
 
 
@@ -19,7 +20,7 @@ library(ggplot2)
 ### Why are the following two invocations of `lapply()` equivalent?
 Because the first element of `mean()` gets interpreted as the value of `trim` **IF** the value of x is already supplied.
 
-```{r}
+```{r mean}
 mean(0.5, x = c(0:10,50))
 ```
 
@@ -54,7 +55,7 @@ try(lapply(iris, scale01))
 
 ### Use both for loops and `lapply()` to fit linear models to the mtcars using the formulas stored in this list:
 
-```{r}
+```{r modfit}
 formulas <- list(
   mpg ~ disp,
   mpg ~ I(1 / disp),
@@ -71,7 +72,7 @@ for (i in seq_along(formulas)){
 
 The `lapply()` method is interesting. normally I would use an anonymous function, but I learned from the examples in this chapter that this is not actually necessary:
 
-```{r}
+```{r lapplymod}
 models_mtcars <- lapply(formulas, lm, data = mtcars)
 # old way
 #lapply(formulas, function(form) lm(form, data = mtcars))
@@ -80,7 +81,7 @@ models_mtcars <- lapply(formulas, lm, data = mtcars)
 
 ### Fit the model `mpg ~ disp` to each of the bootstrap replicates of mtcars in the list below by using a for loop and `lapply()`. Can you do it without an anonymous function?
 
-```{r}
+```{r bootmod}
 
 bootstraps <- lapply(1:10, function(i) {
   rows <- sample(1:nrow(mtcars), rep = TRUE)
@@ -103,7 +104,7 @@ I must say, although I love this approach (avoiding anonymous functions) because
 
 ### For each model in the previous two exercises, extract R2 using the function below.
 
-```{r}
+```{r rsq}
 rsq <- function(mod) summary(mod)$r.squared
 
 sapply(bootstrap_models_lapply, rsq)
@@ -114,9 +115,7 @@ sapply(models_mtcars, rsq)
 
 ### Use vapply() to Compute the standard deviation of every column in a numeric data frame.
 
-```{r}
-library(magrittr)
-
+```{r sdcol}
 species_abundances <- sample(seq_len(100),size = 5) %>%
   sapply(rpois, n = 20) %>%
   data.frame %>%
@@ -128,7 +127,7 @@ vapply(species_abundances, sd, numeric(1))
 
 ### Compute the standard deviation of every numeric column in a mixed data frame. (Hint: you’ll need to use vapply() twice.)
 
-```{r}
+```{r sdnum}
 library(dplyr)
 site_species <- species_abundances %>% 
   mutate(site = paste0("site",LETTERS[1:5]) %>%
@@ -150,7 +149,7 @@ Because many elements will have >1 classes, and`sapply` will silently return a l
 
 ### Use sapply() and an anonymous function to extract the p-value from every trial.
 
-```{r}
+```{r pval}
 trials <- replicate(
   100, 
   t.test(rpois(10, 10), rpois(7, 10)),
@@ -179,7 +178,7 @@ replicate(4, "blue")
 
 Not exactly sure what is meant by "component" here, but here goes:
 
-```{r}
+```{r component}
 colnum <- c("blue" = 2, "green" = 7)
 
 lapply(colnum, function(x) x/2)
@@ -249,7 +248,7 @@ microbenchmark(sapply(1:10, boot_lm),
 ### How does apply() arrange the output? Read the documentation and perform some experiments.
 
 
-```{r}
+```{r applytest}
 mat <- matrix(rnorm(20), nrow = 5)
 
 apply(mat, 1, summary)
@@ -312,7 +311,7 @@ er, isn't this just the missing blanks in the plyr table?
 
 #### playing with reduce
 
-```{r}
+```{r reducfun}
 Reduce(`*`, 1:10)
 factorial(10)
 microbenchmark(Reduce(`*`, 1:10), factorial(10))
@@ -340,7 +339,7 @@ replicate(10, simdecay()) %>%
 
 Its result is as long as its input -- unlike a true predicate, which returns length 1 always
 
-```{r}
+```{r pred}
 is.character(c("foo","bar"))
 is.na(NaN)
 is.na(NA)
@@ -505,31 +504,36 @@ first the fixed point procedure
 running_diff <- function(x){
   tot <- length(x)
   abs(x[-tot] - x[-1])
-}
+  }
 
-fixed_point <- function(f, tries, init = 1, tol = 0.00001){
+fixed_point <- function(f, tries, init = 1){
   fvec <- replicate(n = tries, expr = f, simplify = FALSE)
-  fixingpoints <- Reduce(function(f1,f2) f2(f1), x = fvec, init = init, accumulate = TRUE)
-  passing_tol <- vapply(running_diff(fixingpoints), `<`, y = tol, logical(1))
-  
+  Reduce(function(f1,f2) f2(f1), x = fvec, init = init, accumulate = TRUE)
+  }
+
+check_tol <- function(fpoints, rdiff = running_diff, tol = 0.00001){
+  passing_tol <- vapply(rdiff(fpoints), `<`, y = tol, logical(1))
   if(!any(passing_tol)) message("you need more tries!!")
-  
-  firstpass <- min(which(passing_tol))
-  
+  }
+
+check_tol(fixed_point(cos, 30, tries = 10))
+
+fpoint_plot <- function(f, tries){
+  fixingpoints <- fixed_point(f = f, tries = tries)
   qplot(x = 0:tries, y = fixingpoints, geom = "path",
-        main = paste0("value of approximation is ", fixingpoints[firstpass]),
-        xlab = "successive interations", ylab = "Approximations") + theme_bw()
+      main = paste0("value of approximation is ", fixingpoints[length(fixingpoints)]),
+      xlab = "successive interations", ylab = "Approximations") + theme_bw()
 }
 
-fixed_point(cos, 30)
+fpoint_plot(cos, 30)
 
-fixed_point(function(x) cos(x) + sin(x), 30)
+fpoint_plot(function(x) cos(x) + sin(x), 30)
 
 ## impossible; will never converge:
-fixed_point(function(x) 5 / x, 300)
+fpoint_plot(function(x) 5 / x, 300)
 
 ## but with slight modification..
-fixed_point(function(x) (x + 5 / x) / 2, 400)
+fpoint_plot(function(x) (x + 5 / x) / 2, 400)
 
 ```
 
@@ -537,16 +541,21 @@ fixed_point(function(x) (x + 5 / x) / 2, 400)
 The loveliest of numbers, the Golden Ratio itself:
 
 ```{r GoldenRatio}
-fixed_point(function(x) 1 + 1/x, 50)
+fpoint_plot(function(x) 1 + 1/x, 50)
 ```
 
 ## 1.36 the effect of damping
 
 ```{r damping_log}
 
-fixed_point(function(x) ((log(1000) / log(x)) + x) / 2, 40, init = 2.5)
+fun1 <- function(x) ((log(1000) / log(x)) + x) / 2
+fun2 <- function(x) log(1000) / log(x)
 
-fixed_point(function(x) log(1000) / log(x), 40, init = 2.5)
+data.frame(ntries = 0:40, 
+           f1 = fixed_point(fun1, 40, init = 2.5),
+           f2 = fixed_point(fun2, 40, init = 2.5)) %>%
+  gather(fun, approx, f1:f2) %>%
+  ggplot(aes(x = ntries, y = approx, colour = fun)) + geom_point() + geom_path() + theme_bw()
 
 ``` 
 
@@ -601,6 +610,8 @@ It might be fun to contrast the speed of convergence of some of these fractions 
 
 ### Lambert's tangent line
 
+This is different from all previous examples, because here the series that form numerator and denominator are a function of $x$:
+
 ```{r }
 
 frac_maker_minus <- function(n, d){
@@ -620,6 +631,17 @@ tan_cf(pi*0.2, 20)
 
 tan(pi*0.2)
 ```
+
+## Smaller and Larger
+
+## Table of Functions
+
+**variant** | `and` | `or` | `add` | `multiply` | `smaller` | `larger`
+------------|-------|------|-------|------------|-----------|---------
+binary  |     |       |       |       |               |
+reducing  |     |       |       |       |               |
+vectorized  |     |       |       |       |               |
+array  |     |       |       |       |               |
 
 ## reading notes 
 

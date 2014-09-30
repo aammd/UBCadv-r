@@ -3,3 +3,9 @@
 .RData
 *.Rproj
 .DS_Store
+.gitignore
+
+# knitr cache
+*.RData
+*.rdb
+*.rdx

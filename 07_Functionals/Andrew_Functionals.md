@@ -6,6 +6,17 @@ Andrew MacDonald
 ```r
 knitr::opts_chunk$set(error = TRUE, cache = TRUE)
 library(ggplot2)
+library(tidyr)
+library(magrittr)
+```
+
+```
+## 
+## Attaching package: 'magrittr'
+## 
+## The following object is masked from 'package:tidyr':
+## 
+##     extract
 ```
 
 
@@ -144,7 +155,7 @@ sapply(bootstrap_models_lapply, rsq)
 ```
 
 ```
-##  [1] 0.7044 0.7089 0.7185 0.7895 0.7762 0.5812 0.7395 0.7306 0.6105 0.6433
+##  [1] 0.8138 0.6447 0.7372 0.6678 0.7710 0.6953 0.6647 0.6879 0.8330 0.7664
 ```
 
 ```r
@@ -159,8 +170,6 @@ sapply(models_mtcars, rsq)
 
 
 ```r
-library(magrittr)
-
 species_abundances <- sample(seq_len(100),size = 5) %>%
   sapply(rpois, n = 20) %>%
   data.frame %>%
@@ -171,7 +180,7 @@ vapply(species_abundances, sd, numeric(1))
 
 ```
 ##   sp1   sp2   sp3   sp4   sp5 
-## 2.732 5.297 6.866 5.824 6.561
+## 6.924 8.499 3.407 8.055 8.486
 ```
 
 ### Compute the standard deviation of every numeric column in a mixed data frame. (Hint: you’ll need to use vapply() twice.)
@@ -179,22 +188,6 @@ vapply(species_abundances, sd, numeric(1))
 
 ```r
 library(dplyr)
-```
-
-```
-## 
-## Attaching package: 'dplyr'
-## 
-## The following objects are masked from 'package:stats':
-## 
-##     filter, lag
-## 
-## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
-```
-
-```r
 site_species <- species_abundances %>% 
   mutate(site = paste0("site",LETTERS[1:5]) %>%
            rep(times = 4))
@@ -204,7 +197,7 @@ vapply(site_species[vapply(site_species, is.numeric, logical(1))], sd, numeric(1
 
 ```
 ##   sp1   sp2   sp3   sp4   sp5 
-## 2.732 5.297 6.866 5.824 6.561
+## 6.924 8.499 3.407 8.055 8.486
 ```
 
 ```r
@@ -217,7 +210,7 @@ site_species %>%
 
 ```
 ##   sp1   sp2   sp3   sp4   sp5 
-## 2.732 5.297 6.866 5.824 6.561
+## 6.924 8.499 3.407 8.055 8.486
 ```
 
 
@@ -238,19 +231,19 @@ sapply(trials, function(test) test$p.value)
 ```
 
 ```
-##   [1] 0.82356 0.78655 0.77669 0.33522 0.67738 0.16992 0.77798 0.09512
-##   [9] 0.31186 0.87285 0.95130 0.69166 0.45283 0.75521 0.41102 0.73651
-##  [17] 0.97013 0.02885 0.66960 0.15500 0.70539 0.43944 0.22187 0.84461
-##  [25] 0.62043 0.37305 0.73465 0.84206 0.76835 0.58840 0.76471 0.75031
-##  [33] 0.59906 0.37489 0.13832 0.92521 0.60284 0.73533 0.89085 0.10613
-##  [41] 0.04000 0.11281 0.59503 0.73000 0.09136 0.79203 0.82068 0.40932
-##  [49] 0.87392 0.97072 0.30790 0.79484 0.18677 0.68982 0.85641 0.46260
-##  [57] 0.86600 0.47314 0.03814 0.30414 0.90946 0.14323 0.38780 0.78705
-##  [65] 0.33591 0.51009 0.30998 0.26573 0.25438 0.43969 0.12789 0.38965
-##  [73] 0.36902 0.14017 0.47463 0.13173 0.21310 0.28304 0.42705 0.77919
-##  [81] 0.32389 0.51142 0.88366 0.37965 0.03815 0.08989 0.47524 0.28170
-##  [89] 0.44686 0.18408 0.52921 0.61059 0.60422 0.87734 0.07503 0.77926
-##  [97] 0.72429 0.05538 0.74608 0.03334
+##   [1] 0.97257 0.45189 0.23822 0.26346 0.04623 0.58196 0.23277 0.88600
+##   [9] 0.59023 0.04353 0.09124 0.51152 0.17858 0.48380 0.54696 0.73133
+##  [17] 0.06745 0.36419 0.38846 0.75181 0.30184 0.02481 0.91555 0.53430
+##  [25] 0.12492 0.53463 0.52985 0.84937 0.71311 0.72263 0.67798 0.09643
+##  [33] 0.52782 1.00000 0.78422 0.14096 0.38059 0.89714 0.36100 0.01793
+##  [41] 0.80433 0.47471 0.33630 0.47749 0.21436 0.91552 0.27927 0.74218
+##  [49] 0.32426 0.55587 0.62914 0.16646 0.48577 0.50520 0.58067 0.24738
+##  [57] 0.98565 0.34761 0.23370 0.56015 0.84444 0.10809 0.10662 0.76039
+##  [65] 0.57727 0.02724 0.90796 0.27806 0.70234 0.66454 0.56424 0.62344
+##  [73] 0.40202 0.01187 0.40885 0.62757 0.77142 0.63220 0.86243 0.04552
+##  [81] 0.57413 0.73691 0.48918 0.34185 0.34151 0.73691 0.07798 0.19122
+##  [89] 0.19771 0.57993 0.82327 0.58516 0.80013 0.65280 0.12803 0.41009
+##  [97] 0.06378 0.03939 0.56994 0.10926
 ```
 
 ```r
@@ -258,19 +251,19 @@ sapply(trials, '[[', i = "p.value")
 ```
 
 ```
-##   [1] 0.82356 0.78655 0.77669 0.33522 0.67738 0.16992 0.77798 0.09512
-##   [9] 0.31186 0.87285 0.95130 0.69166 0.45283 0.75521 0.41102 0.73651
-##  [17] 0.97013 0.02885 0.66960 0.15500 0.70539 0.43944 0.22187 0.84461
-##  [25] 0.62043 0.37305 0.73465 0.84206 0.76835 0.58840 0.76471 0.75031
-##  [33] 0.59906 0.37489 0.13832 0.92521 0.60284 0.73533 0.89085 0.10613
-##  [41] 0.04000 0.11281 0.59503 0.73000 0.09136 0.79203 0.82068 0.40932
-##  [49] 0.87392 0.97072 0.30790 0.79484 0.18677 0.68982 0.85641 0.46260
-##  [57] 0.86600 0.47314 0.03814 0.30414 0.90946 0.14323 0.38780 0.78705
-##  [65] 0.33591 0.51009 0.30998 0.26573 0.25438 0.43969 0.12789 0.38965
-##  [73] 0.36902 0.14017 0.47463 0.13173 0.21310 0.28304 0.42705 0.77919
-##  [81] 0.32389 0.51142 0.88366 0.37965 0.03815 0.08989 0.47524 0.28170
-##  [89] 0.44686 0.18408 0.52921 0.61059 0.60422 0.87734 0.07503 0.77926
-##  [97] 0.72429 0.05538 0.74608 0.03334
+##   [1] 0.97257 0.45189 0.23822 0.26346 0.04623 0.58196 0.23277 0.88600
+##   [9] 0.59023 0.04353 0.09124 0.51152 0.17858 0.48380 0.54696 0.73133
+##  [17] 0.06745 0.36419 0.38846 0.75181 0.30184 0.02481 0.91555 0.53430
+##  [25] 0.12492 0.53463 0.52985 0.84937 0.71311 0.72263 0.67798 0.09643
+##  [33] 0.52782 1.00000 0.78422 0.14096 0.38059 0.89714 0.36100 0.01793
+##  [41] 0.80433 0.47471 0.33630 0.47749 0.21436 0.91552 0.27927 0.74218
+##  [49] 0.32426 0.55587 0.62914 0.16646 0.48577 0.50520 0.58067 0.24738
+##  [57] 0.98565 0.34761 0.23370 0.56015 0.84444 0.10809 0.10662 0.76039
+##  [65] 0.57727 0.02724 0.90796 0.27806 0.70234 0.66454 0.56424 0.62344
+##  [73] 0.40202 0.01187 0.40885 0.62757 0.77142 0.63220 0.86243 0.04552
+##  [81] 0.57413 0.73691 0.48918 0.34185 0.34151 0.73691 0.07798 0.19122
+##  [89] 0.19771 0.57993 0.82327 0.58516 0.80013 0.65280 0.12803 0.41009
+##  [97] 0.06378 0.03939 0.56994 0.10926
 ```
 
 ### What does replicate() do? What sort of for loop does it eliminate? Why do its arguments differ from lapply() and friends?
@@ -528,10 +521,10 @@ microbenchmark(Reduce(`*`, 1:10), factorial(10))
 ```
 
 ```
-## Unit: nanoseconds
-##               expr  min   lq median   uq   max neval
-##  Reduce(`*`, 1:10) 8170 8407   8588 8986 43854   100
-##      factorial(10)  453  558    837  937 49035   100
+## Unit: microseconds
+##               expr    min     lq median     uq     max neval
+##  Reduce(`*`, 1:10) 15.826 18.656 19.819 20.840 104.431   100
+##      factorial(10)  1.074  1.638  1.946  2.297   5.821   100
 ```
 
 
@@ -873,60 +866,56 @@ first the fixed point procedure
 
 ```r
 running_diff <- function(x){
-  t <- length(x)
-  abs(x[-t] - x[-1])
-}
-
-
-reducify <- function(f){
-  function(x, y){
-    f(x)
+  tot <- length(x)
+  abs(x[-tot] - x[-1])
   }
+
+fixed_point <- function(f, tries, init = 1){
+  fvec <- replicate(n = tries, expr = f, simplify = FALSE)
+  Reduce(function(f1,f2) f2(f1), x = fvec, init = init, accumulate = TRUE)
+  }
+
+check_tol <- function(fpoints, rdiff = running_diff, tol = 0.00001){
+  passing_tol <- vapply(rdiff(fpoints), `<`, y = tol, logical(1))
+  if(!any(passing_tol)) message("you need more tries!!")
+  }
+
+check_tol(fixed_point(cos, 30, tries = 10))
+```
+
+```
+## you need more tries!!
+```
+
+```r
+fpoint_plot <- function(f, tries){
+  fixingpoints <- fixed_point(f = f, tries = tries)
+  qplot(x = 0:tries, y = fixingpoints, geom = "path",
+      main = paste0("value of approximation is ", fixingpoints[length(fixingpoints)]),
+      xlab = "successive interations", ylab = "Approximations") + theme_bw()
 }
 
-fixed_point <- function(f, tries, init = 1, tol = 0.00001){
-  try_vec <- seq_len(tries)
-  fixingpoints <- Reduce(reducify(f), try_vec, init = init, accumulate = TRUE)
-  passing_tol <- vapply(running_diff(fixingpoints), `<`, y = tol, logical(1))
-  
-  if(!any(passing_tol)) message("you need more tries")
-  
-  firstpass <- min(which(passing_tol))
-  
-  qplot(x = try_vec, y = fixingpoints[-1], geom = "path",
-        main = paste0("the approximation is ", fixingpoints[firstpass]),
-        xlab = "successive interations", ylab = "Approximations") + theme_bw()
-}
-
-fixed_point(cos, 30)
+fpoint_plot(cos, 30)
 ```
 
 ![plot of chunk fixedpoint](./Andrew_Functionals_files/figure-html/fixedpoint1.png) 
 
 ```r
-fixed_point(function(x) cos(x) + sin(x), 30)
+fpoint_plot(function(x) cos(x) + sin(x), 30)
 ```
 
 ![plot of chunk fixedpoint](./Andrew_Functionals_files/figure-html/fixedpoint2.png) 
 
 ```r
 ## impossible; will never converge:
-fixed_point(function(x) 5 / x, 300)
-```
-
-```
-## you need more tries
-```
-
-```
-## Warning: no non-missing arguments to min; returning Inf
+fpoint_plot(function(x) 5 / x, 300)
 ```
 
 ![plot of chunk fixedpoint](./Andrew_Functionals_files/figure-html/fixedpoint3.png) 
 
 ```r
 ## but with slight modification..
-fixed_point(function(x) (x + 5 / x) / 2, 400)
+fpoint_plot(function(x) (x + 5 / x) / 2, 400)
 ```
 
 ![plot of chunk fixedpoint](./Andrew_Functionals_files/figure-html/fixedpoint4.png) 
@@ -936,7 +925,7 @@ The loveliest of numbers, the Golden Ratio itself:
 
 
 ```r
-fixed_point(function(x) 1 + 1/x, 50)
+fpoint_plot(function(x) 1 + 1/x, 50)
 ```
 
 ![plot of chunk GoldenRatio](./Andrew_Functionals_files/figure-html/GoldenRatio.png) 
@@ -945,16 +934,17 @@ fixed_point(function(x) 1 + 1/x, 50)
 
 
 ```r
-fixed_point(function(x) ((log(1000) / log(x)) + x) / 2, 40, init = 2.5)
+fun1 <- function(x) ((log(1000) / log(x)) + x) / 2
+fun2 <- function(x) log(1000) / log(x)
+
+data.frame(ntries = 0:40, 
+           f1 = fixed_point(fun1, 40, init = 2.5),
+           f2 = fixed_point(fun2, 40, init = 2.5)) %>%
+  gather(fun, approx, f1:f2) %>%
+  ggplot(aes(x = ntries, y = approx, colour = fun)) + geom_point() + geom_path() + theme_bw()
 ```
 
-![plot of chunk damping_log](./Andrew_Functionals_files/figure-html/damping_log1.png) 
-
-```r
-fixed_point(function(x) log(1000) / log(x), 40, init = 2.5)
-```
-
-![plot of chunk damping_log](./Andrew_Functionals_files/figure-html/damping_log2.png) 
+![plot of chunk damping_log](./Andrew_Functionals_files/figure-html/damping_log.png) 
 
 ### recursive fractions
 
@@ -1020,6 +1010,8 @@ It might be fun to contrast the speed of convergence of some of these fractions 
 
 ### Lambert's tangent line
 
+This is different from all previous examples, because here the series that form numerator and denominator are a function of $x$:
+
 
 ```r
 frac_maker_minus <- function(n, d){
@@ -1049,6 +1041,17 @@ tan(pi*0.2)
 ```
 ## [1] 0.7265
 ```
+
+## Smaller and Larger
+
+## Table of Functions
+
+**variant** | `and` | `or` | `add` | `multiply` | `smaller` | `larger`
+------------|-------|------|-------|------------|-----------|---------
+binary  |     |       |       |       |               |
+reducing  |     |       |       |       |               |
+vectorized  |     |       |       |       |               |
+array  |     |       |       |       |               |
 
 ## reading notes 
 
