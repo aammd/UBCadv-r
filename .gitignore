@@ -5,6 +5,7 @@
 .DS_Store
 .gitignore
 .gitattributes
+crlf_config.txt
 
 # knitr cache
 *.RData
