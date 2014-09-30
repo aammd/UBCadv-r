@@ -4,6 +4,7 @@
 *.Rproj
 .DS_Store
 .gitignore
+.gitattributes
 
 # knitr cache
 *.RData
