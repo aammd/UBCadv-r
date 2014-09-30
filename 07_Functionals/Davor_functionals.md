@@ -1,7 +1,7 @@
 ---
 title: "Exercises for 'Functionals'"
 author: "Davor Cubranic"
-date: "23 September, 2014"
+date: "30 September, 2014"
 output:
   html_document:
     toc: no
@@ -369,10 +369,60 @@ Mathematical functionals
    }
    ```
 
-   Challenge: read about the
+2. Challenge: read about the
    [fixed point algorithm](http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-12.html#%_sec_1.3).
    Complete the exercises using R.
 
+   
+   ```r
+   fixed_point <- function(f, x0, tol = 0.0001) {
+     is_close <- function(a, b) abs(a-b) < tol
+     try_next <- function(x) {
+       next_x <- f(x)
+       if (is_close(x, next_x)) next_x else try_next(next_x)
+     }
+     try_next(x0)
+   }
+   fixed_point(cos, 1)
+   ```
+   
+   ```
+   ## [1] 0.7391
+   ```
+   
+   ```r
+   fixed_point(function(x) sin(x)+cos(x), 1, 0.0001)
+   ```
+   
+   ```
+   ## [1] 1.259
+   ```
+   
+   ```r
+   sqrt2 <- function(x) fixed_point(function(y) mean(c(y, x/y)), 1)
+   sqrt(2)
+   ```
+   
+   ```
+   ## [1] 1.414
+   ```
+   
+   ```r
+   sqrt(3)
+   ```
+   
+   ```
+   ## [1] 1.732
+   ```
+   
+   ```r
+   phi <- fixed_point(function(x) 1 + 1/x, 1)
+   phi
+   ```
+   
+   ```
+   ## [1] 1.618
+   ```
 
 Family of functions
 -------------------
