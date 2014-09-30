@@ -10,6 +10,9 @@ output:
 
 ## Applications
 
+```{r factorial}
+Reduce(`*`, 1:10)
+```
 
 ## The Exercises
 
@@ -221,7 +224,39 @@ where <- function(f, x) {
 
 ***
 
-### Implement `Any()`, a function that takes a list and a predicate function, and returns TRUE if the predicate function returns TRUE for any of the inputs. Implement All() similarly.
+### Implement `Any()`, a function that takes a list and a predicate function, and returns `TRUE` if the predicate function returns `TRUE` for any of the inputs. Implement `All()` similarly.
+
+```{r Any}
+Any <- function(x, fun)
+{
+  for(i in 1:length(x))
+  {
+    if(fun(x[[i]])) return(TRUE)
+  }
+  
+  return(FALSE)
+}
+
+test <- list(1, 2, 3, 4, "b")
+Any(test, is.character)
+```
+
+```{r All}
+All <- function(x, fun)
+{
+  for(i in 1:length(x))
+  {
+    if(!fun(x[[i]])) return(FALSE)
+  }
+  
+  return(TRUE)
+}
+
+test <- list(1, 2, 3, 4, "b")
+test2 <- list(letters[1:5])
+All(test, is.character)
+All(test2, is.character)
+```
 
 ***
 
@@ -248,6 +283,14 @@ where <- function(f, x) {
 1. Fill in the cells with the names of base R functions that perform each of the roles.
 2. Compare the names and arguments of the existing R functions. How consistent are they? How could you improve them?
 3. Complete the matrix by implementing any missing functions.
+
+                  |and|or|add|multiply|smaller|larger
+------------------|---|--|---|--------|-------|------
+binary operator   |   |  |   |        |       |
+reducing variant  |   |  |   |        |       |
+vectorised variant|   |  |   |        |       |
+array variant     |   |  |   |        |       |
+
 
 ***
 

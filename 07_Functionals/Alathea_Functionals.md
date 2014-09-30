@@ -4,16 +4,13 @@ Alathea
 
 ## Applications
 
-**Use `Reduce()` to calculate values from a discrete time step equation**
-
 
 ```r
-discrete_growth <- function(N, b, d, t)
-{
-  N + (b - d)*N
-}
+Reduce(`*`, 1:10)
+```
 
-times <- list(0:10)
+```
+## [1] 3628800
 ```
 
 ## The Exercises
@@ -104,7 +101,7 @@ unlist(lapply(models, rsq))
 ```
 
 ```
-##  [1] 0.6703 0.7012 0.6402 0.7196 0.7857 0.6134 0.6671 0.6495 0.7476 0.7723
+##  [1] 0.6550 0.7447 0.8118 0.6926 0.7886 0.8035 0.8105 0.7529 0.6462 0.6093
 ```
 
 ***
@@ -289,6 +286,33 @@ is.na(test)
 
 ### Use `Filter()` and `vapply()` to create a function that applies a summary statistic to every numeric column in a data frame.
 
+
+```r
+library(magrittr)
+
+head(iris)
+```
+
+```
+##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+## 1          5.1         3.5          1.4         0.2  setosa
+## 2          4.9         3.0          1.4         0.2  setosa
+## 3          4.7         3.2          1.3         0.2  setosa
+## 4          4.6         3.1          1.5         0.2  setosa
+## 5          5.0         3.6          1.4         0.2  setosa
+## 6          5.4         3.9          1.7         0.4  setosa
+```
+
+```r
+Filter(is.numeric, iris) %>%
+  vapply(mean, numeric(1))
+```
+
+```
+## Sepal.Length  Sepal.Width Petal.Length  Petal.Width 
+##        5.843        3.057        3.758        1.199
+```
+
 ***
 
 ### What’s the relationship between `which()` and `Position()`? What’s the relationship between `where()` and `Filter()`?
@@ -333,6 +357,14 @@ where <- function(f, x) {
 1. Fill in the cells with the names of base R functions that perform each of the roles.
 2. Compare the names and arguments of the existing R functions. How consistent are they? How could you improve them?
 3. Complete the matrix by implementing any missing functions.
+
+                  |and|or|add|multiply|smaller|larger
+------------------|---|--|---|--------|-------|------
+binary operator   |*   |  |   |        |       |
+reducing variant  | *  |  |   |        |       |
+vectorised variant|  * |  |   |        |       |
+array variant     |   *|  |   |        |       |
+
 
 ***
 
@@ -388,11 +420,11 @@ for (i in seq_along(xs)) {
 ```
 
 ```
-##         [,1]   [,2]   [,3]    [,4]    [,5]
-## [1,]  10.422 -6.143 -2.369  2.2404 -3.0395
-## [2,]  -1.531 -5.984 -7.143 -0.9384 -4.4323
-## [3,] -10.442 10.337 17.179 -8.0171  1.9341
-## [4,]   9.359 -3.355 -9.004 -3.0141  0.4868
+##        [,1]     [,2]   [,3]   [,4]     [,5]
+## [1,]  7.312   0.3855 -2.691  1.496  -0.8273
+## [2,] -5.258 -13.2994 -1.112 12.094 -29.8662
+## [3,]  4.036   2.7560 -7.148 -0.810  -8.4591
+## [4,]  9.403  -9.7345 -7.941 -2.290  13.3401
 ```
 
 ```r
@@ -400,11 +432,11 @@ for (i in seq_along(xs)) {
 ```
 
 ```
-##        [,1]   [,2]   [,3]  [,4]   [,5]
-## [1,] 16.565  0.000  3.774 8.383  3.103
-## [2,]  5.612  1.159  0.000 6.205  2.711
-## [3,]  0.000 20.779 27.621 2.425 12.376
-## [4,] 18.363  5.649  0.000 5.990  9.491
+##       [,1]   [,2]   [,3]   [,4]   [,5]
+## [1,] 10.00  3.077  0.000  4.187  1.864
+## [2,] 24.61 16.567 28.754 41.961  0.000
+## [3,] 12.50 11.215  1.312  7.649  0.000
+## [4,] 19.14  0.000  1.793  7.445 23.075
 ```
 
 ```r

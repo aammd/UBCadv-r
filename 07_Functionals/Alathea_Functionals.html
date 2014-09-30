@@ -97,13 +97,8 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 
 <div id="applications" class="section level2">
 <h2>Applications</h2>
-<p><strong>Use <code>Reduce()</code> to calculate values from a discrete time step equation</strong></p>
-<pre class="r"><code>discrete_growth &lt;- function(N, b, d, t)
-{
-  N + (b - d)*N
-}
-
-times &lt;- list(0:10)</code></pre>
+<pre class="r"><code>Reduce(`*`, 1:10)</code></pre>
+<pre><code>## [1] 3628800</code></pre>
 </div>
 <div id="the-exercises" class="section level2">
 <h2>The Exercises</h2>
@@ -174,7 +169,7 @@ bootstraps &lt;- lapply(1:10, function(i) {
 
 models &lt;- lapply(bootstraps, function(x) lm(mpg ~ disp, data = x))
 unlist(lapply(models, rsq))</code></pre>
-<pre><code>##  [1] 0.6703 0.7012 0.6402 0.7196 0.7857 0.6134 0.6671 0.6495 0.7476 0.7723</code></pre>
+<pre><code>##  [1] 0.6550 0.7447 0.8118 0.6926 0.7886 0.8035 0.8105 0.7529 0.6462 0.6093</code></pre>
 <hr />
 </div>
 <div id="use-vapply-to-a-compute-the-standard-deviation-of-every-column-in-a-numeric-data-frame.-b-compute-the-standard-deviation-of-every-numeric-column-in-a-mixed-data-frame.-hint-youll-need-to-use-vapply-twice." class="section level3">
@@ -292,6 +287,20 @@ is.character(test)</code></pre>
 </div>
 <div id="use-filter-and-vapply-to-create-a-function-that-applies-a-summary-statistic-to-every-numeric-column-in-a-data-frame." class="section level3">
 <h3>Use <code>Filter()</code> and <code>vapply()</code> to create a function that applies a summary statistic to every numeric column in a data frame.</h3>
+<pre class="r"><code>library(magrittr)
+
+head(iris)</code></pre>
+<pre><code>##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+## 1          5.1         3.5          1.4         0.2  setosa
+## 2          4.9         3.0          1.4         0.2  setosa
+## 3          4.7         3.2          1.3         0.2  setosa
+## 4          4.6         3.1          1.5         0.2  setosa
+## 5          5.0         3.6          1.4         0.2  setosa
+## 6          5.4         3.9          1.7         0.4  setosa</code></pre>
+<pre class="r"><code>Filter(is.numeric, iris) %&gt;%
+  vapply(mean, numeric(1))</code></pre>
+<pre><code>## Sepal.Length  Sepal.Width Petal.Length  Petal.Width 
+##        5.843        3.057        3.758        1.199</code></pre>
 <hr />
 </div>
 <div id="whats-the-relationship-between-which-and-position-whats-the-relationship-between-where-and-filter" class="section level3">
@@ -329,7 +338,40 @@ is.character(test)</code></pre>
 <ol style="list-style-type: decimal">
 <li>Fill in the cells with the names of base R functions that perform each of the roles.</li>
 <li>Compare the names and arguments of the existing R functions. How consistent are they? How could you improve them?</li>
-<li>Complete the matrix by implementing any missing functions.</li>
+<li><p>Complete the matrix by implementing any missing functions.</p>
+<pre><code>          |and|or|add|multiply|smaller|larger</code></pre>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">binary operator</td>
+<td align="left">*</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">reducing variant</td>
+<td align="left">*</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">vectorised variant</td>
+<td align="left">*</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">array variant</td>
+<td align="left">*| | | | |</td>
+</tr>
+</tbody>
+</table></li>
 </ol>
 <hr />
 </div>
@@ -370,17 +412,17 @@ for (i in seq_along(xs)) {
 </ul>
 <p><code>sweep()</code></p>
 <pre class="r"><code>(x &lt;- matrix(rnorm(20, 0, 10), nrow = 4))</code></pre>
-<pre><code>##         [,1]   [,2]   [,3]    [,4]    [,5]
-## [1,]  10.422 -6.143 -2.369  2.2404 -3.0395
-## [2,]  -1.531 -5.984 -7.143 -0.9384 -4.4323
-## [3,] -10.442 10.337 17.179 -8.0171  1.9341
-## [4,]   9.359 -3.355 -9.004 -3.0141  0.4868</code></pre>
+<pre><code>##        [,1]     [,2]   [,3]   [,4]     [,5]
+## [1,]  7.312   0.3855 -2.691  1.496  -0.8273
+## [2,] -5.258 -13.2994 -1.112 12.094 -29.8662
+## [3,]  4.036   2.7560 -7.148 -0.810  -8.4591
+## [4,]  9.403  -9.7345 -7.941 -2.290  13.3401</code></pre>
 <pre class="r"><code>(x1 &lt;- sweep(x, 1, apply(x, 1, min), `-`))</code></pre>
-<pre><code>##        [,1]   [,2]   [,3]  [,4]   [,5]
-## [1,] 16.565  0.000  3.774 8.383  3.103
-## [2,]  5.612  1.159  0.000 6.205  2.711
-## [3,]  0.000 20.779 27.621 2.425 12.376
-## [4,] 18.363  5.649  0.000 5.990  9.491</code></pre>
+<pre><code>##       [,1]   [,2]   [,3]   [,4]   [,5]
+## [1,] 10.00  3.077  0.000  4.187  1.864
+## [2,] 24.61 16.567 28.754 41.961  0.000
+## [3,] 12.50 11.215  1.312  7.649  0.000
+## [4,] 19.14  0.000  1.793  7.445 23.075</code></pre>
 <pre class="r"><code>x2 &lt;- sweep(x1, 1, apply(x1, 1, max), `/`)</code></pre>
 <p><code>Reduce()</code> useful for recursive operations</p>
 <ul>
