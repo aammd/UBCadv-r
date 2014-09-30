@@ -101,12 +101,12 @@ unlist(lapply(models, rsq))
 ```
 
 ```
-##  [1] 0.6550 0.7447 0.8118 0.6926 0.7886 0.8035 0.8105 0.7529 0.6462 0.6093
+##  [1] 0.7076 0.6035 0.6967 0.6525 0.7938 0.7952 0.8463 0.7059 0.7005 0.6651
 ```
 
 ***
 
-### Use `vapply()` to: a) Compute the standard deviation of every column in a numeric data frame. b) Compute the standard deviation of every numeric column in a mixed data frame. (Hint: you’ll need to use vapply() twice.)
+### Use `vapply()` to: a) Compute the standard deviation of every column in a numeric data frame. b) Compute the standard deviation of every numeric column in a mixed data frame. (Hint: youll need to use vapply() twice.)
 
 
 ```r
@@ -246,7 +246,7 @@ apply(mtcars, 2, mean)
 
 ***
 
-### There’s no equivalent to `split()` + `vapply()`. Should there be? When would it be useful? Implement one yourself.
+### Theres no equivalent to `split()` + `vapply()`. Should there be? When would it be useful? Implement one yourself.
 
 This might be useful if you had a complex data structure such as a list of lists.  You could split by one level of list and apply a function to that subset.
 
@@ -260,7 +260,7 @@ This might be useful if you had a complex data structure such as a list of lists
 
 ***
 
-### Why isn’t `is.na()` a predicate function? What base R function is closest to being a predicate version of `is.na()`?
+### Why isnt `is.na()` a predicate function? What base R function is closest to being a predicate version of `is.na()`?
 
 `is.na` returns `TRUE` or `FALSE` for each element of a list, whereas the predicate functions return a single `TRUE` or `FALSE`
 
@@ -315,7 +315,7 @@ Filter(is.numeric, iris) %>%
 
 ***
 
-### What’s the relationship between `which()` and `Position()`? What’s the relationship between `where()` and `Filter()`?
+### Whats the relationship between `which()` and `Position()`? Whats the relationship between `where()` and `Filter()`?
 
 
 ```r
@@ -330,7 +330,56 @@ where <- function(f, x) {
 
 ***
 
-### Implement `Any()`, a function that takes a list and a predicate function, and returns TRUE if the predicate function returns TRUE for any of the inputs. Implement All() similarly.
+### Implement `Any()`, a function that takes a list and a predicate function, and returns `TRUE` if the predicate function returns `TRUE` for any of the inputs. Implement `All()` similarly.
+
+
+```r
+Any <- function(x, fun)
+{
+  for(i in 1:length(x))
+  {
+    if(fun(x[[i]])) return(TRUE)
+  }
+  
+  return(FALSE)
+}
+
+test <- list(1, 2, 3, 4, "b")
+Any(test, is.character)
+```
+
+```
+## [1] TRUE
+```
+
+
+```r
+All <- function(x, fun)
+{
+  for(i in 1:length(x))
+  {
+    if(!fun(x[[i]])) return(FALSE)
+  }
+  
+  return(TRUE)
+}
+
+test <- list(1, 2, 3, 4, "b")
+test2 <- list(letters[1:5])
+All(test, is.character)
+```
+
+```
+## [1] FALSE
+```
+
+```r
+All(test2, is.character)
+```
+
+```
+## [1] TRUE
+```
 
 ***
 
@@ -360,15 +409,15 @@ where <- function(f, x) {
 
                   |and|or|add|multiply|smaller|larger
 ------------------|---|--|---|--------|-------|------
-binary operator   |*   |  |   |        |       |
-reducing variant  | *  |  |   |        |       |
-vectorised variant|  * |  |   |        |       |
-array variant     |   *|  |   |        |       |
+binary operator   |   |  |   |        |       |
+reducing variant  |   |  |   |        |       |
+vectorised variant|   |  |   |        |       |
+array variant     |   |  |   |        |       |
 
 
 ***
 
-### How does paste() fit into this structure? What is the scalar binary function that underlies paste()? What are the sep and collapse arguments to paste() equivalent to? Are there any paste variants that don’t have existing R implementations?
+### How does paste() fit into this structure? What is the scalar binary function that underlies paste()? What are the sep and collapse arguments to paste() equivalent to? Are there any paste variants that dont have existing R implementations?
 
 
 ## Discussion Notes
@@ -420,11 +469,11 @@ for (i in seq_along(xs)) {
 ```
 
 ```
-##        [,1]     [,2]   [,3]   [,4]     [,5]
-## [1,]  7.312   0.3855 -2.691  1.496  -0.8273
-## [2,] -5.258 -13.2994 -1.112 12.094 -29.8662
-## [3,]  4.036   2.7560 -7.148 -0.810  -8.4591
-## [4,]  9.403  -9.7345 -7.941 -2.290  13.3401
+##         [,1]     [,2]     [,3]    [,4]   [,5]
+## [1,] -15.527  -5.1781  -0.7433  -3.572 -9.476
+## [2,]  -6.270  -0.7098 -15.1145  -5.634 21.479
+## [3,]  -2.836 -14.5317  22.2046 -16.242 -9.137
+## [4,]  14.467 -14.7501  10.1005  18.493  4.248
 ```
 
 ```r
@@ -432,11 +481,11 @@ for (i in seq_along(xs)) {
 ```
 
 ```
-##       [,1]   [,2]   [,3]   [,4]   [,5]
-## [1,] 10.00  3.077  0.000  4.187  1.864
-## [2,] 24.61 16.567 28.754 41.961  0.000
-## [3,] 12.50 11.215  1.312  7.649  0.000
-## [4,] 19.14  0.000  1.793  7.445 23.075
+##        [,1]   [,2]  [,3]  [,4]   [,5]
+## [1,]  0.000 10.349 14.78 11.95  6.051
+## [2,]  8.845 14.405  0.00  9.48 36.594
+## [3,] 13.407  1.711 38.45  0.00  7.105
+## [4,] 29.217  0.000 24.85 33.24 18.998
 ```
 
 ```r
