@@ -88,11 +88,11 @@ bootstraps <- lapply(1:10, function(i) {
 
 ```{r}
 
-
+res2<-list()
 for(i in 1:length(bootstraps)){
-  res2[i]<-lm(mpg~disp, data=bootstraps[i])
+  res2[i]<-lm(mpg~disp, data=bootstraps[[i]])
 }
-#not sure why its not working?? 
+#not sure why its not working?? ---- double square brakets!
 res2
 ```
 
@@ -126,7 +126,7 @@ lapply(bootstraps, FUN=function(x) rsq(lm(mpg~disp, data=x)))
   a. Compute the standard deviation of every column in a numeric data frame.
   
 ```{r}
-vapply(mtcars, FUN=sd, FUN.VALUE=1)
+vapply(mtcars, FUN=sd, numeric(1))
 ```
 
   b. Compute the standard deviation of every numeric column in a mixed data frame. (Hint: you’ll need to use vapply() twice.)
@@ -204,6 +204,7 @@ tapply3 <- function(x, group, f, ..., output) {
 }
 
 tapply3(pulse, group, mean, output=1)
+
 ```
 
 3. Implement a pure R version of split(). (Hint: use unique() and subsetting.) Can you do it without a for loop?
@@ -219,7 +220,7 @@ unique(group)
 split2<-function(vector, group){
   types<-unique(group)
   numgroup<-lapply(types,FUN= function(x) sum(group==x))
-  lapply(numgroup)
+  lapply(numgroup, function(lev) )
   subset(pulse,1:10)
 }
 
@@ -244,12 +245,13 @@ is.na(v)
 
 ```{r}
 
-df<- data.frame(x = 1:3, y = c("a", "b", "c"))
-
-
 numsum<-function(df1){
-  filter(is.double, df)
+  dob<-Filter(is.numeric, df1)
+  vapply(dob, FUN=summary, FUN.VALUE=double(6))
 }
+
+numsum(mtcars)
+
 ```
 
 
@@ -259,6 +261,82 @@ which is the general form of position. where is the general form of filter? wher
 
 4. Implement Any(), a function that takes a list and a predicate function, and returns TRUE if the predicate function returns TRUE for any of the inputs. Implement All() similarly.
 
+
+```{r}
+
+lt<-list(1:3,5:6,c('a','b','c'))
+
+any(Filter(is.numeric,lt))
+```
+
+
+
 5. Implement the span() function from Haskell: given a list x and a predicate function f, span returns the location of the longest sequential run of elements where the predicate is true. (Hint: you might find rle() helpful.)
+
+
+```{r}
+
+span<-function(x,f,condition){
+  f(condition, x)
+  rle(f)
+}
+Filter(is.numeric, lt)
+
+```
+
+
+
+**Mathematical Functionals**
+
+1. Implement arg_max(). It should take a function and a vector of inputs, and return the elements of the input where the function returns the highest value. For example, arg_max(-10:5, function(x) x ^ 2) should return -10. arg_max(-5:5, function(x) x ^ 2) should return c(-5, 5). Also implement the matching arg_min() function.
+
+```{r}
+
+arg_max<-function(inter, fun){
+  ap<-optimise(fun, inter, maximum=TRUE)$maximum
+  v<-round(ap)
+  inter[which(v==inter | abs(v)==inter)]
+}
+
+
+arg_max(-10:5, function(x) x^2)
+arg_max(-5:5, function(x) x ^ 2)
+
+arg_min<-function(inter, fun){
+  ap<-optimise(fun, inter)$minimum
+  v<-round(ap)
+  inter[which(v==inter | abs(v)==inter)]
+}
+arg_min(-10:5, function(x) x^2)
+
+```
+
+
+2. Challenge: read about the fixed point algorithm. Complete the exercises using R.
+
+```{r}
+fixed.point<-function(fun, guess0=100){
+  tolerance<-0.001
+  guess<-rnorm(20,guess0,guess0) 
+  fofguess<-sapply(guess,FUN=fun)
+  dif1<-fofguess-guess
+  mdif<-min(abs(dif1))
+  guess1<-guess[which(dif1==mdif | dif1==-mdif)]
+  if(mdif< tolerance){return(guess1)}
+  else{
+    fixed.point(fun, guess0=guess1)
+  }
+}
+
+fixed.point(fun=cos)
+fixed.point(fun= function(x) 1+ (1/x))
+```
+
+
+
+
+
+
+
 
 
