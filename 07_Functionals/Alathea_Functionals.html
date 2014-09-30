@@ -61,6 +61,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 
 <div id="TOC">
 <ul>
+<li><a href="#applications">Applications</a></li>
 <li><a href="#the-exercises">The Exercises</a><ul>
 <li><a href="#why-are-the-following-two-invocations-of-lapply-equivalent">Why are the following two invocations of <code>lapply()</code> equivalent?</a></li>
 <li><a href="#the-function-below-scales-a-vector-so-it-falls-in-the-range-0-1.-how-would-you-apply-it-to-every-column-of-a-data-frame-how-would-you-apply-it-to-every-numeric-column-in-a-data-frame">The function below scales a vector so it falls in the range [0, 1]. How would you apply it to every column of a data frame? How would you apply it to every numeric column in a data frame?</a></li>
@@ -69,7 +70,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#for-each-model-in-the-previous-two-exercises-extract-r2-using-the-function-below.">For each model in the previous two exercises, extract R2 using the function below.</a></li>
 <li><a href="#use-vapply-to-a-compute-the-standard-deviation-of-every-column-in-a-numeric-data-frame.-b-compute-the-standard-deviation-of-every-numeric-column-in-a-mixed-data-frame.-hint-youll-need-to-use-vapply-twice.">Use <code>vapply()</code> to: a) Compute the standard deviation of every column in a numeric data frame. b) Compute the standard deviation of every numeric column in a mixed data frame. (Hint: you’ll need to use vapply() twice.)</a></li>
 <li><a href="#why-is-using-sapply-to-get-the-class-of-each-element-in-a-data-frame-dangerous">Why is using <code>sapply()</code> to get the <code>class()</code> of each element in a data frame dangerous?</a></li>
-<li><a href="#the-following-code-simulates-the-performance-of-a-t-test-for-non-normal-data.-use-sapply-and-an-anonymous-function-to-extract-the-p-value-from-every-trial.-extra-challenge-get-rid-of-the-anonymous-function-by-using-directly.">The following code simulates the performance of a t-test for non-normal data. Use <code>sapply()</code> and an anonymous function to extract the p-value from every trial. Extra challenge: get rid of the anonymous function by using [[ directly.</a></li>
+<li><a href="#the-following-code-simulates-the-performance-of-a-t-test-for-non-normal-data.-use-sapply-and-an-anonymous-function-to-extract-the-p-value-from-every-trial.-extra-challenge-get-rid-of-the-anonymous-function-by-using-directly.">The following code simulates the performance of a t-test for non-normal data. Use <code>sapply()</code> and an anonymous function to extract the p-value from every trial. Extra challenge: get rid of the anonymous function by using <code>[[</code> directly.</a></li>
 <li><a href="#what-does-replicate-do-what-sort-of-for-loop-does-it-eliminate-why-do-its-arguments-differ-from-lapply-and-friends">What does <code>replicate()</code> do? What sort of for loop does it eliminate? Why do its arguments differ from <code>lapply()</code> and friends?</a></li>
 <li><a href="#implement-a-version-of-lapply-that-supplies-fun-with-both-the-name-and-the-value-of-each-component.">Implement a version of <code>lapply()</code> that supplies <code>FUN</code> with both the name and the value of each component.</a></li>
 <li><a href="#implement-a-combination-of-map-and-vapply-to-create-an-lapply-variant-that-iterates-in-parallel-over-all-of-its-inputs-and-stores-its-outputs-in-a-vector-or-a-matrix.-what-arguments-should-the-function-take">Implement a combination of <code>Map()</code> and <code>vapply()</code> to create an <code>lapply()</code> variant that iterates in parallel over all of its inputs and stores its outputs in a vector (or a matrix). What arguments should the function take?</a></li>
@@ -78,24 +79,40 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#theres-no-equivalent-to-split-vapply.-should-there-be-when-would-it-be-useful-implement-one-yourself.">There’s no equivalent to <code>split()</code> + <code>vapply()</code>. Should there be? When would it be useful? Implement one yourself.</a></li>
 <li><a href="#implement-a-pure-r-version-of-split.-hint-use-unique-and-subsetting.-can-you-do-it-without-a-for-loop">Implement a pure R version of <code>split()</code>. (Hint: use <code>unique()</code> and subsetting.) Can you do it without a <code>for</code> loop?</a></li>
 <li><a href="#what-other-types-of-input-and-output-are-missing-brainstorm-before-you-look-up-some-answers-in-the-plyr-paper.">What other types of input and output are missing? Brainstorm before you look up some answers in the <code>plyr</code> paper.</a></li>
+<li><a href="#why-isnt-is.na-a-predicate-function-what-base-r-function-is-closest-to-being-a-predicate-version-of-is.na">Why isn’t <code>is.na()</code> a predicate function? What base R function is closest to being a predicate version of <code>is.na()</code>?</a></li>
+<li><a href="#use-filter-and-vapply-to-create-a-function-that-applies-a-summary-statistic-to-every-numeric-column-in-a-data-frame.">Use <code>Filter()</code> and <code>vapply()</code> to create a function that applies a summary statistic to every numeric column in a data frame.</a></li>
+<li><a href="#whats-the-relationship-between-which-and-position-whats-the-relationship-between-where-and-filter">What’s the relationship between <code>which()</code> and <code>Position()</code>? What’s the relationship between <code>where()</code> and <code>Filter()</code>?</a></li>
+<li><a href="#implement-any-a-function-that-takes-a-list-and-a-predicate-function-and-returns-true-if-the-predicate-function-returns-true-for-any-of-the-inputs.-implement-all-similarly.">Implement <code>Any()</code>, a function that takes a list and a predicate function, and returns TRUE if the predicate function returns TRUE for any of the inputs. Implement All() similarly.</a></li>
+<li><a href="#implement-the-span-function-from-haskell-given-a-list-x-and-a-predicate-function-f-span-returns-the-location-of-the-longest-sequential-run-of-elements-where-the-predicate-is-true.-hint-you-might-find-rle-helpful.">Implement the <code>span()</code> function from Haskell: given a list x and a predicate function f, span returns the location of the longest sequential run of elements where the predicate is true. (Hint: you might find <code>rle()</code> helpful.)</a></li>
+<li><a href="#implement-arg_max.-it-should-take-a-function-and-a-vector-of-inputs-and-return-the-elements-of-the-input-where-the-function-returns-the-highest-value.-for-example-arg_max-105-functionx-x-2-should-return--10.-arg_max-55-functionx-x-2-should-return-c-5-5.-also-implement-the-matching-arg_min-function.">Implement <code>arg_max()</code>. It should take a function and a vector of inputs, and return the elements of the input where the function returns the highest value. For example, <code>arg_max(-10:5, function(x) x ^ 2)</code> should return <code>-10</code>. <code>arg_max(-5:5, function(x) x ^ 2)</code> should return <code>c(-5, 5)</code>. Also implement the matching <code>arg_min()</code> function.</a></li>
+<li><a href="#challenge-read-about-the-fixed-point-algorithm.-complete-the-exercises-using-r.">Challenge: read about the fixed point algorithm. Complete the exercises using R.</a></li>
+<li><a href="#implement-smaller-and-larger-functions-that-given-two-inputs-return-either-the-smaller-or-the-larger-value.-implement-na.rm-true-what-should-the-identity-be-hint-smallerx-smallerna-na-na.rm-true-na.rm-true-must-be-x-so-smallerna-na-na.rm-true-must-be-bigger-than-any-other-value-of-x.-use-smaller-and-larger-to-implement-equivalents-of-min-max-pmin-pmax-and-new-functions-row_min-and-row_max.">Implement smaller and larger functions that, given two inputs, return either the smaller or the larger value. Implement na.rm = TRUE: what should the identity be? (Hint: smaller(x, smaller(NA, NA, na.rm = TRUE), na.rm = TRUE) must be x, so smaller(NA, NA, na.rm = TRUE) must be bigger than any other value of x.) Use smaller and larger to implement equivalents of min(), max(), pmin(), pmax(), and new functions row_min() and row_max().</a></li>
+<li><a href="#create-a-table-that-has-and-or-add-multiply-smaller-and-larger-in-the-columns-and-binary-operator-reducing-variant-vectorised-variant-and-array-variants-in-the-rows.">Create a table that has and, or, add, multiply, smaller, and larger in the columns and binary operator, reducing variant, vectorised variant, and array variants in the rows.</a></li>
+<li><a href="#how-does-paste-fit-into-this-structure-what-is-the-scalar-binary-function-that-underlies-paste-what-are-the-sep-and-collapse-arguments-to-paste-equivalent-to-are-there-any-paste-variants-that-dont-have-existing-r-implementations">How does paste() fit into this structure? What is the scalar binary function that underlies paste()? What are the sep and collapse arguments to paste() equivalent to? Are there any paste variants that don’t have existing R implementations?</a></li>
 </ul></li>
 <li><a href="#discussion-notes">Discussion Notes</a></li>
 <li><a href="#reading-notes">Reading Notes</a></li>
 </ul>
 </div>
 
-<div id="the-exercises" class="section level1">
-<h1>The Exercises</h1>
-<div id="why-are-the-following-two-invocations-of-lapply-equivalent" class="section level2">
-<h2>Why are the following two invocations of <code>lapply()</code> equivalent?</h2>
+<div id="applications" class="section level2">
+<h2>Applications</h2>
+<pre class="r"><code>Reduce(`*`, 1:10)</code></pre>
+<pre><code>## [1] 3628800</code></pre>
+</div>
+<div id="the-exercises" class="section level2">
+<h2>The Exercises</h2>
+<div id="why-are-the-following-two-invocations-of-lapply-equivalent" class="section level3">
+<h3>Why are the following two invocations of <code>lapply()</code> equivalent?</h3>
 <pre class="r"><code>trims &lt;- c(0, 0.1, 0.2, 0.5)
 x &lt;- rcauchy(100)
 
 lapply(trims, function(trim) mean(x, trim = trim))
 lapply(trims, mean, x = x)</code></pre>
+<hr />
 </div>
-<div id="the-function-below-scales-a-vector-so-it-falls-in-the-range-0-1.-how-would-you-apply-it-to-every-column-of-a-data-frame-how-would-you-apply-it-to-every-numeric-column-in-a-data-frame" class="section level2">
-<h2>The function below scales a vector so it falls in the range [0, 1]. How would you apply it to every column of a data frame? How would you apply it to every numeric column in a data frame?</h2>
+<div id="the-function-below-scales-a-vector-so-it-falls-in-the-range-0-1.-how-would-you-apply-it-to-every-column-of-a-data-frame-how-would-you-apply-it-to-every-numeric-column-in-a-data-frame" class="section level3">
+<h3>The function below scales a vector so it falls in the range [0, 1]. How would you apply it to every column of a data frame? How would you apply it to every numeric column in a data frame?</h3>
 <pre class="r"><code>scale01 &lt;- function(x) {
   rng &lt;- range(x, na.rm = TRUE)
   (x - rng[1]) / (rng[2] - rng[1])
@@ -106,13 +123,11 @@ not_scaled &lt;- data.frame(a = runif(10, 1, 1000),
 not_scaled2 &lt;- not_scaled
 not_scaled2$c &lt;- c(letters[1:10])
 
-not_scaled
-
-lapply(not_scaled, function(x) scale01(x))
-lapply(not_scaled, function(x) scale01(x))</code></pre>
+lapply(not_scaled, scale01)</code></pre>
+<hr />
 </div>
-<div id="use-both-for-loops-and-lapply-to-fit-linear-models-to-the-mtcars-using-the-formulas-stored-in-this-list" class="section level2">
-<h2>Use both <code>for</code> loops and <code>lapply()</code> to fit linear models to the <code>mtcars</code> using the formulas stored in this list:</h2>
+<div id="use-both-for-loops-and-lapply-to-fit-linear-models-to-the-mtcars-using-the-formulas-stored-in-this-list" class="section level3">
+<h3>Use both <code>for</code> loops and <code>lapply()</code> to fit linear models to the <code>mtcars</code> using the formulas stored in this list:</h3>
 <pre class="r"><code>formulas &lt;- list(
   mpg ~ disp,
   mpg ~ I(1 / disp),
@@ -127,9 +142,10 @@ for(i in 1:length(formulas))
 }
 
 lapply(formulas, function(x) summary(lm(x, data = mtcars)))</code></pre>
+<hr />
 </div>
-<div id="fit-the-model-mpg-disp-to-each-of-the-bootstrap-replicates-of-mtcars-in-the-list-below-by-using-a-for-loop-and-lapply.-can-you-do-it-without-an-anonymous-function" class="section level2">
-<h2>Fit the model <code>mpg ~ disp</code> to each of the bootstrap replicates of <code>mtcars</code> in the list below by using a <code>for</code> loop and <code>lapply()</code>. Can you do it without an anonymous function?</h2>
+<div id="fit-the-model-mpg-disp-to-each-of-the-bootstrap-replicates-of-mtcars-in-the-list-below-by-using-a-for-loop-and-lapply.-can-you-do-it-without-an-anonymous-function" class="section level3">
+<h3>Fit the model <code>mpg ~ disp</code> to each of the bootstrap replicates of <code>mtcars</code> in the list below by using a <code>for</code> loop and <code>lapply()</code>. Can you do it without an anonymous function?</h3>
 <pre class="r"><code>bootstraps &lt;- lapply(1:10, function(i) {
   rows &lt;- sample(1:nrow(mtcars), rep = TRUE)
   mtcars[rows, ]
@@ -140,71 +156,81 @@ lapply(bootstraps, function(x) lm(mpg ~ disp, data = x))
 for(i in 1:length(bootstraps)){
   print(lm(mpg ~ disp, data = bootstraps[[i]]))
 }</code></pre>
+<hr />
 </div>
-<div id="for-each-model-in-the-previous-two-exercises-extract-r2-using-the-function-below." class="section level2">
-<h2>For each model in the previous two exercises, extract R2 using the function below.</h2>
+<div id="for-each-model-in-the-previous-two-exercises-extract-r2-using-the-function-below." class="section level3">
+<h3>For each model in the previous two exercises, extract R2 using the function below.</h3>
 <pre class="r"><code>rsq &lt;- function(mod) summary(mod)$r.squared
 
 bootstraps &lt;- lapply(1:10, function(i) {
   rows &lt;- sample(1:nrow(mtcars), rep = TRUE)
   mtcars[rows, ]
 })
-models &lt;- lapply(bootstraps, function(x) lm(mpg ~ disp, data = x))
 
-unlist(lapply(models, function(x) rsq(x)))</code></pre>
-<pre><code>##  [1] 0.6291 0.8473 0.7640 0.8014 0.7092 0.5669 0.7041 0.7760 0.7549 0.7475</code></pre>
+models &lt;- lapply(bootstraps, function(x) lm(mpg ~ disp, data = x))
+unlist(lapply(models, rsq))</code></pre>
+<pre><code>##  [1] 0.6550 0.7447 0.8118 0.6926 0.7886 0.8035 0.8105 0.7529 0.6462 0.6093</code></pre>
+<hr />
 </div>
-<div id="use-vapply-to-a-compute-the-standard-deviation-of-every-column-in-a-numeric-data-frame.-b-compute-the-standard-deviation-of-every-numeric-column-in-a-mixed-data-frame.-hint-youll-need-to-use-vapply-twice." class="section level2">
-<h2>Use <code>vapply()</code> to: a) Compute the standard deviation of every column in a numeric data frame. b) Compute the standard deviation of every numeric column in a mixed data frame. (Hint: you’ll need to use vapply() twice.)</h2>
+<div id="use-vapply-to-a-compute-the-standard-deviation-of-every-column-in-a-numeric-data-frame.-b-compute-the-standard-deviation-of-every-numeric-column-in-a-mixed-data-frame.-hint-youll-need-to-use-vapply-twice." class="section level3">
+<h3>Use <code>vapply()</code> to: a) Compute the standard deviation of every column in a numeric data frame. b) Compute the standard deviation of every numeric column in a mixed data frame. (Hint: you’ll need to use vapply() twice.)</h3>
 <pre class="r"><code>vapply(mtcars, sd, double(1))</code></pre>
 <pre><code>##      mpg      cyl     disp       hp     drat       wt     qsec       vs 
 ##   6.0269   1.7859 123.9387  68.5629   0.5347   0.9785   1.7869   0.5040 
 ##       am     gear     carb 
 ##   0.4990   0.7378   1.6152</code></pre>
 <pre class="r"><code># using the iris dataset:
-vapply(iris, is.numeric, logical(1))</code></pre>
-<pre><code>## Sepal.Length  Sepal.Width Petal.Length  Petal.Width      Species 
-##         TRUE         TRUE         TRUE         TRUE        FALSE</code></pre>
+vapply(iris[vapply(iris, is.numeric, logical(1))], sd, numeric(1))</code></pre>
+<pre><code>## Sepal.Length  Sepal.Width Petal.Length  Petal.Width 
+##       0.8281       0.4359       1.7653       0.7622</code></pre>
+<hr />
 </div>
-<div id="why-is-using-sapply-to-get-the-class-of-each-element-in-a-data-frame-dangerous" class="section level2">
-<h2>Why is using <code>sapply()</code> to get the <code>class()</code> of each element in a data frame dangerous?</h2>
+<div id="why-is-using-sapply-to-get-the-class-of-each-element-in-a-data-frame-dangerous" class="section level3">
+<h3>Why is using <code>sapply()</code> to get the <code>class()</code> of each element in a data frame dangerous?</h3>
 <pre class="r"><code>sapply(iris, class)</code></pre>
 <pre><code>## Sepal.Length  Sepal.Width Petal.Length  Petal.Width      Species 
 ##    &quot;numeric&quot;    &quot;numeric&quot;    &quot;numeric&quot;    &quot;numeric&quot;     &quot;factor&quot;</code></pre>
 <pre class="r"><code>vapply(iris, class, character(1))</code></pre>
 <pre><code>## Sepal.Length  Sepal.Width Petal.Length  Petal.Width      Species 
 ##    &quot;numeric&quot;    &quot;numeric&quot;    &quot;numeric&quot;    &quot;numeric&quot;     &quot;factor&quot;</code></pre>
+<p>Sometimes there are several classes associated with a column and <code>sapply</code> has an invisible error.</p>
+<hr />
 </div>
-<div id="the-following-code-simulates-the-performance-of-a-t-test-for-non-normal-data.-use-sapply-and-an-anonymous-function-to-extract-the-p-value-from-every-trial.-extra-challenge-get-rid-of-the-anonymous-function-by-using-directly." class="section level2">
-<h2>The following code simulates the performance of a t-test for non-normal data. Use <code>sapply()</code> and an anonymous function to extract the p-value from every trial. Extra challenge: get rid of the anonymous function by using [[ directly.</h2>
+<div id="the-following-code-simulates-the-performance-of-a-t-test-for-non-normal-data.-use-sapply-and-an-anonymous-function-to-extract-the-p-value-from-every-trial.-extra-challenge-get-rid-of-the-anonymous-function-by-using-directly." class="section level3">
+<h3>The following code simulates the performance of a t-test for non-normal data. Use <code>sapply()</code> and an anonymous function to extract the p-value from every trial. Extra challenge: get rid of the anonymous function by using <code>[[</code> directly.</h3>
 <pre class="r"><code>trials &lt;- replicate(
   100, 
   t.test(rpois(10, 10), rpois(7, 10)),
   simplify = FALSE
 )
 
-sapply(trials, function(x) get(&quot;p.value&quot;, x))</code></pre>
+sapply(trials, function(x) get(&quot;p.value&quot;, x))
+sapply(trials, `[[`, &quot;p.value&quot;)</code></pre>
+<hr />
 </div>
-<div id="what-does-replicate-do-what-sort-of-for-loop-does-it-eliminate-why-do-its-arguments-differ-from-lapply-and-friends" class="section level2">
-<h2>What does <code>replicate()</code> do? What sort of for loop does it eliminate? Why do its arguments differ from <code>lapply()</code> and friends?</h2>
+<div id="what-does-replicate-do-what-sort-of-for-loop-does-it-eliminate-why-do-its-arguments-differ-from-lapply-and-friends" class="section level3">
+<h3>What does <code>replicate()</code> do? What sort of for loop does it eliminate? Why do its arguments differ from <code>lapply()</code> and friends?</h3>
 <p><code>replicate()</code></p>
+<hr />
 </div>
-<div id="implement-a-version-of-lapply-that-supplies-fun-with-both-the-name-and-the-value-of-each-component." class="section level2">
-<h2>Implement a version of <code>lapply()</code> that supplies <code>FUN</code> with both the name and the value of each component.</h2>
+<div id="implement-a-version-of-lapply-that-supplies-fun-with-both-the-name-and-the-value-of-each-component." class="section level3">
+<h3>Implement a version of <code>lapply()</code> that supplies <code>FUN</code> with both the name and the value of each component.</h3>
+<hr />
 </div>
-<div id="implement-a-combination-of-map-and-vapply-to-create-an-lapply-variant-that-iterates-in-parallel-over-all-of-its-inputs-and-stores-its-outputs-in-a-vector-or-a-matrix.-what-arguments-should-the-function-take" class="section level2">
-<h2>Implement a combination of <code>Map()</code> and <code>vapply()</code> to create an <code>lapply()</code> variant that iterates in parallel over all of its inputs and stores its outputs in a vector (or a matrix). What arguments should the function take?</h2>
+<div id="implement-a-combination-of-map-and-vapply-to-create-an-lapply-variant-that-iterates-in-parallel-over-all-of-its-inputs-and-stores-its-outputs-in-a-vector-or-a-matrix.-what-arguments-should-the-function-take" class="section level3">
+<h3>Implement a combination of <code>Map()</code> and <code>vapply()</code> to create an <code>lapply()</code> variant that iterates in parallel over all of its inputs and stores its outputs in a vector (or a matrix). What arguments should the function take?</h3>
 <p>You could do this by writing a function that uses <code>Map()</code> on a list of items, given input vectors that should be applied in parallel to this list of items. You basically need a combination of the arguments from vapply, and those from Map.</p>
 <pre class="r"><code>vapply_map &lt;- function(x, f, FUN.VALUE, ...)
 {
   vapply(x, Map(f, ...), FUN.VALUE)
 }</code></pre>
 </div>
-<div id="implement-mcsapply-a-multicore-version-of-sapply.-can-you-implement-mcvapply-a-parallel-version-of-vapply-why-or-why-not" class="section level2">
-<h2>Implement <code>mcsapply()</code>, a multicore version of <code>sapply()</code>. Can you implement <code>mcvapply()</code>, a parallel version of <code>vapply()</code>? Why or why not?</h2>
+<div id="implement-mcsapply-a-multicore-version-of-sapply.-can-you-implement-mcvapply-a-parallel-version-of-vapply-why-or-why-not" class="section level3">
+<h3>Implement <code>mcsapply()</code>, a multicore version of <code>sapply()</code>. Can you implement <code>mcvapply()</code>, a parallel version of <code>vapply()</code>? Why or why not?</h3>
+<hr />
 </div>
-<div id="how-does-apply-arrange-the-output-read-the-documentation-and-perform-some-experiments." class="section level2">
-<h2>How does <code>apply()</code> arrange the output? Read the documentation and perform some experiments.</h2>
+<div id="how-does-apply-arrange-the-output-read-the-documentation-and-perform-some-experiments." class="section level3">
+<h3>How does <code>apply()</code> arrange the output? Read the documentation and perform some experiments.</h3>
 <pre class="r"><code>apply(mtcars, 1, mean)</code></pre>
 <pre><code>##           Mazda RX4       Mazda RX4 Wag          Datsun 710 
 ##               29.91               29.98               23.60 
@@ -233,24 +259,131 @@ sapply(trials, function(x) get(&quot;p.value&quot;, x))</code></pre>
 ##  20.0906   6.1875 230.7219 146.6875   3.5966   3.2172  17.8487   0.4375 
 ##       am     gear     carb 
 ##   0.4062   3.6875   2.8125</code></pre>
-<p><code>apply()</code> returns a vector ordered by row or column, depending on which was used as input.</p>
+<p><code>apply()</code> returns a data frame with columns named as row or column names, depending on which was used as input.</p>
+<hr />
 </div>
-<div id="theres-no-equivalent-to-split-vapply.-should-there-be-when-would-it-be-useful-implement-one-yourself." class="section level2">
-<h2>There’s no equivalent to <code>split()</code> + <code>vapply()</code>. Should there be? When would it be useful? Implement one yourself.</h2>
+<div id="theres-no-equivalent-to-split-vapply.-should-there-be-when-would-it-be-useful-implement-one-yourself." class="section level3">
+<h3>There’s no equivalent to <code>split()</code> + <code>vapply()</code>. Should there be? When would it be useful? Implement one yourself.</h3>
 <p>This might be useful if you had a complex data structure such as a list of lists. You could split by one level of list and apply a function to that subset.</p>
+<hr />
 </div>
-<div id="implement-a-pure-r-version-of-split.-hint-use-unique-and-subsetting.-can-you-do-it-without-a-for-loop" class="section level2">
-<h2>Implement a pure R version of <code>split()</code>. (Hint: use <code>unique()</code> and subsetting.) Can you do it without a <code>for</code> loop?</h2>
+<div id="implement-a-pure-r-version-of-split.-hint-use-unique-and-subsetting.-can-you-do-it-without-a-for-loop" class="section level3">
+<h3>Implement a pure R version of <code>split()</code>. (Hint: use <code>unique()</code> and subsetting.) Can you do it without a <code>for</code> loop?</h3>
+<hr />
 </div>
-<div id="what-other-types-of-input-and-output-are-missing-brainstorm-before-you-look-up-some-answers-in-the-plyr-paper." class="section level2">
-<h2>What other types of input and output are missing? Brainstorm before you look up some answers in the <code>plyr</code> paper.</h2>
+<div id="what-other-types-of-input-and-output-are-missing-brainstorm-before-you-look-up-some-answers-in-the-plyr-paper." class="section level3">
+<h3>What other types of input and output are missing? Brainstorm before you look up some answers in the <code>plyr</code> paper.</h3>
+<hr />
+</div>
+<div id="why-isnt-is.na-a-predicate-function-what-base-r-function-is-closest-to-being-a-predicate-version-of-is.na" class="section level3">
+<h3>Why isn’t <code>is.na()</code> a predicate function? What base R function is closest to being a predicate version of <code>is.na()</code>?</h3>
+<p><code>is.na</code> returns <code>TRUE</code> or <code>FALSE</code> for each element of a list, whereas the predicate functions return a single <code>TRUE</code> or <code>FALSE</code></p>
+<pre class="r"><code>test &lt;- list(1, 2, 3, NA, &quot;a&quot;, &quot;b&quot;)
+is.character(test)</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<pre class="r"><code>is.na(test)</code></pre>
+<pre><code>## [1] FALSE FALSE FALSE  TRUE FALSE FALSE</code></pre>
+<hr />
+</div>
+<div id="use-filter-and-vapply-to-create-a-function-that-applies-a-summary-statistic-to-every-numeric-column-in-a-data-frame." class="section level3">
+<h3>Use <code>Filter()</code> and <code>vapply()</code> to create a function that applies a summary statistic to every numeric column in a data frame.</h3>
+<pre class="r"><code>library(magrittr)
+
+head(iris)</code></pre>
+<pre><code>##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+## 1          5.1         3.5          1.4         0.2  setosa
+## 2          4.9         3.0          1.4         0.2  setosa
+## 3          4.7         3.2          1.3         0.2  setosa
+## 4          4.6         3.1          1.5         0.2  setosa
+## 5          5.0         3.6          1.4         0.2  setosa
+## 6          5.4         3.9          1.7         0.4  setosa</code></pre>
+<pre class="r"><code>Filter(is.numeric, iris) %&gt;%
+  vapply(mean, numeric(1))</code></pre>
+<pre><code>## Sepal.Length  Sepal.Width Petal.Length  Petal.Width 
+##        5.843        3.057        3.758        1.199</code></pre>
+<hr />
+</div>
+<div id="whats-the-relationship-between-which-and-position-whats-the-relationship-between-where-and-filter" class="section level3">
+<h3>What’s the relationship between <code>which()</code> and <code>Position()</code>? What’s the relationship between <code>where()</code> and <code>Filter()</code>?</h3>
+<pre class="r"><code>where &lt;- function(f, x) {
+  vapply(x, f, logical(1))
+}</code></pre>
+<p><code>which()</code> will return the index of all elements with value <code>TRUE</code> whereas <code>Position()</code> returns the index of the first element only</p>
+<p><code>where()</code> returns a list with <code>TRUE</code> or <code>FALSE</code> for each element depending on whether or not it matches the predicate, whereas <code>Filter</code> simply returns a list containing only the elements that match the predicate.</p>
+<hr />
+</div>
+<div id="implement-any-a-function-that-takes-a-list-and-a-predicate-function-and-returns-true-if-the-predicate-function-returns-true-for-any-of-the-inputs.-implement-all-similarly." class="section level3">
+<h3>Implement <code>Any()</code>, a function that takes a list and a predicate function, and returns TRUE if the predicate function returns TRUE for any of the inputs. Implement All() similarly.</h3>
+<hr />
+</div>
+<div id="implement-the-span-function-from-haskell-given-a-list-x-and-a-predicate-function-f-span-returns-the-location-of-the-longest-sequential-run-of-elements-where-the-predicate-is-true.-hint-you-might-find-rle-helpful." class="section level3">
+<h3>Implement the <code>span()</code> function from Haskell: given a list x and a predicate function f, span returns the location of the longest sequential run of elements where the predicate is true. (Hint: you might find <code>rle()</code> helpful.)</h3>
+<hr />
+</div>
+<div id="implement-arg_max.-it-should-take-a-function-and-a-vector-of-inputs-and-return-the-elements-of-the-input-where-the-function-returns-the-highest-value.-for-example-arg_max-105-functionx-x-2-should-return--10.-arg_max-55-functionx-x-2-should-return-c-5-5.-also-implement-the-matching-arg_min-function." class="section level3">
+<h3>Implement <code>arg_max()</code>. It should take a function and a vector of inputs, and return the elements of the input where the function returns the highest value. For example, <code>arg_max(-10:5, function(x) x ^ 2)</code> should return <code>-10</code>. <code>arg_max(-5:5, function(x) x ^ 2)</code> should return <code>c(-5, 5)</code>. Also implement the matching <code>arg_min()</code> function.</h3>
+<hr />
+</div>
+<div id="challenge-read-about-the-fixed-point-algorithm.-complete-the-exercises-using-r." class="section level3">
+<h3>Challenge: read about the fixed point algorithm. Complete the exercises using R.</h3>
+<p><a href="http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-12.html#%_sec_1.3">link here</a></p>
+<hr />
+</div>
+<div id="implement-smaller-and-larger-functions-that-given-two-inputs-return-either-the-smaller-or-the-larger-value.-implement-na.rm-true-what-should-the-identity-be-hint-smallerx-smallerna-na-na.rm-true-na.rm-true-must-be-x-so-smallerna-na-na.rm-true-must-be-bigger-than-any-other-value-of-x.-use-smaller-and-larger-to-implement-equivalents-of-min-max-pmin-pmax-and-new-functions-row_min-and-row_max." class="section level3">
+<h3>Implement smaller and larger functions that, given two inputs, return either the smaller or the larger value. Implement na.rm = TRUE: what should the identity be? (Hint: smaller(x, smaller(NA, NA, na.rm = TRUE), na.rm = TRUE) must be x, so smaller(NA, NA, na.rm = TRUE) must be bigger than any other value of x.) Use smaller and larger to implement equivalents of min(), max(), pmin(), pmax(), and new functions row_min() and row_max().</h3>
+<hr />
+</div>
+<div id="create-a-table-that-has-and-or-add-multiply-smaller-and-larger-in-the-columns-and-binary-operator-reducing-variant-vectorised-variant-and-array-variants-in-the-rows." class="section level3">
+<h3>Create a table that has and, or, add, multiply, smaller, and larger in the columns and binary operator, reducing variant, vectorised variant, and array variants in the rows.</h3>
+<ol style="list-style-type: decimal">
+<li>Fill in the cells with the names of base R functions that perform each of the roles.</li>
+<li>Compare the names and arguments of the existing R functions. How consistent are they? How could you improve them?</li>
+<li><p>Complete the matrix by implementing any missing functions.</p>
+<pre><code>          |and|or|add|multiply|smaller|larger</code></pre>
+<table>
+<tbody>
+<tr class="odd">
+<td align="left">binary operator</td>
+<td align="left">*</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">reducing variant</td>
+<td align="left">*</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">vectorised variant</td>
+<td align="left">*</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">array variant</td>
+<td align="left">*| | | | |</td>
+</tr>
+</tbody>
+</table></li>
+</ol>
+<hr />
+</div>
+<div id="how-does-paste-fit-into-this-structure-what-is-the-scalar-binary-function-that-underlies-paste-what-are-the-sep-and-collapse-arguments-to-paste-equivalent-to-are-there-any-paste-variants-that-dont-have-existing-r-implementations" class="section level3">
+<h3>How does paste() fit into this structure? What is the scalar binary function that underlies paste()? What are the sep and collapse arguments to paste() equivalent to? Are there any paste variants that don’t have existing R implementations?</h3>
 </div>
 </div>
-<div id="discussion-notes" class="section level1">
-<h1>Discussion Notes</h1>
+<div id="discussion-notes" class="section level2">
+<h2>Discussion Notes</h2>
 </div>
-<div id="reading-notes" class="section level1">
-<h1>Reading Notes</h1>
+<div id="reading-notes" class="section level2">
+<h2>Reading Notes</h2>
 <p>A <em>functional</em> takes a function as input and returns a vector as output</p>
 <pre class="r"><code>unlist(lapply(mtcars, class))</code></pre>
 <pre><code>##       mpg       cyl      disp        hp      drat        wt      qsec 
@@ -279,18 +412,22 @@ for (i in seq_along(xs)) {
 </ul>
 <p><code>sweep()</code></p>
 <pre class="r"><code>(x &lt;- matrix(rnorm(20, 0, 10), nrow = 4))</code></pre>
-<pre><code>##        [,1]   [,2]    [,3]     [,4]   [,5]
-## [1,] -8.431  2.271  -2.621  15.9053 20.265
-## [2,] 14.113  6.352 -21.782  -0.3917 -3.196
-## [3,]  3.724  6.425  -6.940   8.5159  7.918
-## [4,] -7.672 -6.979   3.724 -19.2354  6.662</code></pre>
+<pre><code>##        [,1]     [,2]   [,3]   [,4]     [,5]
+## [1,]  7.312   0.3855 -2.691  1.496  -0.8273
+## [2,] -5.258 -13.2994 -1.112 12.094 -29.8662
+## [3,]  4.036   2.7560 -7.148 -0.810  -8.4591
+## [4,]  9.403  -9.7345 -7.941 -2.290  13.3401</code></pre>
 <pre class="r"><code>(x1 &lt;- sweep(x, 1, apply(x, 1, min), `-`))</code></pre>
-<pre><code>##       [,1]  [,2]   [,3]  [,4]  [,5]
-## [1,]  0.00 10.70  5.809 24.34 28.70
-## [2,] 35.89 28.13  0.000 21.39 18.59
-## [3,] 10.66 13.36  0.000 15.46 14.86
-## [4,] 11.56 12.26 22.960  0.00 25.90</code></pre>
+<pre><code>##       [,1]   [,2]   [,3]   [,4]   [,5]
+## [1,] 10.00  3.077  0.000  4.187  1.864
+## [2,] 24.61 16.567 28.754 41.961  0.000
+## [3,] 12.50 11.215  1.312  7.649  0.000
+## [4,] 19.14  0.000  1.793  7.445 23.075</code></pre>
 <pre class="r"><code>x2 &lt;- sweep(x1, 1, apply(x1, 1, max), `/`)</code></pre>
+<p><code>Reduce()</code> useful for recursive operations</p>
+<ul>
+<li>given a function, folds together adjacent items in a list using the function</li>
+</ul>
 </div>
 
 

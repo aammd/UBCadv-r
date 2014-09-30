@@ -342,10 +342,27 @@ Mathematical functionals
    }
    ```
 
-   Challenge: read about the
+2. Challenge: read about the
    [fixed point algorithm](http://mitpress.mit.edu/sicp/full-text/book/book-Z-H-12.html#%_sec_1.3).
    Complete the exercises using R.
 
+   ```{r}
+   fixed_point <- function(f, x0, tol = 0.0001) {
+     is_close <- function(a, b) abs(a-b) < tol
+     try_next <- function(x) {
+       next_x <- f(x)
+       if (is_close(x, next_x)) next_x else try_next(next_x)
+     }
+     try_next(x0)
+   }
+   fixed_point(cos, 1)
+   fixed_point(function(x) sin(x)+cos(x), 1, 0.0001)
+   sqrt2 <- function(x) fixed_point(function(y) mean(c(y, x/y)), 1)
+   sqrt(2)
+   sqrt(3)
+   phi <- fixed_point(function(x) 1 + 1/x, 1)
+   phi
+   ```
 
 Family of functions
 -------------------
