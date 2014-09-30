@@ -634,14 +634,49 @@ tan(pi*0.2)
 
 ## Smaller and Larger
 
+Let's start with the `NA` function:
+```{r}
+rm_na <- function(x, y, identity) {
+  if (is.na(x) && is.na(y)) {
+    identity
+  } else if (is.na(x)) {
+    y
+  } else {
+    x
+  }
+}
+
+rm_na(3,4,Inf)
+rm_na(3,NA,Inf)
+rm_na(NA,4,Inf)
+rm_na(NA,NA,Inf)
+
+smaller <- function(x, y, na.rm = TRUE){
+  if(na.rm && (is.na(x) || is.na(y))) {
+    rm_na(x, y, Inf)
+    } else {
+      stopifnot(!identical(x, y))
+      test <- (x - y) < 0
+      if(test) x else y
+      }
+  
+  }
+
+x <- 4
+y <- 5
+
+
+```
+
+
 ## Table of Functions
 
 **variant** | `and` | `or` | `add` | `multiply` | `smaller` | `larger`
 ------------|-------|------|-------|------------|-----------|---------
-binary  |     |       |       |       |               |
-reducing  |     |       |       |       |               |
-vectorized  |     |       |       |       |               |
-array  |     |       |       |       |               |
+binary  | `&&`    |    `||`   |   `+`    |  `*`     |               |
+reducing  | `any`   |   `all`    |   `sum`    |       |               |
+vectorized  |  `&`   |    `|`   |   `+`    |  `*`     |               |
+array  |     |       |   `+`     |      |               |
 
 ## reading notes 
 
