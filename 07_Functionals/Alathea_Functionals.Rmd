@@ -284,12 +284,12 @@ All(test2, is.character)
 2. Compare the names and arguments of the existing R functions. How consistent are they? How could you improve them?
 3. Complete the matrix by implementing any missing functions.
 
-                  |and|or|add|multiply|smaller|larger
-------------------|---|--|---|--------|-------|------
-binary operator   |   |  |   |        |       |
-reducing variant  |   |  |   |        |       |
-vectorised variant|   |  |   |        |       |
-array variant     |   |  |   |        |       |
+variant   |and|or|add|multiply|smaller|larger
+----------|---|--|---|--------|-------|------
+binary    |&& |`||`|   |        |       |
+reducing  |   |  |   |        |       |
+vectorised|   |  |   |        |       |
+array     |   |  |   |        |       |
 
 
 ***
