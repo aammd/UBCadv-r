@@ -8,11 +8,36 @@ Date: '2014-10-07'
 
 ### Chapter Notes
 
+A function operator is a function that takes one (or more) functions as input and returns a function as output
+
+- behavioral FOs change the behavior of a function, e.g. ensuring that a function only runs once
+- output FOs manipulate the output of a function, e.g. capturing errors
+- input FOs modify the inputs to a function, e.g. `vectorize()` or `partial`
+- combining FOs use function composition and logical operations to combine multiple functions
+
+best to make the function the last argument of the function wrapping it
+
+memoisation: modify a function to automatically cache its results - from library(memoise) 
+A memoised function can run much faster because it stores all of the previous inputs and outputs, using more memory
+
+
+
+
 ***
 ### Exercises 1
 
 1.  Write a FO that logs a time stamp and message to a file every time a 
     function is run.
+    ```
+    dot_every <- function(n, f) {
+  	i <- 1
+  	function(...) {
+    	if (i %% n == 0) cat(".")
+    	i <<- i + 1
+    	f(...)
+  		}
+	}
+    ```
 
 1.  What does the following function do? What would be a good name for it?
 
