@@ -29,13 +29,11 @@ A memoised function can run much faster because it stores all of the previous in
 1.  Write a FO that logs a time stamp and message to a file every time a 
     function is run.
     ```
-    dot_every <- function(n, f) {
-  	i <- 1
-  	function(...) {
-    	if (i %% n == 0) cat(".")
-    	i <<- i + 1
-    	f(...)
-  		}
+    log_time <- function(message, f) {
+  	t <- Sys.time()
+  	m <- message
+  	f(...) 
+  	write.table(c(message, t), file="log.txt")
 	}
     ```
 
@@ -56,26 +54,53 @@ A memoised function can run much faster because it stores all of the previous in
     runif2(5)
     runif2(10)
     ```
+    **makes the given number of randomly generated numbers, stores them and onyl gives them back as the answer anytime the function 
+    is run again. a good name might be store_randoms()**
 
 1.  Modify `delay_by()` so that instead of delaying by a fixed amount of time, 
     it ensures that a certain amount of time has elapsed since the function 
     was last called. That is, if you called 
     `g <- delay_by(1, f); g(); Sys.sleep(2); g()` there shouldn't be an 
     extra delay.
-
+	
+	**I interpret this as asking that there is no additional delay besides that called by Sys.sleep(2)? 
+	Not sure if I've done this one right, but my thought was to have the delay not be within the function, 
+	but before the function is called within the FO?**
+	```
+	delay_by <- function(delay, f) {
+    Sys.sleep(delay)
+	  function(...) {
+	    f(...)
+	  }
+	}
+	```
+	
 1.  Write `wait_until()` which delays execution until a specific time.
+	```
+	wait_until <- function(delay, f) {
+    if(Sys.time==delay){
+	  function(...) {
+	    f(...)
+	  }}
+	}
+	```
 
 1.  There are three places we could have added a memoise call: why did we 
     choose the one we did?
+    
+    **I guess he wants to say how each of these is diff, not why we chose the one we did in the chapter text above?**
 
     ```{r, eval = FALSE}
-    download <- memoise(dot_every(10, delay_by(1, download_file)))
-    download <- dot_every(10, memoise(delay_by(1, download_file)))
-    download <- dot_every(10, delay_by(1, memoise(download_file)))
+    download <- memoise(dot_every(10, delay_by(1, download_file))) **does this one only save the file name every 10 iterations?**
+    download <- dot_every(10, memoise(delay_by(1, download_file))) **this was the one we want, I think because it saves the file name each time, after the delay has happened as well**
+    download <- dot_every(10, delay_by(1, memoise(download_file))) **not sure what was wrong with this one?**
     ```
 
 1.  Why is the `remember()` function inefficient? How could you implement it 
     in more efficient way?
+    
+    **because it assignes the function output to an object each time and stores that in new memory appended to the 
+    memory also being used? Not sure what the fix is?**
 
 1.  Why does the following code, from 
     [stackoverflow](http://stackoverflow.com/questions/8440675), not do what you expect?
@@ -90,6 +115,8 @@ A memoised function can run much faster because it stores all of the previous in
     fs[[1]](3)
     # should return 0 * 3 + 0 = 0
     ```
+    **I wasn't expecting it to return 0. I think this is lazy evaluation? 
+    Need to force the a and b values for the first iteration of f?**
 
     How can you modify `f` so that it works correctly?
 
