@@ -54,7 +54,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <div id="header">
 <h1 class="title">Andrew_Functionals</h1>
 <h4 class="author"><em>Andrew MacDonald</em></h4>
-<h4 class="date"><em>28 September, 2014</em></h4>
+<h4 class="date"><em>30 September, 2014</em></h4>
 </div>
 
 <div id="TOC">
@@ -590,12 +590,15 @@ span &lt;- function(f, x){
   trues &lt;- runs$lengths[runs$values]
   longest &lt;- max(trues)[1] # find the first long sequence only
   start.longest &lt;- which(runs$lengths == longest)
+  browser()
   start.longest + seq_len(longest)
 }
 
 green30 &lt;- replicate(47, sample(list(&quot;green&quot;,30), size = 1, prob = c(0.7, 0.3)))
 
 span(is.character, green30)</code></pre>
+<pre><code>## Called from: span(is.character, green30)
+## debug at &lt;text&gt;#12: start.longest + seq_len(longest)</code></pre>
 <pre><code>## [1] 26 27 28 29 30</code></pre>
 </div>
 </div>
@@ -744,6 +747,38 @@ tan_cf(pi*0.2, 20)</code></pre>
 </div>
 <div id="smaller-and-larger" class="section level2">
 <h2>Smaller and Larger</h2>
+<p>Let’s start with the <code>NA</code> function:</p>
+<pre class="r"><code>rm_na &lt;- function(x, y, identity) {
+  if (is.na(x) &amp;&amp; is.na(y)) {
+    identity
+  } else if (is.na(x)) {
+    y
+  } else {
+    x
+  }
+}
+
+rm_na(3,4,Inf)</code></pre>
+<pre><code>## [1] 3</code></pre>
+<pre class="r"><code>rm_na(3,NA,Inf)</code></pre>
+<pre><code>## [1] 3</code></pre>
+<pre class="r"><code>rm_na(NA,4,Inf)</code></pre>
+<pre><code>## [1] 4</code></pre>
+<pre class="r"><code>rm_na(NA,NA,Inf)</code></pre>
+<pre><code>## [1] Inf</code></pre>
+<pre class="r"><code>smaller &lt;- function(x, y, na.rm = TRUE){
+  if(na.rm &amp;&amp; (is.na(x) || is.na(y))) {
+    rm_na(x, y, Inf)
+    } else {
+      stopifnot(!identical(x, y))
+      test &lt;- (x - y) &lt; 0
+      if(test) x else y
+      }
+  
+  }
+
+x &lt;- 4
+y &lt;- 5</code></pre>
 </div>
 <div id="table-of-functions" class="section level2">
 <h2>Table of Functions</h2>
@@ -762,33 +797,33 @@ tan_cf(pi*0.2, 20)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">binary</td>
-<td align="left"></td>
-<td align="left"></td>
-<td align="left"></td>
-<td align="left"></td>
+<td align="left"><code>&amp;&amp;</code></td>
+<td align="left"><code>||</code></td>
+<td align="left"><code>+</code></td>
+<td align="left"><code>*</code></td>
 <td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left">reducing</td>
-<td align="left"></td>
-<td align="left"></td>
-<td align="left"></td>
+<td align="left"><code>all</code></td>
+<td align="left"><code>any</code></td>
+<td align="left"><code>sum</code></td>
 <td align="left"></td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
 <td align="left">vectorized</td>
-<td align="left"></td>
-<td align="left"></td>
-<td align="left"></td>
-<td align="left"></td>
+<td align="left"><code>&amp;</code></td>
+<td align="left"><code>|</code></td>
+<td align="left"><code>+</code></td>
+<td align="left"><code>*</code></td>
 <td align="left"></td>
 </tr>
 <tr class="even">
 <td align="left">array</td>
 <td align="left"></td>
 <td align="left"></td>
-<td align="left"></td>
+<td align="left"><code>+</code></td>
 <td align="left"></td>
 <td align="left"></td>
 </tr>

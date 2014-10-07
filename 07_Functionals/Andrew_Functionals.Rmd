@@ -461,6 +461,7 @@ span <- function(f, x){
   trues <- runs$lengths[runs$values]
   longest <- max(trues)[1] # find the first long sequence only
   start.longest <- which(runs$lengths == longest)
+  browser()
   start.longest + seq_len(longest)
 }
 
@@ -674,7 +675,7 @@ y <- 5
 **variant** | `and` | `or` | `add` | `multiply` | `smaller` | `larger`
 ------------|-------|------|-------|------------|-----------|---------
 binary  | `&&`    |    `||`   |   `+`    |  `*`     |               |
-reducing  | `any`   |   `all`    |   `sum`    |       |               |
+reducing  |  `all`  |   `any`    |   `sum`    |       |               |
 vectorized  |  `&`   |    `|`   |   `+`    |  `*`     |               |
 array  |     |       |   `+`     |      |               |
 

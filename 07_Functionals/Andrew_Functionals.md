@@ -799,12 +799,18 @@ span <- function(f, x){
   trues <- runs$lengths[runs$values]
   longest <- max(trues)[1] # find the first long sequence only
   start.longest <- which(runs$lengths == longest)
+  browser()
   start.longest + seq_len(longest)
 }
 
 green30 <- replicate(47, sample(list("green",30), size = 1, prob = c(0.7, 0.3)))
 
 span(is.character, green30)
+```
+
+```
+## Called from: span(is.character, green30)
+## debug at <text>#12: start.longest + seq_len(longest)
 ```
 
 ```
@@ -1044,14 +1050,75 @@ tan(pi*0.2)
 
 ## Smaller and Larger
 
+Let's start with the `NA` function:
+
+```r
+rm_na <- function(x, y, identity) {
+  if (is.na(x) && is.na(y)) {
+    identity
+  } else if (is.na(x)) {
+    y
+  } else {
+    x
+  }
+}
+
+rm_na(3,4,Inf)
+```
+
+```
+## [1] 3
+```
+
+```r
+rm_na(3,NA,Inf)
+```
+
+```
+## [1] 3
+```
+
+```r
+rm_na(NA,4,Inf)
+```
+
+```
+## [1] 4
+```
+
+```r
+rm_na(NA,NA,Inf)
+```
+
+```
+## [1] Inf
+```
+
+```r
+smaller <- function(x, y, na.rm = TRUE){
+  if(na.rm && (is.na(x) || is.na(y))) {
+    rm_na(x, y, Inf)
+    } else {
+      stopifnot(!identical(x, y))
+      test <- (x - y) < 0
+      if(test) x else y
+      }
+  
+  }
+
+x <- 4
+y <- 5
+```
+
+
 ## Table of Functions
 
 **variant** | `and` | `or` | `add` | `multiply` | `smaller` | `larger`
 ------------|-------|------|-------|------------|-----------|---------
-binary  |     |       |       |       |               |
-reducing  |     |       |       |       |               |
-vectorized  |     |       |       |       |               |
-array  |     |       |       |       |               |
+binary  | `&&`    |    `||`   |   `+`    |  `*`     |               |
+reducing  |  `all`  |   `any`    |   `sum`    |       |               |
+vectorized  |  `&`   |    `|`   |   `+`    |  `*`     |               |
+array  |     |       |   `+`     |      |               |
 
 ## reading notes 
 
