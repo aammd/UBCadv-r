@@ -125,6 +125,14 @@ A memoised function can run much faster because it stores all of the previous in
 
 1.  Create a `negative()` FO that flips the sign of the output of the 
     function to which it is applied.
+    
+    ```
+    change_sign <- function(x){
+    	force(x)
+    	function(...) (-1)*x(...)
+    }
+    ```
+    **kind of working from Hadley's `Negate()` function here, but not sure if I've done it right**
 
 1.  The `evaluate` package makes it easy to capture all the outputs (results, 
     text, messages, warnings, errors, and plots) from an expression. Create a 
