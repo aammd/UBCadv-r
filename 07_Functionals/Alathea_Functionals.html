@@ -68,7 +68,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#use-both-for-loops-and-lapply-to-fit-linear-models-to-the-mtcars-using-the-formulas-stored-in-this-list">Use both <code>for</code> loops and <code>lapply()</code> to fit linear models to the <code>mtcars</code> using the formulas stored in this list:</a></li>
 <li><a href="#fit-the-model-mpg-disp-to-each-of-the-bootstrap-replicates-of-mtcars-in-the-list-below-by-using-a-for-loop-and-lapply.-can-you-do-it-without-an-anonymous-function">Fit the model <code>mpg ~ disp</code> to each of the bootstrap replicates of <code>mtcars</code> in the list below by using a <code>for</code> loop and <code>lapply()</code>. Can you do it without an anonymous function?</a></li>
 <li><a href="#for-each-model-in-the-previous-two-exercises-extract-r2-using-the-function-below.">For each model in the previous two exercises, extract R2 using the function below.</a></li>
-<li><a href="#use-vapply-to-a-compute-the-standard-deviation-of-every-column-in-a-numeric-data-frame.-b-compute-the-standard-deviation-of-every-numeric-column-in-a-mixed-data-frame.-hint-youll-need-to-use-vapply-twice.">Use <code>vapply()</code> to: a) Compute the standard deviation of every column in a numeric data frame. b) Compute the standard deviation of every numeric column in a mixed data frame. (Hint: you’ll need to use vapply() twice.)</a></li>
+<li><a href="#use-vapply-to-a-compute-the-standard-deviation-of-every-column-in-a-numeric-data-frame.-b-compute-the-standard-deviation-of-every-numeric-column-in-a-mixed-data-frame.-hint-youll-need-to-use-vapply-twice.">Use <code>vapply()</code> to: a) Compute the standard deviation of every column in a numeric data frame. b) Compute the standard deviation of every numeric column in a mixed data frame. (Hint: youll need to use vapply() twice.)</a></li>
 <li><a href="#why-is-using-sapply-to-get-the-class-of-each-element-in-a-data-frame-dangerous">Why is using <code>sapply()</code> to get the <code>class()</code> of each element in a data frame dangerous?</a></li>
 <li><a href="#the-following-code-simulates-the-performance-of-a-t-test-for-non-normal-data.-use-sapply-and-an-anonymous-function-to-extract-the-p-value-from-every-trial.-extra-challenge-get-rid-of-the-anonymous-function-by-using-directly.">The following code simulates the performance of a t-test for non-normal data. Use <code>sapply()</code> and an anonymous function to extract the p-value from every trial. Extra challenge: get rid of the anonymous function by using <code>[[</code> directly.</a></li>
 <li><a href="#what-does-replicate-do-what-sort-of-for-loop-does-it-eliminate-why-do-its-arguments-differ-from-lapply-and-friends">What does <code>replicate()</code> do? What sort of for loop does it eliminate? Why do its arguments differ from <code>lapply()</code> and friends?</a></li>
@@ -76,19 +76,19 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#implement-a-combination-of-map-and-vapply-to-create-an-lapply-variant-that-iterates-in-parallel-over-all-of-its-inputs-and-stores-its-outputs-in-a-vector-or-a-matrix.-what-arguments-should-the-function-take">Implement a combination of <code>Map()</code> and <code>vapply()</code> to create an <code>lapply()</code> variant that iterates in parallel over all of its inputs and stores its outputs in a vector (or a matrix). What arguments should the function take?</a></li>
 <li><a href="#implement-mcsapply-a-multicore-version-of-sapply.-can-you-implement-mcvapply-a-parallel-version-of-vapply-why-or-why-not">Implement <code>mcsapply()</code>, a multicore version of <code>sapply()</code>. Can you implement <code>mcvapply()</code>, a parallel version of <code>vapply()</code>? Why or why not?</a></li>
 <li><a href="#how-does-apply-arrange-the-output-read-the-documentation-and-perform-some-experiments.">How does <code>apply()</code> arrange the output? Read the documentation and perform some experiments.</a></li>
-<li><a href="#theres-no-equivalent-to-split-vapply.-should-there-be-when-would-it-be-useful-implement-one-yourself.">There’s no equivalent to <code>split()</code> + <code>vapply()</code>. Should there be? When would it be useful? Implement one yourself.</a></li>
+<li><a href="#theres-no-equivalent-to-split-vapply.-should-there-be-when-would-it-be-useful-implement-one-yourself.">Theres no equivalent to <code>split()</code> + <code>vapply()</code>. Should there be? When would it be useful? Implement one yourself.</a></li>
 <li><a href="#implement-a-pure-r-version-of-split.-hint-use-unique-and-subsetting.-can-you-do-it-without-a-for-loop">Implement a pure R version of <code>split()</code>. (Hint: use <code>unique()</code> and subsetting.) Can you do it without a <code>for</code> loop?</a></li>
 <li><a href="#what-other-types-of-input-and-output-are-missing-brainstorm-before-you-look-up-some-answers-in-the-plyr-paper.">What other types of input and output are missing? Brainstorm before you look up some answers in the <code>plyr</code> paper.</a></li>
-<li><a href="#why-isnt-is.na-a-predicate-function-what-base-r-function-is-closest-to-being-a-predicate-version-of-is.na">Why isn’t <code>is.na()</code> a predicate function? What base R function is closest to being a predicate version of <code>is.na()</code>?</a></li>
+<li><a href="#why-isnt-is.na-a-predicate-function-what-base-r-function-is-closest-to-being-a-predicate-version-of-is.na">Why isnt <code>is.na()</code> a predicate function? What base R function is closest to being a predicate version of <code>is.na()</code>?</a></li>
 <li><a href="#use-filter-and-vapply-to-create-a-function-that-applies-a-summary-statistic-to-every-numeric-column-in-a-data-frame.">Use <code>Filter()</code> and <code>vapply()</code> to create a function that applies a summary statistic to every numeric column in a data frame.</a></li>
-<li><a href="#whats-the-relationship-between-which-and-position-whats-the-relationship-between-where-and-filter">What’s the relationship between <code>which()</code> and <code>Position()</code>? What’s the relationship between <code>where()</code> and <code>Filter()</code>?</a></li>
-<li><a href="#implement-any-a-function-that-takes-a-list-and-a-predicate-function-and-returns-true-if-the-predicate-function-returns-true-for-any-of-the-inputs.-implement-all-similarly.">Implement <code>Any()</code>, a function that takes a list and a predicate function, and returns TRUE if the predicate function returns TRUE for any of the inputs. Implement All() similarly.</a></li>
+<li><a href="#whats-the-relationship-between-which-and-position-whats-the-relationship-between-where-and-filter">Whats the relationship between <code>which()</code> and <code>Position()</code>? Whats the relationship between <code>where()</code> and <code>Filter()</code>?</a></li>
+<li><a href="#implement-any-a-function-that-takes-a-list-and-a-predicate-function-and-returns-true-if-the-predicate-function-returns-true-for-any-of-the-inputs.-implement-all-similarly.">Implement <code>Any()</code>, a function that takes a list and a predicate function, and returns <code>TRUE</code> if the predicate function returns <code>TRUE</code> for any of the inputs. Implement <code>All()</code> similarly.</a></li>
 <li><a href="#implement-the-span-function-from-haskell-given-a-list-x-and-a-predicate-function-f-span-returns-the-location-of-the-longest-sequential-run-of-elements-where-the-predicate-is-true.-hint-you-might-find-rle-helpful.">Implement the <code>span()</code> function from Haskell: given a list x and a predicate function f, span returns the location of the longest sequential run of elements where the predicate is true. (Hint: you might find <code>rle()</code> helpful.)</a></li>
 <li><a href="#implement-arg_max.-it-should-take-a-function-and-a-vector-of-inputs-and-return-the-elements-of-the-input-where-the-function-returns-the-highest-value.-for-example-arg_max-105-functionx-x-2-should-return--10.-arg_max-55-functionx-x-2-should-return-c-5-5.-also-implement-the-matching-arg_min-function.">Implement <code>arg_max()</code>. It should take a function and a vector of inputs, and return the elements of the input where the function returns the highest value. For example, <code>arg_max(-10:5, function(x) x ^ 2)</code> should return <code>-10</code>. <code>arg_max(-5:5, function(x) x ^ 2)</code> should return <code>c(-5, 5)</code>. Also implement the matching <code>arg_min()</code> function.</a></li>
 <li><a href="#challenge-read-about-the-fixed-point-algorithm.-complete-the-exercises-using-r.">Challenge: read about the fixed point algorithm. Complete the exercises using R.</a></li>
 <li><a href="#implement-smaller-and-larger-functions-that-given-two-inputs-return-either-the-smaller-or-the-larger-value.-implement-na.rm-true-what-should-the-identity-be-hint-smallerx-smallerna-na-na.rm-true-na.rm-true-must-be-x-so-smallerna-na-na.rm-true-must-be-bigger-than-any-other-value-of-x.-use-smaller-and-larger-to-implement-equivalents-of-min-max-pmin-pmax-and-new-functions-row_min-and-row_max.">Implement smaller and larger functions that, given two inputs, return either the smaller or the larger value. Implement na.rm = TRUE: what should the identity be? (Hint: smaller(x, smaller(NA, NA, na.rm = TRUE), na.rm = TRUE) must be x, so smaller(NA, NA, na.rm = TRUE) must be bigger than any other value of x.) Use smaller and larger to implement equivalents of min(), max(), pmin(), pmax(), and new functions row_min() and row_max().</a></li>
 <li><a href="#create-a-table-that-has-and-or-add-multiply-smaller-and-larger-in-the-columns-and-binary-operator-reducing-variant-vectorised-variant-and-array-variants-in-the-rows.">Create a table that has and, or, add, multiply, smaller, and larger in the columns and binary operator, reducing variant, vectorised variant, and array variants in the rows.</a></li>
-<li><a href="#how-does-paste-fit-into-this-structure-what-is-the-scalar-binary-function-that-underlies-paste-what-are-the-sep-and-collapse-arguments-to-paste-equivalent-to-are-there-any-paste-variants-that-dont-have-existing-r-implementations">How does paste() fit into this structure? What is the scalar binary function that underlies paste()? What are the sep and collapse arguments to paste() equivalent to? Are there any paste variants that don’t have existing R implementations?</a></li>
+<li><a href="#how-does-paste-fit-into-this-structure-what-is-the-scalar-binary-function-that-underlies-paste-what-are-the-sep-and-collapse-arguments-to-paste-equivalent-to-are-there-any-paste-variants-that-dont-have-existing-r-implementations">How does paste() fit into this structure? What is the scalar binary function that underlies paste()? What are the sep and collapse arguments to paste() equivalent to? Are there any paste variants that dont have existing R implementations?</a></li>
 </ul></li>
 <li><a href="#discussion-notes">Discussion Notes</a></li>
 <li><a href="#reading-notes">Reading Notes</a></li>
@@ -169,11 +169,11 @@ bootstraps &lt;- lapply(1:10, function(i) {
 
 models &lt;- lapply(bootstraps, function(x) lm(mpg ~ disp, data = x))
 unlist(lapply(models, rsq))</code></pre>
-<pre><code>##  [1] 0.6550 0.7447 0.8118 0.6926 0.7886 0.8035 0.8105 0.7529 0.6462 0.6093</code></pre>
+<pre><code>##  [1] 0.8347 0.7569 0.7143 0.8125 0.7392 0.6901 0.6337 0.5520 0.7251 0.8490</code></pre>
 <hr />
 </div>
 <div id="use-vapply-to-a-compute-the-standard-deviation-of-every-column-in-a-numeric-data-frame.-b-compute-the-standard-deviation-of-every-numeric-column-in-a-mixed-data-frame.-hint-youll-need-to-use-vapply-twice." class="section level3">
-<h3>Use <code>vapply()</code> to: a) Compute the standard deviation of every column in a numeric data frame. b) Compute the standard deviation of every numeric column in a mixed data frame. (Hint: you’ll need to use vapply() twice.)</h3>
+<h3>Use <code>vapply()</code> to: a) Compute the standard deviation of every column in a numeric data frame. b) Compute the standard deviation of every numeric column in a mixed data frame. (Hint: youll need to use vapply() twice.)</h3>
 <pre class="r"><code>vapply(mtcars, sd, double(1))</code></pre>
 <pre><code>##      mpg      cyl     disp       hp     drat       wt     qsec       vs 
 ##   6.0269   1.7859 123.9387  68.5629   0.5347   0.9785   1.7869   0.5040 
@@ -263,7 +263,7 @@ sapply(trials, `[[`, &quot;p.value&quot;)</code></pre>
 <hr />
 </div>
 <div id="theres-no-equivalent-to-split-vapply.-should-there-be-when-would-it-be-useful-implement-one-yourself." class="section level3">
-<h3>There’s no equivalent to <code>split()</code> + <code>vapply()</code>. Should there be? When would it be useful? Implement one yourself.</h3>
+<h3>Theres no equivalent to <code>split()</code> + <code>vapply()</code>. Should there be? When would it be useful? Implement one yourself.</h3>
 <p>This might be useful if you had a complex data structure such as a list of lists. You could split by one level of list and apply a function to that subset.</p>
 <hr />
 </div>
@@ -276,7 +276,7 @@ sapply(trials, `[[`, &quot;p.value&quot;)</code></pre>
 <hr />
 </div>
 <div id="why-isnt-is.na-a-predicate-function-what-base-r-function-is-closest-to-being-a-predicate-version-of-is.na" class="section level3">
-<h3>Why isn’t <code>is.na()</code> a predicate function? What base R function is closest to being a predicate version of <code>is.na()</code>?</h3>
+<h3>Why isnt <code>is.na()</code> a predicate function? What base R function is closest to being a predicate version of <code>is.na()</code>?</h3>
 <p><code>is.na</code> returns <code>TRUE</code> or <code>FALSE</code> for each element of a list, whereas the predicate functions return a single <code>TRUE</code> or <code>FALSE</code></p>
 <pre class="r"><code>test &lt;- list(1, 2, 3, NA, &quot;a&quot;, &quot;b&quot;)
 is.character(test)</code></pre>
@@ -304,7 +304,7 @@ head(iris)</code></pre>
 <hr />
 </div>
 <div id="whats-the-relationship-between-which-and-position-whats-the-relationship-between-where-and-filter" class="section level3">
-<h3>What’s the relationship between <code>which()</code> and <code>Position()</code>? What’s the relationship between <code>where()</code> and <code>Filter()</code>?</h3>
+<h3>Whats the relationship between <code>which()</code> and <code>Position()</code>? Whats the relationship between <code>where()</code> and <code>Filter()</code>?</h3>
 <pre class="r"><code>where &lt;- function(f, x) {
   vapply(x, f, logical(1))
 }</code></pre>
@@ -313,7 +313,36 @@ head(iris)</code></pre>
 <hr />
 </div>
 <div id="implement-any-a-function-that-takes-a-list-and-a-predicate-function-and-returns-true-if-the-predicate-function-returns-true-for-any-of-the-inputs.-implement-all-similarly." class="section level3">
-<h3>Implement <code>Any()</code>, a function that takes a list and a predicate function, and returns TRUE if the predicate function returns TRUE for any of the inputs. Implement All() similarly.</h3>
+<h3>Implement <code>Any()</code>, a function that takes a list and a predicate function, and returns <code>TRUE</code> if the predicate function returns <code>TRUE</code> for any of the inputs. Implement <code>All()</code> similarly.</h3>
+<pre class="r"><code>Any &lt;- function(x, fun)
+{
+  for(i in 1:length(x))
+  {
+    if(fun(x[[i]])) return(TRUE)
+  }
+  
+  return(FALSE)
+}
+
+test &lt;- list(1, 2, 3, 4, &quot;b&quot;)
+Any(test, is.character)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>All &lt;- function(x, fun)
+{
+  for(i in 1:length(x))
+  {
+    if(!fun(x[[i]])) return(FALSE)
+  }
+  
+  return(TRUE)
+}
+
+test &lt;- list(1, 2, 3, 4, &quot;b&quot;)
+test2 &lt;- list(letters[1:5])
+All(test, is.character)</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<pre class="r"><code>All(test2, is.character)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
 <hr />
 </div>
 <div id="implement-the-span-function-from-haskell-given-a-list-x-and-a-predicate-function-f-span-returns-the-location-of-the-longest-sequential-run-of-elements-where-the-predicate-is-true.-hint-you-might-find-rle-helpful." class="section level3">
@@ -338,45 +367,59 @@ head(iris)</code></pre>
 <ol style="list-style-type: decimal">
 <li>Fill in the cells with the names of base R functions that perform each of the roles.</li>
 <li>Compare the names and arguments of the existing R functions. How consistent are they? How could you improve them?</li>
-<li><p>Complete the matrix by implementing any missing functions.</p>
-<pre><code>          |and|or|add|multiply|smaller|larger</code></pre>
+<li>Complete the matrix by implementing any missing functions.</li>
+</ol>
 <table>
+<thead>
+<tr class="header">
+<th align="left">variant</th>
+<th align="left">and</th>
+<th align="left">or</th>
+<th align="left">add</th>
+<th align="left">multiply</th>
+<th align="left">smaller</th>
+<th align="left">larger</th>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
-<td align="left">binary operator</td>
-<td align="left">*</td>
-<td align="left"></td>
+<td align="left">binary</td>
+<td align="left">&amp;&amp;</td>
+<td align="left"><code>||</code></td>
 <td align="left"></td>
 <td align="left"></td>
 <td align="left"></td>
 </tr>
 <tr class="even">
-<td align="left">reducing variant</td>
-<td align="left">*</td>
+<td align="left">reducing</td>
+<td align="left"></td>
 <td align="left"></td>
 <td align="left"></td>
 <td align="left"></td>
 <td align="left"></td>
 </tr>
 <tr class="odd">
-<td align="left">vectorised variant</td>
-<td align="left">*</td>
+<td align="left">vectorised</td>
+<td align="left"></td>
 <td align="left"></td>
 <td align="left"></td>
 <td align="left"></td>
 <td align="left"></td>
 </tr>
 <tr class="even">
-<td align="left">array variant</td>
-<td align="left">*| | | | |</td>
+<td align="left">array</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
 </tr>
 </tbody>
-</table></li>
-</ol>
+</table>
 <hr />
 </div>
 <div id="how-does-paste-fit-into-this-structure-what-is-the-scalar-binary-function-that-underlies-paste-what-are-the-sep-and-collapse-arguments-to-paste-equivalent-to-are-there-any-paste-variants-that-dont-have-existing-r-implementations" class="section level3">
-<h3>How does paste() fit into this structure? What is the scalar binary function that underlies paste()? What are the sep and collapse arguments to paste() equivalent to? Are there any paste variants that don’t have existing R implementations?</h3>
+<h3>How does paste() fit into this structure? What is the scalar binary function that underlies paste()? What are the sep and collapse arguments to paste() equivalent to? Are there any paste variants that dont have existing R implementations?</h3>
 </div>
 </div>
 <div id="discussion-notes" class="section level2">
@@ -412,17 +455,17 @@ for (i in seq_along(xs)) {
 </ul>
 <p><code>sweep()</code></p>
 <pre class="r"><code>(x &lt;- matrix(rnorm(20, 0, 10), nrow = 4))</code></pre>
-<pre><code>##        [,1]     [,2]   [,3]   [,4]     [,5]
-## [1,]  7.312   0.3855 -2.691  1.496  -0.8273
-## [2,] -5.258 -13.2994 -1.112 12.094 -29.8662
-## [3,]  4.036   2.7560 -7.148 -0.810  -8.4591
-## [4,]  9.403  -9.7345 -7.941 -2.290  13.3401</code></pre>
+<pre><code>##        [,1]    [,2]   [,3]   [,4]    [,5]
+## [1,]  8.906 -23.518  8.054  6.556 13.6173
+## [2,] -1.007   4.509  2.450 23.214 -9.1182
+## [3,]  4.825   4.855 -6.235  1.798  2.5043
+## [4,]  9.901 -10.179 23.433 -3.783  0.8075</code></pre>
 <pre class="r"><code>(x1 &lt;- sweep(x, 1, apply(x, 1, min), `-`))</code></pre>
-<pre><code>##       [,1]   [,2]   [,3]   [,4]   [,5]
-## [1,] 10.00  3.077  0.000  4.187  1.864
-## [2,] 24.61 16.567 28.754 41.961  0.000
-## [3,] 12.50 11.215  1.312  7.649  0.000
-## [4,] 19.14  0.000  1.793  7.445 23.075</code></pre>
+<pre><code>##        [,1]  [,2]  [,3]   [,4]   [,5]
+## [1,] 32.424  0.00 31.57 30.074 37.135
+## [2,]  8.111 13.63 11.57 32.332  0.000
+## [3,] 11.060 11.09  0.00  8.033  8.739
+## [4,] 20.080  0.00 33.61  6.396 10.987</code></pre>
 <pre class="r"><code>x2 &lt;- sweep(x1, 1, apply(x1, 1, max), `/`)</code></pre>
 <p><code>Reduce()</code> useful for recursive operations</p>
 <ul>

@@ -101,12 +101,12 @@ unlist(lapply(models, rsq))
 ```
 
 ```
-##  [1] 0.6550 0.7447 0.8118 0.6926 0.7886 0.8035 0.8105 0.7529 0.6462 0.6093
+##  [1] 0.8347 0.7569 0.7143 0.8125 0.7392 0.6901 0.6337 0.5520 0.7251 0.8490
 ```
 
 ***
 
-### Use `vapply()` to: a) Compute the standard deviation of every column in a numeric data frame. b) Compute the standard deviation of every numeric column in a mixed data frame. (Hint: you’ll need to use vapply() twice.)
+### Use `vapply()` to: a) Compute the standard deviation of every column in a numeric data frame. b) Compute the standard deviation of every numeric column in a mixed data frame. (Hint: youll need to use vapply() twice.)
 
 
 ```r
@@ -246,7 +246,7 @@ apply(mtcars, 2, mean)
 
 ***
 
-### There’s no equivalent to `split()` + `vapply()`. Should there be? When would it be useful? Implement one yourself.
+### Theres no equivalent to `split()` + `vapply()`. Should there be? When would it be useful? Implement one yourself.
 
 This might be useful if you had a complex data structure such as a list of lists.  You could split by one level of list and apply a function to that subset.
 
@@ -260,7 +260,7 @@ This might be useful if you had a complex data structure such as a list of lists
 
 ***
 
-### Why isn’t `is.na()` a predicate function? What base R function is closest to being a predicate version of `is.na()`?
+### Why isnt `is.na()` a predicate function? What base R function is closest to being a predicate version of `is.na()`?
 
 `is.na` returns `TRUE` or `FALSE` for each element of a list, whereas the predicate functions return a single `TRUE` or `FALSE`
 
@@ -315,7 +315,7 @@ Filter(is.numeric, iris) %>%
 
 ***
 
-### What’s the relationship between `which()` and `Position()`? What’s the relationship between `where()` and `Filter()`?
+### Whats the relationship between `which()` and `Position()`? Whats the relationship between `where()` and `Filter()`?
 
 
 ```r
@@ -330,7 +330,56 @@ where <- function(f, x) {
 
 ***
 
-### Implement `Any()`, a function that takes a list and a predicate function, and returns TRUE if the predicate function returns TRUE for any of the inputs. Implement All() similarly.
+### Implement `Any()`, a function that takes a list and a predicate function, and returns `TRUE` if the predicate function returns `TRUE` for any of the inputs. Implement `All()` similarly.
+
+
+```r
+Any <- function(x, fun)
+{
+  for(i in 1:length(x))
+  {
+    if(fun(x[[i]])) return(TRUE)
+  }
+  
+  return(FALSE)
+}
+
+test <- list(1, 2, 3, 4, "b")
+Any(test, is.character)
+```
+
+```
+## [1] TRUE
+```
+
+
+```r
+All <- function(x, fun)
+{
+  for(i in 1:length(x))
+  {
+    if(!fun(x[[i]])) return(FALSE)
+  }
+  
+  return(TRUE)
+}
+
+test <- list(1, 2, 3, 4, "b")
+test2 <- list(letters[1:5])
+All(test, is.character)
+```
+
+```
+## [1] FALSE
+```
+
+```r
+All(test2, is.character)
+```
+
+```
+## [1] TRUE
+```
 
 ***
 
@@ -358,17 +407,17 @@ where <- function(f, x) {
 2. Compare the names and arguments of the existing R functions. How consistent are they? How could you improve them?
 3. Complete the matrix by implementing any missing functions.
 
-                  |and|or|add|multiply|smaller|larger
-------------------|---|--|---|--------|-------|------
-binary operator   |*   |  |   |        |       |
-reducing variant  | *  |  |   |        |       |
-vectorised variant|  * |  |   |        |       |
-array variant     |   *|  |   |        |       |
+variant   |and|or|add|multiply|smaller|larger
+----------|---|--|---|--------|-------|------
+binary    |&& |`||`|   |        |       |
+reducing  |   |  |   |        |       |
+vectorised|   |  |   |        |       |
+array     |   |  |   |        |       |
 
 
 ***
 
-### How does paste() fit into this structure? What is the scalar binary function that underlies paste()? What are the sep and collapse arguments to paste() equivalent to? Are there any paste variants that don’t have existing R implementations?
+### How does paste() fit into this structure? What is the scalar binary function that underlies paste()? What are the sep and collapse arguments to paste() equivalent to? Are there any paste variants that dont have existing R implementations?
 
 
 ## Discussion Notes
@@ -420,11 +469,11 @@ for (i in seq_along(xs)) {
 ```
 
 ```
-##        [,1]     [,2]   [,3]   [,4]     [,5]
-## [1,]  7.312   0.3855 -2.691  1.496  -0.8273
-## [2,] -5.258 -13.2994 -1.112 12.094 -29.8662
-## [3,]  4.036   2.7560 -7.148 -0.810  -8.4591
-## [4,]  9.403  -9.7345 -7.941 -2.290  13.3401
+##        [,1]    [,2]   [,3]   [,4]    [,5]
+## [1,]  8.906 -23.518  8.054  6.556 13.6173
+## [2,] -1.007   4.509  2.450 23.214 -9.1182
+## [3,]  4.825   4.855 -6.235  1.798  2.5043
+## [4,]  9.901 -10.179 23.433 -3.783  0.8075
 ```
 
 ```r
@@ -432,11 +481,11 @@ for (i in seq_along(xs)) {
 ```
 
 ```
-##       [,1]   [,2]   [,3]   [,4]   [,5]
-## [1,] 10.00  3.077  0.000  4.187  1.864
-## [2,] 24.61 16.567 28.754 41.961  0.000
-## [3,] 12.50 11.215  1.312  7.649  0.000
-## [4,] 19.14  0.000  1.793  7.445 23.075
+##        [,1]  [,2]  [,3]   [,4]   [,5]
+## [1,] 32.424  0.00 31.57 30.074 37.135
+## [2,]  8.111 13.63 11.57 32.332  0.000
+## [3,] 11.060 11.09  0.00  8.033  8.739
+## [4,] 20.080  0.00 33.61  6.396 10.987
 ```
 
 ```r
