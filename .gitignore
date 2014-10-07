@@ -1,6 +1,5 @@
 .Rproj.user
-.Rhistory
-.RData
+.Rhistory.RData
 *.Rproj
 .DS_Store
 .gitignore
@@ -12,3 +11,16 @@
 *.rdx
 
 time.txt
+.Rproj.user
+.Rhistory
+.RData
+*.Rproj
+.DS_Store
+.gitignore
+.gitattributes
+crlf_config.txt
+
+# knitr cache
+*.RData
+*.rdb
+*.rdx
