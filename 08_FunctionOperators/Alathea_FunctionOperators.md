@@ -1,12 +1,6 @@
----
-title: "Function Operators"
-author: "Alathea DL"
-date: '2014-10-07'
-output:
-  html_document:
-    keep_md: yes
-    toc: yes
----
+# Function Operators
+Alathea DL  
+2014-10-07  
 
 ### Behavioural FOs
 
@@ -16,7 +10,8 @@ output:
 
 #### What does the following function do? What would be a good name for it?
 
-```{r eval = FALSE}
+
+```r
 f <- function(g) {
   force(g)
   result <- NULL
@@ -46,7 +41,8 @@ runif2(10)
 
 #### There are three places we could have added a memoise call: why did we choose the one we did?
 
-```{r eval = FALSE}
+
+```r
 download <- memoise(dot_every(10, delay_by(1, download_file)))
 download <- dot_every(10, memoise(delay_by(1, download_file)))
 download <- dot_every(10, delay_by(1, memoise(download_file)))
@@ -58,7 +54,8 @@ download <- dot_every(10, delay_by(1, memoise(download_file)))
 
 #### Why does the following code, from stackoverflow, not do what you expect?  How can you modify f so that it works correctly?
 
-```{r eval = FALSE}
+
+```r
 # return a linear function with slope a and intercept b.
 f <- function(a, b) function(x) a * x + b
 
