@@ -2,9 +2,30 @@
 Alathea DL  
 2014-10-07  
 
+
+
 ## Behavioural FOs
 
 ### Write a FO that logs a time stamp and message to a file every time a function is run.
+
+
+```r
+make_log <- function(f, filename = "08_FunctionOperators/adl_log_file.txt")
+{
+  function(...){
+    # run the fuction
+    result <- f(...)
+  
+    # store time and message
+    cat("Function called at", as.character(Sys.time()), "\n", sep = " ",
+        file = filename, append = TRUE)
+    
+    result
+  }
+}
+
+make_log(rnorm)(10)
+```
 
 ***
 
@@ -29,35 +50,150 @@ runif2(10)
 #> [1] 0.3750332 0.4502083 0.7858626 0.1851057 0.9658681
 ```
 
+It forces the value of the function at the time `f` is run.  In the case of random number generation, this is particularly noticeable because the output of the function depends on the system time.  So, if you force the function at a particular time, the output of the generator will always be the same.
+
 ***
 
 ### Modify `delay_by()` so that instead of delaying by a fixed amount of time, it ensures that a certain amount of time has elapsed since the function was last called. That is, if you called `g <- delay_by(1, f); g(); Sys.sleep(2); g()` there shouldn’t be an extra delay.
+
+
+```r
+delay_by <- function(delay, f) {
+  force(f)
+  function(...) {
+    cat(as.character(Sys.time()), "\n")
+    Sys.sleep(delay)
+    f(...)
+  }
+}
+
+g <- delay_by(2, Sys.time)
+g()
+```
+
+```
+## 2014-10-07 12:43:10
+```
+
+```
+## [1] "2014-10-07 12:43:12 PDT"
+```
+
+
+```r
+delay_by2 <- function(delay, f)
+{
+  delay_until <- Sys.time()
+  
+  function(...)
+  {
+    if(delay_until - Sys.time() > 0) {
+      Sys.sleep(delay_until - Sys.time())
+    }
+    
+    res <- f(...)
+    delay_until <<- Sys.time() + delay
+    res
+  }  
+}
+
+# 10 second time delay between calls
+g <- delay_by2(10, Sys.time)
+g()
+```
+
+```
+## [1] "2014-10-07 12:43:12 PDT"
+```
+
+```r
+g()
+```
+
+```
+## [1] "2014-10-07 12:43:22 PDT"
+```
 
 ***
 
 ### Write `wait_until()` which delays execution until a specific time.
 
+
+```r
+wait_until <- function(when, f)
+{
+  force(f)
+  
+  function(...)
+  {
+    cat("function initiated at: ", as.character(Sys.time()), "\n")
+    
+    res <- f(...)
+    Sys.sleep(when - Sys.time())
+    
+    cat("function output at: ", as.character(Sys.time()), "\n") 
+    
+    res
+  }
+}
+
+time <- as.POSIXct("11:57:00", format = "%H:%M:%S")
+h <- wait_until(time, Sys.time)
+h()
+
+# function initiated at:  2014-10-07 11:56:58 
+# function output at:  2014-10-07 11:57:00 
+# [1] "2014-10-07 11:56:58 PDT"
+```
+
 ***
 
 ### There are three places we could have added a memoise call: why did we choose the one we did?
 
+`download <- dot_every(10, memoise(delay_by(1, download_file)))`
 
-```r
-download <- memoise(dot_every(10, delay_by(1, download_file)))
-download <- dot_every(10, memoise(delay_by(1, download_file)))
-download <- dot_every(10, delay_by(1, memoise(download_file)))
-```
+This is the chosen version.
 
-### Why is the `remember()` function inefficient? How could you implement it in more efficient way?
+`download <- memoise(dot_every(10, delay_by(1, download_file)))`
+
+
+
+`download <- dot_every(10, delay_by(1, memoise(download_file)))`
 
 ***
 
-### Why does the following code, from stackoverflow, not do what you expect?  How can you modify f so that it works correctly?
+### Why is the `remember()` function inefficient? How could you implement it in more efficient way?
+
+
+```r
+remember <- function() {
+  memory <- list()
+  f <- function(...) {
+    # This is inefficient!
+    memory <<- append(memory, list(...))
+    invisible()
+  }
+
+  structure(f, class = "remember")
+}
+```
+
+I am guessing the inefficiency has to do with having an inconsistent size.  I'm not sure though.
+
+***
+
+### Why does the following code, from stackoverflow, not do what you expect?  How can you modify `f` so that it works correctly?
 
 
 ```r
 # return a linear function with slope a and intercept b.
-f <- function(a, b) function(x) a * x + b
+f <- function(a, b){
+  function(x){
+    force(a)
+    force(b)
+    a * x + b
+  }
+}
 
 # create a list of functions with different parameters.
 fs <- Map(f, a = c(0, 1), b = c(0, 1))
@@ -65,15 +201,49 @@ fs <- Map(f, a = c(0, 1), b = c(0, 1))
 fs[[1]](3)
 #> [1] 4
 # should return 0 * 3 + 0 = 0
+
+unenclose(fs[[1]])
 ```
+
+I just have no clue.
 
 ## Output FOs
 
 ### Create a `negative()` FO that flips the sign of the output of the function to which it is applied.
 
+
+```r
+negative <- function(f)
+{
+  force(f)
+  function(...)
+  {
+    res <- f(...)
+    -1 * res
+  }
+}
+
+a <- negative(runif)
+runif(10, 0, 10)
+```
+
+```
+##  [1] 8.839 4.970 4.264 6.555 3.658 4.957 9.041 2.586 8.403 1.976
+```
+
+```r
+a(10, 0, 10)
+```
+
+```
+##  [1] -7.130 -4.685 -7.736 -1.385 -4.891 -2.979 -8.385 -3.199 -3.412 -3.042
+```
+
 ***
 
 ### The evaluate package makes it easy to capture all the outputs (results, text, messages, warnings, errors, and plots) from an expression. Create a function like `capture_it()` that also captures the warnings and errors generated by a function.
+
+
 
 ***
 
@@ -117,5 +287,31 @@ fs[[1]](3)
 ### Above, we implemented boolean algebra for functions that return a logical function. Implement elementary algebra (`plus()`, `minus()`, `multiply()`, `divide()`, `exponentiate()`, `log()`) for functions that return numeric vectors.
 
 ## Reading notes
+
+* functionals replace loops
+* function operators replace anonymous functions
+
+`cat` = concatenate and print.
+
+`pryr::partial` = allows you to pre-fill some of the function arguments, making function operators less verbose
+
+### Behavioural FOs
+
+* do not change the inputs or outputs of a function
+* extra behaviour could include: time delay, print, store info
+
+`system.time()`: stores the difference between two `proc.time` calls
+
+**memoisation** = modify a function to cache its own results; this can save time in some functions, for example recursive functions that will otherwise recalculate the same results over and over.  The tradeoff is that it uses more memory.
+
+`Sys.sleep()`: suspends execution of expressions for a given number of seconds
+
+### Output FOs
+
+`plyr::failwith` returns a default value if a function has an error
+
+there is a nice example of using this with a set of glms
+
+`try()` is also useful
 
 ## Discussion notes

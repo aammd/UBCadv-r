@@ -68,7 +68,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#write-wait_until-which-delays-execution-until-a-specific-time.">Write <code>wait_until()</code> which delays execution until a specific time.</a></li>
 <li><a href="#there-are-three-places-we-could-have-added-a-memoise-call-why-did-we-choose-the-one-we-did">There are three places we could have added a memoise call: why did we choose the one we did?</a></li>
 <li><a href="#why-is-the-remember-function-inefficient-how-could-you-implement-it-in-more-efficient-way">Why is the <code>remember()</code> function inefficient? How could you implement it in more efficient way?</a></li>
-<li><a href="#why-does-the-following-code-from-stackoverflow-not-do-what-you-expect-how-can-you-modify-f-so-that-it-works-correctly">Why does the following code, from stackoverflow, not do what you expect? How can you modify f so that it works correctly?</a></li>
+<li><a href="#why-does-the-following-code-from-stackoverflow-not-do-what-you-expect-how-can-you-modify-f-so-that-it-works-correctly">Why does the following code, from stackoverflow, not do what you expect? How can you modify <code>f</code> so that it works correctly?</a></li>
 </ul></li>
 <li><a href="#output-fos">Output FOs</a><ul>
 <li><a href="#create-a-negative-fo-that-flips-the-sign-of-the-output-of-the-function-to-which-it-is-applied.">Create a <code>negative()</code> FO that flips the sign of the output of the function to which it is applied.</a></li>
@@ -88,7 +88,10 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#implement-the-xor-binary-operator.-implement-it-using-the-existing-xor-function.-implement-it-as-a-combination-of-and-and-or.-what-are-the-advantages-and-disadvantages-of-each-approach-also-think-about-what-youll-call-the-resulting-function-to-avoid-a-clash-with-the-existing-xor-function-and-how-you-might-change-the-names-of-and-not-and-or-to-keep-them-consistent.">Implement the <code>xor()</code> binary operator. Implement it using the existing <code>xor()</code> function. Implement it as a combination of <code>and()</code> and <code>or()</code>. What are the advantages and disadvantages of each approach? Also think about what you’ll call the resulting function to avoid a clash with the existing <code>xor()</code> function, and how you might change the names of <code>and()</code>, <code>not()</code>, and <code>or()</code> to keep them consistent.</a></li>
 <li><a href="#above-we-implemented-boolean-algebra-for-functions-that-return-a-logical-function.-implement-elementary-algebra-plus-minus-multiply-divide-exponentiate-log-for-functions-that-return-numeric-vectors.">Above, we implemented boolean algebra for functions that return a logical function. Implement elementary algebra (<code>plus()</code>, <code>minus()</code>, <code>multiply()</code>, <code>divide()</code>, <code>exponentiate()</code>, <code>log()</code>) for functions that return numeric vectors.</a></li>
 </ul></li>
-<li><a href="#reading-notes">Reading notes</a></li>
+<li><a href="#reading-notes">Reading notes</a><ul>
+<li><a href="#behavioural-fos-1">Behavioural FOs</a></li>
+<li><a href="#output-fos-1">Output FOs</a></li>
+</ul></li>
 <li><a href="#discussion-notes">Discussion notes</a></li>
 </ul>
 </div>
@@ -97,6 +100,21 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <h2>Behavioural FOs</h2>
 <div id="write-a-fo-that-logs-a-time-stamp-and-message-to-a-file-every-time-a-function-is-run." class="section level3">
 <h3>Write a FO that logs a time stamp and message to a file every time a function is run.</h3>
+<pre class="r"><code>make_log &lt;- function(f, filename = &quot;08_FunctionOperators/adl_log_file.txt&quot;)
+{
+  function(...){
+    # run the fuction
+    result &lt;- f(...)
+  
+    # store time and message
+    cat(&quot;Function called at&quot;, as.character(Sys.time()), &quot;\n&quot;, sep = &quot; &quot;,
+        file = filename, append = TRUE)
+    
+    result
+  }
+}
+
+make_log(rnorm)(10)</code></pre>
 <hr />
 </div>
 <div id="what-does-the-following-function-do-what-would-be-a-good-name-for-it" class="section level3">
@@ -116,43 +134,140 @@ runif2(5)
 #&gt; [1] 0.3750332 0.4502083 0.7858626 0.1851057 0.9658681
 runif2(10)
 #&gt; [1] 0.3750332 0.4502083 0.7858626 0.1851057 0.9658681</code></pre>
+<p>It forces the value of the function at the time <code>f</code> is run. In the case of random number generation, this is particularly noticeable because the output of the function depends on the system time. So, if you force the function at a particular time, the output of the generator will always be the same.</p>
 <hr />
 </div>
 <div id="modify-delay_by-so-that-instead-of-delaying-by-a-fixed-amount-of-time-it-ensures-that-a-certain-amount-of-time-has-elapsed-since-the-function-was-last-called.-that-is-if-you-called-g---delay_by1-f-g-sys.sleep2-g-there-shouldnt-be-an-extra-delay." class="section level3">
 <h3>Modify <code>delay_by()</code> so that instead of delaying by a fixed amount of time, it ensures that a certain amount of time has elapsed since the function was last called. That is, if you called <code>g &lt;- delay_by(1, f); g(); Sys.sleep(2); g()</code> there shouldn’t be an extra delay.</h3>
+<pre class="r"><code>delay_by &lt;- function(delay, f) {
+  force(f)
+  function(...) {
+    cat(as.character(Sys.time()), &quot;\n&quot;)
+    Sys.sleep(delay)
+    f(...)
+  }
+}
+
+g &lt;- delay_by(2, Sys.time)
+g()</code></pre>
+<pre><code>## 2014-10-07 12:43:10</code></pre>
+<pre><code>## [1] &quot;2014-10-07 12:43:12 PDT&quot;</code></pre>
+<pre class="r"><code>delay_by2 &lt;- function(delay, f)
+{
+  delay_until &lt;- Sys.time()
+  
+  function(...)
+  {
+    if(delay_until - Sys.time() &gt; 0) {
+      Sys.sleep(delay_until - Sys.time())
+    }
+    
+    res &lt;- f(...)
+    delay_until &lt;&lt;- Sys.time() + delay
+    res
+  }  
+}
+
+# 10 second time delay between calls
+g &lt;- delay_by2(10, Sys.time)
+g()</code></pre>
+<pre><code>## [1] &quot;2014-10-07 12:43:12 PDT&quot;</code></pre>
+<pre class="r"><code>g()</code></pre>
+<pre><code>## [1] &quot;2014-10-07 12:43:22 PDT&quot;</code></pre>
 <hr />
 </div>
 <div id="write-wait_until-which-delays-execution-until-a-specific-time." class="section level3">
 <h3>Write <code>wait_until()</code> which delays execution until a specific time.</h3>
+<pre class="r"><code>wait_until &lt;- function(when, f)
+{
+  force(f)
+  
+  function(...)
+  {
+    cat(&quot;function initiated at: &quot;, as.character(Sys.time()), &quot;\n&quot;)
+    
+    res &lt;- f(...)
+    Sys.sleep(when - Sys.time())
+    
+    cat(&quot;function output at: &quot;, as.character(Sys.time()), &quot;\n&quot;) 
+    
+    res
+  }
+}
+
+time &lt;- as.POSIXct(&quot;11:57:00&quot;, format = &quot;%H:%M:%S&quot;)
+h &lt;- wait_until(time, Sys.time)
+h()
+
+# function initiated at:  2014-10-07 11:56:58 
+# function output at:  2014-10-07 11:57:00 
+# [1] &quot;2014-10-07 11:56:58 PDT&quot;</code></pre>
 <hr />
 </div>
 <div id="there-are-three-places-we-could-have-added-a-memoise-call-why-did-we-choose-the-one-we-did" class="section level3">
 <h3>There are three places we could have added a memoise call: why did we choose the one we did?</h3>
-<pre class="r"><code>download &lt;- memoise(dot_every(10, delay_by(1, download_file)))
-download &lt;- dot_every(10, memoise(delay_by(1, download_file)))
-download &lt;- dot_every(10, delay_by(1, memoise(download_file)))</code></pre>
+<p><code>download &lt;- dot_every(10, memoise(delay_by(1, download_file)))</code></p>
+<p>This is the chosen version.</p>
+<p><code>download &lt;- memoise(dot_every(10, delay_by(1, download_file)))</code></p>
+<p><code>download &lt;- dot_every(10, delay_by(1, memoise(download_file)))</code></p>
+<hr />
 </div>
 <div id="why-is-the-remember-function-inefficient-how-could-you-implement-it-in-more-efficient-way" class="section level3">
 <h3>Why is the <code>remember()</code> function inefficient? How could you implement it in more efficient way?</h3>
+<pre class="r"><code>remember &lt;- function() {
+  memory &lt;- list()
+  f &lt;- function(...) {
+    # This is inefficient!
+    memory &lt;&lt;- append(memory, list(...))
+    invisible()
+  }
+
+  structure(f, class = &quot;remember&quot;)
+}</code></pre>
+<p>I am guessing the inefficiency has to do with having an inconsistent size. I’m not sure though.</p>
 <hr />
 </div>
 <div id="why-does-the-following-code-from-stackoverflow-not-do-what-you-expect-how-can-you-modify-f-so-that-it-works-correctly" class="section level3">
-<h3>Why does the following code, from stackoverflow, not do what you expect? How can you modify f so that it works correctly?</h3>
+<h3>Why does the following code, from stackoverflow, not do what you expect? How can you modify <code>f</code> so that it works correctly?</h3>
 <pre class="r"><code># return a linear function with slope a and intercept b.
-f &lt;- function(a, b) function(x) a * x + b
+f &lt;- function(a, b){
+  function(x){
+    force(a)
+    force(b)
+    a * x + b
+  }
+}
 
 # create a list of functions with different parameters.
 fs &lt;- Map(f, a = c(0, 1), b = c(0, 1))
 
 fs[[1]](3)
 #&gt; [1] 4
-# should return 0 * 3 + 0 = 0</code></pre>
+# should return 0 * 3 + 0 = 0
+
+unenclose(fs[[1]])</code></pre>
+<p>I just have no clue.</p>
 </div>
 </div>
 <div id="output-fos" class="section level2">
 <h2>Output FOs</h2>
 <div id="create-a-negative-fo-that-flips-the-sign-of-the-output-of-the-function-to-which-it-is-applied." class="section level3">
 <h3>Create a <code>negative()</code> FO that flips the sign of the output of the function to which it is applied.</h3>
+<pre class="r"><code>negative &lt;- function(f)
+{
+  force(f)
+  function(...)
+  {
+    res &lt;- f(...)
+    -1 * res
+  }
+}
+
+a &lt;- negative(runif)
+runif(10, 0, 10)</code></pre>
+<pre><code>##  [1] 8.839 4.970 4.264 6.555 3.658 4.957 9.041 2.586 8.403 1.976</code></pre>
+<pre class="r"><code>a(10, 0, 10)</code></pre>
+<pre><code>##  [1] -7.130 -4.685 -7.736 -1.385 -4.891 -2.979 -8.385 -3.199 -3.412 -3.042</code></pre>
 <hr />
 </div>
 <div id="the-evaluate-package-makes-it-easy-to-capture-all-the-outputs-results-text-messages-warnings-errors-and-plots-from-an-expression.-create-a-function-like-capture_it-that-also-captures-the-warnings-and-errors-generated-by-a-function." class="section level3">
@@ -205,6 +320,28 @@ fs[[1]](3)
 </div>
 <div id="reading-notes" class="section level2">
 <h2>Reading notes</h2>
+<ul>
+<li>functionals replace loops</li>
+<li>function operators replace anonymous functions</li>
+</ul>
+<p><code>cat</code> = concatenate and print.</p>
+<p><code>pryr::partial</code> = allows you to pre-fill some of the function arguments, making function operators less verbose</p>
+<div id="behavioural-fos-1" class="section level3">
+<h3>Behavioural FOs</h3>
+<ul>
+<li>do not change the inputs or outputs of a function</li>
+<li>extra behaviour could include: time delay, print, store info</li>
+</ul>
+<p><code>system.time()</code>: stores the difference between two <code>proc.time</code> calls</p>
+<p><strong>memoisation</strong> = modify a function to cache its own results; this can save time in some functions, for example recursive functions that will otherwise recalculate the same results over and over. The tradeoff is that it uses more memory.</p>
+<p><code>Sys.sleep()</code>: suspends execution of expressions for a given number of seconds</p>
+</div>
+<div id="output-fos-1" class="section level3">
+<h3>Output FOs</h3>
+<p><code>plyr::failwith</code> returns a default value if a function has an error</p>
+<p>there is a nice example of using this with a set of glms</p>
+<p><code>try()</code> is also useful</p>
+</div>
 </div>
 <div id="discussion-notes" class="section level2">
 <h2>Discussion notes</h2>
