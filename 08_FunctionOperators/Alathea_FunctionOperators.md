@@ -74,11 +74,11 @@ g()
 ```
 
 ```
-## 2014-10-20 13:56:20
+## 2014-10-20 16:20:16
 ```
 
 ```
-## [1] "2014-10-20 13:56:22 PDT"
+## [1] "2014-10-20 16:20:18 PDT"
 ```
 
 
@@ -105,7 +105,7 @@ g()
 ```
 
 ```
-## [1] "2014-10-20 13:56:22 PDT"
+## [1] "2014-10-20 16:20:19 PDT"
 ```
 
 ```r
@@ -113,7 +113,7 @@ g()
 ```
 
 ```
-## [1] "2014-10-20 13:56:27 PDT"
+## [1] "2014-10-20 16:20:24 PDT"
 ```
 
 ***
@@ -230,8 +230,8 @@ runif(10, 0, 10)
 ```
 
 ```
-##  [1] 1.185750 1.523118 6.839383 7.510781 6.224405 4.045900 4.485877
-##  [8] 2.817355 1.820293 6.455908
+##  [1] 6.422378 5.089687 4.175674 2.172621 9.169107 6.831556 6.232552
+##  [8] 8.506601 1.534141 8.741543
 ```
 
 ```r
@@ -239,8 +239,8 @@ a(10, 0, 10)
 ```
 
 ```
-##  [1] -7.2246760 -6.1921834 -7.8250474 -0.8666295 -8.9787503 -7.6768732
-##  [7] -3.7692430 -8.7706758 -3.2154362 -8.2180955
+##  [1] -2.7987680 -9.4659389 -7.9435713 -1.3052783 -4.0094208 -3.9081227
+##  [7] -6.0136979 -8.3429963 -0.5077656 -7.7241173
 ```
 
 ***
@@ -467,27 +467,68 @@ convert_rev(test_df)
 
 ### You’ve seen five functions that modify a function to change its output from one form to another. What are they? Draw a table of the various combinations of types of outputs: what should go in the rows and what should go in the columns? What function operators might you want to write to fill in the missing cells? Come up with example use cases.
 
-|               |scalar     |vector   |matrix |data frame |(arg1, arg2, ...)|list(args)|
-|---------------|-----------|---------|-------|-----------|-----------------|----------|
-|**scalar**     |           |         |       |           |                 |          |
-|**vector**     |Vectorize()|         |       |           |                 |          |
-|**matrix**     |           |         |       |df_matrix()|                 |          |
-|**data frame** |           |colwise()|matrix_df()|       |                 |          |
-|**(arg1, arg2, ...)**|     |         |       |           |                 |          |
-|**list(args)** |           |         |       |           |splat()          |          |
+|               |scalar     |vector   |matrix |data frame |arg1, arg2, ...|list(args)|
+|---------------|-----------|---------|-------|-----------|---------------|----------|
+|**scalar**     |           |         |       |           |               |          |
+|**vector**     |Vectorize()|         |       |           |               |          |
+|**matrix**     |           |         |       |df_matrix()|               |          |
+|**data frame** |           |colwise()|matrix_df()|       |               |          |
+|**arg1, arg2, ...**|       |         |       |           |               |          |
+|**list(args)** |           |         |       |           |splat()        |          |
 
 
 ***
 
-### Look at all the examples of using an anonymous function to partially apply a function in this and the previous chapter. Replace the anonymous function with partial(). What do you think of the result? Is it easier or harder to read?
+### Look at all the examples of using an anonymous function to partially apply a function in this and the previous chapter. Replace the anonymous function with `partial()`. What do you think of the result? Is it easier or harder to read?
+
+Partial is harder to read unless you understand it pretty well.  I don't like it much.  I can imagine it is especially not useful if you are trying to make your code readable to other people.
 
 ## Combining FOs
 
 ### Implement your own version of `compose()` using `Reduce` and `%o%`. For bonus points, do it without calling function.
 
+
+```r
+my_compose <- function(...)
+{
+  "%o%" <- compose
+  fs <- lapply(list(...), match.fun)
+  Reduce("%o%", fs)
+}
+
+square <- function(x) x^2
+over_5 <- function(x) x/5
+times_2 <- function(x) 2*x
+
+my_fun <- my_compose(times_2, square, over_5)
+my_fun(10)
+```
+
+```
+## [1] 8
+```
+
 ***
 
 ### Extend `and()` and `or()` to deal with any number of input functions. Can you do it with `Reduce()`? Can you keep them lazy (e.g., for `and()`, the function returns once it sees the first `FALSE`)?
+
+
+```r
+ext_and <- function(...) {
+  fs <- lapply(list(...), match.fun)
+  
+  function(...)
+  {
+    Reduce("&&", fs(...))
+  }
+}
+
+ext_and(over_5, square)
+
+ext_or <- function(...) {
+  
+}
+```
 
 ***
 
@@ -551,6 +592,8 @@ args <- list(
 lapply(args, splat(mean))
 ```
 
+`compose`:
 
+`%o%` works like `%>%` but in the opposite direction.
 
 ## Discussion notes

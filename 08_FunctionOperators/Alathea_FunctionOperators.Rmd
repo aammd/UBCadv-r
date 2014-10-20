@@ -435,9 +435,44 @@ Partial is harder to read unless you understand it pretty well.  I don't like it
 
 ### Implement your own version of `compose()` using `Reduce` and `%o%`. For bonus points, do it without calling function.
 
+Well isn't this silly Hadley.
+
+```{r my_compose}
+my_compose <- function(...)
+{
+  "%o%" <- compose
+  fs <- lapply(list(...), match.fun)
+  Reduce("%o%", fs)
+}
+
+square <- function(x) x^2
+over_5 <- function(x) x/5
+times_2 <- function(x) 2*x
+
+my_fun <- my_compose(times_2, square, over_5)
+my_fun(10)
+```
+
 ***
 
 ### Extend `and()` and `or()` to deal with any number of input functions. Can you do it with `Reduce()`? Can you keep them lazy (e.g., for `and()`, the function returns once it sees the first `FALSE`)?
+
+```{r extended_logic, eval = FALSE}
+ext_and <- function(...) {
+  fs <- lapply(list(...), match.fun)
+  
+  function(...)
+  {
+    Reduce("&&", fs(...))
+  }
+}
+
+ext_and(over_5, square)
+
+ext_or <- function(...) {
+  
+}
+```
 
 ***
 
@@ -500,6 +535,8 @@ args <- list(
 lapply(args, splat(mean))
 ```
 
+`compose`:
 
+`%o%` works like `%>%` but in the opposite direction.
 
 ## Discussion notes

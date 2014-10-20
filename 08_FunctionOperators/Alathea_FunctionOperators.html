@@ -80,7 +80,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#read-the-source-code-for-plyrcolwise.-how-does-the-code-work-what-are-colwises-three-main-tasks-how-could-you-make-colwise-simpler-by-implementing-each-task-as-a-function-operator-hint-think-about-partial.">Read the source code for <code>plyr::colwise()</code>. How does the code work? What are <code>colwise()</code>’s three main tasks? How could you make <code>colwise()</code> simpler by implementing each task as a function operator? (Hint: think about <code>partial()</code>.)</a></li>
 <li><a href="#write-fos-that-convert-a-function-to-return-a-matrix-instead-of-a-data-frame-or-a-data-frame-instead-of-a-matrix.-if-you-understand-s3-call-them-as.data.frame.function-and-as.matrix.function.">Write FOs that convert a function to return a matrix instead of a data frame, or a data frame instead of a matrix. If you understand S3, call them <code>as.data.frame.function()</code> and <code>as.matrix.function()</code>.</a></li>
 <li><a href="#youve-seen-five-functions-that-modify-a-function-to-change-its-output-from-one-form-to-another.-what-are-they-draw-a-table-of-the-various-combinations-of-types-of-outputs-what-should-go-in-the-rows-and-what-should-go-in-the-columns-what-function-operators-might-you-want-to-write-to-fill-in-the-missing-cells-come-up-with-example-use-cases.">You’ve seen five functions that modify a function to change its output from one form to another. What are they? Draw a table of the various combinations of types of outputs: what should go in the rows and what should go in the columns? What function operators might you want to write to fill in the missing cells? Come up with example use cases.</a></li>
-<li><a href="#look-at-all-the-examples-of-using-an-anonymous-function-to-partially-apply-a-function-in-this-and-the-previous-chapter.-replace-the-anonymous-function-with-partial.-what-do-you-think-of-the-result-is-it-easier-or-harder-to-read">Look at all the examples of using an anonymous function to partially apply a function in this and the previous chapter. Replace the anonymous function with partial(). What do you think of the result? Is it easier or harder to read?</a></li>
+<li><a href="#look-at-all-the-examples-of-using-an-anonymous-function-to-partially-apply-a-function-in-this-and-the-previous-chapter.-replace-the-anonymous-function-with-partial.-what-do-you-think-of-the-result-is-it-easier-or-harder-to-read">Look at all the examples of using an anonymous function to partially apply a function in this and the previous chapter. Replace the anonymous function with <code>partial()</code>. What do you think of the result? Is it easier or harder to read?</a></li>
 </ul></li>
 <li><a href="#combining-fos">Combining FOs</a><ul>
 <li><a href="#implement-your-own-version-of-compose-using-reduce-and-o.-for-bonus-points-do-it-without-calling-function.">Implement your own version of <code>compose()</code> using <code>Reduce</code> and <code>%o%</code>. For bonus points, do it without calling function.</a></li>
@@ -152,8 +152,8 @@ runif2(10)
 
 g &lt;- delay_by(2, Sys.time)
 g()</code></pre>
-<pre><code>## 2014-10-20 13:56:20</code></pre>
-<pre><code>## [1] &quot;2014-10-20 13:56:22 PDT&quot;</code></pre>
+<pre><code>## 2014-10-20 16:20:16</code></pre>
+<pre><code>## [1] &quot;2014-10-20 16:20:18 PDT&quot;</code></pre>
 <pre class="r"><code>delay_by2 &lt;- function(delay, f)
 {
   delay_until &lt;- Sys.time()
@@ -173,9 +173,9 @@ g()</code></pre>
 # 5 second time delay between calls
 g &lt;- delay_by2(5, Sys.time)
 g()</code></pre>
-<pre><code>## [1] &quot;2014-10-20 13:56:22 PDT&quot;</code></pre>
+<pre><code>## [1] &quot;2014-10-20 16:20:19 PDT&quot;</code></pre>
 <pre class="r"><code>g()</code></pre>
-<pre><code>## [1] &quot;2014-10-20 13:56:27 PDT&quot;</code></pre>
+<pre><code>## [1] &quot;2014-10-20 16:20:24 PDT&quot;</code></pre>
 <hr />
 </div>
 <div id="write-wait_until-which-delays-execution-until-a-specific-time." class="section level3">
@@ -267,11 +267,11 @@ fs[[1]](3)
 
 a &lt;- negative(runif)
 runif(10, 0, 10)</code></pre>
-<pre><code>##  [1] 1.185750 1.523118 6.839383 7.510781 6.224405 4.045900 4.485877
-##  [8] 2.817355 1.820293 6.455908</code></pre>
+<pre><code>##  [1] 6.422378 5.089687 4.175674 2.172621 9.169107 6.831556 6.232552
+##  [8] 8.506601 1.534141 8.741543</code></pre>
 <pre class="r"><code>a(10, 0, 10)</code></pre>
-<pre><code>##  [1] -7.2246760 -6.1921834 -7.8250474 -0.8666295 -8.9787503 -7.6768732
-##  [7] -3.7692430 -8.7706758 -3.2154362 -8.2180955</code></pre>
+<pre><code>##  [1] -2.7987680 -9.4659389 -7.9435713 -1.3052783 -4.0094208 -3.9081227
+##  [7] -6.0136979 -8.3429963 -0.5077656 -7.7241173</code></pre>
 <hr />
 </div>
 <div id="the-evaluate-package-makes-it-easy-to-capture-all-the-outputs-results-text-messages-warnings-errors-and-plots-from-an-expression.-create-a-function-like-capture_it-that-also-captures-the-warnings-and-errors-generated-by-a-function." class="section level3">
@@ -452,7 +452,7 @@ convert_rev(test_df)</code></pre>
 <th align="left">vector</th>
 <th align="left">matrix</th>
 <th align="left">data frame</th>
-<th align="left">(arg1, arg2, …)</th>
+<th align="left">arg1, arg2, …</th>
 <th align="left">list(args)</th>
 </tr>
 </thead>
@@ -494,7 +494,7 @@ convert_rev(test_df)</code></pre>
 <td align="left"></td>
 </tr>
 <tr class="odd">
-<td align="left"><strong>(arg1, arg2, …)</strong></td>
+<td align="left"><strong>arg1, arg2, …</strong></td>
 <td align="left"></td>
 <td align="left"></td>
 <td align="left"></td>
@@ -516,17 +516,46 @@ convert_rev(test_df)</code></pre>
 <hr />
 </div>
 <div id="look-at-all-the-examples-of-using-an-anonymous-function-to-partially-apply-a-function-in-this-and-the-previous-chapter.-replace-the-anonymous-function-with-partial.-what-do-you-think-of-the-result-is-it-easier-or-harder-to-read" class="section level3">
-<h3>Look at all the examples of using an anonymous function to partially apply a function in this and the previous chapter. Replace the anonymous function with partial(). What do you think of the result? Is it easier or harder to read?</h3>
+<h3>Look at all the examples of using an anonymous function to partially apply a function in this and the previous chapter. Replace the anonymous function with <code>partial()</code>. What do you think of the result? Is it easier or harder to read?</h3>
+<p>Partial is harder to read unless you understand it pretty well. I don’t like it much. I can imagine it is especially not useful if you are trying to make your code readable to other people.</p>
 </div>
 </div>
 <div id="combining-fos" class="section level2">
 <h2>Combining FOs</h2>
 <div id="implement-your-own-version-of-compose-using-reduce-and-o.-for-bonus-points-do-it-without-calling-function." class="section level3">
 <h3>Implement your own version of <code>compose()</code> using <code>Reduce</code> and <code>%o%</code>. For bonus points, do it without calling function.</h3>
+<pre class="r"><code>my_compose &lt;- function(...)
+{
+  &quot;%o%&quot; &lt;- compose
+  fs &lt;- lapply(list(...), match.fun)
+  Reduce(&quot;%o%&quot;, fs)
+}
+
+square &lt;- function(x) x^2
+over_5 &lt;- function(x) x/5
+times_2 &lt;- function(x) 2*x
+
+my_fun &lt;- my_compose(times_2, square, over_5)
+my_fun(10)</code></pre>
+<pre><code>## [1] 8</code></pre>
 <hr />
 </div>
 <div id="extend-and-and-or-to-deal-with-any-number-of-input-functions.-can-you-do-it-with-reduce-can-you-keep-them-lazy-e.g.-for-and-the-function-returns-once-it-sees-the-first-false" class="section level3">
 <h3>Extend <code>and()</code> and <code>or()</code> to deal with any number of input functions. Can you do it with <code>Reduce()</code>? Can you keep them lazy (e.g., for <code>and()</code>, the function returns once it sees the first <code>FALSE</code>)?</h3>
+<pre class="r"><code>ext_and &lt;- function(...) {
+  fs &lt;- lapply(list(...), match.fun)
+  
+  function(...)
+  {
+    Reduce(&quot;&amp;&amp;&quot;, fs(...))
+  }
+}
+
+ext_and(over_5, square)
+
+ext_or &lt;- function(...) {
+  
+}</code></pre>
 <hr />
 </div>
 <div id="implement-the-xor-binary-operator.-implement-it-using-the-existing-xor-function.-implement-it-as-a-combination-of-and-and-or.-what-are-the-advantages-and-disadvantages-of-each-approach-also-think-about-what-youll-call-the-resulting-function-to-avoid-a-clash-with-the-existing-xor-function-and-how-you-might-change-the-names-of-and-not-and-or-to-keep-them-consistent." class="section level3">
@@ -580,6 +609,8 @@ args &lt;- list(
   list(x, na.rm = TRUE, trim = 0.1)
 )
 lapply(args, splat(mean))</code></pre>
+<p><code>compose</code>:</p>
+<p><code>%o%</code> works like <code>%&gt;%</code> but in the opposite direction.</p>
 </div>
 </div>
 <div id="discussion-notes" class="section level2">
