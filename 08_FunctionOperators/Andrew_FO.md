@@ -1,23 +1,28 @@
----
-title: "Andrew_FOs"
-author: "Andrew MacDonald"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
-output:
-  html_document:
-    toc: yes
-    keep_md: TRUE
----
+# Andrew_FOs
+Andrew MacDonald  
+`r format(Sys.time(), '%d %B, %Y')`  
 
-```{r opts}
+
+```r
 knitr::opts_chunk$set(error = TRUE, cache = TRUE)
 library(ggplot2)
 library(tidyr)
 library(magrittr)
 ```
 
+```
+## 
+## Attaching package: 'magrittr'
+## 
+## The following object is masked from 'package:tidyr':
+## 
+##     extract
+```
+
 ## Write a FO that logs a time stamp and message to a file every time a function is run.
 
-```{r}
+
+```r
 write_time <- function(timefile = "time.txt", f) {
   force(f)
   function(...) {
@@ -28,7 +33,10 @@ write_time <- function(timefile = "time.txt", f) {
 }
 
 write_time(f = runif)(1)
+```
 
+```
+## [1] 0.3928
 ```
 
 ## What does the following function do? What would be a good name for it?
@@ -37,8 +45,16 @@ This function saves its answer the first time and always returns that result, ev
 
 ## modify delay_by
 
-```{r}
+
+```r
 library(lubridate)
+```
+
+```
+## Error: there is no package called 'lubridate'
+```
+
+```r
 delay_by2 <- function(delay, f) {
   force(f)
   runtime <- 0 
@@ -59,20 +75,48 @@ delay_by2 <- function(delay, f) {
 g <- delay_by2(1, f = rnorm); g(100); Sys.sleep(2); g(100)
 ```
 
+```
+##   [1] -0.3485980  0.1061968  0.2276490 -0.6170184  1.2555195  0.2539663
+##   [7]  0.0787527  1.2760550 -0.0158649  0.4746212 -0.5243083 -0.5326173
+##  [13] -1.1193566  0.2643011  1.1787473  0.7306431 -0.7334601  1.1382327
+##  [19]  1.2005419 -0.1901590  0.2471657 -1.0529072 -0.4439278  0.7435181
+##  [25]  0.5551994  0.5824317  1.9520800 -0.4129079  1.2979595  1.1777063
+##  [31]  0.0002998 -0.9197957 -0.2596468 -0.5751348  0.2146093  0.5843133
+##  [37]  0.9059315 -0.6485545  1.4320627  0.1848071  1.4737110  0.4360490
+##  [43]  0.9725128  1.2590489  0.7254634 -0.2703657 -0.2793976  0.2190237
+##  [49]  0.3029305  0.9767140  0.3410712  0.5452128  0.9224937 -2.5120870
+##  [55] -0.1282411  0.6466672 -1.7489101 -0.3151396  0.5731742 -0.1373263
+##  [61]  0.0133330 -0.3454655 -0.0518932  0.6700852  1.4627769 -0.5180330
+##  [67] -1.3351926 -1.0748726 -1.6337395 -0.6053337  0.7170154  0.7306954
+##  [73] -0.7635696 -2.6277277  2.0766175 -1.7341207 -0.1590706  1.1980618
+##  [79] -1.0933136 -0.4738698  1.0581812  1.3796338 -0.5426439 -0.6805589
+##  [85] -0.0097974  0.4639341 -0.6660666 -0.3080733 -0.7353092  0.5904313
+##  [91]  0.4201862 -1.8555023  0.3661329 -1.3111796 -0.1330539  2.2400643
+##  [97]  0.6477478  0.7307337 -0.9588846  0.2032752
+```
+
+```
+##   [1] -1.326087  0.340137 -1.390867 -0.231084  0.039118 -0.748485  0.931205
+##   [8]  0.347411  0.994551 -0.566025 -1.480545 -1.135133 -1.022012  0.244522
+##  [15] -0.271657 -0.182268 -0.119983  0.641178 -0.345277  1.616413 -0.966281
+##  [22] -0.007818 -1.156400 -0.195813  0.886532  0.750685 -1.160126 -0.015005
+##  [29] -0.517561  0.489273 -0.802548  0.661001 -0.019108 -1.514690 -0.268316
+##  [36] -0.778861 -0.017904 -1.015424 -0.416102  0.241571  1.964871 -1.070117
+##  [43]  0.333889 -1.789796  0.470704  0.327790 -0.467502  0.259586 -0.496457
+##  [50] -1.740186  0.816158  0.043124  0.646057  1.406399  0.061370 -0.796482
+##  [57] -1.346920 -1.012341 -0.812159  1.236477  0.949237 -1.077247 -0.536517
+##  [64] -1.285154 -0.001004  1.339837 -1.550691  0.483909  0.676869 -0.489738
+##  [71] -0.173907 -0.381882 -0.673424  0.482493 -1.500090 -0.341350  0.002132
+##  [78] -0.364213 -1.972654  1.669030  0.296065  0.661963  0.757487  0.581844
+##  [85]  1.104988 -1.134486 -0.710473 -0.118354 -0.881931 -0.570861  0.513938
+##  [92] -1.173772  1.704088  0.212111 -0.235968  0.188605  0.950515 -0.294400
+##  [99]  0.110958 -0.274730
+```
+
 ## Write wait_until() which delays execution until a specific time.
 
 ## There are three places we could have added a memoise call: why did we choose the one we did?
 I guess if you memoised the innermost one, you would just be remembering the URLS, and if you memoised the outermost one you'd be saving the execution of the whole expression, which gets you nowhere
-
-```{r}
-# microbenchmark(list = list(
-#   dot_every(10, memoise(delay_by(1, rnorm)))(100),
-#   memoise(dot_every(10, delay_by(1, rnorm)))(100),
-#   dot_every(10, delay_by(1, memoise(rnorm)))(100)
-#      ))
-
-```
-
 
 ## Why is the remember() function inefficient? How could you implement it in more efficient way?
 Because recopies the list every time the function is rerun.  You could add an argument for the NUMBER of things you want to remember and then allocate space for them in your list.
@@ -87,15 +131,26 @@ Because the closures don't remember all the different values, just the final one
 
 ### Create a negative() FO that flips the sign of the output of the function to which it is applied.
 
-```{r}
+
+```r
 negative <- function(f){
   force(f)
   function(...)  -f(...)
 }
 
 negative(log)(40)
+```
 
+```
+## [1] -3.689
+```
+
+```r
 negative(min)(-5:2)
+```
+
+```
+## [1] 5
 ```
 
 
@@ -103,7 +158,8 @@ negative(min)(-5:2)
 
 shamelessly stealing from [this answer](http://stackoverflow.com/a/3904728)
 
-```{r}
+
+```r
 capture_all <- function(f){
   force(f)
   function(...) {
@@ -116,13 +172,29 @@ capture_all <- function(f){
   }
 
 capture_all(log)(-3)
+```
 
+```
+## Warning: NaNs produced
+## Warning: NaNs produced
+```
+
+```
+## $ouput
+## [1] "[1] NaN"
+## 
+## $error
+## [1] NaN
+## 
+## $warnin
+## <simpleWarning in f(...): NaNs produced>
 ```
 
 
 ## Create a FO that tracks files created or deleted in the working directory (Hint: use dir() and setdiff().) What other global effects of functions might you want to track?
 
-```{r}
+
+```r
 big_brother <- function(f){
   force(f)
   function(...){
@@ -136,7 +208,10 @@ big_brother <- function(f){
 
 
 big_brother(write_time(f = runif))(1)
+```
 
+```
+## [1] "you just made "
 ```
 
 useful also: tracking changes in the global environment? though ideally that wouldn't happen
@@ -147,12 +222,19 @@ useful also: tracking changes in the global environment? though ideally that wou
 
 ## Our previous download() function only downloads a single file. How can you use partial() and lapply() to create a function that downloads multiple files at once? What are the pros and cons of using partial() vs. writing a function by hand?
 
-```{r}
+
+```r
 download_file <- function(url, ...) {
   download.file(url, basename(url), ...)
 }
 lapply(urls, download_file)
+```
 
+```
+## Error: object 'urls' not found
+```
+
+```r
 delay_by <- function(delay, f) {
   function(...) {
     Sys.sleep(delay)
@@ -172,10 +254,15 @@ dot_every <- function(n, f) {
 lapply(urls, dot_every(10, delay_by(1, download_file)))
 ```
 
+```
+## Error: object 'urls' not found
+```
+
 
 ## Read the source code for plyr::colwise(). How does the code work? What are colwise()’s three main tasks? How could you make colwise() simpler by implementing each task as a function operator? (Hint: think about partial().)
 
-```{r}
+
+```r
 #plyr::colwise
 function (.fun, .cols = true, ...) 
 {
@@ -202,7 +289,34 @@ function (.fun, .cols = true, ...)
         quickdf(out)
     }
 }
+```
 
+```
+## function (.fun, .cols = true, ...) 
+## {
+##     if (!is.function(.cols)) {
+##         .cols <- as.quoted(.cols)
+##         filter <- function(df) eval.quoted(.cols, df)
+##         # extracts .cols from df, whicch is not yet known
+##     }
+##     else {
+##         filter <- function(df) Filter(.cols, df) 
+##         # applies predicate to columns of df, not yet known
+##     }
+##     dots <- list(...)
+##     function(df, ...) {
+##         stopifnot(is.data.frame(df))
+##         df <- strip_splits(df)
+##         filtered <- filter(df)       # take the filtered df
+##         if (length(filtered) == 0) 
+##             return(data.frame())
+##         out <- do.call("lapply", c(list(filtered, .fun, ...), 
+##             dots))
+##         ## previous line is the heart of it. Does lapply on the filtered data, applying .fun, with all the dots past and present
+##         names(out) <- names(filtered)
+##         quickdf(out)
+##     }
+## }
 ```
 
 * determine if the data frame is to be filtered by name or by predicate
@@ -213,7 +327,8 @@ function (.fun, .cols = true, ...)
 
 ## Write FOs that convert a function to return a matrix instead of a data frame, or a data frame instead of a matrix. If you understand S3, call them as.data.frame.function() and as.matrix.function().
 
-```{r}
+
+```r
 as.df.fn <- function(f){
   function(...){
     as.data.frame(f(...))
@@ -221,8 +336,16 @@ as.df.fn <- function(f){
 }
 
 as.df.fn(matrix)(1:9, nrow = 3)
+```
 
+```
+##   V1 V2 V3
+## 1  1  4  7
+## 2  2  5  8
+## 3  3  6  9
+```
 
+```r
 as.mat.fn <- function(f){
   function(...){
     as.matrix(f(...))
@@ -231,7 +354,27 @@ as.mat.fn <- function(f){
 
 obj <- as.mat.fn(data.frame)(one = 1:9, two = rnorm(9))
 class(obj)
+```
+
+```
+## [1] "matrix"
+```
+
+```r
 obj
+```
+
+```
+##       one     two
+##  [1,]   1  0.6393
+##  [2,]   2 -1.9493
+##  [3,]   3  0.2030
+##  [4,]   4 -0.1474
+##  [5,]   5  0.1037
+##  [6,]   6 -1.9847
+##  [7,]   7  1.4444
+##  [8,]   8  0.2952
+##  [9,]   9 -0.4131
 ```
 
 so, why was knowledge of S3 required??
@@ -243,9 +386,7 @@ I can't think of any of these, other than `Negate`
 
 ## Look at all the examples of using an anonymous function to partially apply a function in this and the previous chapter. Replace the anonymous function with partial(). What do you think of the result? Is it easier or harder to read?
 
-```{r}
 
-```
 
 *****
 
