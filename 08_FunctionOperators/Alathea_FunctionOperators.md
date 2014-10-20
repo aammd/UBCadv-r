@@ -74,11 +74,11 @@ g()
 ```
 
 ```
-## 2014-10-20 12:59:09
+## 2014-10-20 13:56:20
 ```
 
 ```
-## [1] "2014-10-20 12:59:11 PDT"
+## [1] "2014-10-20 13:56:22 PDT"
 ```
 
 
@@ -105,7 +105,7 @@ g()
 ```
 
 ```
-## [1] "2014-10-20 12:59:11 PDT"
+## [1] "2014-10-20 13:56:22 PDT"
 ```
 
 ```r
@@ -113,7 +113,7 @@ g()
 ```
 
 ```
-## [1] "2014-10-20 12:59:16 PDT"
+## [1] "2014-10-20 13:56:27 PDT"
 ```
 
 ***
@@ -230,7 +230,8 @@ runif(10, 0, 10)
 ```
 
 ```
-##  [1] 0.1461 2.3408 9.0420 9.4290 0.7575 6.4320 7.9623 3.4081 9.6636 1.5286
+##  [1] 1.185750 1.523118 6.839383 7.510781 6.224405 4.045900 4.485877
+##  [8] 2.817355 1.820293 6.455908
 ```
 
 ```r
@@ -238,7 +239,8 @@ a(10, 0, 10)
 ```
 
 ```
-##  [1] -3.886 -6.408 -7.852 -6.153 -5.010 -2.202 -3.170 -2.389 -4.608 -5.270
+##  [1] -7.2246760 -6.1921834 -7.8250474 -0.8666295 -8.9787503 -7.6768732
+##  [7] -3.7692430 -8.7706758 -3.2154362 -8.2180955
 ```
 
 ***
@@ -391,9 +393,89 @@ my_colwise <- function(.fun, .cols)
 
 ### Write FOs that convert a function to return a matrix instead of a data frame, or a data frame instead of a matrix. If you understand S3, call them `as.data.frame.function()` and `as.matrix.function()`.
 
+
+```r
+(test_matrix <- matrix(c(1:4), nrow = 2, ncol = 2))
+```
+
+```
+##      [,1] [,2]
+## [1,]    1    3
+## [2,]    2    4
+```
+
+```r
+(test_df <- data.frame(a = c(1:2), b = c(3:4)))
+```
+
+```
+##   a b
+## 1 1 3
+## 2 2 4
+```
+
+```r
+matrix_df <- function(.fun)
+{
+  function(...)
+  {
+    output <- .fun(...)
+    
+    if(is.matrix(output)) {
+      print("Converting matrix to data frame.")
+      output <- as.data.frame(output)
+    } else if(is.data.frame(output)) {
+      print("Converting data frame to matrix.")
+      output <- as.matrix(output)
+    } else stop("Input must be a matrix or a data frame.")
+    
+    return(output)
+  }
+}
+
+# t always returns a matrix
+convert_transpose <- matrix_df(t)
+convert_transpose(test_matrix)
+```
+
+```
+## [1] "Converting matrix to data frame."
+```
+
+```
+##   V1 V2
+## 1  1  2
+## 2  3  4
+```
+
+```r
+convert_rev <- matrix_df(rev)
+convert_rev(test_df)
+```
+
+```
+## [1] "Converting data frame to matrix."
+```
+
+```
+##      b a
+## [1,] 3 1
+## [2,] 4 2
+```
+
 ***
 
 ### You’ve seen five functions that modify a function to change its output from one form to another. What are they? Draw a table of the various combinations of types of outputs: what should go in the rows and what should go in the columns? What function operators might you want to write to fill in the missing cells? Come up with example use cases.
+
+|               |scalar     |vector   |matrix |data frame |(arg1, arg2, ...)|list(args)|
+|---------------|-----------|---------|-------|-----------|-----------------|----------|
+|**scalar**     |           |         |       |           |                 |          |
+|**vector**     |Vectorize()|         |       |           |                 |          |
+|**matrix**     |           |         |       |df_matrix()|                 |          |
+|**data frame** |           |colwise()|matrix_df()|       |                 |          |
+|**(arg1, arg2, ...)**|     |         |       |           |                 |          |
+|**list(args)** |           |         |       |           |splat()          |          |
+
 
 ***
 

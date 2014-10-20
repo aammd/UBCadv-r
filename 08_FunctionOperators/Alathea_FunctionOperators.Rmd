@@ -381,13 +381,55 @@ my_colwise <- function(.fun, .cols)
 
 ### Write FOs that convert a function to return a matrix instead of a data frame, or a data frame instead of a matrix. If you understand S3, call them `as.data.frame.function()` and `as.matrix.function()`.
 
+```{r matrix_to_df}
+(test_matrix <- matrix(c(1:4), nrow = 2, ncol = 2))
+(test_df <- data.frame(a = c(1:2), b = c(3:4)))
+
+matrix_df <- function(.fun)
+{
+  function(...)
+  {
+    output <- .fun(...)
+    
+    if(is.matrix(output)) {
+      print("Converting matrix to data frame.")
+      output <- as.data.frame(output)
+    } else if(is.data.frame(output)) {
+      print("Converting data frame to matrix.")
+      output <- as.matrix(output)
+    } else stop("Input must be a matrix or a data frame.")
+    
+    return(output)
+  }
+}
+
+# t always returns a matrix
+convert_transpose <- matrix_df(t)
+convert_transpose(test_matrix)
+
+convert_rev <- matrix_df(rev)
+convert_rev(test_df)
+```
+
 ***
 
 ### You’ve seen five functions that modify a function to change its output from one form to another. What are they? Draw a table of the various combinations of types of outputs: what should go in the rows and what should go in the columns? What function operators might you want to write to fill in the missing cells? Come up with example use cases.
 
+|               |scalar     |vector   |matrix |data frame |arg1, arg2, ...|list(args)|
+|---------------|-----------|---------|-------|-----------|---------------|----------|
+|**scalar**     |           |         |       |           |               |          |
+|**vector**     |Vectorize()|         |       |           |               |          |
+|**matrix**     |           |         |       |df_matrix()|               |          |
+|**data frame** |           |colwise()|matrix_df()|       |               |          |
+|**arg1, arg2, ...**|       |         |       |           |               |          |
+|**list(args)** |           |         |       |           |splat()        |          |
+
+
 ***
 
-### Look at all the examples of using an anonymous function to partially apply a function in this and the previous chapter. Replace the anonymous function with partial(). What do you think of the result? Is it easier or harder to read?
+### Look at all the examples of using an anonymous function to partially apply a function in this and the previous chapter. Replace the anonymous function with `partial()`. What do you think of the result? Is it easier or harder to read?
+
+Partial is harder to read unless you understand it pretty well.  I don't like it much.  I can imagine it is especially not useful if you are trying to make your code readable to other people.
 
 ## Combining FOs
 
