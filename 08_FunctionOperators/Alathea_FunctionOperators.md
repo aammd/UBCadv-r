@@ -50,7 +50,9 @@ runif2(10)
 #> [1] 0.3750332 0.4502083 0.7858626 0.1851057 0.9658681
 ```
 
-It forces the value of the function at the time `f` is run.  In the case of random number generation, this is particularly noticeable because the output of the function depends on the system time.  So, if you force the function at a particular time, the output of the generator will always be the same.
+~~It forces the value of the function at the time `f` is run.  In the case of random number generation, this is particularly noticeable because the output of the function depends on the system time.  So, if you force the function at a particular time, the output of the generator will always be the same.~~
+
+It stores the result after the first time the function is run
 
 ***
 
@@ -72,11 +74,11 @@ g()
 ```
 
 ```
-## 2014-10-07 12:57:12
+## 2014-10-20 12:59:09
 ```
 
 ```
-## [1] "2014-10-07 12:57:14 PDT"
+## [1] "2014-10-20 12:59:11 PDT"
 ```
 
 
@@ -103,7 +105,7 @@ g()
 ```
 
 ```
-## [1] "2014-10-07 12:57:14 PDT"
+## [1] "2014-10-20 12:59:11 PDT"
 ```
 
 ```r
@@ -111,7 +113,7 @@ g()
 ```
 
 ```
-## [1] "2014-10-07 12:57:19 PDT"
+## [1] "2014-10-20 12:59:16 PDT"
 ```
 
 ***
@@ -156,9 +158,11 @@ This is the chosen version.
 
 `download <- memoise(dot_every(10, delay_by(1, download_file)))`
 
-
+This will still add dots even if you don't want the file.
 
 `download <- dot_every(10, delay_by(1, memoise(download_file)))`
+
+This will still add the delay even if you don't want the file.
 
 ***
 
@@ -188,9 +192,9 @@ I am guessing the inefficiency has to do with having an inconsistent size.  I'm 
 ```r
 # return a linear function with slope a and intercept b.
 f <- function(a, b){
+  force(a)
+  force(b)
   function(x){
-    force(a)
-    force(b)
     a * x + b
   }
 }
@@ -201,11 +205,9 @@ fs <- Map(f, a = c(0, 1), b = c(0, 1))
 fs[[1]](3)
 #> [1] 4
 # should return 0 * 3 + 0 = 0
-
-unenclose(fs[[1]])
 ```
 
-I just have no clue.
+Lazy evaluation so you need to force the values of a and b before creating the function.
 
 ## Output FOs
 
@@ -228,7 +230,7 @@ runif(10, 0, 10)
 ```
 
 ```
-##  [1] 6.6917 7.7428 1.7479 4.0213 7.6835 4.5838 2.0763 7.0462 0.3677 8.7054
+##  [1] 0.1461 2.3408 9.0420 9.4290 0.7575 6.4320 7.9623 3.4081 9.6636 1.5286
 ```
 
 ```r
@@ -236,7 +238,7 @@ a(10, 0, 10)
 ```
 
 ```
-##  [1] -5.570 -2.621 -6.715 -2.820 -2.612 -3.293 -9.706 -8.292 -1.377 -9.171
+##  [1] -3.886 -6.408 -7.852 -6.153 -5.010 -2.202 -3.170 -2.389 -4.608 -5.270
 ```
 
 ***
@@ -295,15 +297,95 @@ track <- function(f)
     res
   }
 }
+
+track2 <- function(f)
+{
+  force(f)
+  function(...)
+  {
+    dir_before <- dir(getwd())
+    
+    res <- f(...)
+    
+    dir_after <- dir(getwd())
+    
+    cat("Added", setdiff(dir_after, dir_before), sep=" ")
+    cat("Removed", setdiff(dir_before, dir_after), sep=" ")
+    
+    res
+  }
+}
 ```
 
 ## Input FOs
 
 ### Our previous `download()` function only downloads a single file. How can you use `partial()` and `lapply()` to create a function that downloads multiple files at once? What are the pros and cons of using `partial()` vs. writing a function by hand?
 
+
+
+
+```r
+download <- partial(download.file)
+urls <- list("http://google.com", "http://yahoo.com")
+files <- list("google.html", "yahoo.html")
+Map(download, urls, files)
+```
+
+I definitely do not get what Hadley is after in this question.  We could do this with or without using `partial`.  `lapply` could be used directly on `download.file`.
+
 ***
 
 ### Read the source code for `plyr::colwise()`. How does the code work? What are `colwise()`’s three main tasks? How could you make `colwise()` simpler by implementing each task as a function operator? (Hint: think about `partial()`.)
+
+Here is the source code:
+
+
+```r
+function (.fun, .cols = true, ...) 
+{
+    if (!is.function(.cols)) {
+        .cols <- as.quoted(.cols)
+        filter <- function(df) eval.quoted(.cols, df)
+    }
+    else {
+        filter <- function(df) Filter(.cols, df)
+    }
+    dots <- list(...)
+    function(df, ...) {
+        stopifnot(is.data.frame(df))
+        df <- strip_splits(df)
+        filtered <- filter(df)
+        if (length(filtered) == 0) 
+            return(data.frame())
+        out <- do.call("lapply", c(list(filtered, .fun, ...), 
+            dots))
+        names(out) <- names(filtered)
+        quickdf(out)
+    }
+}
+```
+
+1.  A `filter` function is created.  The function first tests to see if `.cols` is a function or not.  If it is a function, it creates a `filter` function to apply `.cols` to a data frame.  If not a function, it creates a `filter` function to filter a data frame based on the indexes given in `.cols`.
+2.  The output function is created.  The first process in the output function is to apply the `filter` function to the input data frame.
+3.  The output function applies any extra arguments to the data.frame using the `...` supplied.
+4.  A data frame is returned.
+
+
+```r
+my_colwise <- function(.fun, .cols)
+{
+  require(pryr)
+  
+  if (!is.function(.cols)) {
+    .cols <- as.quoted(.cols)
+    filter <- partial(eval.quoted, exprs = .cols)
+  }
+  else {
+    filter <- partial(Filter, f = .cols)
+  }
+  
+}
+```
 
 ***
 
@@ -360,5 +442,33 @@ track <- function(f)
 there is a nice example of using this with a set of glms
 
 `try()` is also useful
+
+### Input FOs
+
+`splat` could be useful for running multiple models with slightly different inputs
+
+`splat()` converts a function that takes multiple arguments to a function that takes a single list of arguments.
+
+This is useful if you want to invoke a function with varying arguments:
+
+
+```r
+splat <- function (f) {
+  force(f)
+  function(args) {
+    do.call(f, args)
+  }
+}
+
+x <- c(NA, runif(100), 1000)
+args <- list(
+  list(x),
+  list(x, na.rm = TRUE),
+  list(x, na.rm = TRUE, trim = 0.1)
+)
+lapply(args, splat(mean))
+```
+
+
 
 ## Discussion notes
