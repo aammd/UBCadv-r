@@ -152,8 +152,8 @@ runif2(10)
 
 g &lt;- delay_by(2, Sys.time)
 g()</code></pre>
-<pre><code>## 2014-10-20 16:20:16</code></pre>
-<pre><code>## [1] &quot;2014-10-20 16:20:18 PDT&quot;</code></pre>
+<pre><code>## 2014-10-20 18:01:23</code></pre>
+<pre><code>## [1] &quot;2014-10-20 18:01:25 PDT&quot;</code></pre>
 <pre class="r"><code>delay_by2 &lt;- function(delay, f)
 {
   delay_until &lt;- Sys.time()
@@ -173,9 +173,9 @@ g()</code></pre>
 # 5 second time delay between calls
 g &lt;- delay_by2(5, Sys.time)
 g()</code></pre>
-<pre><code>## [1] &quot;2014-10-20 16:20:19 PDT&quot;</code></pre>
+<pre><code>## [1] &quot;2014-10-20 18:01:25 PDT&quot;</code></pre>
 <pre class="r"><code>g()</code></pre>
-<pre><code>## [1] &quot;2014-10-20 16:20:24 PDT&quot;</code></pre>
+<pre><code>## [1] &quot;2014-10-20 18:01:30 PDT&quot;</code></pre>
 <hr />
 </div>
 <div id="write-wait_until-which-delays-execution-until-a-specific-time." class="section level3">
@@ -267,11 +267,11 @@ fs[[1]](3)
 
 a &lt;- negative(runif)
 runif(10, 0, 10)</code></pre>
-<pre><code>##  [1] 6.422378 5.089687 4.175674 2.172621 9.169107 6.831556 6.232552
-##  [8] 8.506601 1.534141 8.741543</code></pre>
+<pre><code>##  [1] 4.9965109 3.2266136 8.4226715 1.2493773 6.3172515 0.5453931 3.0316286
+##  [8] 0.2768747 1.6097219 1.6389404</code></pre>
 <pre class="r"><code>a(10, 0, 10)</code></pre>
-<pre><code>##  [1] -2.7987680 -9.4659389 -7.9435713 -1.3052783 -4.0094208 -3.9081227
-##  [7] -6.0136979 -8.3429963 -0.5077656 -7.7241173</code></pre>
+<pre><code>##  [1] -4.223087 -7.067726 -2.438498 -1.020862 -2.485914 -2.719990 -0.245567
+##  [8] -6.807539 -6.464924 -6.909115</code></pre>
 <hr />
 </div>
 <div id="the-evaluate-package-makes-it-easy-to-capture-all-the-outputs-results-text-messages-warnings-errors-and-plots-from-an-expression.-create-a-function-like-capture_it-that-also-captures-the-warnings-and-errors-generated-by-a-function." class="section level3">
@@ -524,6 +524,7 @@ convert_rev(test_df)</code></pre>
 <h2>Combining FOs</h2>
 <div id="implement-your-own-version-of-compose-using-reduce-and-o.-for-bonus-points-do-it-without-calling-function." class="section level3">
 <h3>Implement your own version of <code>compose()</code> using <code>Reduce</code> and <code>%o%</code>. For bonus points, do it without calling function.</h3>
+<p>Well isn’t this silly Hadley.</p>
 <pre class="r"><code>my_compose &lt;- function(...)
 {
   &quot;%o%&quot; &lt;- compose
@@ -542,20 +543,29 @@ my_fun(10)</code></pre>
 </div>
 <div id="extend-and-and-or-to-deal-with-any-number-of-input-functions.-can-you-do-it-with-reduce-can-you-keep-them-lazy-e.g.-for-and-the-function-returns-once-it-sees-the-first-false" class="section level3">
 <h3>Extend <code>and()</code> and <code>or()</code> to deal with any number of input functions. Can you do it with <code>Reduce()</code>? Can you keep them lazy (e.g., for <code>and()</code>, the function returns once it sees the first <code>FALSE</code>)?</h3>
+<p>This is not working:</p>
 <pre class="r"><code>ext_and &lt;- function(...) {
   fs &lt;- lapply(list(...), match.fun)
+  bools &lt;- TRUE
   
-  function(...)
+  function(x)
   {
-    Reduce(&quot;&amp;&amp;&quot;, fs(...))
+    out &lt;- x
+    
+    for(i in 1:length(fs))
+    { 
+      bools &lt;- fs[[i]](out)
+      
+      if(any(bools)) {
+        out &lt;- out[bools]
+      } else return(FALSE)
+    }
+    
+    return(out)
   }
 }
 
-ext_and(over_5, square)
-
-ext_or &lt;- function(...) {
-  
-}</code></pre>
+Filter(ext_and(is.numeric), iris)</code></pre>
 <hr />
 </div>
 <div id="implement-the-xor-binary-operator.-implement-it-using-the-existing-xor-function.-implement-it-as-a-combination-of-and-and-or.-what-are-the-advantages-and-disadvantages-of-each-approach-also-think-about-what-youll-call-the-resulting-function-to-avoid-a-clash-with-the-existing-xor-function-and-how-you-might-change-the-names-of-and-not-and-or-to-keep-them-consistent." class="section level3">

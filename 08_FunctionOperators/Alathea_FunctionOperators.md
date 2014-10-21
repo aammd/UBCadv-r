@@ -74,11 +74,11 @@ g()
 ```
 
 ```
-## 2014-10-20 16:20:16
+## 2014-10-20 18:01:23
 ```
 
 ```
-## [1] "2014-10-20 16:20:18 PDT"
+## [1] "2014-10-20 18:01:25 PDT"
 ```
 
 
@@ -105,7 +105,7 @@ g()
 ```
 
 ```
-## [1] "2014-10-20 16:20:19 PDT"
+## [1] "2014-10-20 18:01:25 PDT"
 ```
 
 ```r
@@ -113,7 +113,7 @@ g()
 ```
 
 ```
-## [1] "2014-10-20 16:20:24 PDT"
+## [1] "2014-10-20 18:01:30 PDT"
 ```
 
 ***
@@ -230,8 +230,8 @@ runif(10, 0, 10)
 ```
 
 ```
-##  [1] 6.422378 5.089687 4.175674 2.172621 9.169107 6.831556 6.232552
-##  [8] 8.506601 1.534141 8.741543
+##  [1] 4.9965109 3.2266136 8.4226715 1.2493773 6.3172515 0.5453931 3.0316286
+##  [8] 0.2768747 1.6097219 1.6389404
 ```
 
 ```r
@@ -239,8 +239,8 @@ a(10, 0, 10)
 ```
 
 ```
-##  [1] -2.7987680 -9.4659389 -7.9435713 -1.3052783 -4.0094208 -3.9081227
-##  [7] -6.0136979 -8.3429963 -0.5077656 -7.7241173
+##  [1] -4.223087 -7.067726 -2.438498 -1.020862 -2.485914 -2.719990 -0.245567
+##  [8] -6.807539 -6.464924 -6.909115
 ```
 
 ***
@@ -487,6 +487,8 @@ Partial is harder to read unless you understand it pretty well.  I don't like it
 
 ### Implement your own version of `compose()` using `Reduce` and `%o%`. For bonus points, do it without calling function.
 
+Well isn't this silly Hadley.
+
 
 ```r
 my_compose <- function(...)
@@ -512,22 +514,32 @@ my_fun(10)
 
 ### Extend `and()` and `or()` to deal with any number of input functions. Can you do it with `Reduce()`? Can you keep them lazy (e.g., for `and()`, the function returns once it sees the first `FALSE`)?
 
+This is not working:
+
 
 ```r
 ext_and <- function(...) {
   fs <- lapply(list(...), match.fun)
+  bools <- TRUE
   
-  function(...)
+  function(x)
   {
-    Reduce("&&", fs(...))
+    out <- x
+    
+    for(i in 1:length(fs))
+    { 
+      bools <- fs[[i]](out)
+      
+      if(any(bools)) {
+        out <- out[bools]
+      } else return(FALSE)
+    }
+    
+    return(out)
   }
 }
 
-ext_and(over_5, square)
-
-ext_or <- function(...) {
-  
-}
+Filter(ext_and(is.numeric), iris)
 ```
 
 ***

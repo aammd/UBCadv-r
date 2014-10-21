@@ -457,21 +457,31 @@ my_fun(10)
 
 ### Extend `and()` and `or()` to deal with any number of input functions. Can you do it with `Reduce()`? Can you keep them lazy (e.g., for `and()`, the function returns once it sees the first `FALSE`)?
 
+This is not working:
+
 ```{r extended_logic, eval = FALSE}
 ext_and <- function(...) {
   fs <- lapply(list(...), match.fun)
+  bools <- TRUE
   
-  function(...)
+  function(x)
   {
-    Reduce("&&", fs(...))
+    out <- x
+    
+    for(i in 1:length(fs))
+    { 
+      bools <- fs[[i]](out)
+      
+      if(any(bools)) {
+        out <- out[bools]
+      } else return(FALSE)
+    }
+    
+    return(out)
   }
 }
 
-ext_and(over_5, square)
-
-ext_or <- function(...) {
-  
-}
+Filter(ext_and(is.numeric), iris)
 ```
 
 ***
