@@ -118,6 +118,16 @@ g <- delay_by2(1, f = rnorm); g(100); Sys.sleep(2); g(100)
 ## There are three places we could have added a memoise call: why did we choose the one we did?
 I guess if you memoised the innermost one, you would just be remembering the URLS, and if you memoised the outermost one you'd be saving the execution of the whole expression, which gets you nowhere
 
+
+```r
+# microbenchmark(list = list(
+#   dot_every(10, memoise(delay_by(1, rnorm)))(100),
+#   memoise(dot_every(10, delay_by(1, rnorm)))(100),
+#   dot_every(10, delay_by(1, memoise(rnorm)))(100)
+#      ))
+```
+
+
 ## Why is the remember() function inefficient? How could you implement it in more efficient way?
 Because recopies the list every time the function is rerun.  You could add an argument for the NUMBER of things you want to remember and then allocate space for them in your list.
 
@@ -384,7 +394,132 @@ so, why was knowledge of S3 required??
 
 I can't think of any of these, other than `Negate`
 
+`base::Negate()`
+`plyr::failwith()` 
+`capture_it()`
+`time_it()`
+
+
 ## Look at all the examples of using an anonymous function to partially apply a function in this and the previous chapter. Replace the anonymous function with partial(). What do you think of the result? Is it easier or harder to read?
+
+
+```r
+ignore <- function(...) NULL
+tee <- function(f, on_input = ignore, on_output = ignore) {
+  function(...) {
+    on_input(...)
+    output <- f(...)
+    on_output(output)
+    output
+  }
+}
+
+g <- function(x) cos(x) - x
+zero <- uniroot(g, c(-5, 5))
+show_x <- function(x, ...) cat(sprintf("%+.08f", x), "\n")
+
+library(pryr)
+
+partial(uniroot, interval = c(-5, 5))(g)
+```
+
+```
+## $root
+## [1] 0.7391
+## 
+## $f.root
+## [1] -2.604e-07
+## 
+## $iter
+## [1] 6
+## 
+## $init.it
+## [1] NA
+## 
+## $estim.prec
+## [1] 6.104e-05
+```
+
+```r
+format_it <- partial(sprintf, "%+.08f")
+
+newline <- partial(cat, "\n")
+
+show_x2 <- function(x) newline(format_it(x))
+zero <- uniroot(tee(g, on_output = show_x2), c(-5, 5))
+```
+
+```
+## 
+##  +5.28366219
+##  -4.71633781
+##  +0.67637474
+##  -0.23436269
+##  +0.02685676
+##  +0.00076012
+##  -0.00000026
+##  +0.00010189
+##  -0.00000026
+```
+
+**previous chapter**:
+
+
+```r
+trims <- c(0, 0.1, 0.2, 0.5)
+x <- rcauchy(1000)
+sapply(trims, function(trim) mean(x, trim = trim))
+```
+
+```
+## [1]  1.17305  0.03759  0.01918 -0.01883
+```
+
+```r
+# this seems a bit dirty -- relies on knowing "trim" is 2nd arg
+sapply(trims, partial(mean, x = x))
+```
+
+```
+## [1]  1.17305  0.03759  0.01918 -0.01883
+```
+
+
+```r
+boot_df <- function(x) x[sample(nrow(x), rep = T), ]
+replace_samp <- partial(sample, replace = TRUE)
+boot_df2 <- function(x) x[replace_samp(nrow(x)), ]
+#boot_df2(iris)
+
+`s[` <- partial(`[`,i = replace_samp(nrow(x)))
+`s[`
+```
+
+```
+## function (...) 
+## replace_samp(nrow(x))[...]
+```
+
+```r
+disp = function(x) x * 0.0163871
+disp2 <- partial(`*`,y = 0.0163871)
+disp2(1)
+```
+
+```
+## [1] 0.01639
+```
+
+```r
+am = function(x) factor(x, levels = c("auto", "manual"))
+am <- partial(factor, levels = c("auto", "manual"))
+am(c("auto","auto"))
+```
+
+```
+## [1] auto auto
+## Levels: auto manual
+```
 
 
 
@@ -392,9 +527,155 @@ I can't think of any of these, other than `Negate`
 
 ## Implement your own version of compose() using Reduce and %o%. For bonus points, do it without calling function.
 
+
+```r
+"%o%" <- compose
+compose2 <- partial(Reduce, f = `%o%`)
+compose2(c(mean,exp,sqrt))(1:10)
+```
+
+```
+## [1] 11.55
+```
+
+```r
+mean(exp(sqrt(1:10)))
+```
+
+```
+## [1] 11.55
+```
+
+```r
+(mean %o% exp %o% sqrt)(1:10)
+```
+
+```
+## [1] 11.55
+```
+
+
 ## Extend and() and or() to deal with any number of input functions. Can you do it with Reduce()? Can you keep them lazy (e.g., for and(), the function returns once it sees the first FALSE)?
+
+
+```r
+and <- function(...) {
+  lapply(list(...), force)
+  fs <- lapply(list(...), match.fun)
+  function(x) {
+    results <- lapply(fs, function(f) f(x))
+    Reduce(`&&`,results)
+  }
+}
+
+and(is.numeric,is.integer,is.vector)(2L)
+```
+
+```
+## [1] TRUE
+```
+
+```r
+and(is.numeric,is.integer,is.vector,is.na)(2L)
+```
+
+```
+## [1] FALSE
+```
+
 
 ## Implement the xor() binary operator. Implement it using the existing xor() function. Implement it as a combination of and() and or(). What are the advantages and disadvantages of each approach? Also think about what you’ll call the resulting function to avoid a clash with the existing xor() function, and how you might change the names of and(), not(), and or() to keep them consistent.
 
+
+```r
+`%xor%` <- function(x, y) xor(x, y) 
+
+TRUE %xor% FALSE
+```
+
+```
+## [1] TRUE
+```
+
+```r
+and <- function(f1, f2) {
+  force(f1); force(f2)
+  function(...) {
+    f1(...) && f2(...)
+  }
+}
+
+or <- function(f1, f2) {
+  force(f1); force(f2)
+  function(...) {
+    f1(...) || f2(...)
+  }
+}
+```
+
+
+
 ## Above, we implemented boolean algebra for functions that return a logical function. Implement elementary algebra (plus(), minus(), multiply(), divide(), exponentiate(), log()) for functions that return numeric vectors.
+
+
+```r
+maker <- function(f){
+  force(f)
+  function(...) {
+    lapply(list(...), force)
+    fs <- lapply(list(...), match.fun)
+    function(x) {
+      results <- lapply(fs, function(f) f(x))
+      Reduce(f,results)
+      }
+    }
+}
+
+add_em <- maker(`+`)
+unenclose(add_em)
+```
+
+```
+## function (...) 
+## {
+##     lapply(list(...), force)
+##     fs <- lapply(list(...), match.fun)
+##     function(x) {
+##         results <- lapply(fs, function(f) +x)
+##         Reduce(`+`, results)
+##     }
+## }
+```
+
+```r
+add_em(rnorm,rnorm)(1)
+```
+
+```
+## [1] -0.5257
+```
+
+```r
+heres_yer_functions <- list(plus = `+`,
+                            minus = `-`,
+                            multiply = `*`,
+                            divide = `/`,
+                            exponentiate = `^`)
+
+yer_functions_are_done <- lapply(heres_yer_functions,maker)
+
+yer_functions_are_done$plus(rnorm,rnorm)(1)
+```
+
+```
+## [1] 0.1207
+```
+
+```r
+yer_functions_are_done$divide(rnorm,rnorm)(1)
+```
+
+```
+## [1] 3.028
+```
 

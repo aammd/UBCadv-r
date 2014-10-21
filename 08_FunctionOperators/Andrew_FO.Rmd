@@ -241,19 +241,165 @@ so, why was knowledge of S3 required??
 
 I can't think of any of these, other than `Negate`
 
+`base::Negate()`
+`plyr::failwith()` 
+`capture_it()`
+`time_it()`
+
+
 ## Look at all the examples of using an anonymous function to partially apply a function in this and the previous chapter. Replace the anonymous function with partial(). What do you think of the result? Is it easier or harder to read?
 
 ```{r}
+ignore <- function(...) NULL
+tee <- function(f, on_input = ignore, on_output = ignore) {
+  function(...) {
+    on_input(...)
+    output <- f(...)
+    on_output(output)
+    output
+  }
+}
+
+g <- function(x) cos(x) - x
+zero <- uniroot(g, c(-5, 5))
+show_x <- function(x, ...) cat(sprintf("%+.08f", x), "\n")
+
+library(pryr)
+
+partial(uniroot, interval = c(-5, 5))(g)
+
+format_it <- partial(sprintf, "%+.08f")
+
+newline <- partial(cat, "\n")
+
+show_x2 <- function(x) newline(format_it(x))
+zero <- uniroot(tee(g, on_output = show_x2), c(-5, 5))
+```
+
+**previous chapter**:
+
+```{r}
+trims <- c(0, 0.1, 0.2, 0.5)
+x <- rcauchy(1000)
+sapply(trims, function(trim) mean(x, trim = trim))
+# this seems a bit dirty -- relies on knowing "trim" is 2nd arg
+sapply(trims, partial(mean, x = x))
+```
+
+```{r}
+boot_df <- function(x) x[sample(nrow(x), rep = T), ]
+replace_samp <- partial(sample, replace = TRUE)
+boot_df2 <- function(x) x[replace_samp(nrow(x)), ]
+#boot_df2(iris)
+
+`s[` <- partial(`[`,i = replace_samp(nrow(x)))
+`s[`
+
+disp = function(x) x * 0.0163871
+disp2 <- partial(`*`,y = 0.0163871)
+disp2(1)
+
+am = function(x) factor(x, levels = c("auto", "manual"))
+am <- partial(factor, levels = c("auto", "manual"))
+am(c("auto","auto"))
 
 ```
+
+
 
 *****
 
 ## Implement your own version of compose() using Reduce and %o%. For bonus points, do it without calling function.
 
+```{r}
+"%o%" <- compose
+compose2 <- partial(Reduce, f = `%o%`)
+compose2(c(mean,exp,sqrt))(1:10)
+
+mean(exp(sqrt(1:10)))
+
+(mean %o% exp %o% sqrt)(1:10)
+
+```
+
+
 ## Extend and() and or() to deal with any number of input functions. Can you do it with Reduce()? Can you keep them lazy (e.g., for and(), the function returns once it sees the first FALSE)?
+
+```{r}
+and <- function(...) {
+  lapply(list(...), force)
+  fs <- lapply(list(...), match.fun)
+  function(x) {
+    results <- lapply(fs, function(f) f(x))
+    Reduce(`&&`,results)
+  }
+}
+
+and(is.numeric,is.integer,is.vector)(2L)
+
+and(is.numeric,is.integer,is.vector,is.na)(2L)
+
+
+```
+
 
 ## Implement the xor() binary operator. Implement it using the existing xor() function. Implement it as a combination of and() and or(). What are the advantages and disadvantages of each approach? Also think about what you’ll call the resulting function to avoid a clash with the existing xor() function, and how you might change the names of and(), not(), and or() to keep them consistent.
 
+```{r}
+`%xor%` <- function(x, y) xor(x, y) 
+
+TRUE %xor% FALSE
+
+and <- function(f1, f2) {
+  force(f1); force(f2)
+  function(...) {
+    f1(...) && f2(...)
+  }
+}
+
+or <- function(f1, f2) {
+  force(f1); force(f2)
+  function(...) {
+    f1(...) || f2(...)
+  }
+}
+
+
+
+```
+
+
+
 ## Above, we implemented boolean algebra for functions that return a logical function. Implement elementary algebra (plus(), minus(), multiply(), divide(), exponentiate(), log()) for functions that return numeric vectors.
+
+```{r}
+maker <- function(f){
+  force(f)
+  function(...) {
+    lapply(list(...), force)
+    fs <- lapply(list(...), match.fun)
+    function(x) {
+      results <- lapply(fs, function(f) f(x))
+      Reduce(f,results)
+      }
+    }
+}
+
+add_em <- maker(`+`)
+unenclose(add_em)
+
+add_em(rnorm,rnorm)(1)
+
+heres_yer_functions <- list(plus = `+`,
+                            minus = `-`,
+                            multiply = `*`,
+                            divide = `/`,
+                            exponentiate = `^`)
+
+yer_functions_are_done <- lapply(heres_yer_functions,maker)
+
+yer_functions_are_done$plus(rnorm,rnorm)(1)
+yer_functions_are_done$divide(rnorm,rnorm)(1)
+
+```
 
