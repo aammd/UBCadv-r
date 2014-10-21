@@ -80,7 +80,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#read-the-source-code-for-plyrcolwise.-how-does-the-code-work-what-are-colwises-three-main-tasks-how-could-you-make-colwise-simpler-by-implementing-each-task-as-a-function-operator-hint-think-about-partial.">Read the source code for <code>plyr::colwise()</code>. How does the code work? What are <code>colwise()</code>’s three main tasks? How could you make <code>colwise()</code> simpler by implementing each task as a function operator? (Hint: think about <code>partial()</code>.)</a></li>
 <li><a href="#write-fos-that-convert-a-function-to-return-a-matrix-instead-of-a-data-frame-or-a-data-frame-instead-of-a-matrix.-if-you-understand-s3-call-them-as.data.frame.function-and-as.matrix.function.">Write FOs that convert a function to return a matrix instead of a data frame, or a data frame instead of a matrix. If you understand S3, call them <code>as.data.frame.function()</code> and <code>as.matrix.function()</code>.</a></li>
 <li><a href="#youve-seen-five-functions-that-modify-a-function-to-change-its-output-from-one-form-to-another.-what-are-they-draw-a-table-of-the-various-combinations-of-types-of-outputs-what-should-go-in-the-rows-and-what-should-go-in-the-columns-what-function-operators-might-you-want-to-write-to-fill-in-the-missing-cells-come-up-with-example-use-cases.">You’ve seen five functions that modify a function to change its output from one form to another. What are they? Draw a table of the various combinations of types of outputs: what should go in the rows and what should go in the columns? What function operators might you want to write to fill in the missing cells? Come up with example use cases.</a></li>
-<li><a href="#look-at-all-the-examples-of-using-an-anonymous-function-to-partially-apply-a-function-in-this-and-the-previous-chapter.-replace-the-anonymous-function-with-partial.-what-do-you-think-of-the-result-is-it-easier-or-harder-to-read">Look at all the examples of using an anonymous function to partially apply a function in this and the previous chapter. Replace the anonymous function with partial(). What do you think of the result? Is it easier or harder to read?</a></li>
+<li><a href="#look-at-all-the-examples-of-using-an-anonymous-function-to-partially-apply-a-function-in-this-and-the-previous-chapter.-replace-the-anonymous-function-with-partial.-what-do-you-think-of-the-result-is-it-easier-or-harder-to-read">Look at all the examples of using an anonymous function to partially apply a function in this and the previous chapter. Replace the anonymous function with <code>partial()</code>. What do you think of the result? Is it easier or harder to read?</a></li>
 </ul></li>
 <li><a href="#combining-fos">Combining FOs</a><ul>
 <li><a href="#implement-your-own-version-of-compose-using-reduce-and-o.-for-bonus-points-do-it-without-calling-function.">Implement your own version of <code>compose()</code> using <code>Reduce</code> and <code>%o%</code>. For bonus points, do it without calling function.</a></li>
@@ -91,6 +91,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#reading-notes">Reading notes</a><ul>
 <li><a href="#behavioural-fos-1">Behavioural FOs</a></li>
 <li><a href="#output-fos-1">Output FOs</a></li>
+<li><a href="#input-fos-1">Input FOs</a></li>
 </ul></li>
 <li><a href="#discussion-notes">Discussion notes</a></li>
 </ul>
@@ -134,7 +135,8 @@ runif2(5)
 #&gt; [1] 0.3750332 0.4502083 0.7858626 0.1851057 0.9658681
 runif2(10)
 #&gt; [1] 0.3750332 0.4502083 0.7858626 0.1851057 0.9658681</code></pre>
-<p>It forces the value of the function at the time <code>f</code> is run. In the case of random number generation, this is particularly noticeable because the output of the function depends on the system time. So, if you force the function at a particular time, the output of the generator will always be the same.</p>
+<p><del>It forces the value of the function at the time <code>f</code> is run. In the case of random number generation, this is particularly noticeable because the output of the function depends on the system time. So, if you force the function at a particular time, the output of the generator will always be the same.</del></p>
+<p>It stores the result after the first time the function is run</p>
 <hr />
 </div>
 <div id="modify-delay_by-so-that-instead-of-delaying-by-a-fixed-amount-of-time-it-ensures-that-a-certain-amount-of-time-has-elapsed-since-the-function-was-last-called.-that-is-if-you-called-g---delay_by1-f-g-sys.sleep2-g-there-shouldnt-be-an-extra-delay." class="section level3">
@@ -150,8 +152,8 @@ runif2(10)
 
 g &lt;- delay_by(2, Sys.time)
 g()</code></pre>
-<pre><code>## 2014-10-07 12:57:12</code></pre>
-<pre><code>## [1] &quot;2014-10-07 12:57:14 PDT&quot;</code></pre>
+<pre><code>## 2014-10-20 18:01:23</code></pre>
+<pre><code>## [1] &quot;2014-10-20 18:01:25 PDT&quot;</code></pre>
 <pre class="r"><code>delay_by2 &lt;- function(delay, f)
 {
   delay_until &lt;- Sys.time()
@@ -171,9 +173,9 @@ g()</code></pre>
 # 5 second time delay between calls
 g &lt;- delay_by2(5, Sys.time)
 g()</code></pre>
-<pre><code>## [1] &quot;2014-10-07 12:57:14 PDT&quot;</code></pre>
+<pre><code>## [1] &quot;2014-10-20 18:01:25 PDT&quot;</code></pre>
 <pre class="r"><code>g()</code></pre>
-<pre><code>## [1] &quot;2014-10-07 12:57:19 PDT&quot;</code></pre>
+<pre><code>## [1] &quot;2014-10-20 18:01:30 PDT&quot;</code></pre>
 <hr />
 </div>
 <div id="write-wait_until-which-delays-execution-until-a-specific-time." class="section level3">
@@ -209,7 +211,9 @@ h()
 <p><code>download &lt;- dot_every(10, memoise(delay_by(1, download_file)))</code></p>
 <p>This is the chosen version.</p>
 <p><code>download &lt;- memoise(dot_every(10, delay_by(1, download_file)))</code></p>
+<p>This will still add dots even if you don’t want the file.</p>
 <p><code>download &lt;- dot_every(10, delay_by(1, memoise(download_file)))</code></p>
+<p>This will still add the delay even if you don’t want the file.</p>
 <hr />
 </div>
 <div id="why-is-the-remember-function-inefficient-how-could-you-implement-it-in-more-efficient-way" class="section level3">
@@ -231,9 +235,9 @@ h()
 <h3>Why does the following code, from stackoverflow, not do what you expect? How can you modify <code>f</code> so that it works correctly?</h3>
 <pre class="r"><code># return a linear function with slope a and intercept b.
 f &lt;- function(a, b){
+  force(a)
+  force(b)
   function(x){
-    force(a)
-    force(b)
     a * x + b
   }
 }
@@ -243,10 +247,8 @@ fs &lt;- Map(f, a = c(0, 1), b = c(0, 1))
 
 fs[[1]](3)
 #&gt; [1] 4
-# should return 0 * 3 + 0 = 0
-
-unenclose(fs[[1]])</code></pre>
-<p>I just have no clue.</p>
+# should return 0 * 3 + 0 = 0</code></pre>
+<p>Lazy evaluation so you need to force the values of a and b before creating the function.</p>
 </div>
 </div>
 <div id="output-fos" class="section level2">
@@ -265,9 +267,11 @@ unenclose(fs[[1]])</code></pre>
 
 a &lt;- negative(runif)
 runif(10, 0, 10)</code></pre>
-<pre><code>##  [1] 6.6917 7.7428 1.7479 4.0213 7.6835 4.5838 2.0763 7.0462 0.3677 8.7054</code></pre>
+<pre><code>##  [1] 4.9965109 3.2266136 8.4226715 1.2493773 6.3172515 0.5453931 3.0316286
+##  [8] 0.2768747 1.6097219 1.6389404</code></pre>
 <pre class="r"><code>a(10, 0, 10)</code></pre>
-<pre><code>##  [1] -5.570 -2.621 -6.715 -2.820 -2.612 -3.293 -9.706 -8.292 -1.377 -9.171</code></pre>
+<pre><code>##  [1] -4.223087 -7.067726 -2.438498 -1.020862 -2.485914 -2.719990 -0.245567
+##  [8] -6.807539 -6.464924 -6.909115</code></pre>
 <hr />
 </div>
 <div id="the-evaluate-package-makes-it-easy-to-capture-all-the-outputs-results-text-messages-warnings-errors-and-plots-from-an-expression.-create-a-function-like-capture_it-that-also-captures-the-warnings-and-errors-generated-by-a-function." class="section level3">
@@ -317,6 +321,24 @@ a(-1)
     cat(dir_before - dir_after, &quot;files added&quot;, sep = &quot; &quot;)
     res
   }
+}
+
+track2 &lt;- function(f)
+{
+  force(f)
+  function(...)
+  {
+    dir_before &lt;- dir(getwd())
+    
+    res &lt;- f(...)
+    
+    dir_after &lt;- dir(getwd())
+    
+    cat(&quot;Added&quot;, setdiff(dir_after, dir_before), sep=&quot; &quot;)
+    cat(&quot;Removed&quot;, setdiff(dir_before, dir_after), sep=&quot; &quot;)
+    
+    res
+  }
 }</code></pre>
 </div>
 </div>
@@ -324,32 +346,226 @@ a(-1)
 <h2>Input FOs</h2>
 <div id="our-previous-download-function-only-downloads-a-single-file.-how-can-you-use-partial-and-lapply-to-create-a-function-that-downloads-multiple-files-at-once-what-are-the-pros-and-cons-of-using-partial-vs.writing-a-function-by-hand" class="section level3">
 <h3>Our previous <code>download()</code> function only downloads a single file. How can you use <code>partial()</code> and <code>lapply()</code> to create a function that downloads multiple files at once? What are the pros and cons of using <code>partial()</code> vs. writing a function by hand?</h3>
+<pre class="r"><code>download &lt;- partial(download.file)
+urls &lt;- list(&quot;http://google.com&quot;, &quot;http://yahoo.com&quot;)
+files &lt;- list(&quot;google.html&quot;, &quot;yahoo.html&quot;)
+Map(download, urls, files)</code></pre>
+<p>I definitely do not get what Hadley is after in this question. We could do this with or without using <code>partial</code>. <code>lapply</code> could be used directly on <code>download.file</code>.</p>
 <hr />
 </div>
 <div id="read-the-source-code-for-plyrcolwise.-how-does-the-code-work-what-are-colwises-three-main-tasks-how-could-you-make-colwise-simpler-by-implementing-each-task-as-a-function-operator-hint-think-about-partial." class="section level3">
 <h3>Read the source code for <code>plyr::colwise()</code>. How does the code work? What are <code>colwise()</code>’s three main tasks? How could you make <code>colwise()</code> simpler by implementing each task as a function operator? (Hint: think about <code>partial()</code>.)</h3>
+<p>Here is the source code:</p>
+<pre class="r"><code>function (.fun, .cols = true, ...) 
+{
+    if (!is.function(.cols)) {
+        .cols &lt;- as.quoted(.cols)
+        filter &lt;- function(df) eval.quoted(.cols, df)
+    }
+    else {
+        filter &lt;- function(df) Filter(.cols, df)
+    }
+    dots &lt;- list(...)
+    function(df, ...) {
+        stopifnot(is.data.frame(df))
+        df &lt;- strip_splits(df)
+        filtered &lt;- filter(df)
+        if (length(filtered) == 0) 
+            return(data.frame())
+        out &lt;- do.call(&quot;lapply&quot;, c(list(filtered, .fun, ...), 
+            dots))
+        names(out) &lt;- names(filtered)
+        quickdf(out)
+    }
+}</code></pre>
+<ol style="list-style-type: decimal">
+<li>A <code>filter</code> function is created. The function first tests to see if <code>.cols</code> is a function or not. If it is a function, it creates a <code>filter</code> function to apply <code>.cols</code> to a data frame. If not a function, it creates a <code>filter</code> function to filter a data frame based on the indexes given in <code>.cols</code>.</li>
+<li>The output function is created. The first process in the output function is to apply the <code>filter</code> function to the input data frame.</li>
+<li>The output function applies any extra arguments to the data.frame using the <code>...</code> supplied.</li>
+<li>A data frame is returned.</li>
+</ol>
+<pre class="r"><code>my_colwise &lt;- function(.fun, .cols)
+{
+  require(pryr)
+  
+  if (!is.function(.cols)) {
+    .cols &lt;- as.quoted(.cols)
+    filter &lt;- partial(eval.quoted, exprs = .cols)
+  }
+  else {
+    filter &lt;- partial(Filter, f = .cols)
+  }
+  
+}</code></pre>
 <hr />
 </div>
 <div id="write-fos-that-convert-a-function-to-return-a-matrix-instead-of-a-data-frame-or-a-data-frame-instead-of-a-matrix.-if-you-understand-s3-call-them-as.data.frame.function-and-as.matrix.function." class="section level3">
 <h3>Write FOs that convert a function to return a matrix instead of a data frame, or a data frame instead of a matrix. If you understand S3, call them <code>as.data.frame.function()</code> and <code>as.matrix.function()</code>.</h3>
+<pre class="r"><code>(test_matrix &lt;- matrix(c(1:4), nrow = 2, ncol = 2))</code></pre>
+<pre><code>##      [,1] [,2]
+## [1,]    1    3
+## [2,]    2    4</code></pre>
+<pre class="r"><code>(test_df &lt;- data.frame(a = c(1:2), b = c(3:4)))</code></pre>
+<pre><code>##   a b
+## 1 1 3
+## 2 2 4</code></pre>
+<pre class="r"><code>matrix_df &lt;- function(.fun)
+{
+  function(...)
+  {
+    output &lt;- .fun(...)
+    
+    if(is.matrix(output)) {
+      print(&quot;Converting matrix to data frame.&quot;)
+      output &lt;- as.data.frame(output)
+    } else if(is.data.frame(output)) {
+      print(&quot;Converting data frame to matrix.&quot;)
+      output &lt;- as.matrix(output)
+    } else stop(&quot;Input must be a matrix or a data frame.&quot;)
+    
+    return(output)
+  }
+}
+
+# t always returns a matrix
+convert_transpose &lt;- matrix_df(t)
+convert_transpose(test_matrix)</code></pre>
+<pre><code>## [1] &quot;Converting matrix to data frame.&quot;</code></pre>
+<pre><code>##   V1 V2
+## 1  1  2
+## 2  3  4</code></pre>
+<pre class="r"><code>convert_rev &lt;- matrix_df(rev)
+convert_rev(test_df)</code></pre>
+<pre><code>## [1] &quot;Converting data frame to matrix.&quot;</code></pre>
+<pre><code>##      b a
+## [1,] 3 1
+## [2,] 4 2</code></pre>
 <hr />
 </div>
 <div id="youve-seen-five-functions-that-modify-a-function-to-change-its-output-from-one-form-to-another.-what-are-they-draw-a-table-of-the-various-combinations-of-types-of-outputs-what-should-go-in-the-rows-and-what-should-go-in-the-columns-what-function-operators-might-you-want-to-write-to-fill-in-the-missing-cells-come-up-with-example-use-cases." class="section level3">
 <h3>You’ve seen five functions that modify a function to change its output from one form to another. What are they? Draw a table of the various combinations of types of outputs: what should go in the rows and what should go in the columns? What function operators might you want to write to fill in the missing cells? Come up with example use cases.</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="left">scalar</th>
+<th align="left">vector</th>
+<th align="left">matrix</th>
+<th align="left">data frame</th>
+<th align="left">arg1, arg2, …</th>
+<th align="left">list(args)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>scalar</strong></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left"><strong>vector</strong></td>
+<td align="left">Vectorize()</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>matrix</strong></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">df_matrix()</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left"><strong>data frame</strong></td>
+<td align="left"></td>
+<td align="left">colwise()</td>
+<td align="left">matrix_df()</td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>arg1, arg2, …</strong></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left"><strong>list(args)</strong></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left"></td>
+<td align="left">splat()</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
 <hr />
 </div>
 <div id="look-at-all-the-examples-of-using-an-anonymous-function-to-partially-apply-a-function-in-this-and-the-previous-chapter.-replace-the-anonymous-function-with-partial.-what-do-you-think-of-the-result-is-it-easier-or-harder-to-read" class="section level3">
-<h3>Look at all the examples of using an anonymous function to partially apply a function in this and the previous chapter. Replace the anonymous function with partial(). What do you think of the result? Is it easier or harder to read?</h3>
+<h3>Look at all the examples of using an anonymous function to partially apply a function in this and the previous chapter. Replace the anonymous function with <code>partial()</code>. What do you think of the result? Is it easier or harder to read?</h3>
+<p>Partial is harder to read unless you understand it pretty well. I don’t like it much. I can imagine it is especially not useful if you are trying to make your code readable to other people.</p>
 </div>
 </div>
 <div id="combining-fos" class="section level2">
 <h2>Combining FOs</h2>
 <div id="implement-your-own-version-of-compose-using-reduce-and-o.-for-bonus-points-do-it-without-calling-function." class="section level3">
 <h3>Implement your own version of <code>compose()</code> using <code>Reduce</code> and <code>%o%</code>. For bonus points, do it without calling function.</h3>
+<p>Well isn’t this silly Hadley.</p>
+<pre class="r"><code>my_compose &lt;- function(...)
+{
+  &quot;%o%&quot; &lt;- compose
+  fs &lt;- lapply(list(...), match.fun)
+  Reduce(&quot;%o%&quot;, fs)
+}
+
+square &lt;- function(x) x^2
+over_5 &lt;- function(x) x/5
+times_2 &lt;- function(x) 2*x
+
+my_fun &lt;- my_compose(times_2, square, over_5)
+my_fun(10)</code></pre>
+<pre><code>## [1] 8</code></pre>
 <hr />
 </div>
 <div id="extend-and-and-or-to-deal-with-any-number-of-input-functions.-can-you-do-it-with-reduce-can-you-keep-them-lazy-e.g.-for-and-the-function-returns-once-it-sees-the-first-false" class="section level3">
 <h3>Extend <code>and()</code> and <code>or()</code> to deal with any number of input functions. Can you do it with <code>Reduce()</code>? Can you keep them lazy (e.g., for <code>and()</code>, the function returns once it sees the first <code>FALSE</code>)?</h3>
+<p>This is not working:</p>
+<pre class="r"><code>ext_and &lt;- function(...) {
+  fs &lt;- lapply(list(...), match.fun)
+  bools &lt;- TRUE
+  
+  function(x)
+  {
+    out &lt;- x
+    
+    for(i in 1:length(fs))
+    { 
+      bools &lt;- fs[[i]](out)
+      
+      if(any(bools)) {
+        out &lt;- out[bools]
+      } else return(FALSE)
+    }
+    
+    return(out)
+  }
+}
+
+Filter(ext_and(is.numeric), iris)</code></pre>
 <hr />
 </div>
 <div id="implement-the-xor-binary-operator.-implement-it-using-the-existing-xor-function.-implement-it-as-a-combination-of-and-and-or.-what-are-the-advantages-and-disadvantages-of-each-approach-also-think-about-what-youll-call-the-resulting-function-to-avoid-a-clash-with-the-existing-xor-function-and-how-you-might-change-the-names-of-and-not-and-or-to-keep-them-consistent." class="section level3">
@@ -383,6 +599,28 @@ a(-1)
 <p><code>plyr::failwith</code> returns a default value if a function has an error</p>
 <p>there is a nice example of using this with a set of glms</p>
 <p><code>try()</code> is also useful</p>
+</div>
+<div id="input-fos-1" class="section level3">
+<h3>Input FOs</h3>
+<p><code>splat</code> could be useful for running multiple models with slightly different inputs</p>
+<p><code>splat()</code> converts a function that takes multiple arguments to a function that takes a single list of arguments.</p>
+<p>This is useful if you want to invoke a function with varying arguments:</p>
+<pre class="r"><code>splat &lt;- function (f) {
+  force(f)
+  function(args) {
+    do.call(f, args)
+  }
+}
+
+x &lt;- c(NA, runif(100), 1000)
+args &lt;- list(
+  list(x),
+  list(x, na.rm = TRUE),
+  list(x, na.rm = TRUE, trim = 0.1)
+)
+lapply(args, splat(mean))</code></pre>
+<p><code>compose</code>:</p>
+<p><code>%o%</code> works like <code>%&gt;%</code> but in the opposite direction.</p>
 </div>
 </div>
 <div id="discussion-notes" class="section level2">

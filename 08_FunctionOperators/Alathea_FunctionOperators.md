@@ -50,7 +50,9 @@ runif2(10)
 #> [1] 0.3750332 0.4502083 0.7858626 0.1851057 0.9658681
 ```
 
-It forces the value of the function at the time `f` is run.  In the case of random number generation, this is particularly noticeable because the output of the function depends on the system time.  So, if you force the function at a particular time, the output of the generator will always be the same.
+~~It forces the value of the function at the time `f` is run.  In the case of random number generation, this is particularly noticeable because the output of the function depends on the system time.  So, if you force the function at a particular time, the output of the generator will always be the same.~~
+
+It stores the result after the first time the function is run
 
 ***
 
@@ -72,11 +74,11 @@ g()
 ```
 
 ```
-## 2014-10-07 12:57:12
+## 2014-10-20 18:01:23
 ```
 
 ```
-## [1] "2014-10-07 12:57:14 PDT"
+## [1] "2014-10-20 18:01:25 PDT"
 ```
 
 
@@ -103,7 +105,7 @@ g()
 ```
 
 ```
-## [1] "2014-10-07 12:57:14 PDT"
+## [1] "2014-10-20 18:01:25 PDT"
 ```
 
 ```r
@@ -111,7 +113,7 @@ g()
 ```
 
 ```
-## [1] "2014-10-07 12:57:19 PDT"
+## [1] "2014-10-20 18:01:30 PDT"
 ```
 
 ***
@@ -156,9 +158,11 @@ This is the chosen version.
 
 `download <- memoise(dot_every(10, delay_by(1, download_file)))`
 
-
+This will still add dots even if you don't want the file.
 
 `download <- dot_every(10, delay_by(1, memoise(download_file)))`
+
+This will still add the delay even if you don't want the file.
 
 ***
 
@@ -188,9 +192,9 @@ I am guessing the inefficiency has to do with having an inconsistent size.  I'm 
 ```r
 # return a linear function with slope a and intercept b.
 f <- function(a, b){
+  force(a)
+  force(b)
   function(x){
-    force(a)
-    force(b)
     a * x + b
   }
 }
@@ -201,11 +205,9 @@ fs <- Map(f, a = c(0, 1), b = c(0, 1))
 fs[[1]](3)
 #> [1] 4
 # should return 0 * 3 + 0 = 0
-
-unenclose(fs[[1]])
 ```
 
-I just have no clue.
+Lazy evaluation so you need to force the values of a and b before creating the function.
 
 ## Output FOs
 
@@ -228,7 +230,8 @@ runif(10, 0, 10)
 ```
 
 ```
-##  [1] 6.6917 7.7428 1.7479 4.0213 7.6835 4.5838 2.0763 7.0462 0.3677 8.7054
+##  [1] 4.9965109 3.2266136 8.4226715 1.2493773 6.3172515 0.5453931 3.0316286
+##  [8] 0.2768747 1.6097219 1.6389404
 ```
 
 ```r
@@ -236,7 +239,8 @@ a(10, 0, 10)
 ```
 
 ```
-##  [1] -5.570 -2.621 -6.715 -2.820 -2.612 -3.293 -9.706 -8.292 -1.377 -9.171
+##  [1] -4.223087 -7.067726 -2.438498 -1.020862 -2.485914 -2.719990 -0.245567
+##  [8] -6.807539 -6.464924 -6.909115
 ```
 
 ***
@@ -295,35 +299,248 @@ track <- function(f)
     res
   }
 }
+
+track2 <- function(f)
+{
+  force(f)
+  function(...)
+  {
+    dir_before <- dir(getwd())
+    
+    res <- f(...)
+    
+    dir_after <- dir(getwd())
+    
+    cat("Added", setdiff(dir_after, dir_before), sep=" ")
+    cat("Removed", setdiff(dir_before, dir_after), sep=" ")
+    
+    res
+  }
+}
 ```
 
 ## Input FOs
 
 ### Our previous `download()` function only downloads a single file. How can you use `partial()` and `lapply()` to create a function that downloads multiple files at once? What are the pros and cons of using `partial()` vs. writing a function by hand?
 
+
+
+
+```r
+download <- partial(download.file)
+urls <- list("http://google.com", "http://yahoo.com")
+files <- list("google.html", "yahoo.html")
+Map(download, urls, files)
+```
+
+I definitely do not get what Hadley is after in this question.  We could do this with or without using `partial`.  `lapply` could be used directly on `download.file`.
+
 ***
 
 ### Read the source code for `plyr::colwise()`. How does the code work? What are `colwise()`’s three main tasks? How could you make `colwise()` simpler by implementing each task as a function operator? (Hint: think about `partial()`.)
+
+Here is the source code:
+
+
+```r
+function (.fun, .cols = true, ...) 
+{
+    if (!is.function(.cols)) {
+        .cols <- as.quoted(.cols)
+        filter <- function(df) eval.quoted(.cols, df)
+    }
+    else {
+        filter <- function(df) Filter(.cols, df)
+    }
+    dots <- list(...)
+    function(df, ...) {
+        stopifnot(is.data.frame(df))
+        df <- strip_splits(df)
+        filtered <- filter(df)
+        if (length(filtered) == 0) 
+            return(data.frame())
+        out <- do.call("lapply", c(list(filtered, .fun, ...), 
+            dots))
+        names(out) <- names(filtered)
+        quickdf(out)
+    }
+}
+```
+
+1.  A `filter` function is created.  The function first tests to see if `.cols` is a function or not.  If it is a function, it creates a `filter` function to apply `.cols` to a data frame.  If not a function, it creates a `filter` function to filter a data frame based on the indexes given in `.cols`.
+2.  The output function is created.  The first process in the output function is to apply the `filter` function to the input data frame.
+3.  The output function applies any extra arguments to the data.frame using the `...` supplied.
+4.  A data frame is returned.
+
+
+```r
+my_colwise <- function(.fun, .cols)
+{
+  require(pryr)
+  
+  if (!is.function(.cols)) {
+    .cols <- as.quoted(.cols)
+    filter <- partial(eval.quoted, exprs = .cols)
+  }
+  else {
+    filter <- partial(Filter, f = .cols)
+  }
+  
+}
+```
 
 ***
 
 ### Write FOs that convert a function to return a matrix instead of a data frame, or a data frame instead of a matrix. If you understand S3, call them `as.data.frame.function()` and `as.matrix.function()`.
 
+
+```r
+(test_matrix <- matrix(c(1:4), nrow = 2, ncol = 2))
+```
+
+```
+##      [,1] [,2]
+## [1,]    1    3
+## [2,]    2    4
+```
+
+```r
+(test_df <- data.frame(a = c(1:2), b = c(3:4)))
+```
+
+```
+##   a b
+## 1 1 3
+## 2 2 4
+```
+
+```r
+matrix_df <- function(.fun)
+{
+  function(...)
+  {
+    output <- .fun(...)
+    
+    if(is.matrix(output)) {
+      print("Converting matrix to data frame.")
+      output <- as.data.frame(output)
+    } else if(is.data.frame(output)) {
+      print("Converting data frame to matrix.")
+      output <- as.matrix(output)
+    } else stop("Input must be a matrix or a data frame.")
+    
+    return(output)
+  }
+}
+
+# t always returns a matrix
+convert_transpose <- matrix_df(t)
+convert_transpose(test_matrix)
+```
+
+```
+## [1] "Converting matrix to data frame."
+```
+
+```
+##   V1 V2
+## 1  1  2
+## 2  3  4
+```
+
+```r
+convert_rev <- matrix_df(rev)
+convert_rev(test_df)
+```
+
+```
+## [1] "Converting data frame to matrix."
+```
+
+```
+##      b a
+## [1,] 3 1
+## [2,] 4 2
+```
+
 ***
 
 ### You’ve seen five functions that modify a function to change its output from one form to another. What are they? Draw a table of the various combinations of types of outputs: what should go in the rows and what should go in the columns? What function operators might you want to write to fill in the missing cells? Come up with example use cases.
 
+|               |scalar     |vector   |matrix |data frame |arg1, arg2, ...|list(args)|
+|---------------|-----------|---------|-------|-----------|---------------|----------|
+|**scalar**     |           |         |       |           |               |          |
+|**vector**     |Vectorize()|         |       |           |               |          |
+|**matrix**     |           |         |       |df_matrix()|               |          |
+|**data frame** |           |colwise()|matrix_df()|       |               |          |
+|**arg1, arg2, ...**|       |         |       |           |               |          |
+|**list(args)** |           |         |       |           |splat()        |          |
+
+
 ***
 
-### Look at all the examples of using an anonymous function to partially apply a function in this and the previous chapter. Replace the anonymous function with partial(). What do you think of the result? Is it easier or harder to read?
+### Look at all the examples of using an anonymous function to partially apply a function in this and the previous chapter. Replace the anonymous function with `partial()`. What do you think of the result? Is it easier or harder to read?
+
+Partial is harder to read unless you understand it pretty well.  I don't like it much.  I can imagine it is especially not useful if you are trying to make your code readable to other people.
 
 ## Combining FOs
 
 ### Implement your own version of `compose()` using `Reduce` and `%o%`. For bonus points, do it without calling function.
 
+Well isn't this silly Hadley.
+
+
+```r
+my_compose <- function(...)
+{
+  "%o%" <- compose
+  fs <- lapply(list(...), match.fun)
+  Reduce("%o%", fs)
+}
+
+square <- function(x) x^2
+over_5 <- function(x) x/5
+times_2 <- function(x) 2*x
+
+my_fun <- my_compose(times_2, square, over_5)
+my_fun(10)
+```
+
+```
+## [1] 8
+```
+
 ***
 
 ### Extend `and()` and `or()` to deal with any number of input functions. Can you do it with `Reduce()`? Can you keep them lazy (e.g., for `and()`, the function returns once it sees the first `FALSE`)?
+
+This is not working:
+
+
+```r
+ext_and <- function(...) {
+  fs <- lapply(list(...), match.fun)
+  bools <- TRUE
+  
+  function(x)
+  {
+    out <- x
+    
+    for(i in 1:length(fs))
+    { 
+      bools <- fs[[i]](out)
+      
+      if(any(bools)) {
+        out <- out[bools]
+      } else return(FALSE)
+    }
+    
+    return(out)
+  }
+}
+
+Filter(ext_and(is.numeric), iris)
+```
 
 ***
 
@@ -360,5 +577,35 @@ track <- function(f)
 there is a nice example of using this with a set of glms
 
 `try()` is also useful
+
+### Input FOs
+
+`splat` could be useful for running multiple models with slightly different inputs
+
+`splat()` converts a function that takes multiple arguments to a function that takes a single list of arguments.
+
+This is useful if you want to invoke a function with varying arguments:
+
+
+```r
+splat <- function (f) {
+  force(f)
+  function(args) {
+    do.call(f, args)
+  }
+}
+
+x <- c(NA, runif(100), 1000)
+args <- list(
+  list(x),
+  list(x, na.rm = TRUE),
+  list(x, na.rm = TRUE, trim = 0.1)
+)
+lapply(args, splat(mean))
+```
+
+`compose`:
+
+`%o%` works like `%>%` but in the opposite direction.
 
 ## Discussion notes
