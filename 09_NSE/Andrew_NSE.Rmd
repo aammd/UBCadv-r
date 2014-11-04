@@ -3,3 +3,68 @@ title: "NonStandardEvaluation"
 output: html_document
 ---
 
+1. 
+
+```{r}
+deparse(substitute(a + b + c + d + e + f + g + h + i + j + k + l + m +
+  n + o + p + q + r + s + t + u + v + w + x + y + z))
+```
+
+Write a wrapper so that it is always a string:
+
+```{r}
+onedeparse <- function(expr){
+  paste(deparse(expr), collapse = "")
+}
+
+onedeparse(substitute(a + b + c + d + e + f + g + h + i + j + k + l + m +
+  n + o + p + q + r + s + t + u + v + w + x + y + z))
+```
+(does that miss the point?)
+
+2. 
+```{r error=TRUE}
+as.Date(TRUE)
+as.Date.default
+```
+uses deparse(substitute(x)) in order to make an informative error message that contains the thing you tried to make into a logical variable.
+
+3. 
+```{r}
+pairwise.t.test
+```
+used to construct the string stored as `DNAME`, which is used to give informative output featuring the names of the input variables
+
+```{r}
+test <- data.frame(fac = gl(2, k = 5), dat = rnorm(10))
+pairwise.t.test(test$dat, test$fac)
+```
+
+```{r}
+test2 <- data.frame(factorthatwehopehassomeexplanatorypowerbutthenagainitmightnot = gl(2, k = 5), dat = rnorm(10))
+pairwise.t.test(test2$dat, test2$fac)
+```
+WHAT?!
+
+I thought that these would return f(whatever_was_in_there) but it didn't, it returned X every time. But Why?  Because 
+```{r}
+deparse(substitute(x))
+```
+is the only thing that gets evalutated?  x is never evaluated?
+
+```{r error = TRUE}
+f <- function(x){
+  force(x)
+  substitute(x)
+  }
+
+g <- function(x) deparse(f(x))
+g(1:10)
+g(x)
+g(x + y ^ 2 / z + exp(a * sin(b)))
+```
+
+oh yeah. bad idea!
+
+
+
