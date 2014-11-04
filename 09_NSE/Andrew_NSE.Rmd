@@ -66,5 +66,101 @@ g(x + y ^ 2 / z + exp(a * sin(b)))
 
 oh yeah. bad idea!
 
+This will be 4
+```{r}
+eval(quote(eval(quote(eval(quote(2 + 2))))))
+```
 
+also 4 (`eval(4)`)
+
+```{r}
+eval(eval(quote(eval(quote(eval(quote(2 + 2)))))))
+```
+
+"4"
+```{r}
+quote(eval(quote(eval(quote(eval(quote(2 + 2)))))))
+```
+haha NO. it doesn't go from the inside out!
+
+out of curiosity...
+```{r}
+library(magrittr)
+
+1:3 %>%
+  mean %>%
+  quote
+```
+
+## bug in subset
+
+```{r}
+subset2 <- function(x, condition) {
+  res <- x
+  condition_call <- substitute(condition)
+  r <- eval(condition_call, x)
+  res <- x[r, ]
+  res <- as.data.frame(res)
+  names(res) <- names(x)
+  res
+}
+
+sample_df2 <- data.frame(x = 1:10)
+subset2(sample_df2, x > 8)
+```
+
+# quote instead of substitute
+
+```{r error = TRUE}
+subset2 <- function(x, condition) {
+  res <- x
+  condition_call <- quote(condition)
+  r <- eval(condition_call, x)
+  res <- x[r, ]
+  res <- as.data.frame(res)
+  names(res) <- names(x)
+  res
+}
+
+sample_df2 <- data.frame(x = 1:10)
+subset2(sample_df2, x > 8)
+```
+
+## how does this work?
+```
+select <- function(df, vars) {
+  vars <- substitute(vars)
+  var_pos <- setNames(as.list(seq_along(df)), names(df))
+  pos <- eval(vars, var_pos)
+  df[, pos, drop = FALSE]
+}
+select(mtcars, -cyl)
+```
+makes a named vector of column positions, and then uses `eval` to 
+
+# `evalq`
+
+looks like evalq, unsurprisingly, is simply a shortcut for`eval(quote(expr), ...)`
+```{r, error=TRUE}
+eval(quote(2 +2))
+evalq(2 + 2)
+
+truth <- list(fact = "science is cool", fact2 = "but its hard to find work")
+evalq(truth)
+evalq(fact)
+evalq(fact, truth)
+```
+
+****
+
+# `arrange`
+
+```{r}
+plyr::arrange
+```
+
+# transform
+```{r}
+transform.data.frame
+```
 
