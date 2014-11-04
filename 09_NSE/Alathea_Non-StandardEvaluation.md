@@ -242,13 +242,32 @@ quote(eval(quote(eval(quote(eval(quote(2 + 2)))))))
 
 ### `plyr::arrange()` works similarly to `subset()`, but instead of selecting rows, it reorders them. How does it work? What does `substitute(order(...))` do? Create a function that does only that and experiment with it.
 
+
+```r
+library(plyr)
+
+h <- function(...) substitute(order(...))
+
+h(mtcars, cyl)
+```
+
+```
+## order(mtcars, cyl)
+```
+
+This will order the data frame based on the arguments typed into `arrange`
+
 ***
 
 ### What does `transform()` do? Read the documentation. How does it work? Read the source code for `transform.data.frame()`. What does `substitute(list(...))` do?
 
+`transform` will modify columns of a data frame in some way.
+
+`substitute(list(...))` takes the `...` and transforms them into an unevaluated argument list
+
 ***
 
-### `plyr::mutate()` is similar to `transform()` but it applies the transformations sequentially so that transformation can refer to columns that were just created:
+### `plyr::mutate()` is similar to `transform()` but it applies the transformations sequentially so that transformation can refer to columns that were just created.  How does mutate work? What’s the key difference between `mutate()` and `transform()`?
 
 
 ```r
@@ -257,11 +276,15 @@ transform(df, x2 = x * x, x3 = x2 * x)
 plyr::mutate(df, x2 = x * x, x3 = x2 * x)
 ```
 
-How does mutate work? What’s the key difference between `mutate()` and `transform()`?
+`mutate` is different in that it uses a `for` loop to apply the arguments sequentially.
 
 ***
 
 ### What does `with()` do? How does it work? Read the source code for `with.default()`. What does `within()` do? How does it work? Read the source code for `within.data.frame()`. Why is the code so much more complex than `with()`?
+
+`with` sets an R object as the environment in which to carry out the supplied functions.
+
+`within` is similar but creates a copy of the supplied data before modifying it.
 
 ***
 

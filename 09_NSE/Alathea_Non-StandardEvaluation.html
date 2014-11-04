@@ -73,7 +73,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#what-does-evalq-do-use-it-to-reduce-the-amount-of-typing-for-the-examples-above-that-use-both-eval-and-quote.">What does <code>evalq()</code> do? Use it to reduce the amount of typing for the examples above that use both <code>eval()</code> and <code>quote()</code>.</a></li>
 <li><a href="#plyrarrange-works-similarly-to-subset-but-instead-of-selecting-rows-it-reorders-them.-how-does-it-work-what-does-substituteorder...-do-create-a-function-that-does-only-that-and-experiment-with-it."><code>plyr::arrange()</code> works similarly to <code>subset()</code>, but instead of selecting rows, it reorders them. How does it work? What does <code>substitute(order(...))</code> do? Create a function that does only that and experiment with it.</a></li>
 <li><a href="#what-does-transform-do-read-the-documentation.-how-does-it-work-read-the-source-code-for-transform.data.frame.-what-does-substitutelist...-do">What does <code>transform()</code> do? Read the documentation. How does it work? Read the source code for <code>transform.data.frame()</code>. What does <code>substitute(list(...))</code> do?</a></li>
-<li><a href="#plyrmutate-is-similar-to-transform-but-it-applies-the-transformations-sequentially-so-that-transformation-can-refer-to-columns-that-were-just-created"><code>plyr::mutate()</code> is similar to <code>transform()</code> but it applies the transformations sequentially so that transformation can refer to columns that were just created:</a></li>
+<li><a href="#plyrmutate-is-similar-to-transform-but-it-applies-the-transformations-sequentially-so-that-transformation-can-refer-to-columns-that-were-just-created.-how-does-mutate-work-whats-the-key-difference-between-mutate-and-transform"><code>plyr::mutate()</code> is similar to <code>transform()</code> but it applies the transformations sequentially so that transformation can refer to columns that were just created. How does mutate work? What’s the key difference between <code>mutate()</code> and <code>transform()</code>?</a></li>
 <li><a href="#what-does-with-do-how-does-it-work-read-the-source-code-for-with.default.-what-does-within-do-how-does-it-work-read-the-source-code-for-within.data.frame.-why-is-the-code-so-much-more-complex-than-with">What does <code>with()</code> do? How does it work? Read the source code for <code>with.default()</code>. What does <code>within()</code> do? How does it work? Read the source code for <code>within.data.frame()</code>. Why is the code so much more complex than <code>with()</code>?</a></li>
 <li><a href="#the-following-r-functions-all-use-nse.-for-each-describe-how-it-uses-nse-and-read-the-documentation-to-determine-its-escape-hatch.">The following R functions all use NSE. For each, describe how it uses NSE, and read the documentation to determine its escape hatch.</a></li>
 <li><a href="#base-functions-match.fun-page-and-ls-all-try-to-automatically-determine-whether-you-want-standard-or-non-standard-evaluation.-each-uses-a-different-approach.-figure-out-the-essence-of-each-approach-then-compare-and-contrast.">Base functions <code>match.fun()</code>, <code>page()</code>, and <code>ls()</code> all try to automatically determine whether you want standard or non-standard evaluation. Each uses a different approach. Figure out the essence of each approach then compare and contrast.</a></li>
@@ -263,22 +263,33 @@ quote(eval(quote(eval(quote(eval(quote(2 + 2)))))))</code></pre>
 </div>
 <div id="plyrarrange-works-similarly-to-subset-but-instead-of-selecting-rows-it-reorders-them.-how-does-it-work-what-does-substituteorder...-do-create-a-function-that-does-only-that-and-experiment-with-it." class="section level3">
 <h3><code>plyr::arrange()</code> works similarly to <code>subset()</code>, but instead of selecting rows, it reorders them. How does it work? What does <code>substitute(order(...))</code> do? Create a function that does only that and experiment with it.</h3>
+<pre class="r"><code>library(plyr)
+
+h &lt;- function(...) substitute(order(...))
+
+h(mtcars, cyl)</code></pre>
+<pre><code>## order(mtcars, cyl)</code></pre>
+<p>This will order the data frame based on the arguments typed into <code>arrange</code></p>
 <hr />
 </div>
 <div id="what-does-transform-do-read-the-documentation.-how-does-it-work-read-the-source-code-for-transform.data.frame.-what-does-substitutelist...-do" class="section level3">
 <h3>What does <code>transform()</code> do? Read the documentation. How does it work? Read the source code for <code>transform.data.frame()</code>. What does <code>substitute(list(...))</code> do?</h3>
+<p><code>transform</code> will modify columns of a data frame in some way.</p>
+<p><code>substitute(list(...))</code> takes the <code>...</code> and transforms them into an unevaluated argument list</p>
 <hr />
 </div>
-<div id="plyrmutate-is-similar-to-transform-but-it-applies-the-transformations-sequentially-so-that-transformation-can-refer-to-columns-that-were-just-created" class="section level3">
-<h3><code>plyr::mutate()</code> is similar to <code>transform()</code> but it applies the transformations sequentially so that transformation can refer to columns that were just created:</h3>
+<div id="plyrmutate-is-similar-to-transform-but-it-applies-the-transformations-sequentially-so-that-transformation-can-refer-to-columns-that-were-just-created.-how-does-mutate-work-whats-the-key-difference-between-mutate-and-transform" class="section level3">
+<h3><code>plyr::mutate()</code> is similar to <code>transform()</code> but it applies the transformations sequentially so that transformation can refer to columns that were just created. How does mutate work? What’s the key difference between <code>mutate()</code> and <code>transform()</code>?</h3>
 <pre class="r"><code>df &lt;- data.frame(x = 1:5)
 transform(df, x2 = x * x, x3 = x2 * x)
 plyr::mutate(df, x2 = x * x, x3 = x2 * x)</code></pre>
-<p>How does mutate work? What’s the key difference between <code>mutate()</code> and <code>transform()</code>?</p>
+<p><code>mutate</code> is different in that it uses a <code>for</code> loop to apply the arguments sequentially.</p>
 <hr />
 </div>
 <div id="what-does-with-do-how-does-it-work-read-the-source-code-for-with.default.-what-does-within-do-how-does-it-work-read-the-source-code-for-within.data.frame.-why-is-the-code-so-much-more-complex-than-with" class="section level3">
 <h3>What does <code>with()</code> do? How does it work? Read the source code for <code>with.default()</code>. What does <code>within()</code> do? How does it work? Read the source code for <code>within.data.frame()</code>. Why is the code so much more complex than <code>with()</code>?</h3>
+<p><code>with</code> sets an R object as the environment in which to carry out the supplied functions.</p>
+<p><code>within</code> is similar but creates a copy of the supplied data before modifying it.</p>
 <hr />
 </div>
 <div id="the-following-r-functions-all-use-nse.-for-each-describe-how-it-uses-nse-and-read-the-documentation-to-determine-its-escape-hatch." class="section level3">
