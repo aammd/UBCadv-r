@@ -305,6 +305,8 @@ plyr::mutate(df, x2 = x * x, x3 = x2 * x)</code></pre>
 </div>
 <div id="base-functions-match.fun-page-and-ls-all-try-to-automatically-determine-whether-you-want-standard-or-non-standard-evaluation.-each-uses-a-different-approach.-figure-out-the-essence-of-each-approach-then-compare-and-contrast." class="section level3">
 <h3>Base functions <code>match.fun()</code>, <code>page()</code>, and <code>ls()</code> all try to automatically determine whether you want standard or non-standard evaluation. Each uses a different approach. Figure out the essence of each approach then compare and contrast.</h3>
+<p><code>match.fun</code> tests to see if the <code>FUN</code> argument is a function or character, then decides whether to use standard or non-standard evaluation.</p>
+<p><code>page</code> does something similar.</p>
 <hr />
 </div>
 <div id="add-an-escape-hatch-to-plyrmutate-by-splitting-it-into-two-functions.-one-function-should-capture-the-unevaluated-inputs.-the-other-should-take-a-data-frame-and-list-of-expressions-and-perform-the-computation." class="section level3">
@@ -364,6 +366,7 @@ f(a, b, c) -&gt; f(a, b)</code></pre>
 <li><code>deparse(substitute())</code> takes the code you typed and creates a vector out of it</li>
 <li><code>quote</code>: simplified version of <code>substitute()</code></li>
 <li><code>eval</code>: opposite of <code>quote</code></li>
+<li>an escape hatch: an alternative version of the function that uses standard evaluation</li>
 </ul>
 </div>
 <div id="discussion-notes" class="section level2">
