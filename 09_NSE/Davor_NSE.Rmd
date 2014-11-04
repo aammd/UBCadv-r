@@ -1,0 +1,287 @@
+---
+title: "Exercises for 'Non-standard Evaluation'"
+author: "Davor Cubranic"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    toc: no
+    keep_md: TRUE
+---
+
+### Capturing expressions
+
+1.  One important feature of `deparse()` to be aware of when programming is that 
+    it can return multiple strings if the input is too long. For example, the 
+    following call produces a vector of length two:
+
+    ```{r, eval = FALSE}
+    g(a + b + c + d + e + f + g + h + i + j + k + l + m +
+      n + o + p + q + r + s + t + u + v + w + x + y + z)
+    ```
+
+    Why does this happen? Carefully read the documentation. Can you write a
+    wrapper around `deparse()` so that it always returns a single
+    string?
+
+    Because `deparse` breaks lines to have lenght of (at least)
+    `width.cutoff` bytes. We can create a wrapper that simply calls
+    `paste(..., collapse = '')`.
+
+1.  Why does `as.Date.default()` use `substitute()` and `deparse()`?
+
+    To construct the error message if it can't convert the argument.
+    
+    Why does `pairwise.t.test()` use them? Read the source code.
+
+    To create the label of the table
+
+1.  `pairwise.t.test()` assumes that `deparse()` always returns a length one 
+    character vector. Can you construct an input that violates this expectation? 
+    What happens?
+
+    ```{r}
+    attach(airquality)
+    Month <- factor(Month, labels = month.abb[5:9])
+    pairwise.t.test(Ozone+Ozone+Ozone+Ozone+Ozone+Ozone+Ozone+Ozone+Ozone+Ozone+Ozone+Ozone+Ozone+Ozone, Month)
+    detach()
+    ```
+
+    The table label is created by pasting the result of two
+    `deparse`s, and because the first one ('Ozone+...') is longer than
+    one element, the second ('Month') gets recycled.
+    
+1.  `f()`, defined above, just calls `substitute()`. Why can't we use it
+    to define `g()`? In other words, what will the following code return?
+    First make a prediction. Then run the code and think about the results.
+
+    ```{r, eval = FALSE}
+    f <- function(x) substitute(x)
+    g <- function(x) deparse(substitute(x))
+    g2 <- function(x) deparse(f(x))
+    g2(1:10)
+    g2(x)
+    g2(x + y ^ 2 / z + exp(a * sin(b)))
+    ```
+
+    It always returns 'x', from the argument to `g2`.
+
+
+### Non-standard evaluation in `subset`
+
+1.  Predict the results of the following lines of code:
+
+    ```{r, eval = FALSE}
+    eval(quote(eval(quote(eval(quote(2 + 2))))))
+    eval(eval(quote(eval(quote(eval(quote(2 + 2)))))))
+    quote(eval(quote(eval(quote(eval(quote(2 + 2)))))))
+    ```
+
+    Prediction: 4, 4, expression 4
+    Correct: 4, 4, `eval(quote(eval(quote(eval(quote(2 + 2))))))`
+    
+1.  `subset2()` has a bug if you use it with a single column data frame.
+    What should the following code return? How can you modify `subset2()`
+    so it returns the correct type of object?
+
+    Add `drop=FALSE` when selecting the rows to return:
+    ```{r}
+    subset2 <- function(x, condition) {
+      condition_call <- substitute(condition)
+      r <- eval(condition_call, x)
+      x[r, , drop=FALSE]
+    }
+    sample_df2 <- data.frame(x = 1:10)
+    subset2(sample_df2, x > 8)
+    ```
+
+1.  The real subset function (`subset.data.frame()`) removes missing
+    values in the condition. Modify `subset2()` to do the same: drop the 
+    offending rows.
+
+    ```{r}
+    subset2(data.frame(x=c(1, 2, NA, 44)), x < 4)
+    subset3 <- function(x, condition) {
+      condition_call <- substitute(condition)
+      r <- eval(condition_call, x)
+      x[!is.na(r) & r, , drop=FALSE]
+    }
+    subset3(data.frame(x=c(1, 2, NA, 44)), x < 4)
+    ```
+
+1.  What happens if you use `quote()` instead of `substitute()` inside of
+    `subset2()`?
+
+    ```{r}
+    sample_df <- data.frame(a = 1:5, b = 5:1, c = c(5, 3, 1, 4, 1))
+    subset_quote <- function(x, condition) {
+      condition_call <- quote(condition)
+      r <- eval(condition_call, x)
+      x[!is.na(r) & r, , drop=FALSE]
+    }
+    subset_quote(sample_df, a >= 4)
+    ```
+
+    Using `quote` will make 'condition_call' equal to symbol 'condition', so
+    that `eval`-ing it will cause it to be looked-up in
+    `subset_quote`'s caller, where it won't be found, causing an
+    error.
+    
+1.  The second argument in `subset()` allows you to select variables. It
+    treats variable names as if they were positions. This allows you to do 
+    things like `subset(mtcars, , -cyl)` to drop the cylinder variable, or
+    `subset(mtcars, , disp:drat)` to select all the variables between `disp`
+    and `drat`. How does this work? I've made this easier to understand by
+    extracting it out into its own function.
+
+    ```{r, eval = FALSE}
+    select <- function(df, vars) {
+      vars <- substitute(vars)
+      var_pos <- setNames(as.list(seq_along(df)), names(df))
+      pos <- eval(vars, var_pos)
+      df[, pos, drop = FALSE]
+    }
+    select(mtcars, -cyl)
+    ```
+
+    It first creates an index of variable positions, as 'var_pos',
+    with variable names as element names and position as values. It
+    then evaluates the 'vars' expression (e.g., `-cyl`) using the
+    index as the environment, so that variable names will be replaced
+    by their position, which can then be used as the column index into
+    the original data frame.
+    
+1.  What does `evalq()` do? Use it to reduce the amount of typing for the
+    examples above that use both `eval()` and `quote()`.
+
+    It is equivalent to `eval(quote(expr), ...)`, but we rarely used
+    `eval(quote(...))`, but rather `eval(substitute(...))`.
+
+
+### Scoping issues
+
+1.  `plyr::arrange()` works similarly to `subset()`, but instead of selecting
+    rows, it reorders them. How does it work? What does
+    `substitute(order(...))` do? Create a function that does only that
+    and experiment with it.
+
+    `substitute(order(...))` returns an expression in which `...` is
+    replaced by the quoted arguments that were passed as part of
+    `...`. For instance, if the call were `substitute(mtcars, cyl,
+    mpg)`, then `...` is '`cyl, mpg`', and the whole expression is
+    '`order(cyl, mpg)`'. When this is evaluated in the environment of
+    the data frame, it will return the new indexing of the rows of the
+    data frame which will put them in order of columns in 'cyl' and
+    'mpg' (i.e., whatever was in `...`).
+
+1.  What does `transform()` do? Read the documentation. How does it work?
+    Read the source code for `transform.data.frame()`. What does
+    `substitute(list(...))` do?
+
+    When given a data frame some expressions as named arguments, it
+    will evaluate the expressions in the environment of the data frame
+    and use their result to replace the variables in the data frame if
+    the argument's name matches the variable, or append them to the
+    data frame as a new variable.
+
+1.  `plyr::mutate()` is similar to `transform()` but it applies the
+    transformations sequentially so that transformation can refer to columns
+    that were just created:
+
+    ```{r, eval = FALSE}
+    df <- data.frame(x = 1:5)
+    transform(df, x2 = x * x, x3 = x2 * x)
+    plyr::mutate(df, x2 = x * x, x3 = x2 * x)
+    ```
+
+    How does mutate work? What's the key difference between `mutate()` and
+    `transform()`?
+
+    `mutate` loops through the named arguments, evaluates them in the
+    environment of the data frame, and puts the result into the data
+    frame before proceeding to the next argument, so that it can refer
+    to those that preceeded it.
+
+1.  What does `with()` do? How does it work? Read the source code for
+    `with.default()`. What does `within()` do? How does it work? Read the
+    source code for `within.data.frame()`. Why is the code so much more
+    complex than `with()`?
+
+    Given a data frame and an expression, `with` simply does a
+    `eval(substitute(expr), df)`, evaluating the expression in the
+    environment of the data frame. On the other hand, `within` checks
+    whether the evaluating the expression caused any changes in the
+    environment, and if so, makes the same changes to the (copy of
+    the) data frame and returns it.
+    
+### Calling from another function
+
+1.  The following R functions all use NSE. For each, describe how it uses NSE,
+    and read the documentation to determine its escape hatch.
+    * `rm()`
+    * `library()` and `require()`
+    * `substitute()`
+    * `data()`
+    * `data.frame()`
+
+1.  Base functions `match.fun()`, `page()`, and `ls()` all try to
+    automatically determine whether you want standard or non-standard
+    evaluation. Each uses a different approach. Figure out the essence
+    of each approach then compare and contrast.
+
+1.  Add an escape hatch to `plyr::mutate()` by splitting it into two functions.
+    One function should capture the unevaluated inputs. The other should take a 
+    data frame and list of expressions and perform the computation.
+
+1.  What's the escape hatch for `ggplot2::aes()`? What about `plyr::()`?
+    What do they have in common? What are the advantages and disadvantages
+    of their differences?
+
+1.  The version of `subset2_q()` I presented is a simplification of real
+    code. Why is the following version better?
+
+    ```{r}
+    subset2_q <- function(x, cond, env = parent.frame()) {
+      r <- eval(cond, x, env)
+      x[r, ]
+    }
+    ```
+
+    Rewrite `subset2()` and `subscramble()` to use this improved version.
+
+
+### NSE and escape hatches
+
+1.  Use `subs()` to convert the LHS to the RHS for each of the following pairs:
+    * `a + b + c` -> `a * b * c`
+    * `f(g(a, b), c)` -> `(a + b) * c`
+    * `f(a < b, c, d)` -> `if (a < b) c else d`
+
+2.  For each of the following pairs of expressions, describe why you can't
+    use `subs()` to convert one to the other.
+    * `a + b + c` -> `a + b * c`
+    * `f(a, b)` -> `f(a, b, c)`
+    * `f(a, b, c)` -> `f(a, b)`
+
+3.  How does `pryr::named_dots()` work? Read the source.
+
+
+### Downsides of NSE
+
+1.  What does the following function do? What's the escape hatch?
+    Do you think that this is an appropriate use of NSE?
+
+    ```{r}
+    nl <- function(...) {
+      dots <- named_dots(...)
+      lapply(dots, eval, parent.frame())
+    }
+    ```
+
+2.  Instead of relying on promises, you can use formulas created with `~`
+    to explicitly capture an expression and its environment. What are the
+    advantages and disadvantages of making quoting explicit? How does it
+    impact referential transparency?
+
+3.  Read the standard non-standard evaluation rules found at
+    <http://developer.r-project.org/nonstandard-eval.pdf>.
+
