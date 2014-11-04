@@ -170,5 +170,63 @@ transform.data.frame
 ```
 
 evaluates a list of the column names (actually, the expressions on column names) in the original data frame.
-foo
-bar
+
+
+```{r}
+plyr::mutate
+```
+
+`mutate` employs a for loop wherein each expression is evaluated in the environment of the data frame. transform does it all up front in one line.
+
+# `with`
+
+`with` was/is one of my favourite functions when I was first learning.  it lets you refer to variables in a dataframe or list by name, without attaching:
+
+```{r}
+df <- data.frame(a = 1, b = 2)
+with(df, a + b)
+```
+
+But how does it work?
+
+```{r}
+with.default
+```
+ Very simply, by capturing the expression and evaluating it with the data as an environment! setting`enclos` to the parent allows global variables to mix with data-frame variables:
+ 
+ 
+```{r}
+foo <- 7
+with(df, a + foo)
+```
+
+On the other hand, I never got into the habit of using `within`.  I understand that it works like transform:
+
+```{r}
+tl <- list(a = rnorm(20), b = rpois(20, 10))
+
+tl <- within(tl, sum(a, b))
+tl
+```
+
+er. It doesn't!
+
+```{r}
+within.data.frame
+```
+
+Wow. very hard to read! but because we are replacing part of an object (rather than simply returning the result of evaluating and expression) its bound to be that way.
+
+## Base escape hatches
+```{r}
+rm(tl)
+rm("foo")
+```
+`rm` allows a vetor of characters
+
+`library` is strange -- it accepts both quoted unquoted, unless `character.only = TRUE`, then only character.
+
+## cf different function
+
+
+
