@@ -61,7 +61,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <div id="TOC">
 <ul>
 <li><a href="#exercises">Exercises</a><ul>
-<li><a href="#one-important-feature-of-deparse-to-be-aware-of-when-programming-is-that-it-can-return-multiple-strings-if-the-input-is-too-long.-for-example-the-following-call-produces-a-vector-of-length-two">One important feature of <code>deparse()</code> to be aware of when programming is that it can return multiple strings if the input is too long. For example, the following call produces a vector of length two:</a></li>
+<li><a href="#one-important-feature-of-deparse-to-be-aware-of-when-programming-is-that-it-can-return-multiple-strings-if-the-input-is-too-long.-for-example-the-following-call-produces-a-vector-of-length-two.-why-does-this-happen-carefully-read-the-documentation.-can-you-write-a-wrapper-around-deparse-so-that-it-always-returns-a-single-string">One important feature of <code>deparse()</code> to be aware of when programming is that it can return multiple strings if the input is too long. For example, the following call produces a vector of length two. Why does this happen? Carefully read the documentation. Can you write a wrapper around <code>deparse()</code> so that it always returns a single string?</a></li>
 <li><a href="#why-does-as.date.default-use-substitute-and-deparse-why-does-pairwise.t.test-use-them-read-the-source-code.">Why does <code>as.Date.default()</code> use <code>substitute()</code> and <code>deparse()</code>? Why does <code>pairwise.t.test()</code> use them? Read the source code.</a></li>
 <li><a href="#pairwise.t.test-assumes-that-deparse-always-returns-a-length-one-character-vector.-can-you-construct-an-input-that-violates-this-expectation-what-happens"><code>pairwise.t.test()</code> assumes that <code>deparse()</code> always returns a length one character vector. Can you construct an input that violates this expectation? What happens?</a></li>
 <li><a href="#f-defined-above-just-calls-substitute.-why-cant-we-use-it-to-define-g-in-other-words-what-will-the-following-code-return-first-make-a-prediction.-then-run-the-code-and-think-about-the-results."><code>f()</code>, defined above, just calls <code>substitute()</code>. Why can’t we use it to define <code>g()</code>? In other words, what will the following code return? First make a prediction. Then run the code and think about the results.</a></li>
@@ -94,19 +94,45 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 
 <div id="exercises" class="section level2">
 <h2>Exercises</h2>
-<div id="one-important-feature-of-deparse-to-be-aware-of-when-programming-is-that-it-can-return-multiple-strings-if-the-input-is-too-long.-for-example-the-following-call-produces-a-vector-of-length-two" class="section level3">
-<h3>One important feature of <code>deparse()</code> to be aware of when programming is that it can return multiple strings if the input is too long. For example, the following call produces a vector of length two:</h3>
-<pre class="r"><code>g(a + b + c + d + e + f + g + h + i + j + k + l + m +
+<div id="one-important-feature-of-deparse-to-be-aware-of-when-programming-is-that-it-can-return-multiple-strings-if-the-input-is-too-long.-for-example-the-following-call-produces-a-vector-of-length-two.-why-does-this-happen-carefully-read-the-documentation.-can-you-write-a-wrapper-around-deparse-so-that-it-always-returns-a-single-string" class="section level3">
+<h3>One important feature of <code>deparse()</code> to be aware of when programming is that it can return multiple strings if the input is too long. For example, the following call produces a vector of length two. Why does this happen? Carefully read the documentation. Can you write a wrapper around <code>deparse()</code> so that it always returns a single string?</h3>
+<p>I’m guessing the reason it will return multiple strings has to do with the <code>width.cutoff</code> argument, which has a default of <code>60L</code>.</p>
+<p>One way to deal with this would be to write a wrapper that pastes a bunch of strings together.</p>
+<pre class="r"><code>g &lt;- function(x) deparse(substitute(x))
+
+g(a + b + c + d + e + f + g + h + i + j + k + l + m +
   n + o + p + q + r + s + t + u + v + w + x + y + z)</code></pre>
-<p>Why does this happen? Carefully read the documentation. Can you write a wrapper around <code>deparse()</code> so that it always returns a single string?</p>
+<pre><code>## [1] &quot;a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + &quot;
+## [2] &quot;    q + r + s + t + u + v + w + x + y + z&quot;</code></pre>
+<pre class="r"><code>to_string &lt;- function(x)
+{
+  paste(x[1:length(x)], collapse = &quot; &quot;)
+}
+
+to_string(g(a + b + c + d + e + f + g + h + i + j + k + l +
+            m + n + o + p + q + r + s + t + u + v + w + x + y + z))</code></pre>
+<pre><code>## [1] &quot;a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p +      q + r + s + t + u + v + w + x + y + z&quot;</code></pre>
+<p>I’m not sure why the large gap between p and q is created.</p>
 <hr />
 </div>
 <div id="why-does-as.date.default-use-substitute-and-deparse-why-does-pairwise.t.test-use-them-read-the-source-code." class="section level3">
 <h3>Why does <code>as.Date.default()</code> use <code>substitute()</code> and <code>deparse()</code>? Why does <code>pairwise.t.test()</code> use them? Read the source code.</h3>
+<p><code>as.Date.default</code> uses them in order to return the value of <code>x</code> in an error if the user makes a mistake.</p>
+<pre class="r"><code>function (x, ...) 
+{
+    if (inherits(x, &quot;Date&quot;)) 
+        return(x)
+    if (is.logical(x) &amp;&amp; all(is.na(x))) 
+        return(structure(as.numeric(x), class = &quot;Date&quot;))
+    stop(gettextf(&quot;do not know how to convert '%s' to class %s&quot;, 
+        deparse(substitute(x)), dQuote(&quot;Date&quot;)), domain = NA)
+}</code></pre>
+<p><code>pairwise.t.test</code> uses this to take your parameters and convert them into a “data name”.</p>
 <hr />
 </div>
 <div id="pairwise.t.test-assumes-that-deparse-always-returns-a-length-one-character-vector.-can-you-construct-an-input-that-violates-this-expectation-what-happens" class="section level3">
 <h3><code>pairwise.t.test()</code> assumes that <code>deparse()</code> always returns a length one character vector. Can you construct an input that violates this expectation? What happens?</h3>
+<p>Not going to do this one. This should only effect the data name, though, and may give some kind of weird looking output for that value.</p>
 <hr />
 </div>
 <div id="f-defined-above-just-calls-substitute.-why-cant-we-use-it-to-define-g-in-other-words-what-will-the-following-code-return-first-make-a-prediction.-then-run-the-code-and-think-about-the-results." class="section level3">
@@ -116,6 +142,7 @@ g &lt;- function(x) deparse(f(x))
 g(1:10)
 g(x)
 g(x + y ^ 2 / z + exp(a * sin(b)))</code></pre>
+<p>I thought <code>g(x)</code> would deparse <code>f(x)</code> instead of running the code. But actually it deparses the output of <code>f(x)</code>, thereby always returning <code>x</code>.</p>
 <hr />
 </div>
 <div id="predict-the-results-of-the-following-lines-of-code" class="section level3">
@@ -242,6 +269,9 @@ f(a, b, c) -&gt; f(a, b)</code></pre>
 </div>
 <div id="reading-notes" class="section level2">
 <h2>Reading Notes</h2>
+<ul>
+<li><code>deparse(substitute())</code> takes the code you typed and creates a vector out of it</li>
+</ul>
 </div>
 <div id="discussion-notes" class="section level2">
 <h2>Discussion Notes</h2>

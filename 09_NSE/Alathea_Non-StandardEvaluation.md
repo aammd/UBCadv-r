@@ -4,23 +4,67 @@ Alathea DL
 
 ## Exercises
 
-### One important feature of `deparse()` to be aware of when programming is that it can return multiple strings if the input is too long. For example, the following call produces a vector of length two:
+### One important feature of `deparse()` to be aware of when programming is that it can return multiple strings if the input is too long. For example, the following call produces a vector of length two. Why does this happen? Carefully read the documentation. Can you write a wrapper around `deparse()` so that it always returns a single string?
+
+I'm guessing the reason it will return multiple strings has to do with the `width.cutoff` argument, which has a default of `60L`.
+
+One way to deal with this would be to write a wrapper that pastes a bunch of strings together.
 
 
 ```r
+g <- function(x) deparse(substitute(x))
+
 g(a + b + c + d + e + f + g + h + i + j + k + l + m +
   n + o + p + q + r + s + t + u + v + w + x + y + z)
 ```
 
-Why does this happen? Carefully read the documentation. Can you write a wrapper around `deparse()` so that it always returns a single string?
+```
+## [1] "a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + "
+## [2] "    q + r + s + t + u + v + w + x + y + z"
+```
+
+```r
+to_string <- function(x)
+{
+  paste(x[1:length(x)], collapse = " ")
+}
+
+to_string(g(a + b + c + d + e + f + g + h + i + j + k + l +
+            m + n + o + p + q + r + s + t + u + v + w + x + y + z))
+```
+
+```
+## [1] "a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p +      q + r + s + t + u + v + w + x + y + z"
+```
+
+I'm not sure why the large gap between p and q is created.
 
 ***
 
 ### Why does `as.Date.default()` use `substitute()` and `deparse()`? Why does `pairwise.t.test()` use them? Read the source code.
 
+`as.Date.default` uses them in order to return the value of `x` in an error if the user makes a mistake.
+
+
+```r
+function (x, ...) 
+{
+    if (inherits(x, "Date")) 
+        return(x)
+    if (is.logical(x) && all(is.na(x))) 
+        return(structure(as.numeric(x), class = "Date"))
+    stop(gettextf("do not know how to convert '%s' to class %s", 
+        deparse(substitute(x)), dQuote("Date")), domain = NA)
+}
+```
+
+`pairwise.t.test` uses this to take your parameters and convert them into a "data name".
+
 ***
 
 ### `pairwise.t.test()` assumes that `deparse()` always returns a length one character vector. Can you construct an input that violates this expectation? What happens?
+
+Not going to do this one.  This should only effect the data name, though, and may give some kind of weird looking output for that value.
 
 ***
 
@@ -34,6 +78,8 @@ g(1:10)
 g(x)
 g(x + y ^ 2 / z + exp(a * sin(b)))
 ```
+
+I thought `g(x)` would deparse `f(x)` instead of running the code.  But actually it deparses the output of `f(x)`, thereby always returning `x`.
 
 ***
 
@@ -191,5 +237,7 @@ nl <- function(...) {
 
 
 ## Reading Notes
+
+* `deparse(substitute())` takes the code you typed and creates a vector out of it
 
 ## Discussion Notes
