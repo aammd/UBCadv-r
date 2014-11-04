@@ -47,9 +47,8 @@ pairwise.t.test(test$dat, test$fac)
 
 ```{r}
 test2 <- data.frame(factorthatwehopehassomeexplanatorypowerbutthenagainitmightnot = gl(2, k = 5), dat = rnorm(10))
-pairwise.t.test(test2$dat, test2$fac)
+pairwise.t.test(test2$factorthatwehopehassomeexplanatorypowerbutthenagainitmightnot, test2$fac)
 ```
-WHAT?!
 
 I thought that these would return f(whatever_was_in_there) but it didn't, it returned X every time. But Why?  Because 
 ```{r}
@@ -58,10 +57,7 @@ deparse(substitute(x))
 is the only thing that gets evalutated?  x is never evaluated?
 
 ```{r error = TRUE}
-f <- function(x){
-  force(x)
-  substitute(x)
-  }
+f <- function(a) substitute(a) 
 
 g <- function(x) deparse(f(x))
 g(1:10)
@@ -104,11 +100,8 @@ subset2 <- function(x, condition) {
   res <- x
   condition_call <- substitute(condition)
   r <- eval(condition_call, x)
-  res <- x[r, ]
-  res <- as.data.frame(res)
-  names(res) <- names(x)
-  res
-}
+  x[r, , drop = FALSE]
+  }
 
 sample_df2 <- data.frame(x = 1:10)
 subset2(sample_df2, x > 8)
@@ -152,7 +145,7 @@ evalq(2 + 2)
 
 truth <- list(fact = "science is cool", fact2 = "but its hard to find work")
 evalq(truth)
-evalq(fact)
+# evalq(fact)
 evalq(fact, truth)
 ```
 
@@ -203,9 +196,9 @@ with(df, a + foo)
 On the other hand, I never got into the habit of using `within`.  I understand that it works like transform:
 
 ```{r}
-tl <- list(a = rnorm(20), b = rpois(20, 10))
+tl <- data.frame(a = rnorm(20), b = rpois(20, 10))
 
-tl <- within(tl, sum(a, b))
+tl <- within(tl, new <- sum(a, b))
 tl
 ```
 

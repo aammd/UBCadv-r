@@ -144,7 +144,7 @@ subset5 <- function(x, condition) {
   na.omit(x[r, , drop = FALSE])
 }
 
-subset4(sample_df3, x > 8)
+subset5(sample_df3, x > 8)
 ```
 
 Apparently, nothing different happens
