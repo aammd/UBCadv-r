@@ -147,24 +147,91 @@ g(x + y ^ 2 / z + exp(a * sin(b)))</code></pre>
 </div>
 <div id="predict-the-results-of-the-following-lines-of-code" class="section level3">
 <h3>Predict the results of the following lines of code:</h3>
-<pre class="r"><code>eval(quote(eval(quote(eval(quote(2 + 2))))))
+<pre class="r"><code># 4
+eval(quote(eval(quote(eval(quote(2 + 2))))))
+
+# 4
 eval(eval(quote(eval(quote(eval(quote(2 + 2)))))))
+
+# 2 + 2; whoops, he tricked me on this one
+# should be eval(quote(eval(quote(eval(quote(2 + 2))))))
 quote(eval(quote(eval(quote(eval(quote(2 + 2)))))))</code></pre>
 <hr />
 </div>
 <div id="subset2-has-a-bug-if-you-use-it-with-a-single-column-data-frame.-what-should-the-following-code-return-how-can-you-modify-subset2-so-it-returns-the-correct-type-of-object" class="section level3">
 <h3><code>subset2()</code> has a bug if you use it with a single column data frame. What should the following code return? How can you modify <code>subset2()</code> so it returns the correct type of object?</h3>
-<pre class="r"><code>sample_df2 &lt;- data.frame(x = 1:10)
+<pre class="r"><code>subset2 &lt;- function(x, condition) {
+  condition_call &lt;- substitute(condition)
+  r &lt;- eval(condition_call, x)
+  x[r, ]
+}
+
+sample_df2 &lt;- data.frame(x = 1:10)
 subset2(sample_df2, x &gt; 8)
 #&gt; [1]  9 10</code></pre>
+<p>If we prefer <code>subset2</code> to return the same type of object that was input, just set <code>drop = F</code>:</p>
+<pre class="r"><code>subset3 &lt;- function(x, condition) {
+  condition_call &lt;- substitute(condition)
+  r &lt;- eval(condition_call, x)
+  x[r, , drop = FALSE]
+}
+
+sample_df2 &lt;- data.frame(x = 1:10)
+subset3(sample_df2, x &gt; 8)</code></pre>
+<pre><code>##     x
+## 9   9
+## 10 10</code></pre>
 <hr />
 </div>
 <div id="the-real-subset-function-subset.data.frame-removes-missing-values-in-the-condition.-modify-subset2-to-do-the-same-drop-the-offending-rows." class="section level3">
 <h3>The real subset function (<code>subset.data.frame()</code>) removes missing values in the condition. Modify <code>subset2()</code> to do the same: drop the offending rows.</h3>
+<pre class="r"><code>subset4 &lt;- function(x, condition) {
+  condition_call &lt;- substitute(condition)
+  r &lt;- eval(condition_call, x)
+  na.omit(x[r, , drop = FALSE])
+}
+
+sample_df3 &lt;- data.frame(x = c(1:10, NA, 11:20))
+subset4(sample_df3, x &gt; 8)</code></pre>
+<pre><code>##     x
+## 9   9
+## 10 10
+## 12 11
+## 13 12
+## 14 13
+## 15 14
+## 16 15
+## 17 16
+## 18 17
+## 19 18
+## 20 19
+## 21 20</code></pre>
 <hr />
 </div>
 <div id="what-happens-if-you-use-quote-instead-of-substitute-inside-of-subset2" class="section level3">
 <h3>What happens if you use <code>quote()</code> instead of <code>substitute()</code> inside of <code>subset2()</code>?</h3>
+<pre class="r"><code>subset5 &lt;- function(x, condition) {
+  condition_call &lt;- quote(condition)
+  r &lt;- eval(condition_call, x)
+  na.omit(x[r, , drop = FALSE])
+}
+
+subset4(sample_df3, x &gt; 8)</code></pre>
+<pre><code>##     x
+## 9   9
+## 10 10
+## 12 11
+## 13 12
+## 14 13
+## 15 14
+## 16 15
+## 17 16
+## 18 17
+## 19 18
+## 20 19
+## 21 20</code></pre>
+<p>Apparently, nothing different happens</p>
+<hr />
 </div>
 <div id="the-second-argument-in-subset-allows-you-to-select-variables.-it-treats-variable-names-as-if-they-were-positions.-this-allows-you-to-do-things-like-subsetmtcars--cyl-to-drop-the-cylinder-variable-or-subsetmtcars-dispdrat-to-select-all-the-variables-between-disp-and-drat.-how-does-this-work-ive-made-this-easier-to-understand-by-extracting-it-out-into-its-own-function." class="section level3">
 <h3>The second argument in <code>subset()</code> allows you to select variables. It treats variable names as if they were positions. This allows you to do things like <code>subset(mtcars, , -cyl)</code> to drop the cylinder variable, or <code>subset(mtcars, , disp:drat)</code> to select all the variables between disp and drat. How does this work? I’ve made this easier to understand by extracting it out into its own function.</h3>
@@ -175,10 +242,23 @@ subset2(sample_df2, x &gt; 8)
   df[, pos, drop = FALSE]
 }
 select(mtcars, -cyl)</code></pre>
+<p><code>var_pos</code> is a named list containing the index of each data frame column. The names in the list are the names of the data frame columns. The <code>vars</code> are used to go throught this list and either select or remove the selected columns. This gives the positions of the desired columns, which is extracted from the original data frame.</p>
 <hr />
 </div>
 <div id="what-does-evalq-do-use-it-to-reduce-the-amount-of-typing-for-the-examples-above-that-use-both-eval-and-quote." class="section level3">
 <h3>What does <code>evalq()</code> do? Use it to reduce the amount of typing for the examples above that use both <code>eval()</code> and <code>quote()</code>.</h3>
+<p><code>evalq</code> is the same as <code>eval</code>, but with the expression <code>quote</code>d.</p>
+<pre class="r"><code># 4
+eval(quote(eval(quote(eval(quote(2 + 2))))))
+evalq(evalq(evalq(2+2)))
+
+# 4
+eval(eval(quote(eval(quote(eval(quote(2 + 2)))))))
+eval(evalq(evalq(evalq(2+2))))
+
+# should be eval(quote(eval(quote(eval(quote(2 + 2))))))
+# in this case, evalq cannot be used.
+quote(eval(quote(eval(quote(eval(quote(2 + 2)))))))</code></pre>
 <hr />
 </div>
 <div id="plyrarrange-works-similarly-to-subset-but-instead-of-selecting-rows-it-reorders-them.-how-does-it-work-what-does-substituteorder...-do-create-a-function-that-does-only-that-and-experiment-with-it." class="section level3">
@@ -271,6 +351,8 @@ f(a, b, c) -&gt; f(a, b)</code></pre>
 <h2>Reading Notes</h2>
 <ul>
 <li><code>deparse(substitute())</code> takes the code you typed and creates a vector out of it</li>
+<li><code>quote</code>: simplified version of <code>substitute()</code></li>
+<li><code>eval</code>: opposite of <code>quote</code></li>
 </ul>
 </div>
 <div id="discussion-notes" class="section level2">

@@ -87,8 +87,14 @@ I thought `g(x)` would deparse `f(x)` instead of running the code.  But actually
 
 
 ```r
+# 4
 eval(quote(eval(quote(eval(quote(2 + 2))))))
+
+# 4
 eval(eval(quote(eval(quote(eval(quote(2 + 2)))))))
+
+# 2 + 2; whoops, he tricked me on this one
+# should be eval(quote(eval(quote(eval(quote(2 + 2))))))
 quote(eval(quote(eval(quote(eval(quote(2 + 2)))))))
 ```
 
@@ -98,18 +104,103 @@ quote(eval(quote(eval(quote(eval(quote(2 + 2)))))))
 
 
 ```r
+subset2 <- function(x, condition) {
+  condition_call <- substitute(condition)
+  r <- eval(condition_call, x)
+  x[r, ]
+}
+
 sample_df2 <- data.frame(x = 1:10)
 subset2(sample_df2, x > 8)
 #> [1]  9 10
+```
+
+If we prefer `subset2` to return the same type of object that was input, just set `drop = F`:
+
+
+```r
+subset3 <- function(x, condition) {
+  condition_call <- substitute(condition)
+  r <- eval(condition_call, x)
+  x[r, , drop = FALSE]
+}
+
+sample_df2 <- data.frame(x = 1:10)
+subset3(sample_df2, x > 8)
+```
+
+```
+##     x
+## 9   9
+## 10 10
 ```
 
 ***
 
 ### The real subset function (`subset.data.frame()`) removes missing values in the condition. Modify `subset2()` to do the same: drop the offending rows.
 
+
+```r
+subset4 <- function(x, condition) {
+  condition_call <- substitute(condition)
+  r <- eval(condition_call, x)
+  na.omit(x[r, , drop = FALSE])
+}
+
+sample_df3 <- data.frame(x = c(1:10, NA, 11:20))
+subset4(sample_df3, x > 8)
+```
+
+```
+##     x
+## 9   9
+## 10 10
+## 12 11
+## 13 12
+## 14 13
+## 15 14
+## 16 15
+## 17 16
+## 18 17
+## 19 18
+## 20 19
+## 21 20
+```
+
 ***
 
 ### What happens if you use `quote()` instead of `substitute()` inside of `subset2()`?
+
+
+```r
+subset5 <- function(x, condition) {
+  condition_call <- quote(condition)
+  r <- eval(condition_call, x)
+  na.omit(x[r, , drop = FALSE])
+}
+
+subset4(sample_df3, x > 8)
+```
+
+```
+##     x
+## 9   9
+## 10 10
+## 12 11
+## 13 12
+## 14 13
+## 15 14
+## 16 15
+## 17 16
+## 18 17
+## 19 18
+## 20 19
+## 21 20
+```
+
+Apparently, nothing different happens
+
+***
 
 ### The second argument in `subset()` allows you to select variables. It treats variable names as if they were positions. This allows you to do things like `subset(mtcars, , -cyl)` to drop the cylinder variable, or `subset(mtcars, , disp:drat)` to select all the variables between disp and drat. How does this work? I’ve made this easier to understand by extracting it out into its own function.
 
@@ -124,9 +215,28 @@ select <- function(df, vars) {
 select(mtcars, -cyl)
 ```
 
+`var_pos` is a named list containing the index of each data frame column.  The names in the list are the names of the data frame columns.  The `vars` are used to go throught this list and either select or remove the selected columns.  This gives the positions of the desired columns, which is extracted from the original data frame.
+
 ***
 
 ### What does `evalq()` do? Use it to reduce the amount of typing for the examples above that use both `eval()` and `quote()`.
+
+`evalq` is the same as `eval`, but with the expression `quote`d.
+
+
+```r
+# 4
+eval(quote(eval(quote(eval(quote(2 + 2))))))
+evalq(evalq(evalq(2+2)))
+
+# 4
+eval(eval(quote(eval(quote(eval(quote(2 + 2)))))))
+eval(evalq(evalq(evalq(2+2))))
+
+# should be eval(quote(eval(quote(eval(quote(2 + 2))))))
+# in this case, evalq cannot be used.
+quote(eval(quote(eval(quote(eval(quote(2 + 2)))))))
+```
 
 ***
 
@@ -239,5 +349,7 @@ nl <- function(...) {
 ## Reading Notes
 
 * `deparse(substitute())` takes the code you typed and creates a vector out of it
+* `quote`: simplified version of `substitute()`
+* `eval`: opposite of `quote`
 
 ## Discussion Notes
