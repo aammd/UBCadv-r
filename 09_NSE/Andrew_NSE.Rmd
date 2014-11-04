@@ -164,4 +164,5 @@ plyr::arrange
 transform.data.frame
 ```
 
-evaluates a list of the column names (actually, the expressions on column names) in the original data frame
+evaluates a list of the column names (actually, the expressions on column names) in the original data frame.
+foo
