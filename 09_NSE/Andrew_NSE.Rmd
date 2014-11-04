@@ -1,6 +1,11 @@
 ---
-title: "NonStandardEvaluation"
-output: html_document
+title: "Andrew_FOs"
+author: "Andrew MacDonald"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    toc: yes
+    keep_md: TRUE
 ---
 
 1. 
