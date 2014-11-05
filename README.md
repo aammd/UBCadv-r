@@ -17,8 +17,8 @@ We meet Thursdays at **1pm PST in Biodiversity 224.**
 | [Environments](http://adv-r.had.co.nz/Environments.html)                          | week 05: 2014 July 31 |
 | [Debugging](http://adv-r.had.co.nz/Exceptions-Debugging.html)                     | week 06: 2014 Aug  07 |
 | [Fnl Programming](http://adv-r.had.co.nz/Functional-programming.html)             | week 07: 2014 Aug  21 |
-| [Functionals](http://adv-r.had.co.nz/Functionals.html)                            | week 08               |
-| [Function Operators](http://adv-r.had.co.nz/Function-operators.html)              | week 09               |
+| [Functionals](http://adv-r.had.co.nz/Functionals.html)                            | week 08: 2014 Sep 4   |
+| [Function Operators](http://adv-r.had.co.nz/Function-operators.html)              | week 09: 2014 Oct 7   |
 | [Non-Standard Evaluation](http://adv-r.had.co.nz/Computing-on-the-language.html)  | week 10               |
 | [Expressions](http://adv-r.had.co.nz/Expressions.html)                            | week 11               |
 

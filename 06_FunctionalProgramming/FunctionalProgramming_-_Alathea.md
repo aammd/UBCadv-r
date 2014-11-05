@@ -4,7 +4,7 @@ Alathea
 
 ## Exercises
 
-### Given a function, like `mean`, `match.fun()` lets you find a function. Given a function, can you find its name? Why doesn’t that make sense in R?
+### Given a function, like `mean`, `match.fun()` lets you find a function. Given a function, can you find its name? Why doesnt that make sense in R?
 
 1) A function may not have a name, and
 2) a function does not have a `name` attribute.
@@ -26,7 +26,7 @@ data.frame(cv)
 
 > y = x ^ 2 - x, x in [0, 10]
 >
-> y = sin(x) + cos(x), x in [-π, π]
+> y = sin(x) + cos(x), x in [-p, p]
 >
 > y = exp(x) / x, x in [10, 20]
 
@@ -44,7 +44,7 @@ integrate(function(x) sin(x) + cos(x), -pi, pi)
 ```
 
 ```
-## 2.872e-16 with absolute error < 6.3e-14
+## 2.616e-16 with absolute error < 6.3e-14
 ```
 
 ```r
@@ -55,7 +55,7 @@ integrate(function(x) exp(x)/x, 10, 20)
 ## 25613160 with absolute error < 2.8e-07
 ```
 
-### A good rule of thumb is that an anonymous function should fit on one line and shouldn’t need to use `{}`. Review your code. Where could you have used an anonymous function instead of a named function? Where should you have used a named function instead of an anonymous function?
+### A good rule of thumb is that an anonymous function should fit on one line and shouldnt need to use `{}`. Review your code. Where could you have used an anonymous function instead of a named function? Where should you have used a named function instead of an anonymous function?
 
 ### Why are functions created by other functions called closures?
 
@@ -109,8 +109,8 @@ approxfun(x, y)
 ```
 ## function (v) 
 ## .approxfun(x, y, v, method, yleft, yright, f)
-## <bytecode: 0x894f69c>
-## <environment: 0x894f370>
+## <bytecode: 0x0000000007753168>
+## <environment: 0x0000000007753a38>
 ```
 
 ### What does `ecdf()` do? What does it return?
@@ -187,19 +187,19 @@ summary(fit)
 ## lm(formula = y ~ x)
 ## 
 ## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -0.361 -0.104  0.000  0.114  0.508 
+##     Min      1Q  Median      3Q     Max 
+## -0.4746 -0.2289 -0.0436  0.2246  0.5522 
 ## 
 ## Coefficients:
-##             Estimate Std. Error t value Pr(>|t|)  
-## (Intercept)  0.51108    0.17898    2.86    0.021 *
-## x           -0.00863    0.02884   -0.30    0.772  
+##             Estimate Std. Error t value Pr(>|t|)   
+## (Intercept)   0.8540     0.2304    3.71    0.006 **
+## x            -0.0647     0.0371   -1.74    0.120   
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.262 on 8 degrees of freedom
-## Multiple R-squared:  0.0111,	Adjusted R-squared:  -0.113 
-## F-statistic: 0.0895 on 1 and 8 DF,  p-value: 0.772
+## Residual standard error: 0.337 on 8 degrees of freedom
+## Multiple R-squared:  0.275,	Adjusted R-squared:  0.184 
+## F-statistic: 3.03 on 1 and 8 DF,  p-value: 0.12
 ```
 
 ```r
@@ -216,16 +216,16 @@ lapply(my_summary, function(f) f(fit))
 
 ```
 ## $resid_min
-## [1] -0.3607
+## [1] -0.4746
 ## 
 ## $resid_median
-## [1] 3.289e-05
+## [1] -0.04357
 ## 
 ## $resid_max
-## [1] 0.508
+## [1] 0.5522
 ## 
 ## $resid_se
-## [1] 0.0247
+## [1] 0.0318
 ## 
 ## $resid_df
 ## [1] 8
@@ -304,7 +304,7 @@ data.frame(areas)
 ## 1       1.996   1.996     1.996 1.996    1.996       1.996 1.996   1.996
 ```
 
-### The trade-off between integration rules is that more complex rules are slower to compute, but need fewer pieces. For `sin()` in the range `[0, π]`, determine the number of pieces needed so that each rule will be equally accurate. Illustrate your results with a graph. How do they change for different functions? `sin(1 / x^2)` is particularly challenging.
+### The trade-off between integration rules is that more complex rules are slower to compute, but need fewer pieces. For `sin()` in the range `[0, p]`, determine the number of pieces needed so that each rule will be equally accurate. Illustrate your results with a graph. How do they change for different functions? `sin(1 / x^2)` is particularly challenging.
 
 
 
@@ -312,6 +312,8 @@ data.frame(areas)
 ***
 
 ## Discussion Notes
+
+Exercise #2 = Box-Cox transformation.
 
 ***
 ***
@@ -340,7 +342,7 @@ function within a function.  these can often be anonymous
 
 #### Mutable state
 
-> What happens if you don’t use a closure? What happens if you use <- instead of <<-? Make predictions about what will happen if you replace `new_counter()` with the variants below, then run the code and check your predictions.
+> What happens if you dont use a closure? What happens if you use <- instead of <<-? Make predictions about what will happen if you replace `new_counter()` with the variants below, then run the code and check your predictions.
 
 
 ```r

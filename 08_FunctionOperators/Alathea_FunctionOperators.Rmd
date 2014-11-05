@@ -1,0 +1,552 @@
+---
+title: "Function Operators"
+author: "Alathea DL"
+date: '2014-10-07'
+output:
+  html_document:
+    keep_md: yes
+    toc: yes
+---
+
+```{r packages, echo = FALSE}
+library(pryr)
+library(plyr)
+library(memoise)
+```
+
+## Behavioural FOs
+
+### Write a FO that logs a time stamp and message to a file every time a function is run.
+
+```{r log_fo, eval = FALSE}
+make_log <- function(f, filename = "08_FunctionOperators/adl_log_file.txt")
+{
+  function(...){
+    # run the fuction
+    result <- f(...)
+  
+    # store time and message
+    cat("Function called at", as.character(Sys.time()), "\n", sep = " ",
+        file = filename, append = TRUE)
+    
+    result
+  }
+}
+
+make_log(rnorm)(10)
+```
+
+***
+
+### What does the following function do? What would be a good name for it?
+
+```{r mystery_function, eval = FALSE}
+f <- function(g) {
+  force(g)
+  result <- NULL
+  function(...) {
+    if (is.null(result)) {
+      result <<- g(...)
+    }
+    result
+  }
+}
+runif2 <- f(runif)
+runif2(5)
+#> [1] 0.3750332 0.4502083 0.7858626 0.1851057 0.9658681
+runif2(10)
+#> [1] 0.3750332 0.4502083 0.7858626 0.1851057 0.9658681
+```
+
+~~It forces the value of the function at the time `f` is run.  In the case of random number generation, this is particularly noticeable because the output of the function depends on the system time.  So, if you force the function at a particular time, the output of the generator will always be the same.~~
+
+It stores the result after the first time the function is run
+
+***
+
+### Modify `delay_by()` so that instead of delaying by a fixed amount of time, it ensures that a certain amount of time has elapsed since the function was last called. That is, if you called `g <- delay_by(1, f); g(); Sys.sleep(2); g()` there shouldn’t be an extra delay.
+
+```{r delay_by}
+delay_by <- function(delay, f) {
+  force(f)
+  function(...) {
+    cat(as.character(Sys.time()), "\n")
+    Sys.sleep(delay)
+    f(...)
+  }
+}
+
+g <- delay_by(2, Sys.time)
+g()
+```
+
+```{r delay_by2}
+delay_by2 <- function(delay, f)
+{
+  delay_until <- Sys.time()
+  
+  function(...)
+  {
+    if(delay_until - Sys.time() > 0) {
+      Sys.sleep(delay_until - Sys.time())
+    }
+    
+    res <- f(...)
+    delay_until <<- Sys.time() + delay
+    res
+  }  
+}
+
+# 5 second time delay between calls
+g <- delay_by2(5, Sys.time)
+g()
+g()
+```
+
+***
+
+### Write `wait_until()` which delays execution until a specific time.
+
+```{r wait_until, eval = FALSE}
+wait_until <- function(when, f)
+{
+  force(f)
+  
+  function(...)
+  {
+    cat("function initiated at: ", as.character(Sys.time()), "\n")
+    
+    res <- f(...)
+    Sys.sleep(when - Sys.time())
+    
+    cat("function output at: ", as.character(Sys.time()), "\n") 
+    
+    res
+  }
+}
+
+time <- as.POSIXct("11:57:00", format = "%H:%M:%S")
+h <- wait_until(time, Sys.time)
+h()
+
+# function initiated at:  2014-10-07 11:56:58 
+# function output at:  2014-10-07 11:57:00 
+# [1] "2014-10-07 11:56:58 PDT"
+```
+
+***
+
+### There are three places we could have added a memoise call: why did we choose the one we did?
+
+`download <- dot_every(10, memoise(delay_by(1, download_file)))`
+
+This is the chosen version.
+
+`download <- memoise(dot_every(10, delay_by(1, download_file)))`
+
+This will still add dots even if you don't want the file.
+
+`download <- dot_every(10, delay_by(1, memoise(download_file)))`
+
+This will still add the delay even if you don't want the file.
+
+***
+
+### Why is the `remember()` function inefficient? How could you implement it in more efficient way?
+
+```{r remember, eval = FALSE}
+remember <- function() {
+  memory <- list()
+  f <- function(...) {
+    # This is inefficient!
+    memory <<- append(memory, list(...))
+    invisible()
+  }
+
+  structure(f, class = "remember")
+}
+```
+
+I am guessing the inefficiency has to do with having an inconsistent size.  I'm not sure though.
+
+***
+
+### Why does the following code, from stackoverflow, not do what you expect?  How can you modify `f` so that it works correctly?
+
+```{r stackoverflow, eval = FALSE}
+# return a linear function with slope a and intercept b.
+f <- function(a, b){
+  force(a)
+  force(b)
+  function(x){
+    a * x + b
+  }
+}
+
+# create a list of functions with different parameters.
+fs <- Map(f, a = c(0, 1), b = c(0, 1))
+
+fs[[1]](3)
+#> [1] 4
+# should return 0 * 3 + 0 = 0
+```
+
+Lazy evaluation so you need to force the values of a and b before creating the function.
+
+## Output FOs
+
+### Create a `negative()` FO that flips the sign of the output of the function to which it is applied.
+
+```{r negative}
+negative <- function(f)
+{
+  force(f)
+  function(...)
+  {
+    res <- f(...)
+    -1 * res
+  }
+}
+
+a <- negative(runif)
+runif(10, 0, 10)
+a(10, 0, 10)
+```
+
+***
+
+### The evaluate package makes it easy to capture all the outputs (results, text, messages, warnings, errors, and plots) from an expression. Create a function like `capture_it()` that also captures the warnings and errors generated by a function.
+
+```{r capture_all, eval = FALSE}
+library(evaluate)
+
+capture_all <- function(f) {
+  force(f)
+  function(...) {
+    evaluate(f(...), stop_on_error = 0, keep_warning = TRUE,
+             keep_message = TRUE)
+  }
+}
+
+a <- capture_all(log)
+log(-1)
+a(-1)
+
+# [[1]]
+# $src
+# [1] "NaN"
+# 
+# attr(,"class")
+# [1] "source"
+# 
+# [[2]]
+# [1] "[1] NaN\n"
+# 
+# Warning message:
+# In f(...) : NaNs produced
+```
+
+***
+
+### Create a FO that tracks files created or deleted in the working directory (Hint: use `dir()` and `setdiff()`.) What other global effects of functions might you want to track?
+
+```{r track}
+track <- function(f)
+{
+  force(f)
+  function(...)
+  {
+    dir_before <- length(dir(getwd()))
+    
+    res <- f(...)
+    
+    #write.csv(c(1:10), file = "test.csv")
+    dir_after <- length(dir(getwd()))
+    
+    cat(dir_before - dir_after, "files added", sep = " ")
+    res
+  }
+}
+
+track2 <- function(f)
+{
+  force(f)
+  function(...)
+  {
+    dir_before <- dir(getwd())
+    
+    res <- f(...)
+    
+    dir_after <- dir(getwd())
+    
+    cat("Added", setdiff(dir_after, dir_before), sep=" ")
+    cat("Removed", setdiff(dir_before, dir_after), sep=" ")
+    
+    res
+  }
+}
+
+```
+
+## Input FOs
+
+### Our previous `download()` function only downloads a single file. How can you use `partial()` and `lapply()` to create a function that downloads multiple files at once? What are the pros and cons of using `partial()` vs. writing a function by hand?
+
+```{r original_download, echo = FALSE}
+download_file <- function(url, ...) {
+  download.file(url, basename(url), ...)
+}
+
+delay_by <- function(delay, f) {
+  function(...) {
+    Sys.sleep(delay)
+    f(...)
+  }
+}
+
+dot_every <- function(n, f) {
+  i <- 1
+  function(...) {
+    if (i %% n == 0) cat(".")
+    i <<- i + 1
+    f(...)
+  }
+}
+
+download <- dot_every(10, delay_by(1, download_file))
+```
+
+```{r download_partial, eval = FALSE}
+download <- partial(download.file)
+urls <- list("http://google.com", "http://yahoo.com")
+files <- list("google.html", "yahoo.html")
+Map(download, urls, files)
+```
+
+I definitely do not get what Hadley is after in this question.  We could do this with or without using `partial`.  `lapply` could be used directly on `download.file`.
+
+***
+
+### Read the source code for `plyr::colwise()`. How does the code work? What are `colwise()`’s three main tasks? How could you make `colwise()` simpler by implementing each task as a function operator? (Hint: think about `partial()`.)
+
+Here is the source code:
+
+```{r colwise, eval = FALSE}
+function (.fun, .cols = true, ...) 
+{
+    if (!is.function(.cols)) {
+        .cols <- as.quoted(.cols)
+        filter <- function(df) eval.quoted(.cols, df)
+    }
+    else {
+        filter <- function(df) Filter(.cols, df)
+    }
+    dots <- list(...)
+    function(df, ...) {
+        stopifnot(is.data.frame(df))
+        df <- strip_splits(df)
+        filtered <- filter(df)
+        if (length(filtered) == 0) 
+            return(data.frame())
+        out <- do.call("lapply", c(list(filtered, .fun, ...), 
+            dots))
+        names(out) <- names(filtered)
+        quickdf(out)
+    }
+}
+```
+
+1.  A `filter` function is created.  The function first tests to see if `.cols` is a function or not.  If it is a function, it creates a `filter` function to apply `.cols` to a data frame.  If not a function, it creates a `filter` function to filter a data frame based on the indexes given in `.cols`.
+2.  The output function is created.  The first process in the output function is to apply the `filter` function to the input data frame.
+3.  The output function applies any extra arguments to the data.frame using the `...` supplied.
+4.  A data frame is returned.
+
+```{r my_colwise, eval = FALSE}
+my_colwise <- function(.fun, .cols)
+{
+  require(pryr)
+  
+  if (!is.function(.cols)) {
+    .cols <- as.quoted(.cols)
+    filter <- partial(eval.quoted, exprs = .cols)
+  }
+  else {
+    filter <- partial(Filter, f = .cols)
+  }
+  
+}
+```
+
+***
+
+### Write FOs that convert a function to return a matrix instead of a data frame, or a data frame instead of a matrix. If you understand S3, call them `as.data.frame.function()` and `as.matrix.function()`.
+
+```{r matrix_to_df}
+(test_matrix <- matrix(c(1:4), nrow = 2, ncol = 2))
+(test_df <- data.frame(a = c(1:2), b = c(3:4)))
+
+matrix_df <- function(.fun)
+{
+  function(...)
+  {
+    output <- .fun(...)
+    
+    if(is.matrix(output)) {
+      print("Converting matrix to data frame.")
+      output <- as.data.frame(output)
+    } else if(is.data.frame(output)) {
+      print("Converting data frame to matrix.")
+      output <- as.matrix(output)
+    } else stop("Input must be a matrix or a data frame.")
+    
+    return(output)
+  }
+}
+
+# t always returns a matrix
+convert_transpose <- matrix_df(t)
+convert_transpose(test_matrix)
+
+convert_rev <- matrix_df(rev)
+convert_rev(test_df)
+```
+
+***
+
+### You’ve seen five functions that modify a function to change its output from one form to another. What are they? Draw a table of the various combinations of types of outputs: what should go in the rows and what should go in the columns? What function operators might you want to write to fill in the missing cells? Come up with example use cases.
+
+|               |scalar     |vector   |matrix |data frame |arg1, arg2, ...|list(args)|
+|---------------|-----------|---------|-------|-----------|---------------|----------|
+|**scalar**     |           |         |       |           |               |          |
+|**vector**     |Vectorize()|         |       |           |               |          |
+|**matrix**     |           |         |       |df_matrix()|               |          |
+|**data frame** |           |colwise()|matrix_df()|       |               |          |
+|**arg1, arg2, ...**|       |         |       |           |               |          |
+|**list(args)** |           |         |       |           |splat()        |          |
+
+
+***
+
+### Look at all the examples of using an anonymous function to partially apply a function in this and the previous chapter. Replace the anonymous function with `partial()`. What do you think of the result? Is it easier or harder to read?
+
+Partial is harder to read unless you understand it pretty well.  I don't like it much.  I can imagine it is especially not useful if you are trying to make your code readable to other people.
+
+## Combining FOs
+
+### Implement your own version of `compose()` using `Reduce` and `%o%`. For bonus points, do it without calling function.
+
+Well isn't this silly Hadley.
+
+```{r my_compose}
+my_compose <- function(...)
+{
+  "%o%" <- compose
+  fs <- lapply(list(...), match.fun)
+  Reduce("%o%", fs)
+}
+
+square <- function(x) x^2
+over_5 <- function(x) x/5
+times_2 <- function(x) 2*x
+
+my_fun <- my_compose(times_2, square, over_5)
+my_fun(10)
+```
+
+***
+
+### Extend `and()` and `or()` to deal with any number of input functions. Can you do it with `Reduce()`? Can you keep them lazy (e.g., for `and()`, the function returns once it sees the first `FALSE`)?
+
+This is not working:
+
+```{r extended_logic, eval = FALSE}
+ext_and <- function(...) {
+  fs <- lapply(list(...), match.fun)
+  bools <- TRUE
+  
+  function(x)
+  {
+    out <- x
+    
+    for(i in 1:length(fs))
+    { 
+      bools <- fs[[i]](out)
+      
+      if(any(bools)) {
+        out <- out[bools]
+      } else return(FALSE)
+    }
+    
+    return(out)
+  }
+}
+
+Filter(ext_and(is.numeric), iris)
+```
+
+***
+
+### Implement the `xor()` binary operator. Implement it using the existing `xor()` function. Implement it as a combination of `and()` and `or()`. What are the advantages and disadvantages of each approach? Also think about what you’ll call the resulting function to avoid a clash with the existing `xor()` function, and how you might change the names of `and()`, `not()`, and `or()` to keep them consistent.
+
+***
+
+### Above, we implemented boolean algebra for functions that return a logical function. Implement elementary algebra (`plus()`, `minus()`, `multiply()`, `divide()`, `exponentiate()`, `log()`) for functions that return numeric vectors.
+
+## Reading notes
+
+* functionals replace loops
+* function operators replace anonymous functions
+
+`cat` = concatenate and print.
+
+`pryr::partial` = allows you to pre-fill some of the function arguments, making function operators less verbose
+
+### Behavioural FOs
+
+* do not change the inputs or outputs of a function
+* extra behaviour could include: time delay, print, store info
+
+`system.time()`: stores the difference between two `proc.time` calls
+
+**memoisation** = modify a function to cache its own results; this can save time in some functions, for example recursive functions that will otherwise recalculate the same results over and over.  The tradeoff is that it uses more memory.
+
+`Sys.sleep()`: suspends execution of expressions for a given number of seconds
+
+### Output FOs
+
+`plyr::failwith` returns a default value if a function has an error
+
+there is a nice example of using this with a set of glms
+
+`try()` is also useful
+
+### Input FOs
+
+`splat` could be useful for running multiple models with slightly different inputs
+
+`splat()` converts a function that takes multiple arguments to a function that takes a single list of arguments.
+
+This is useful if you want to invoke a function with varying arguments:
+
+```{r splat, eval = FALSE}
+splat <- function (f) {
+  force(f)
+  function(args) {
+    do.call(f, args)
+  }
+}
+
+x <- c(NA, runif(100), 1000)
+args <- list(
+  list(x),
+  list(x, na.rm = TRUE),
+  list(x, na.rm = TRUE, trim = 0.1)
+)
+lapply(args, splat(mean))
+```
+
+`compose`:
+
+`%o%` works like `%>%` but in the opposite direction.
+
+## Discussion notes

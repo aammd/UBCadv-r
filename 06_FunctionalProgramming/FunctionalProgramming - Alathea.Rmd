@@ -204,6 +204,8 @@ data.frame(areas)
 
 ## Discussion Notes
 
+Exercise #2 = Box-Cox transformation.
+
 ***
 ***
 

@@ -1,0 +1,6 @@
+base
+dplyr
+ggplot2
+magrittr
+microbenchmark
+tidyr
