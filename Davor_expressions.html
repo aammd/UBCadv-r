@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Structure of expressions</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: #990073
+   }
+
+   pre .number {
+     color: #099;
+   }
+
+   pre .comment {
+     color: #998;
+     font-style: italic
+   }
+
+   pre .keyword {
+     color: #900;
+     font-weight: bold
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: #d14;
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<h1>Structure of expressions</h1>
+
+<ol>
+<li><p>There&#39;s no existing base function that checks if an element is
+a valid component of an expression (i.e., it&#39;s a constant, name,
+call, or pairlist). Implement one by guessing the names of the &ldquo;is&rdquo;
+functions for calls, names, and pairlists.</p>
+
+<pre><code class="r">is_valid_expression &lt;- function(expr) {
+    if (is.name(expr)) {
+        return(TRUE)
+    } else if (is.pairlist(expr) || is.call(expr)) {
+        return(all(vapply(expr, is_valid_expression, logical(1))))
+    } else if (is.atomic(expr) &amp;&amp; length(expr) == 1L) {
+        return(TRUE)
+    } else {
+        return(FALSE)
+    }
+}
+is_valid_expression(quote(1+1))
+</code></pre>
+
+<pre><code>## [1] TRUE
+</code></pre>
+
+<pre><code class="r">is_valid_expression(substitute(class(df), list(df = data.frame(x = 10))))
+</code></pre>
+
+<pre><code>## [1] FALSE
+</code></pre></li>
+<li><p><code>pryr::ast()</code> uses non-standard evaluation. What&#39;s its escape hatch to
+standard evaluation?</p>
+
+<p>Function <code>pryr::call_tree</code>.</p></li>
+<li><p>What does the call tree of an if statement with multiple else conditions
+look like?</p>
+
+<pre><code class="r">pryr::ast(if (1&gt;3) foo else if (1 &lt; 0) bar else baz)
+</code></pre>
+
+<pre><code>## \- ()
+##   \- `if
+##   \- ()
+##     \- `&gt;
+##     \-  1
+##     \-  3
+##   \- `foo
+##   \- ()
+##     \- `if
+##     \- ()
+##       \- `&lt;
+##       \-  1
+##       \-  0
+##     \- `bar
+##     \- `baz
+</code></pre></li>
+<li><p>Compare <code>ast(x + y %+% z)</code> to <code>ast(x ^ y %+% z)</code>. What do they
+tell you about the precedence of custom infix functions?</p>
+
+<pre><code class="r">pryr::ast(x + y %+% z)
+</code></pre>
+
+<pre><code>## \- ()
+##   \- `+
+##   \- `x
+##   \- ()
+##     \- `%+%
+##     \- `y
+##     \- `z
+</code></pre>
+
+<pre><code class="r">pryr::ast(x ^ y %+% z)
+</code></pre>
+
+<pre><code>## \- ()
+##   \- `%+%
+##   \- ()
+##     \- `^
+##     \- `x
+##     \- `y
+##   \- `z
+</code></pre>
+
+<p>Custom infix functions have a higher precendence that addition,
+but lower than exponentiation.</p></li>
+<li><p>Why can&#39;t an expression contain an atomic vector of length greater than one?
+Which one of the six types of atomic vector can&#39;t appear in an expression?
+Why?</p></li>
+</ol>
+
+<h1>Names</h1>
+
+<ol>
+<li><p>You can use <code>formals()</code> to both get and set the arguments of a function.
+Use <code>formals()</code> to modify the following function so that the default value
+of <code>x</code> is missing and <code>y</code> is 10.</p>
+
+<pre><code class="r">g &lt;- function(x = 20, y) {
+  x + y
+}
+formals(g) &lt;- alist(x=, y=10)
+formals(g)
+</code></pre>
+
+<pre><code>## $x
+## 
+## 
+## $y
+## [1] 10
+</code></pre></li>
+<li><p>Write an equivalent to <code>get()</code> using <code>as.name()</code> and <code>eval()</code>. Write an
+equivalent to <code>assign()</code> using <code>as.name()</code>, <code>substitute()</code>, and <code>eval()</code>.
+(Don&#39;t worry about the multiple ways of choosing an environment; assume
+that the user supplies it explicitly.)</p>
+
+<pre><code class="r">get2 &lt;- function(name, env) {
+    eval(as.name(name), env)
+}
+get2(&#39;get2&#39;, .GlobalEnv)
+</code></pre>
+
+<pre><code>## function(name, env) {
+##     eval(as.name(name), env)
+## }
+</code></pre>
+
+<pre><code class="r">assign2 &lt;- function(name, value, env) {
+    eval(substitute(x &lt;- y, list(x = as.name(name), y = value)), env)
+}
+assign2(&#39;z&#39;, 43, .GlobalEnv)
+get2(&#39;z&#39;, .GlobalEnv)
+</code></pre>
+
+<pre><code>## [1] 43
+</code></pre></li>
+</ol>
+
+<h1>Calls</h1>
+
+<ol>
+<li><p>The following two calls look the same, but are actually different:</p>
+
+<pre><code class="r">(a &lt;- call(&quot;mean&quot;, 1:10))
+</code></pre>
+
+<pre><code>## mean(1:10)
+</code></pre>
+
+<pre><code class="r">(b &lt;- call(&quot;mean&quot;, quote(1:10)))
+</code></pre>
+
+<pre><code>## mean(1:10)
+</code></pre>
+
+<pre><code class="r">identical(a, b)
+</code></pre>
+
+<pre><code>## [1] FALSE
+</code></pre>
+
+<p>What&#39;s the difference? Which one should you prefer?</p>
+
+<p>Call <code>a</code> has the argument that is not, strictly speaking, a valid
+expression, because it&#39;s a constant with length greater than one.
+So the second form is preferred.</p>
+
+<pre><code class="r">is_valid_expression(a)
+</code></pre>
+
+<pre><code>## [1] FALSE
+</code></pre>
+
+<pre><code class="r">is_valid_expression(b)
+</code></pre>
+
+<pre><code>## [1] TRUE
+</code></pre></li>
+<li><p>Implement a pure R version of <code>do.call()</code>.</p>
+
+<pre><code class="r">do_call &lt;- function(what, args, env = parent.frame()) {
+    cc &lt;- as.call(c(as.name(what), as.list(args)))
+    eval(cc, env)
+}
+do_call(&#39;+&#39;, c(3, 42))
+</code></pre>
+
+<pre><code>## [1] 45
+</code></pre></li>
+<li><p>Concatenating a call and an expression with <code>c()</code> creates a list. Implement
+<code>concat()</code> so that the following code works to combine a call and
+an additional argument.</p>
+
+<pre><code class="r">concat(quote(f), a = 1, b = quote(mean(a)))
+#&gt; f(a = 1, b = mean(a))
+</code></pre></li>
+<li><p>Since <code>list()</code>s don&#39;t belong in expressions, we could create a more
+convenient call constructor that automatically combines lists into the
+arguments. Implement <code>make_call()</code> so that the following code works.</p>
+
+<pre><code class="r">make_call(quote(mean), list(quote(x), na.rm = TRUE))
+#&gt; mean(x, na.rm = TRUE)
+make_call(quote(mean), quote(x), na.rm = TRUE)
+#&gt; mean(x, na.rm = TRUE)
+</code></pre></li>
+<li><p>How does <code>mode&lt;-</code> work? How does it use <code>call()</code>?</p></li>
+<li><p>Read the source for <code>pryr::standardise_call()</code>. How does it work?
+Why is <code>is.primitive()</code> needed?</p></li>
+<li><p><code>standardise_call()</code> doesn&#39;t work so well for the following calls.
+Why?</p>
+
+<pre><code class="r">standardise_call(quote(mean(1:10, na.rm = TRUE)))
+</code></pre>
+
+<pre><code>## mean(x = 1:10, na.rm = TRUE)
+</code></pre>
+
+<pre><code class="r">standardise_call(quote(mean(n = T, 1:10)))
+</code></pre>
+
+<pre><code>## mean(x = 1:10, n = T)
+</code></pre>
+
+<pre><code class="r">standardise_call(quote(mean(x = 1:10, , TRUE)))
+</code></pre>
+
+<pre><code>## mean(x = 1:10, , TRUE)
+</code></pre></li>
+<li><p>Read the documentation for <code>pryr::modify_call()</code>. How do you think
+it works? Read the source code.</p></li>
+<li><p>Use <code>ast()</code> and experimentation to figure out the three arguments in an
+<code>if()</code> call. Which components are required? What are the arguments to
+the <code>for()</code> and <code>while()</code> calls?</p></li>
+</ol>
+
+<h1>Capturing the current call</h1>
+
+<ol>
+<li><p>Compare and contrast <code>update_model()</code> with <code>update.default()</code>.</p></li>
+<li><p>Why doesn&#39;t <code>write.csv(mtcars, &quot;mtcars.csv&quot;, row = FALSE)</code> work?
+What property of argument matching has the original author forgotten?</p></li>
+<li><p>Rewrite <code>update.formula()</code> to use R code instead of C code.</p></li>
+<li><p>Sometimes it&#39;s necessary to uncover the function that called the
+function that called the current function (i.e., the grandparent, not
+the parent). How can you use <code>sys.call()</code> or <code>match.call()</code> to find
+this function?</p></li>
+</ol>
+
+<h1>Pairlists</h1>
+
+<ol>
+<li><p>How are <code>alist(a)</code> and <code>alist(a = )</code> different? Think about both the
+input and the output.</p></li>
+<li><p>Read the documentation and source code for <code>pryr::partial()</code>. What does it
+do? How does it work? Read the documentation and source code for
+<code>pryr::unenclose()</code>. What does it do and how does it work?</p></li>
+<li><p>The actual implementation of <code>curve()</code> looks more like</p>
+
+<pre><code class="r">curve3 &lt;- function(expr, xlim = c(0, 1), n = 100,
+                   env = parent.frame()) {
+  env2 &lt;- new.env(parent = env)
+  env2$x &lt;- seq(xlim[1], xlim[2], length = n)
+
+  y &lt;- eval(substitute(expr), env2)
+  plot(env2$x, y, type = &quot;l&quot;, 
+    ylab = deparse(substitute(expr)))
+}
+</code></pre>
+
+<p>How does this approach differ from <code>curve2()</code> defined above?</p></li>
+</ol>
+
+<h1>Parsing and deparsing</h1>
+
+<ol>
+<li><p>What are the differences between <code>quote()</code> and <code>expression()</code>?</p></li>
+<li><p>Read the help for <code>deparse()</code> and construct a call that <code>deparse()</code>
+and <code>parse()</code> do not operate symmetrically on.</p></li>
+<li><p>Compare and contrast <code>source()</code> and <code>sys.source()</code>.</p></li>
+<li><p>Modify <code>simple_source()</code> so it returns the result of <em>every</em> expression,
+not just the last one.</p></li>
+<li><p>The code generated by <code>simple_source()</code> lacks source references. Read
+the source code for <code>sys.source()</code> and the help for <code>srcfilecopy()</code>,
+then modify <code>simple_source()</code> to preserve source references. You can
+test your code by sourcing a function that contains a comment. If
+successful, when you look at the function, you&#39;ll see the comment and
+not just the source code.</p></li>
+</ol>
+
+<h1>Walking the AST with recursive functions</h1>
+
+<ol>
+<li><p>Why does <code>logical_abbr()</code> use a for loop instead of a functional
+like <code>lapply()</code>?</p></li>
+<li><p><code>logical_abbr()</code> works when given quoted objects, but doesn&#39;t work when
+given an existing function, as in the example below. Why not? How could
+you modify <code>logical_abbr()</code> to work with functions? Think about what
+components make up a function.</p>
+
+<pre><code class="r">f &lt;- function(x = TRUE) {
+  g(x + T)
+}
+logical_abbr(f)
+</code></pre></li>
+<li><p>Write a function called <code>ast_type()</code> that returns either &ldquo;constant&rdquo;,
+&ldquo;name&rdquo;, &ldquo;call&rdquo;, or &ldquo;pairlist&rdquo;. Rewrite <code>logical_abbr()</code>, <code>find_assign()</code>,
+and <code>bquote2()</code> to use this function with <code>switch()</code> instead of nested if
+statements.</p></li>
+<li><p>Write a function that extracts all calls to a function. Compare your
+function to <code>pryr::fun_calls()</code>.</p></li>
+<li><p>Write a wrapper around <code>bquote2()</code> that does non-standard evaluation
+so that you don&#39;t need to explicitly <code>quote()</code> the input.</p></li>
+<li><p>Compare <code>bquote2()</code> to <code>bquote()</code>. There is a subtle bug in <code>bquote()</code>:
+it won&#39;t replace calls to functions with no arguments. Why?</p>
+
+<pre><code class="r">bquote(.(x)(), list(x = quote(f)))
+</code></pre>
+
+<pre><code>## .(x)()
+</code></pre>
+
+<pre><code class="r">bquote(.(x)(1), list(x = quote(f)))
+</code></pre>
+
+<pre><code>## f(1)
+</code></pre></li>
+<li><p>Improve the base <code>recurse_call()</code> template to also work with lists of
+functions and expressions (e.g., as from <code>parse(path_to_file))</code>.</p></li>
+</ol>
+
+</body>
+
+</html>
