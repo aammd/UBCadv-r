@@ -1,0 +1,239 @@
+---
+title: "Andrew -- expressions"
+author: "Andrew MacDonald"
+date: '2014-11-18'
+output: html_document
+---
+
+## Structure of expressions
+### There’s no existing base function that checks if an element is a valid component of an expression (i.e., it’s a constant, name, call, or pairlist). Implement one by guessing the names of the “is” functions for calls, names, and pairlists.
+
+```{r}
+is.call()
+is.name()
+is.pairlist(x = )
+is.constant()
+
+is.elem <- function(x){
+  testers <- c(is.call, is.name, is.pairlist, is.atomic)
+  tested <- vapply(testers, function(f) f(x), FUN.VALUE = TRUE)
+  any(tested)
+}
+
+is.elem(1:2)
+
+class_df <- substitute(class(df), list(df = data.frame(x = 10)))
+class_df
+#> class(list(x = 10))
+eval(class_df)
+#> [1] "data.frame"
+
+is.atomic(NULL)
+length(NULL)
+
+is.elem(class_df)
+```
+
+### pryr::ast() uses non-standard evaluation. What’s its escape hatch to standard evaluation?
+
+```{r}
+library(pryr)
+?ast
+ast
+```
+According to the help file:
+
+> ` ast` does the quoting for you.
+
+Indicating that if you pass an unquoted thing, it gets quoted and passed to `call_tree`
+
+
+```{r}
+ast(if(x > 0) 10 else if (x < 0) 20 else 30 )
+```
+
+Each `if` has three children: the test, the true condition and the `else` condition. when there are many `else`s, the ifs are nested inside.  the logical testing function is nested in the first child of `if`.
+
+### Compare ast(x + y %+% z) to ast(x ^ y %+% z). What do they tell you about the precedence of custom infix functions?
+```{r}
+ast(x + y %+% z)
+ast(x ^ y %+% z)
+```
+Looks like `%+%` comes after `^` but before `+`
+
+
+### Why can’t an expression contain an atomic vector of length greater than one? Which one of the six types of atomic vector can’t appear in an expression? Why?
+```{r}
+ast(0i)
+f <- raw()
+ast(f)
+```
+you can't use `raw` because you cant' write it.
+expressions can't contain larger atomic vectors because `c` would generate a new call.
+
+### You can use formals() to both get and set the arguments of a function. Use formals() to modify the following function so that the default value of x is missing and y is 10.
+```{r}
+g <- function(x = 20, y) {
+  x + y
+}
+
+formals(g) <- list(x= quote(expr =), y = 10)
+
+g()
+```
+
+### Write an equivalent to get() using as.name() and eval().
+```{r}
+v <- 20
+get("v")
+
+get2 <- function(name, env) {
+    eval(as.name(name), env)
+}
+get2('get2', .GlobalEnv)
+```
+  
+  
+```{r}
+assign3 <- function(name, value, env) {
+  eval(substitute(name <- value), env)
+}
+
+assign3('z', 47, .GlobalEnv)
+get2('z', .GlobalEnv)
+```
+
+## Calls
+### The following two calls look the same, but are actually different. What’s the difference? Which one should you prefer?
+```{r}
+(a <- call("mean", 1:10))
+#> mean(1:10)
+(b <- call("mean", quote(1:10)))
+#> mean(1:10)
+identical(a, b)
+#> [1] FALSE
+
+identical(1:10, quote(1:10))
+identical(1, quote(1))
+```
+in `a`, the first argument of `mean` is the numeric vector `1:10`.  in `b`, the first argument is an expression, which apparently got evaluated by b?
+
+
+```{r}
+v <- 20
+silly <- function(){
+  v <- 30
+  quote(v + 1)
+  }
+
+silly()
+
+eval(silly())
+
+sillier <- function(x){
+  y~x
+}
+
+is.formula(sillier(2))
+
+test <- sillier(2)
+
+class(test)
+str(test)
+eval(test[[3]], environment(test))
+
+
+```
+
+### Implement a pure R version of do.call().
+
+```{r}
+do.call2 <- function(funname, arglist){
+  stopifnot(is.list(arglist))
+  TheCall <- as.call(c(quote(funname), arglist))
+  eval(TheCall)
+}
+
+#do.call2(mean, 1:10) #fails
+do.call2(mean, list(1:10) )
+```
+
+### oncatenating a call and an expression with c() creates a list. Implement concat() so that the following code works to combine a call and an additional argument.
+```{r eval=FALSE}
+concat <- function(quotecall, arg){
+  call_len <- length(quotecall)
+  quotecall[[call_len]] <- arg
+}
+
+concat(quote(f), a = 1)
+```
+
+I thought this could be done by identifying the lenght of the call and adding arguments, but it is hard - the function isn't coming through as a call but simply as the letter f..
+
+### Since list()s don’t belong in expressions, we could create a more convenient call constructor that automatically combines lists into the arguments. Implement make_call() so that the following code works.
+
+```r
+make_call(quote(mean), list(quote(x), na.rm = TRUE))
+#> mean(x, na.rm = TRUE)
+make_call(quote(mean), quote(x), na.rm = TRUE)
+#> mean(x, na.rm = TRUE)
+```
+
+### How does mode<- work? How does it use call()?
+```{r}
+`mode<-`
+
+```
+lol. it simply constructs the coercing function `as.WHATEVER`, then constructs a call where that is evaluated on the object in the parent environment.
+
+### Read the source for pryr::standardise_call(). How does it work? Why is is.primitive() needed?
+```{r}
+pryr::standardise_call
+```
+
+### Read the documentation for pryr::modify_call(). How do you think it works? Read the source code.
+```{r}
+pryr::modify_call
+```
+
+### Use ast() and experimentation to figure out the three arguments in an if() call. Which components are required? What are the arguments to the for() and while() calls?
+
+I feel like we kind of discussed this above...
+
+```{r}
+x <- rnorm(10)
+y <- rnorm(10)
+mod <- lm(y~x)
+
+environment(formula(mod))
+str(formula(mod))
+
+```
+
+## Capturing the current call
+### Compare and contrast update_model() with update.default().
+```r
+update_model <- function(object, formula., ...) {
+  call <- update_call(object, formula., ...)
+  eval(call, parent.frame())
+}
+```
+```{r}
+update.default
+```
+
+### Why doesn’t write.csv(mtcars, "mtcars.csv", row = FALSE) work? What property of argument matching has the original author forgotten?
+
+arguements are matched by position
+
+### Rewrite update.formula() to use R code instead of C code.
+
+### Sometimes it’s necessary to uncover the function that called the function that called the current function (i.e., the grandparent, not the parent). How can you use sys.call() or match.call() to find this function?
+
+## Pairlists
+
+### How are alist(a) and alist(a = ) different? Think about both the input and the output.
+
+### Read the documentation and source code for pryr::partial(). What does it do? How does it work? Read the documentation and source code for pryr::unenclose(). What does it do and how does it work?
+
+### The actual implementation of curve() looks more like
