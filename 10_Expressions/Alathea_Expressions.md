@@ -41,9 +41,38 @@ g <- function(x = 20, y) {
 #> mean(1:10)
 identical(a, b)
 #> [1] FALSE
+
+class(a)
+class(b)
+
+eval(a)
+eval(b)
 ```
 
+`quote` returns `1:10` as an expression
+
 ### Implement a pure R version of do.call().
+
+
+```r
+my_do_call <- function(function_name, ...){
+  # get the call to my_do_call
+  .call <- match.call()
+  
+  # remove the "my_do_call" function from the call
+  my_call <- as.list(.call[-1])
+  
+  # evaluate the new call
+  eval(as.call(my_call))
+}
+
+my_do_call(mean, 1:10)
+```
+
+```
+## [1] 5.5
+```
+
 
 ### Concatenating a call and an expression with c() creates a list. Implement concat() so that the following code works to combine a call and an additional argument.
 

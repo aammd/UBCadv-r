@@ -141,10 +141,30 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 (b &lt;- call(&quot;mean&quot;, quote(1:10)))
 #&gt; mean(1:10)
 identical(a, b)
-#&gt; [1] FALSE</code></pre>
+#&gt; [1] FALSE
+
+class(a)
+class(b)
+
+eval(a)
+eval(b)</code></pre>
+<p><code>quote</code> returns <code>1:10</code> as an expression</p>
 </div>
 <div id="implement-a-pure-r-version-of-do.call." class="section level3">
 <h3>Implement a pure R version of do.call().</h3>
+<pre class="r"><code>my_do_call &lt;- function(function_name, ...){
+  # get the call to my_do_call
+  .call &lt;- match.call()
+  
+  # remove the &quot;my_do_call&quot; function from the call
+  my_call &lt;- as.list(.call[-1])
+  
+  # evaluate the new call
+  eval(as.call(my_call))
+}
+
+my_do_call(mean, 1:10)</code></pre>
+<pre><code>## [1] 5.5</code></pre>
 </div>
 <div id="concatenating-a-call-and-an-expression-with-c-creates-a-list.-implement-concat-so-that-the-following-code-works-to-combine-a-call-and-an-additional-argument." class="section level3">
 <h3>Concatenating a call and an expression with c() creates a list. Implement concat() so that the following code works to combine a call and an additional argument.</h3>
