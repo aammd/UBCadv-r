@@ -17,6 +17,7 @@ is.constant()
 is.elem <- function(x){
   testers <- c(is.call, is.name, is.pairlist, is.atomic)
   tested <- vapply(testers, function(f) f(x), FUN.VALUE = TRUE)
+  if(is.atomic(x) & length(x) > 1) stop("Atomic vectors cannot have length larger than one in an expression.")
   any(tested)
 }
 
