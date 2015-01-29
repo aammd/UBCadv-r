@@ -82,6 +82,17 @@ concat(quote(f), a = 1, b = quote(mean(a)))
 #> f(a = 1, b = mean(a))
 ```
 
+Possible solution:
+
+```r
+concat <- function(what, a, b){
+  as.call(list(what, substitute({a = a_arg}, list(a_arg = a))[[2]],  substitute({b = b_arg}, list(b_arg = b))[[2]])) 
+}
+
+concat(quote(f), a = 1, b = quote(mean(a)))
+```
+
+
 ### Since list()s don’t belong in expressions, we could create a more convenient call constructor that automatically combines lists into the arguments. Implement make_call() so that the following code works.
 
 
