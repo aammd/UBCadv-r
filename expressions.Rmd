@@ -1,0 +1,381 @@
+---
+title: "Expressions"
+author: "Melissa"
+date: "November 18, 2014"
+output: html_document
+---
+rm(list=ls())
+library('pryr')
+library('plyr')
+
+1. Compare and contrast update_model() with update.default().
+
+```{r}
+update_call <- function (object, formula., ...) {
+  call <- object$call
+
+  # Use update.formula to deal with formulas like . ~ .
+  if (!missing(formula.)) {
+    call$formula <- update.formula(formula(object), formula.)
+  }
+
+  modify_call(call, dots(...))
+}
+update_model <- function(object, formula., ...) {
+  call <- update_call(object, formula., ...)
+  eval(call, parent.frame())
+}
+```
+```{r}
+update.default<- function (object, formula., ..., evaluate = TRUE) 
+{
+    if (is.null(call <- getCall(object))) 
+        stop("need an object with call component")
+    extras <- match.call(expand.dots = FALSE)$...
+    if (!missing(formula.)) 
+        call$formula <- update.formula(formula(object), formula.)
+    if (length(extras)) {
+        existing <- !is.na(match(names(extras), names(call)))
+        for (a in names(extras)[existing]) call[[a]] <- extras[[a]]
+        if (any(!existing)) {
+            call <- c(as.list(call), extras[!existing])
+            call <- as.call(call)
+        }
+    }
+    if (evaluate) 
+        eval(call, parent.frame())
+    else call
+}
+
+```
+
+  - it evaluates the call if there is an evaluate present.
+  - it deals with the extras ...?
+  
+2. Why doesn’t write.csv(mtcars, "mtcars.csv", row = FALSE) work? What property of argument matching has the original author forgotten?
+
+row.names
+
+3. Rewrite update.formula() to use R code instead of C code.
+
+update.formula<- function(old, new, ...){
+
+}
+formula
+
+
+4.Sometimes it’s necessary to uncover the function that called the function that called the current function (i.e., the grandparent, not the parent). How can you use sys.call() or match.call() to find this function?
+
+```{r}
+
+gp<-function(){
+  p<-function(){
+    s<-function(a=1, b=2){
+      match.call()
+    }
+  }
+}
+
+s<-function(a=1,b=2){
+  match.call()
+}
+
+gp()()(1,5)
+
+```
+
+
+
+
+
+
+1. How are alist(a) and alist(a = ) different? Think about both the input and the output.
+
+```{r}
+alist(a, b) #two elements of a list
+alist(a=, b=) #elements in the same list part
+```
+
+
+2. Read the documentation and source code for pryr::partial(). What does it do? How does it work? Read the documentation and source code for pryr::unenclose(). What does it do and how does it work?
+partial
+
+function (`_f`, ..., .env = parent.frame(), .lazy = TRUE) 
+{
+    stopifnot(is.function(`_f`))
+    if (.lazy) {
+        fcall <- substitute(`_f`(...))
+    }
+    else {
+        fcall <- make_call(substitute(`_f`), .args = list(...))
+    }
+    fcall[[length(fcall) + 1]] <- quote(...)
+    args <- list(... = quote(expr = ))
+    make_function(args, fcall, .env)
+}
+<environment: namespace:pryr>
+
+Partial function application allows you to modify a function by pre-filling some of the arguments. It is particularly useful in conjunction with functionals and other function operators.
+
+unenclose
+
+function (f) 
+{
+    stopifnot(is.function(f))
+    env <- environment(f)
+    make_function(formals(f), substitute_q(body(f), env), parent.env(env))
+}
+<environment: namespace:pryr>
+
+Unenclose a closure by substituting names for values found in the enclosing environment
+
+
+3. The actual implementation of curve() looks more like
+
+```{r}
+curve3 <- function(expr, xlim = c(0, 1), n = 100,
+                   env = parent.frame()) {
+  env2 <- new.env(parent = env)
+  env2$x <- seq(xlim[1], xlim[2], length = n)
+
+  y <- eval(substitute(expr), env2)
+  plot(env2$x, y, type = "l", 
+    ylab = deparse(substitute(expr)))
+}
+```
+
+How does this approach differ from curve2() defined above?
+
+make function vs eval(exp, )
+
+1. What are the differences between quote() and expression()?
+
+quote simply returns the argument, expression actually makes it into an expression. 
+
+2. Read the help for deparse() and construct a call that deparse() and parse() do not operate symmetrically on.
+
+```{r}
+ex<-parse(text=c("
+                 x<-4
+                 NA
+                 "))
+dex<-deparse(ex)
+dex<-deparse(ex, control='keepNA')
+
+```
+
+
+3. Compare and contrast source() and sys.source().
+
+source can read URL
+
+Source:
+source causes R to accept its input from the named file or URL or connection. Input is read and parsed from that file until the end of the file is reached, then the parsed expressions are evaluated sequentially in the chosen environment.
+
+source
+
+Sys.source:
+Parses expressions in the given file, and then successively evaluates them in the specified environment
+
+function (file, envir = baseenv(), chdir = FALSE, keep.source = getOption("keep.source.pkgs")) 
+{
+    if (!(is.character(file) && file.exists(file))) 
+        stop(gettextf("'%s' is not an existing file", file))
+    keep.source <- as.logical(keep.source)
+    oop <- options(keep.source = keep.source, topLevelEnvironment = as.environment(envir))
+    on.exit(options(oop))
+    if (keep.source) {
+        lines <- readLines(file, warn = FALSE)
+        srcfile <- srcfilecopy(file, lines, file.info(file)[1, 
+            "mtime"], isFile = TRUE)
+        exprs <- parse(text = lines, srcfile = srcfile, keep.source = TRUE)
+    }
+    else exprs <- parse(n = -1, file = file, srcfile = NULL, 
+        keep.source = FALSE)
+    if (length(exprs) == 0L) 
+        return(invisible())
+    if (chdir && (path <- dirname(file)) != ".") {
+        owd <- getwd()
+        if (is.null(owd)) 
+            stop("cannot 'chdir' as current directory is unknown")
+        on.exit(setwd(owd), add = TRUE)
+        setwd(path)
+    }
+    for (i in seq_along(exprs)) eval(exprs[i], envir)
+    invisible()
+}
+
+4. Modify simple_source() so it returns the result of every expression, not just the last one.
+
+
+```{r}
+
+simple_source <- function(file, envir = new.env()) {
+  stopifnot(file.exists(file))
+  stopifnot(is.environment(envir))
+
+  lines <- readLines(file, warn = FALSE)
+  exprs <- parse(text = lines)
+
+  n <- length(exprs)
+  if (n == 0L) return(invisible())
+
+  for (i in seq_len(n)) {
+    invisible(eval(exprs[i], envir))
+  }
+}
+
+```
+
+
+5. The code generated by simple_source() lacks source references. Read the source code for sys.source() and the help for srcfilecopy(), then modify simple_source() to preserve source references. You can test your code by sourcing a function that contains a comment. If successful, when you look at the function, you’ll see the comment and not just the source code.
+
+
+sys.source
+```{r}
+simple_source <- function(file, envir = new.env(), keep.source = getOption("keep.source.pkgs")) {
+  stopifnot(file.exists(file))
+  stopifnot(is.environment(envir))
+  
+  keep.source <- as.logical(keep.source)
+  
+  oop <- options(keep.source = keep.source, topLevelEnvironment = as.environment(envir))
+    on.exit(options(oop))
+    if (keep.source) {
+        lines <- readLines(file, warn = FALSE)
+        srcfile <- srcfilecopy(file, lines, file.info(file)[1, 
+            "mtime"], isFile = TRUE)
+        exprs <- parse(text = lines, srcfile = srcfile, keep.source = TRUE)
+    }
+    else exprs <- parse(n = -1, file = file, srcfile = NULL, 
+        keep.source = FALSE)
+
+  #lines <- readLines(file, warn = FALSE)
+  #exprs <- parse(text = lines)
+
+  n <- length(exprs)
+  if (n == 0L) return(invisible())
+
+  for (i in seq_len(n - 1)) {
+    eval(exprs[i], envir)
+  }
+  invisible(eval(exprs[n], envir))
+}
+
+
+
+```
+
+
+
+
+
+1. Why does logical_abbr() use a for loop instead of a functional like lapply()?
+
+Because we are looking for a vector or a name instead of a call or pairlist?
+
+
+2. logical_abbr() works when given quoted objects, but doesn’t work when given an existing function, as in the example below. Why not? How could you modify logical_abbr() to work with functions? Think about what components make up a function.
+
+f <- function(x = TRUE) {
+  g(x + T)
+}
+logical_abbr(f)
+
+ast(a)
+ast(f())
+ast(f <- function(x = TRUE) {
+  g(x + T)
+})
+
+have to use body of f
+
+logical_abbr(body(f))
+
+```{r}
+logical_abbr <- function(x) {
+  if (is.atomic(x)) {
+    FALSE
+  } else if (is.name(x)) {
+    identical(x, quote(T)) || identical(x, quote(F))
+  } else if (is.call(x) || is.pairlist(x)) {
+    for (i in seq_along(x)) {
+      if (logical_abbr(x[[i]])) return(TRUE)
+    }
+    FALSE
+  } else {
+    stop("Don't know how to handle type ", typeof(x), 
+      call. = FALSE)
+  }
+}
+
+```
+
+
+3. Write a function called ast_type() that returns either “constant”, “name”, “call”, or “pairlist”. Rewrite logical_abbr(), find_assign(), and bquote2() to use this function with switch() instead of nested if statements.
+
+
+```{r}
+ast_type <- function(x) {
+  if (is.atomic(x)) {
+    return('constant')
+  } else if (is.name(x)) {
+    return('name')
+  } else if (is.call(x)) {
+    return('call')
+  } else if(is.pairlist(x)){
+    return('paislist')
+  }else {
+    stop('cantdo')
+  }
+}
+
+
+logical_abbr <- function(x) {
+  ty<-ast_type
+  
+  switch(ty, 
+         constant= {FALSE},
+         name= {identical(x, quote(T)) || identical(x, quote(F))},
+         call={for (i in seq_along(x)) {
+      if (logical_abbr(x[[i]])) return(TRUE)},
+        pairlist={for (i in seq_along(x)) {
+      if (logical_abbr(x[[i]])) return(TRUE)},
+      cantdo={stop("Don't know how to handle type ", typeof(x), 
+      call. = FALSE)}
+         )
+}
+
+```
+
+
+
+
+4. Write a function that extracts all calls to a function. Compare your function to pryr::fun_calls().
+
+```{r}
+
+call_to_function<-function(f){
+  if(!is.call(f)){stop('not a call')}
+  else {
+    eval(as.function(f))
+  }
+}
+
+```
+
+
+fun_calls
+
+5. Write a wrapper around bquote2() that does non-standard evaluation so that you don’t need to explicitly quote() the input.
+
+6. Compare bquote2() to bquote(). There is a subtle bug in bquote(): it won’t replace calls to functions with no arguments. Why?
+
+bquote(.(x)(), list(x = quote(f)))
+#> .(x)()
+bquote(.(x)(1), list(x = quote(f)))
+#> f(1)
+
+it doesnt deal with constants or names? bquote substitutes the expression. 
+
+7. Improve the base recurse_call() template to also work with lists of functions and expressions (e.g., as from parse(path_to_file)).
